@@ -1,0 +1,152 @@
+public with sharing class MyOrgButler implements Queueable, Database.AllowsCallouts {
+
+    private static final String ASSISTANT_ID = 'asst_Na8RGEypyDSkMcMODyxlgFtX';
+    private static final Integer WAIT_TIME = 3000;
+    private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
+                                                        'callSalesforceApi' => new CallSalesforceApiTool(),
+                                                        'sendNotification' => new SendInOrgNotification() };
+    @TestVisible
+    private static AssistantCallback__e callback = null;
+
+    private MyOrgButler__c settings;
+
+    // CONSTRUCTOR
+
+    public MyOrgButler() {
+        settings = MyOrgButler__c.getInstance();
+
+        if(settings.Id == null) {
+            persistNewThread();
+        }
+    }
+
+    // PUBLIC
+
+    public String threadId() {
+        return settings.ThreadId__c;
+    }
+
+    public void reset() {
+        if(settings.ThreadId__c != null){
+            Thread.remove(settings.ThreadId__c);
+        }
+
+        persistNewThread();
+    }
+
+    public List<Message> messages(String lastMessageId) {
+        return Message.retrieve(settings.ThreadId__c, 
+                                new Params()
+                                        .order('asc')
+                                        .afterRecord(lastMessageId))
+                                        .data;
+    }
+
+    public Run.Steps steps(String runId) {
+        return Run.steps(settings.ThreadId__c, runId, new Params());
+    }
+
+    public Run.Steps steps(String runId, String order) {
+        return Run.steps(settings.ThreadId__c, runId, new Params().order(order));
+    }
+
+    public void respond(String text) {
+        Message.create(settings.ThreadId__c, new Message(text));
+        persistNewRun();
+        pollOrQueue();
+    }
+
+    public void execute(QueueableContext context) {
+        poll();
+    }
+
+    // PRIVATE
+
+    private void persistNewThread() {
+        Thread thread = Thread.create(new Thread()
+                                            .metadata('userId', UserInfo.getUserId())
+                                            .metadata('userFirstName', UserInfo.getFirstName())
+                                            .metadata('userLastName', UserInfo.getLastName())
+                                            .metadata('userLanguage', UserInfo.getLanguage())
+                                            .metadata('userTime', String.valueOf(System.now()))
+                                            .metadata('userEmail', UserInfo.getUserEmail()));
+        settings.ThreadId__c = thread.id;
+        settings.RunId__c = null;
+        upsert as system settings;
+    }
+
+    private void persistNewRun() {
+        Run run = Run.create(settings.ThreadId__c, new Run(settings.ThreadId__c, ASSISTANT_ID));
+        settings.RunId__c = run.id;
+        update as system settings;
+    }
+
+    private void pollOrQueue() {
+        if(limitRisk()) {
+            System.enqueueJob(this);
+        }
+        else {
+            sleep(WAIT_TIME);
+            poll();
+        }
+    }
+
+    private Boolean limitRisk() {
+        return (Limits.getCallouts() > Limits.getLimitCallouts() - 10 ||
+                Limits.getCpuTime() > Limits.getLimitCpuTime() - 5 * WAIT_TIME);
+    }
+    
+    private void poll() {
+        Run run = Run.retrieve(settings.ThreadId__c, settings.RunId__c);
+
+        if(run.isPending()) {
+            pollOrQueue();
+        } 
+        else if(run.requestsTool()) {
+            runToolAndCallback(run);
+            pollOrQueue();
+        } 
+        else if(run.isCompletedOrFailed()) {
+            notifyUi(run);
+        }
+    }
+
+    private void runToolAndCallback(Run run) {
+        List<Run.ToolOutput> outputs = new List<Run.ToolOutput>();
+
+        for(Run.ToolCall current : run.required_action.submit_tool_outputs.tool_calls) {
+            Run.ToolOutput result = new Run.ToolOutput(current.id);
+
+            try {
+                result.output = TOOLS.get(current.function.name).execute(current.function.arguments);
+            } 
+            catch(Exception error) {
+                result.output = error.getMessage();
+            }
+
+            outputs.add(result);
+        }
+
+        new OpenAiApi('/threads/' + run.thread_id + '/runs/' + run.id + '/submit_tool_outputs')
+                .body(new Run.ToolOutputs(outputs))
+                .post();
+    }
+
+    public void notifyUi(Run run) {
+        callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
+        EventBus.publish(callback);
+    }
+
+    // PMD False Positive: Empty while is part of idle algortihm of https://salesforce.stackexchange.com/a/302152/256
+    @SuppressWarnings('PMD')
+    private void sleep(Integer milliseconds) {
+        Long startTime = DateTime.now().getTime();
+        while(DateTime.now().getTime() - startTime < milliseconds); 
+    }
+
+    // INNER
+
+    public interface Tool {
+        String execute(String arguments);
+    }
+}

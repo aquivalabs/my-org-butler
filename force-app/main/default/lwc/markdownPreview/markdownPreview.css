@@ -1,0 +1,70 @@
+h1,
+h2 {
+    border-bottom: 1px solid #dddbda;
+}
+
+h1 {
+    font-size: 3.5em;
+}
+h2 {
+    font-size: 3em;
+}
+h3 {
+    font-size: 2.5em;
+}
+h4 {
+    font-size: 2em;
+}
+h5 {
+    font-size: 1.5em;
+}
+h6 {
+    font-size: 1em;
+}
+
+h5,
+h6 {
+    font-weight: bold;
+}
+
+ul,
+ol {
+    margin-left: 2em;
+}
+ul {
+    list-style-type: disc;
+}
+ol {
+    list-style-type: decimal;
+}
+
+pre {
+    padding: 1rem;
+    background: #f8f8f8;
+}
+
+table {
+    border: 1px solid #dddbda;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid #dddbda;
+    padding: 0.5em;
+}
+
+table th[align='left'],
+table td[align='left'] {
+    text-align: left;
+}
+
+table th[align='right'],
+table td[align='right'] {
+    text-align: right;
+}
+
+table th[align='center'],
+table td[align='center'] {
+    text-align: center;
+}

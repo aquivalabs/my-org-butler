@@ -1,0 +1,54 @@
+<template>
+    <article class="slds-card slds-text-heading_small chat-window">
+        <lightning-spinner alternative-text="Loading" lwc:if={isLoading} size="x-small"></lightning-spinner>
+
+        <div class="slds-grid slds-grid_vertical slds-grid_align-spread chat-window__content">
+            <ul class="slds-chat-list slds-scrollable slds-var-p-horizontal_small" lwc:ref="chatMessages">
+                <template for:each={messagesToDisplay} for:item="chatMessage">
+                    <c-single-chat-message
+                        key={chatMessage.order}
+                        message={chatMessage.message}
+                        type={chatMessage.messageType}
+                    ></c-single-chat-message>
+                </template>
+
+                <c-typing-chat-message
+                    lwc:if={waitingForResponse}
+                    message="Waiting for AI response..."
+                ></c-typing-chat-message>
+            </ul>
+            <div class="slds-var-p-horizontal_small slds-var-p-vertical_small slds-col_bump-top">
+                <div class="slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                    <lightning-button-icon
+                        alternative-text="Reset Chat"
+                        class="slds-var-m-right_small"
+                        icon-name="utility:refresh"
+                        onclick={handleResetChat}
+                        title="Reset Chat"
+                        variant="brand"
+                    ></lightning-button-icon>
+                    <lightning-input
+                        class="slds-grow"
+                        disabled={askingQuestionsDisabled}
+                        placeholder="How can I help you?"
+                        label="How can I help you?"
+                        onchange={handleQuestionChange}
+                        onkeypress={handleEnterAskQuestion}
+                        type="text"
+                        value={question}
+                        variant="label-hidden"
+                    ></lightning-input>
+                    <lightning-button-icon
+                        alternative-text="Ask Question"
+                        class="slds-var-m-left_small"
+                        disabled={askingQuestionsDisabled}
+                        icon-name="utility:send"
+                        onclick={handleAskQuestion}
+                        title="Ask Question"
+                        variant="brand"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </div>
+    </article>
+</template>

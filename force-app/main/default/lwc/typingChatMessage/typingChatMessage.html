@@ -1,0 +1,18 @@
+<template>
+    <li class="slds-var-p-bottom_x-small slds-chat-listitem slds-chat-listitem_inbound">
+        <div class="slds-chat-message">
+            <lightning-avatar src={butlerLogo} size="large" class="slds-var-p-right_small"></lightning-avatar>
+            <div class="slds-chat-message__body">
+                <div class="slds-chat-message__text slds-chat-message__text_inbound slds-chat-message__text_sneak-peek slds-text-heading_small">
+                    <span class="slds-icon-typing" title="Typing">
+                        <span class="slds-icon-typing__dot typing-dot"></span>
+                        <span class="slds-icon-typing__dot typing-dot"></span>
+                        <span class="slds-icon-typing__dot typing-dot"></span>
+                        <span class="slds-assistive-text">{message}</span>
+                    </span>
+                    <span aria-hidden="true">{message}</span>
+                </div>
+            </div>
+        </div>
+    </li>
+</template>

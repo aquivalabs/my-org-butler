@@ -1,0 +1,26 @@
+<template>
+    <li class={listItemClass}>
+        <div class="slds-chat-message">
+            <lightning-avatar 
+                src={butlerLogo}
+                size="large"
+                class="slds-var-p-right_small"
+                lwc:if={isButlerLogoVisible}>
+            </lightning-avatar>
+            <div class="slds-chat-message__body">
+                <div class={chatMessageTextClass}>
+                    <c-markdown-preview body={visibleMessage}></c-markdown-preview>
+                    <lightning-icon
+                        alternative-text="Explain the response"
+                        class="slds-var-m-left_xx-small"
+                        icon-name="utility:info"
+                        lwc:if={isExplanationVisible}
+                        onclick={handleExplain}
+                        size="x-small"
+                        title="Explain the response">
+                    </lightning-icon>
+                </div>
+            </div>
+        </div>
+    </li>
+</template>
