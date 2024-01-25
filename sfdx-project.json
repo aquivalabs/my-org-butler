@@ -12,9 +12,5 @@
   "name": "my-org-butler",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "60.0",
-  "packageAliases": {
-    "my-org-butler": "0HoVI0000001Lgj0AE",
-    "my-org-butler@0.1.0-1": "04tVI0000001TrBYAU"
-  }
+  "sourceApiVersion": "60.0"
 }
