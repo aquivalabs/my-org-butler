@@ -12,7 +12,11 @@
 - Implements autonomous agent like AutoGPT
 - Uses packageable Named Credentials for API Authentication
 
+### Demo Video
+
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
+
+### More Details
 
 It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
 
