@@ -1,4 +1,4 @@
-## <img src="resources/logo.png"  width="50"/> My Org Butler
+## <img src="resources/logo.png" width="50"/> My Org Butler
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
@@ -37,4 +37,9 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 1. Post-install steps
     1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey`
     1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
+1. Create an OpenAI Assistant using the Functions, Instructions and Knowledge files in `openai-configs`
+1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/OpenAiApi.cls)
 1. Create a Managed or Unlocked package from it using `/scripts/create-package.sh`
+
+
+<img src="resources/assistant-setup.png" width="400" />
