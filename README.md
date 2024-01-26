@@ -1,4 +1,4 @@
-## My Org Butler
+## <img src="resources/logo.png"  width="50"/> My Org Butler
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
