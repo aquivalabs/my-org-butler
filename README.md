@@ -2,6 +2,16 @@
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
+### Highlight
+
+- Answers questions about data and configuration
+- Performs tasks/changes on the user's behalf
+- Respects the permissions of the users
+- Can explain what it does and self-correct errors
+- Leverages OpenAI Assistant API (Knowledge Retrieval and State Management)
+- Implements autonomous agent like AutoGPT
+- Uses packageable Named Credentials for API Authentication
+
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
 
 It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
@@ -13,14 +23,6 @@ Those automation are not performed by the LLM but just delegated back to Salesfo
 This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by construting REST API request as shown in this PlantUML:
 
 ![](/resources/plantuml.png)
-
-### Highlight
-
-- Leverages OpenAI Assistant API
-- State Management covered by OpenAI
-- Knowledge Retrieval (check the validity of API calls) done by OpenAI
-- Implements autonomous agents like AutoGPT
-- Uses packageable Named Credentials for API Authentication
 
 ### How do I use it?
 
