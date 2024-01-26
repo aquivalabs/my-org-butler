@@ -1,31 +1,26 @@
-# My Org Butler
+## My Org Butler
 
-Native Salesforce app that utilizes the Open AI Assistant API to provide a semi-autonomous agent in your org's utility bar. Using Natural language chat the Org Butler can answer the user's questions about org data and metatada, but also perform tasks on behalf of the user. Creating or modifying records, sending emails etc.
+...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
 
-The Org Butler is a small, native, self-contained Salesforce app with only one UI. A toolbar item that the org's admin can add to basically every screen in the org. The toolbar is collapsed most of the time but can be expanded by the user. It then reveals a simple, small chatbot with a predefined Open AI assistant. It plays the role of a friendly, helpful Butler that answers questions about org data (respecting the user's permissions) and metadata and performs specific jobs in the org (modify data, metadata). It uses a single Open AI Function configured to make arbitrary callouts to Salesforce APIs. Chat GPT knows a lot about those APIs, and the Assitant also contains a JSON Postman Collection that technically describes all those APIs.
+It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
 
-The Assistant is prompted to make a work plan to fulfill the user's task and delegate Function calls back to the Salesforce app. The app then sends back the successful response from the API calls or the error states back to the assistant for corrections or summaries to the user.
+This is made possible by Open AI's Assitant API, an Agent technology similar to AutoGPT or Salesforce upcoming Copilots. It uses LLM reasoning to understand a request and makes an action plan based on automations that were made available to the agent. Open AI calls them Functions or Plugins, Salesforce calls them Skills.
 
-Here is a short interaction diagram showing the participants and interactions in such a user-butler dialog:
+Those automation are not performed by the LLM but just delegated back to Salesforce, which then calls deterministic code.
+
+This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by construting REST API request as shown in this PlantUML:
 
 ![](/resources/plantuml.png)
 
-
-
 ### Highlight
 
-- Write Rules in simple Natural language and group them in Rulesets.
-- Run Analysis on Salesforce Files or Attachments
-- Analysis Results will be justified by document quotes.
-- Monitor the Accuracy of the AI using scheduled Regression Tests.
-- Native Salesforce App with Custom Objects for Rules, Rulesets, Analyses etc.
-- Uses Freemium Extractor API to extract text from documents (use your own API key)
-- Uses Open AI API for text reasoning (use your own API key)
-- Export & Import of Rulesets
-- Comfortable Setup UI for Post-Install Steps
-- Uses Custom Metadata Types to use other LLMs (was tested with Claude and Open Source Llama2)
+- Leverages OpenAI Assistant API
+- State Management covered by OpenAI
+- Knowledge Retrieval (check the validity of API calls) done by OpenAI
+- Implements autonomous agents like AutoGPT
+- Uses packageable Named Credentials for API Authentication
 
 ### How do I use it?
 
