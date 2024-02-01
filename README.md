@@ -43,3 +43,18 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 
 
 <img src="resources/assistant-setup.png" width="400" />
+
+
+---
+
+> __DISCLAIMER - Simple vs. sophisticated__
+> 
+> This app was not written with a commercial career in mind. So we cut corners in a few places to keep the projects short and focused. So if you see some ugly parts here 
+> and there, let us know but be kind to us. This project is mainly about sharing 
+> results and excitement in "AI for Salesforce".
+> 
+> We also made some adjustments, and simplifications to the original code to better 
+> fit the Open Source purpose. To have less loose metadata parts, we:
+> 
+> - Skipped moving UI text to Custom Labels
+> - Merged classes to have the most related code in one place
