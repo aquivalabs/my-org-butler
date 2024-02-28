@@ -28,15 +28,28 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 
 ![](/resources/plantuml.png)
 
-### How do I use it?
+## How can I use it?
+
+Deploy as source or install as Unlocked Package to your Production or Sandbox org.
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=aquivalabs&amp;repo=my-org-butler">
+  <img src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png" alt="Deploy to Salesforce" />
+</a>
+
+#### [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
+
+#### [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
+
+#### Or build it yourself:
 
 1. Clone the repo
 1. Create Scratch org
     1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
     1. Run it via `./scripts/create-scratch.org.sh`
-1. Post-install steps
-    1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
-    1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
+
+### How do set it up:
+1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
+1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
 1. Create an OpenAI Assistant using the Functions, Instructions and Knowledge files in `openai-configs`
 1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/OpenAiApi.cls)
 1. Create a Managed or Unlocked package from it using `/scripts/create-package.sh`

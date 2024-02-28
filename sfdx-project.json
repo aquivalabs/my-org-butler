@@ -5,7 +5,7 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "February 2024",
-      "versionNumber": "1.0.0.NEXT",
+      "versionNumber": "1.1.0.NEXT",
       "versionDescription": ""
     }
   ],
@@ -14,6 +14,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "60.0",
   "packageAliases": {
-    "my-org-butler": "0HoVI00000028pV0AQ"
+    "my-org-butler": "0HoVI00000028pV0AQ",
+    "my-org-butler@1.1.0-1": "04tVI0000002cdtYAA"
   }
 }
