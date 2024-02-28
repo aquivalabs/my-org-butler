@@ -35,7 +35,7 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
     1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
     1. Run it via `./scripts/create-scratch.org.sh`
 1. Post-install steps
-    1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey`
+    1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
     1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
 1. Create an OpenAI Assistant using the Functions, Instructions and Knowledge files in `openai-configs`
 1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/OpenAiApi.cls)
