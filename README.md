@@ -36,18 +36,18 @@ Deploy as source or install as Unlocked Package to your Production or Sandbox or
   <img src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png" alt="Deploy to Salesforce" />
 </a>
 
-#### [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
+### [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
 
-#### [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
+### [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002cdtYAA)
 
-#### Or build it yourself:
+### Or build it yourself:
 
 1. Clone the repo
 1. Create Scratch org
     1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
     1. Run it via `./scripts/create-scratch.org.sh`
 
-### How do set it up:
+## How do set it up:
 1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
 1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
 1. Create an OpenAI Assistant using the Functions, Instructions and Knowledge files in `openai-configs`
