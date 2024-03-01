@@ -21,18 +21,18 @@ public class OpenAiApi {
         return this;
     }
 
-    public Object get(Type type) {
+    public Object get(Type responseType) {
         request.setMethod('GET');
-        return callout(type);
+        return callout(responseType);
     }
 
     public void get() {
         get(null);
     }
 
-    public Object post(Type type) {
+    public Object post(Type responseType) {
         request.setMethod('POST');
-        return callout(type);
+        return callout(responseType);
     }
 
     public void post() {
@@ -63,8 +63,8 @@ public class OpenAiApi {
     }
 
 
-    private Object callout(Type type) {
+    private Object callout(Type responseType) {
         String result = callout().getBody();
-        return (type != null) ? JSON.deserialize(result, type) : result;
+        return (responseType != null) ? JSON.deserialize(result, responseType) : result;
     }
 }

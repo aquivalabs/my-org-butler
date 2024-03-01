@@ -5,7 +5,6 @@ public with sharing class ChatCtrl {
     @AuraEnabled
     public static String init() {
         return new MyOrgButler().threadId();
-        
     }
 
     @AuraEnabled
