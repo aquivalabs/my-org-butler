@@ -1,6 +1,7 @@
-import { api, LightningElement, track } from 'lwc';
+import { api, LightningElement, track, wire } from 'lwc';
 import { subscribe, unsubscribe} from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { CurrentPageReference } from 'lightning/navigation';
 
 import init from '@salesforce/apex/ChatCtrl.init';
 import reset from '@salesforce/apex/ChatCtrl.reset';
@@ -8,7 +9,6 @@ import messages from '@salesforce/apex/ChatCtrl.messages';
 import respond from '@salesforce/apex/ChatCtrl.respond';
 
 import { MESSAGE_TYPE } from 'c/singleChatMessage';
-
 
 const MESSAGE_ROLE = {
     ASSISTANT: 'assistant',
@@ -24,6 +24,8 @@ const ENTER_BUTTON_CODE = 13;
 
 export default class ChatWindow extends LightningElement {
     @track messages = [];
+    @track currentPage; 
+
     @api channelName = '/event/AssistantCallback__e';
 
     threadId;
@@ -36,10 +38,10 @@ export default class ChatWindow extends LightningElement {
 
     get messagesToDisplay() {
         return this.messages
-            .map((msg, index) => ({
+            .map((message, index) => ({
                 order: index,
-                message: msg,
-                messageType: MESSAGE_TYPE_BY_ROLE[msg.role],
+                message: message,
+                messageType: MESSAGE_TYPE_BY_ROLE[message.role],
             }));
     }
 
@@ -47,16 +49,16 @@ export default class ChatWindow extends LightningElement {
         return this.waitingForResponse == true;
     }
 
-    addMessage(msg) {
-        this.messages.push(msg);
+    addMessage(message) {
+        this.messages.push(message);
     }
 
     resetQuestion() {
         this.question = '';
     }
 
-    addPreviewMessage(message) {
-        this.addMessage({ role: MESSAGE_ROLE.USER, content: message, preview: true});
+    addPreviewMessage(question) {
+        this.addMessage({ role: MESSAGE_ROLE.USER, content: question, preview: true});
     }
 
     removePreviewMessage() {
@@ -68,8 +70,9 @@ export default class ChatWindow extends LightningElement {
     async initialize() {
         try {
             this.threadId = await init();
-        } catch(excpetion) {
-            this.logException(excpetion);
+        } 
+        catch(exception) {
+            this.logException(exception);
         }
     }
 
@@ -91,8 +94,9 @@ export default class ChatWindow extends LightningElement {
 
             this.lastMessageId = this.messages.length !== 0 ?
                 this.messages[this.messages.length - 1].id : null;
-        } catch(excpetion) {
-            this.logException(excpetion);
+        } 
+        catch(exception) {
+            this.logException(exception);
         }
     }
 
@@ -102,12 +106,13 @@ export default class ChatWindow extends LightningElement {
                 const event = JSON.parse(JSON.stringify(response));
                 const threadId = event.data.payload.ThreadId__c;
 
-                if (this.threadId === threadId) {
+                if(this.threadId === threadId) {
                     await this.loadMesages();
                     this.waitingForResponse = false;
                 }
-            } catch(excpetion) {
-                this.logException(excpetion);
+            } 
+            catch(exception) {
+                this.logException(exception);
             }
         };
 
@@ -116,8 +121,8 @@ export default class ChatWindow extends LightningElement {
         });
     }
 
-    logException(excpetion) {
-        const errorMessage = excpetion.body?.message || excpetion.message;
+    logException(exception) {
+        const errorMessage = exception.body?.message || exception.message;
 
         const event = new ShowToastEvent({
             title: 'Error Occured',
@@ -137,19 +142,17 @@ export default class ChatWindow extends LightningElement {
 
     async handleAskQuestion() {
         try {
-            if (this.question === '') {
+            if(this.question === '') {
                 return;
             }
 
             this.waitingForResponse = true;
-
-            const message = this.question;
-            this.addPreviewMessage(message);
+            this.addPreviewMessage(this.question);
+            await respond({ question: this.question, context: JSON.stringify(this.currentPage) });
             this.resetQuestion();
-
-            await respond({message : message});
-        } catch(excpetion) {
-            this.logException(excpetion);
+        } 
+        catch(exception) {
+            this.logException(exception);
         }
     }
 
@@ -160,27 +163,34 @@ export default class ChatWindow extends LightningElement {
     async handleResetChat() {
         try {
             this.isLoading = true;
-
             this.threadId = await reset();
-
             this.messages = [];
             this.lastMessageId = null;
-        } catch(excpetion) {
-            this.logException(excpetion);
-        } finally {
+        } 
+        catch(exception) {
+            this.logException(exception);
+        } 
+        finally {
             this.waitingForResponse = false;
             this.isLoading = false;
         }
     }
+
+    @wire(CurrentPageReference)
+    getPageReferenceParameters(currentPageReference) {
+        this.currentPage = currentPageReference;
+    }   
 
     async connectedCallback() {
         try {
             this.subscribe();
             await this.initialize();
             await this.loadMesages();
-        } catch(excpetion) {
-            this.logException(excpetion);
-        } finally {
+        } 
+        catch(exception) {
+            this.logException(exception);
+        } 
+        finally {
             this.isLoading = false;
         }
     }
@@ -190,7 +200,7 @@ export default class ChatWindow extends LightningElement {
     }
 
     renderedCallback() {
-        if (this.refs.chatMessages) {
+        if(this.refs.chatMessages) {
             this.refs.chatMessages.scrollTop = this.refs.chatMessages.scrollHeight;
         }
     }
