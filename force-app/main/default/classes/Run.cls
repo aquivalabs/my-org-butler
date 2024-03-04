@@ -7,6 +7,7 @@ public class Run {
     public String thread_id;
     public String status;
     public RequiredAction required_action;
+    public String additional_instructions;
 
     // PUBLIC
 
@@ -19,6 +20,7 @@ public class Run {
     public static Run create(String threadId, Run run) {
         Map<String, Object> payload = new Map<String, Object>();
         payload.put('assistant_id', run.assistant_id);
+        payload.put('additional_instructions', run.additional_instructions);
 
         return (Run) new OpenAiApi('/threads/' +  threadId + '/runs')
                             .body(payload)

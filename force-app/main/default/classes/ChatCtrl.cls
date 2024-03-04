@@ -20,8 +20,8 @@ public with sharing class ChatCtrl {
     }
 
     @AuraEnabled
-    public static void respond(String message) {
-        new MyOrgButler().respond(message);
+    public static void respond(String question, String context) {
+        new MyOrgButler().respond(question, context);
     }
 
     @AuraEnabled

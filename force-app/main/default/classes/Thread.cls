@@ -9,8 +9,10 @@ public class Thread {
         return this;
     }
 
-    public static Thread create(Thread thread) {
-        return (Thread) new OpenAiApi('/threads').post(Thread.class);
+    public static Thread create() {
+        Map<String, Object> payload = new Map<String, Object>();
+
+        return (Thread) new OpenAiApi('/threads').body(payload).post(Thread.class);
     }
 
     public static Thread retrieve(String threadId) {

@@ -50,9 +50,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         return Run.steps(settings.ThreadId__c, runId, new Params().order(order));
     }
 
-    public void respond(String text) {
-        Message.create(settings.ThreadId__c, new Message(text));
-        persistNewRun();
+    public void respond(String question, String context) {
+        Message.create(settings.ThreadId__c, new Message(question));
+        persistNewRun(context);
         pollOrQueue();
     }
 
@@ -63,21 +63,18 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     // PRIVATE
 
     private void persistNewThread() {
-        Thread thread = Thread.create(new Thread()
-                                            .metadata('userId', UserInfo.getUserId())
-                                            .metadata('userFirstName', UserInfo.getFirstName())
-                                            .metadata('userLastName', UserInfo.getLastName())
-                                            .metadata('userLanguage', UserInfo.getLanguage())
-                                            .metadata('userTime', String.valueOf(System.now()))
-                                            .metadata('userEmail', UserInfo.getUserEmail()));
+        Thread thread = Thread.create();
         settings.ThreadId__c = thread.id;
         settings.RunId__c = null;
         upsert as system settings;
     }
 
-    private void persistNewRun() {
-        Run run = Run.create(settings.ThreadId__c, new Run(settings.ThreadId__c, ASSISTANT_ID));
-        settings.RunId__c = run.id;
+    private void persistNewRun(String context) {
+        Run newRun = new Run(settings.ThreadId__c, ASSISTANT_ID);
+        newRun.additional_instructions = prepareAdditionalInstructions(context);
+        newRun = Run.create(settings.ThreadId__c, newRun);
+
+        settings.RunId__c = newRun.id;
         update as system settings;
     }
 
@@ -132,7 +129,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 .post();
     }
 
-    public void notifyUi(Run run) {
+    private void notifyUi(Run run) {
         callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
         EventBus.publish(callback);
     }
@@ -142,6 +139,17 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private void sleep(Integer milliseconds) {
         Long startTime = DateTime.now().getTime();
         while(DateTime.now().getTime() - startTime < milliseconds); 
+    }
+
+    private String prepareAdditionalInstructions(String context) {
+        return 'Execute the users request using this context information. Specially important is the currentPage as it tells you what the user sees and refers to. So when you are asked about to explain or summarize always think about what the user sees and might refer to:\n' +
+                '\nuserId=' + UserInfo.getUserId() +
+                '\nuserFirstName=' + UserInfo.getFirstName() +
+                '\nuserLastName=' + UserInfo.getLastName() +
+                '\nuserLanguage=' + UserInfo.getLanguage() +
+                '\nuserDateTime=' + System.now() +
+                '\nuserEmail=' + UserInfo.getUserEmail() +
+                '\ncurrentPage=' +  context;
     }
 
     // INNER
