@@ -109,6 +109,8 @@ private class MyOrgButler_Test {
         run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('callSalesforceApi', ''));
 
         new HttpMock()
+                .post('OpenAiApi/v1/threads/123/messages', new Message('any'))
+                .post('OpenAiApi/v1/threads/123/runs', run)
                 .get('OpenAiApi/v1/threads/123/runs/987', run) // run calls tool
                 .get('/services/rest', 300) // tool call
                 .post('OpenAiApi/v1/threads/123/runs/987/submit_tool_outputs', 300) // delegate back
@@ -118,7 +120,8 @@ private class MyOrgButler_Test {
 
         // Exercise
         Test.startTest();
-        System.enqueueJob(new MyOrgButler());
+        //System.enqueueJob(new MyOrgButler());
+        new MyOrgButler().respond('Save the planet!', '42');
         Test.stopTest();
         
         // Verify
