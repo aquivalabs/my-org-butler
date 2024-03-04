@@ -149,6 +149,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 '\nuserLanguage=' + UserInfo.getLanguage() +
                 '\nuserDateTime=' + System.now() +
                 '\nuserEmail=' + UserInfo.getUserEmail() +
+                '\baseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
                 '\ncurrentPage=' +  context;
     }
 
