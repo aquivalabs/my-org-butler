@@ -2,6 +2,10 @@
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
+- [Install as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
+
+- [Install as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
+
 ### Highlight
 
 - Answers questions about data and configuration
@@ -16,7 +20,9 @@
 
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
 
-### How it works
+### Documentation
+
+#### How it works
 
 It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
 
@@ -27,14 +33,6 @@ Those automation are not performed by the LLM but just delegated back to Salesfo
 This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
 
 ![](/resources/plantuml.png)
-
-### How to use it
-
-#### Directly install to your org
-
-- [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
-
-- [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
