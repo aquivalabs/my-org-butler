@@ -2,9 +2,9 @@
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
-- [Install as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002ojtYAA)
+- [Install v1.4 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002oojYAA)
 
-- [Install as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002ojtYAA)
+- [Install v1.4 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002oojYAA)
 
 ### Highlight
 
@@ -46,6 +46,7 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 #### OPTIONAL: Fully customize
 
 1. Clone the repo
+1. Find and replace `aquiva_os` namespace in this repo's files with your own namespace. You can also make it work without a namespace.
 1. Create Scratch org
     1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
     1. Run it via `./scripts/create-scratch.org.sh`
