@@ -6,10 +6,10 @@
     </classAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
-        <externalCredentialPrincipal>OpenAiApi-ApiKey</externalCredentialPrincipal>
+        <externalCredentialPrincipal>aquiva_os__OpenAiApi-ApiKey</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>My Org Butler</label>
+    <label>MyOrgButler User</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>
