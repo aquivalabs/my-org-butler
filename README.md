@@ -36,7 +36,7 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
-1. Add the [`External Credential > OpenAiApi`](force-app/main/default/externalCredentials/OpenAiApi.externalCredential-meta.xml) to the [`Permission Set MyOrgButler`](force-app/main/default/permissionsets/User.permissionset-meta.xml)
+1. Add the [`External Credential > OpenAiApi`](force-app/main/default/externalCredentials/OpenAiApi.externalCredential-meta.xml) to the [`Permission Set MyOrgButler`](force-app/main/default/permissionsets/MyOrgButlerUser.permissionset-meta.xml)
 
 #### OPTIONAL: Use you own OpenAI Assistant
 1. Create an OpenAI Assistant using Functions, Instructions and Knowledge files like the ones we use. Find them in [`openai-configs`](openai-configs).

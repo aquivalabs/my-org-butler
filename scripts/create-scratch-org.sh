@@ -20,7 +20,7 @@ echo "Pushing changes to scratch org"
 execute sf force source push
 
 echo "Assigning permissions"
-execute sf force user permset assign --perm-set-name User 
+execute sf force user permset assign --perm-set-name MyOrgButlerUser 
 
 echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"

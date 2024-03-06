@@ -4,6 +4,10 @@
         <apexClass>ChatCtrl</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>OpenAiApi-ApiKey</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <hasActivationRequired>false</hasActivationRequired>
     <label>My Org Butler</label>
     <objectPermissions>
