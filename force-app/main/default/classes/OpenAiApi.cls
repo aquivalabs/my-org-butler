@@ -8,7 +8,7 @@ public class OpenAiApi {
     @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
     public OpenAiApi(String urlFragment) {
         request = new HttpRequest();
-        request.setEndpoint('callout:OpenAiApi/v1' + urlFragment);
+        request.setEndpoint('callout:aquiva_os__OpenAiApi/v1' + urlFragment);
         request.setHeader('Content-Type', 'application/json');
         request.setHeader('Authorization', 'Bearer {!$Credential.OpenAiApi.ApiKey}');
         request.setHeader('OpenAI-Beta', 'assistants=v1');

@@ -6,7 +6,7 @@ private class MyOrgButler_Test {
 
         // Setup
         Thread t = new Thread().id('123');
-        new HttpMock().post('OpenAiApi/v1/threads', t).mock();
+        new HttpMock().post('aquiva_os__OpenAiApi/v1/threads', t).mock();
 
         // Exercise
         new MyOrgButler();
@@ -26,9 +26,9 @@ private class MyOrgButler_Test {
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123', RunId__c = '987');
         
         new HttpMock()
-                .post('OpenAiApi/v1/threads/123/runs/987/cancel', true) 
-                .del('OpenAiApi/v1/threads/123', true)
-                .post('OpenAiApi/v1/threads', new Thread().id('999'))
+                .post('aquiva_os__OpenAiApi/v1/threads/123/runs/987/cancel', true) 
+                .del('aquiva_os__OpenAiApi/v1/threads/123', true)
+                .post('aquiva_os__OpenAiApi/v1/threads', new Thread().id('999'))
                 .mock();
 
         // Exercise
@@ -54,7 +54,7 @@ private class MyOrgButler_Test {
         Message.Messages messages = new Message.Messages();
         messages.data = new List<Message>{ new Message('Hi') };
 
-        new HttpMock().get('OpenAiApi/v1/threads/123/messages', messages).mock();
+        new HttpMock().get('aquiva_os__OpenAiApi/v1/threads/123/messages', messages).mock();
 
         // Exercise
         // Note: without startTest "uncommited work error" due to Setting DML
@@ -80,7 +80,7 @@ private class MyOrgButler_Test {
         messages.data = new List<Message>{ m };
 
         new HttpMock()
-                .get('OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed'))
+                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed'))
                 .mock();
 
         // Exercise
@@ -109,13 +109,13 @@ private class MyOrgButler_Test {
         run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('callSalesforceApi', ''));
 
         new HttpMock()
-                .post('OpenAiApi/v1/threads/123/messages', new Message('any'))
-                .post('OpenAiApi/v1/threads/123/runs', run)
-                .get('OpenAiApi/v1/threads/123/runs/987', run) // run calls tool
+                .post('aquiva_os__OpenAiApi/v1/threads/123/messages', new Message('any'))
+                .post('aquiva_os__OpenAiApi/v1/threads/123/runs', run)
+                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987', run) // run calls tool
                 .get('/services/rest', 300) // tool call
-                .post('OpenAiApi/v1/threads/123/runs/987/submit_tool_outputs', 300) // delegate back
-                .get('OpenAiApi/v1/threads/123/runs/987', run.status('completed'))
-                .get('OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed')) 
+                .post('aquiva_os__OpenAiApi/v1/threads/123/runs/987/submit_tool_outputs', 300) // delegate back
+                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987', run.status('completed'))
+                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed')) 
                 .mock();
 
         // Exercise
