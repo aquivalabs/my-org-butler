@@ -26,7 +26,7 @@ export default class ChatWindow extends LightningElement {
     @track messages = [];
     @track currentPage; 
 
-    @api channelName = '/event/AssistantCallback__e';
+    @api channelName = '/event/aquiva_os__AssistantCallback__e';
 
     threadId;
     subscription;
@@ -104,7 +104,7 @@ export default class ChatWindow extends LightningElement {
         const messageCallback = async (response) => {
             try {
                 const event = JSON.parse(JSON.stringify(response));
-                const threadId = event.data.payload.ThreadId__c;
+                const threadId = event.data.payload.aquiva_os__ThreadId__c;
 
                 if(this.threadId === threadId) {
                     await this.loadMesages();
