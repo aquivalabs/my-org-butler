@@ -16,7 +16,7 @@
 
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
 
-### More Details
+### How it works
 
 It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
 
@@ -24,50 +24,46 @@ This is made possible by Open AI's Assitant API, an Agent technology similar to 
 
 Those automation are not performed by the LLM but just delegated back to Salesforce, which then calls deterministic code.
 
-This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by construting REST API request as shown in this PlantUML:
+This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
 
 ![](/resources/plantuml.png)
 
-## How can I use it?
+### How to use it
 
-Deploy as source or install as Unlocked Package to your Production or Sandbox org.
+#### Directly install to your org
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=aquivalabs&amp;repo=my-org-butler">
-  <img src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png" alt="Deploy to Salesforce" />
-</a>
+- [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
 
-### [Unlocked Package Installation (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
+- [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
 
-### [Unlocked Package Installation (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002hGzYAI)
+#### Setup in the Org
+1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
+1. Add the [`External Credential > OpenAiApi`](force-app/main/default/externalCredentials/OpenAiApi.externalCredential-meta.xml) to the [`Permission Set MyOrgButler`](force-app/main/default/permissionsets/User.permissionset-meta.xml)
 
-### Or build it yourself:
+#### OPTIONAL: Use you own OpenAI Assistant
+1. Create an OpenAI Assistant using Functions, Instructions and Knowledge files like the ones we use. Find them in [`openai-configs`](openai-configs).
+1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/MyOrgButler.cls#L3)
+<img src="resources/assistant-setup.png" width="400" />
+
+#### OPTIONAL: Fully customize
 
 1. Clone the repo
 1. Create Scratch org
     1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
     1. Run it via `./scripts/create-scratch.org.sh`
-
-## How do set it up:
-1. Add your OpenAI API Key to a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
-1. Add the `External Credential > OpenAiApi` to the `Permission Set MyOrgButler` 
-1. Create an OpenAI Assistant using the Functions, Instructions and Knowledge files in `openai-configs`
-1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/OpenAiApi.cls)
+1. Adjust the code and metadata    
 1. Create a Managed or Unlocked package from it using `/scripts/create-package.sh`
 
-
-<img src="resources/assistant-setup.png" width="400" />
-
-
 ---
-
 > __DISCLAIMER - Simple vs. sophisticated__
-> 
+>
 > This app was not written with a commercial career in mind. So we cut corners in a few places to keep the projects short and focused. So if you see some ugly parts here 
 > and there, let us know but be kind to us. This project is mainly about sharing 
 > results and excitement in "AI for Salesforce".
-> 
+>
 > We also made some adjustments, and simplifications to the original code to better 
 > fit the Open Source purpose. To have less loose metadata parts, we:
-> 
+>
 > - Skipped moving UI text to Custom Labels
 > - Merged classes to have the most related code in one place
+>
