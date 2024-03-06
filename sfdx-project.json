@@ -5,7 +5,7 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "March '24",
-      "versionNumber": "1.1.0.NEXT",
+      "versionNumber": "1.2.0.NEXT",
       "versionDescription": ""
     }
   ],
@@ -15,6 +15,7 @@
   "sourceApiVersion": "60.0",
   "packageAliases": {
     "my-org-butler": "0HoVI0000002h2T0AQ",
-    "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ"
+    "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ",
+    "my-org-butler@1.2.0-2": "04tVI0000002o3xYAA"
   }
 }
