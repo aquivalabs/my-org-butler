@@ -1,36 +1,68 @@
 // PMD False Positive: Calling regular Salesforce APIs can be done with Session Id
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred') // AvoidUnauthorizedGetSessionIdInApex
 public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
-    
-    public String execute(String jsonParameter) {
-        JsonParse params = new JSONParse(jsonParameter);
 
+    @InvocableMethod(label='Callout to Public Salesforce API endpoint on behalf of the current user'
+                     description='For a given endpoint url, http method and body returns the raw response'
+                     category='EinsteinCopilot')
+    public static List<Output> execute(List<Input> inputs) {
         HttpRequest request = new HttpRequest();  
-        request.setEndpoint(baseUrl() + params.get('urlIncludingParams').getStringValue()); 
-        request.setMethod(params.get('httpMethod').getStringValue());   
         request.setHeader('Authorization', 'OAuth ' + UserInfo.getSessionId());        
         request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId()); 
         request.setHeader('Content-Type', 'application/json');
-        setBody(request, params);
+        request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
+        request.setMethod(inputs[0].httpMethod);   
+        if(inputs[0].body != null) {
+            request.setBody(inputs[0].body);
+        }
 
         HttpResponse response = new Http().send(request);
         if(response.getStatusCode() != 200) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
         }
 
-        return response.getBody();
+        Output result = new Output();
+        result.rawResponse = response.getBody();
+        return new List<Output>{ result };
+        
+    }
+
+	public String execute(String jsonParameter) {
+        JsonParse params = new JSONParse(jsonParameter);
+        
+        Input input = new Input();
+		input.urlIncludingParams = params.get('urlIncludingParams').getStringValue(); 
+		input.httpMethod = params.get('httpMethod').getStringValue(); 
+		
+        try {
+            input.body = params.get('body').getStringValue(); 
+        } 
+        catch(Exception ignored) {}
+
+        return execute(new List<Input>{ input })[0].rawResponse;
     }
 
     // PRIVATE 
 
-    private void setBody(HttpRequest request, JsonParse params) {
-        try {
-            request.setBody(params.get('body').getStringValue());
-        } 
-        catch(Exception ignored) {}
+    private static String baseUrl() {
+        return Url.getOrgDomainURL().toExternalForm();
     }
+    
+    // INNER
 
-    private String baseUrl() {
-        return URL.getSalesforceBaseUrl().toExternalForm();
+    public class Input {
+        @InvocableVariable(description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added.' required=true) 
+        public String urlIncludingParams;
+
+        @InvocableVariable(description='A HTTP Method for the Callout.' required=true) 
+        public String httpMethod;
+
+        @InvocableVariable(description='The optional body payload of the API Callout.' required=false)
+        public String body;
+    }
+    
+    public class Output {
+        @InvocableVariable(description='The raw HTTP Response body in case of success or an error.' required=true) 
+        public String rawResponse;
     }
 }
