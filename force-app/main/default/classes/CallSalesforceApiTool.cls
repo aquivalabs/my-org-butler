@@ -4,10 +4,12 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
 
     @InvocableMethod(label='Callout to Public Salesforce API endpoint on behalf of the current user'
                      description='For a given endpoint url, http method and body returns the raw response'
-                     category='EinsteinCopilot')
+                     category='EinsteinCopilot'
+                     callout=true)
     public static List<Output> execute(List<Input> inputs) {
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + sessionId()); 
+System.debug(LoggingLevel.ERROR, request.getHeader('Authorization'));
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   

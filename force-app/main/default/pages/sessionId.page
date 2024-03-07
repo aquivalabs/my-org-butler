@@ -1,5 +1,1 @@
-<apex:page showHeader="false" 
-           applyBodyTag="false" 
-           applyHtmlTag="false" 
-           contentType="text/plain"
-           >{!$Api.Session_Id}</apex:page>
+<apex:page contentType="application/json">{!$Api.Session_ID}</apex:page>
