@@ -28,10 +28,10 @@
         <object>UserExternalCredential</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
-    <userPermissions>
+    <pageAccesses>
+        <apexPage>sessionId</apexPage>
         <enabled>true</enabled>
-        <name>ApiEnabled</name>
-    </userPermissions>
+    </pageAccesses>
     <userPermissions>
         <enabled>true</enabled>
         <name>SendCustomNotifications</name>

@@ -1,1 +1,5 @@
-<apex:page showHeader="false" applyBodyTag="false" applyHtmlTag="false" contentType="text/plain">{!$Api.Session_Id}</apex:page>
+<apex:page showHeader="false" 
+           applyBodyTag="false" 
+           applyHtmlTag="false" 
+           contentType="text/plain"
+           >{!$Api.Session_Id}</apex:page>
