@@ -48,7 +48,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
     }
 
     private static String sessionId() {
-        return (Test.isRunningTest()) ? UserInfo.getSessionId() : Page.sessionId.getContent().toString();
+        return (Test.isRunningTest()) ? UserInfo.getSessionId() : Page.sessionId.getContent().toString().substring(15);
     }
     
     // INNER
