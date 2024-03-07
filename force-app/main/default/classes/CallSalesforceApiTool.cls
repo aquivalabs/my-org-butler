@@ -7,7 +7,6 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
                      category='EinsteinCopilot')
     public static List<Output> execute(List<Input> inputs) {
         HttpRequest request = new HttpRequest();  
-        request.setHeader('Authorization', 'OAuth ' + UserInfo.getSessionId());        
         request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId()); 
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
