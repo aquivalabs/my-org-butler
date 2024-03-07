@@ -7,7 +7,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
                      category='EinsteinCopilot')
     public static List<Output> execute(List<Input> inputs) {
         HttpRequest request = new HttpRequest();  
-        request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId()); 
+        request.setHeader('Authorization', 'Bearer ' + sessionId()); 
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
@@ -45,6 +45,10 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
 
     private static String baseUrl() {
         return Url.getOrgDomainURL().toExternalForm();
+    }
+
+    private static String sessionId() {
+        return (Test.isRunningTest()) ? UserInfo.getSessionId() : Page.sessionId.getContent().toString();
     }
     
     // INNER
