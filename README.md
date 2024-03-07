@@ -26,11 +26,11 @@
 
 It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
 
-This is made possible by Open AI's Assitant API, an Agent technology similar to AutoGPT or [Salesforce upcoming Copilots](https://salesforce.vidyard.com/watch/rZYjTDQ956yQ8sCcE879dV). It uses LLM reasoning to understand a request and makes an action plan based on automations that were made available to the agent. Open AI calls them Functions or Plugins, Salesforce calls them Skills.
+This is made possible by Open AI's Assitant API, an Agent technology similar to AutoGPT or [Salesforce upcoming Copilots](https://salesforce.vidyard.com/watch/rZYjTDQ956yQ8sCcE879dV). It uses LLM reasoning to understand a request and makes an action plan based on automations that were made available to the agent. Open AI calls them Functions or Plugins, Salesforce calls them Copilot Actions.
 
 Those automation are not performed by the LLM but just delegated back to Salesforce, which then calls deterministic code.
 
-This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Skill or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
+This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Action or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
 
 ![](/resources/plantuml.png)
 
