@@ -8,10 +8,9 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
                      callout=true)
     public static List<Output> execute(List<Input> inputs) {
         HttpRequest request = new HttpRequest();  
-        request.setHeader('Authorization', 'Bearer ' + sessionId()); 
-System.debug(LoggingLevel.ERROR, request.getHeader('Authorization'));
+        request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
         request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
+        request.setEndpoint(baseUrl() + inputs[0].urlIncludingreader); 
         request.setMethod(inputs[0].httpMethod);   
         if(inputs[0].body != null) {
             request.setBody(inputs[0].body);
@@ -29,14 +28,14 @@ System.debug(LoggingLevel.ERROR, request.getHeader('Authorization'));
     }
 
 	public String execute(String jsonParameter) {
-        JsonParse params = new JSONParse(jsonParameter);
+        JsonReader reader = new JsonReader(jsonParameter);
         
         Input input = new Input();
-		input.urlIncludingParams = params.get('urlIncludingParams').getStringValue(); 
-		input.httpMethod = params.get('httpMethod').getStringValue(); 
+		input.urlIncludingreader = (String) reader.read('urlIncludingreader'); 
+		input.httpMethod = (String) reader.read('httpMethod'); 
 		
         try {
-            input.body = params.get('body').getStringValue(); 
+            input.body = (String) reader.read('body'); 
         } 
         catch(Exception ignored) {}
 
@@ -48,16 +47,12 @@ System.debug(LoggingLevel.ERROR, request.getHeader('Authorization'));
     private static String baseUrl() {
         return Url.getOrgDomainURL().toExternalForm();
     }
-
-    private static String sessionId() {
-        return (Test.isRunningTest()) ? UserInfo.getSessionId() : Page.sessionId.getContent().toString().substring(15);
-    }
     
     // INNER
 
     public class Input {
         @InvocableVariable(description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added.' required=true) 
-        public String urlIncludingParams;
+        public String urlIncludingreader;
 
         @InvocableVariable(description='A HTTP Method for the Callout.' required=true) 
         public String httpMethod;
