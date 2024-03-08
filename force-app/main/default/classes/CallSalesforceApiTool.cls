@@ -10,7 +10,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
         request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(baseUrl() + inputs[0].urlIncludingreader); 
+        request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
         if(inputs[0].body != null) {
             request.setBody(inputs[0].body);
@@ -31,7 +31,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         JsonReader reader = new JsonReader(jsonParameter);
         
         Input input = new Input();
-		input.urlIncludingreader = (String) reader.read('urlIncludingreader'); 
+		input.urlIncludingParams = (String) reader.read('urlIncludingParams'); 
 		input.httpMethod = (String) reader.read('httpMethod'); 
 		
         try {
@@ -52,7 +52,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
 
     public class Input {
         @InvocableVariable(description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added.' required=true) 
-        public String urlIncludingreader;
+        public String urlIncludingParams;
 
         @InvocableVariable(description='A HTTP Method for the Callout.' required=true) 
         public String httpMethod;
