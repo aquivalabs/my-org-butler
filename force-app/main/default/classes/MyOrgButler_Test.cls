@@ -9,7 +9,9 @@ private class MyOrgButler_Test {
         new HttpMock().post('aquiva_os__OpenAiApi/v1/threads', t).mock();
 
         // Exercise
+        Test.startTest();
         new MyOrgButler();
+        Test.stopTest();
 
         // Verify
         MyOrgButler__c settings = MyOrgButler__c.getInstance(UserInfo.getUserId());
@@ -127,5 +129,12 @@ private class MyOrgButler_Test {
         // Verify
         System.assertEquals('123', MyOrgButler.callback.ThreadId__c);
         System.assertEquals('987', MyOrgButler.callback.RunId__c);
+    }
+
+    // HELPER
+
+    @TestSetup
+    private static void setup() {
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getOrganizationId(), ProdAssistantId__c = 'ignored', DevAssistantId__c = 'ignored');
     }
 }

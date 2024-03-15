@@ -10,7 +10,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
         request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(baseUrl() + inputs[0].urlIncludingParams); 
+        request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
         if(inputs[0].body != null) {
             request.setBody(inputs[0].body);
@@ -42,12 +42,6 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         return execute(new List<Input>{ input })[0].rawResponse;
     }
 
-    // PRIVATE 
-
-    private static String baseUrl() {
-        return Url.getOrgDomainURL().toExternalForm();
-    }
-    
     // INNER
 
     public class Input {

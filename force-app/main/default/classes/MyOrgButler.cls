@@ -1,10 +1,11 @@
 public with sharing class MyOrgButler implements Queueable, Database.AllowsCallouts {
 
-    private static final String ASSISTANT_ID = 'asst_Na8RGEypyDSkMcMODyxlgFtX';
+    private static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
-                                                        'callSalesforceApi' => new CallSalesforceApiTool(),
-                                                        'sendNotification' => new SendInOrgNotification() };
+                                                        'Call_Salesforce_Api' => new CallSalesforceApiTool(),
+                                                        'Notify_User' => new NotifyUserTool(),
+                                                        'Deploy_Metadata' => new DeployMetadataTool() };
     @TestVisible
     private static AssistantCallback__e callback = null;
 
@@ -66,6 +67,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         Thread thread = Thread.create();
         settings.ThreadId__c = thread.id;
         settings.RunId__c = null;
+System.debug(LoggingLevel.ERROR, settings);
         upsert as system settings;
     }
 
@@ -75,6 +77,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         newRun = Run.create(settings.ThreadId__c, newRun);
 
         settings.RunId__c = newRun.id;
+System.debug(LoggingLevel.ERROR, settings);
         update as system settings;
     }
 
@@ -151,6 +154,12 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 '\nuserEmail=' + UserInfo.getUserEmail() +
                 '\baseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
                 '\ncurrentPage=' +  context;
+    }
+
+    private static String assistantId() {
+        Boolean isProductionOrg = ![SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox;
+        MyOrgButler__c settings = MyOrgButler__c.getOrgDefaults();
+        return (isProductionOrg) ? settings.ProdAssistantId__c : settings.DevAssistantId__c;
     }
 
     // INNER
