@@ -12,13 +12,16 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
-        request.setBody(inputs[0].body);
+System.debug(LoggingLevel.ERROR, inputs);
+        if(inputs[0].body != null) {
+            request.setBody(inputs[0].body);
+        }
 
         HttpResponse response = new Http().send(request);
         if(response.getStatusCode() != 200) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
         }
-
+System.debug(LoggingLevel.ERROR, response);
         Output result = new Output();
         result.rawResponse = response.getBody();
         return new List<Output>{ result };

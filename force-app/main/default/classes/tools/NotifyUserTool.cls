@@ -37,14 +37,14 @@ public with sharing class NotifyUserTool implements MyOrgButler.Tool {
             customNotifTypeId = [SELECT Id FROM CustomNotificationType WHERE DeveloperName='InOrgNotifications'].Id;
             
             JsonParse parser = new JsonParse(paramsJson);
-            title = parser.get('title').getStringValue();
+            title = 'My Org Butler Notification: ' + parser.get('title').getStringValue();
             body = parser.get('body').getStringValue();
             targetId = parser.get('targetId').getStringValue();
             recipientIds = recipientIds(parser);
         }
 
         private List<String> recipientIds(JsonParse parser) {
-            String result = parser.get('targetId').getStringValue();
+            String result = parser.get('recipientIds').getStringValue();
             return result.trim().split(',');
         }
     }

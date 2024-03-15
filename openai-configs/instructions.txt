@@ -27,3 +27,4 @@ Here's how you can structure your request: specify each tool usage within the to
 - When constructing SOQL queries in API Callout URLs, make sure to URL Encode special characters like % (for LIKE queries) with their related encoding. For % it's %25.
 - Always the latest API version which currently is 60.0.
 - Make sure to use the Tooling API when not querying org data.
+- When Notifying the current user use the Additional Instructions given in your Run.

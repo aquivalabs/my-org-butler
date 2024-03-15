@@ -6,7 +6,7 @@
       "properties": {
         "title": {
           "type": "string",
-          "description": "Short title of the notification. Default: "
+          "description": "Short title of the notification."
         },
         "body": {
           "type": "string",
@@ -18,7 +18,7 @@
         },
         "recipientIds": {
           "type": "string",
-          "description": "Comma separated list of Salesforce Ids of the users to send the notification to. Defaults to Current User Id"
+          "description": "Comma separated list of Salesforce Ids of the users to send the notification to."
         }
       },
       "required": [

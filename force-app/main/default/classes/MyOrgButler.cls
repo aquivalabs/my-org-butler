@@ -3,7 +3,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
-                                                        'Call_Salesforce_Api' => new CallSalesforceApiTool(),
+                                                        'Call_Salesforce_API' => new CallSalesforceApiTool(),
                                                         'Notify_User' => new NotifyUserTool(),
                                                         'Deploy_Metadata' => new DeployMetadataTool() };
     @TestVisible
@@ -119,7 +119,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 result.output = TOOLS.get(current.function.name).execute(current.function.arguments);
             } 
             catch(Exception error) {
-                result.output = error.getMessage();
+                result.output = String.valueOf(error);
             }
 
             outputs.add(result);
