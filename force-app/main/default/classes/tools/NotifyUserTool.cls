@@ -35,19 +35,30 @@ public with sharing class NotifyUserTool implements MyOrgButler.Tool {
 
         // PMD False Positive: This Id value means no target and is the official SF way.
         @SuppressWarnings('PMD.AvoidHardcodingId')
-        public Notification(String jsonParameter) {
-            JsonReader reader = new JsonReader(jsonParameter);
-
+        public Notification(String paramsJson) {
             customNotifTypeId = [SELECT Id FROM CustomNotificationType WHERE DeveloperName='InOrgNotifications'].Id;
-            recipientIds = recipientIds(reader);
-            title = (String) reader.setMissingKeyResult('My Org Butler:').read('title');
-            body = (String) reader.setMissingKeyResult('Click to see.').read('body');
-            targetId = (String) reader.setMissingKeyResult('000000000000000AAA').read('targetId');
+            
+            JsonParse parser = new JsonParse(paramsJson);
+            recipientIds = recipientIds(parser);
+            title = value(parser, 'title', 'My Org Butler:');
+            body = value(parser, 'body', 'Click to see.');
+            targetId = value(parser, 'targetId', '000000000000000AAA');
         }
 
-        private List<String> recipientIds(JsonReader reader) {
-            String value = (String) reader.setMissingKeyResult(UserInfo.getUserId()).read('recipientIds');
-            return value.trim().split(',');
+        private List<String> recipientIds(JsonParse parser) {
+            String result = value(parser, 'recipientIds', UserInfo.getUserId());
+            return result.trim().split(',');
         }
+    }
+
+    private static String value(JsonParse parser, String key, String ifNull) {
+        String result = ifNull;
+
+        try {
+            result = parser.get(key).getStringValue();
+        }
+        catch(Exception ignored) {}
+
+        return result;
     }
 }

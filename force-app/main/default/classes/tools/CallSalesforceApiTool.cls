@@ -28,14 +28,14 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
     }
 
 	public String execute(String jsonParameter) {
-        JsonReader reader = new JsonReader(jsonParameter);
+        JsonParse parser = new JsonParse(jsonParameter);
         
         Input input = new Input();
-		input.urlIncludingParams = (String) reader.read('urlIncludingParams'); 
-		input.httpMethod = (String) reader.read('httpMethod'); 
+		input.urlIncludingParams = parser.get('urlIncludingParams').getStringValue(); 
+		input.httpMethod = parser.get('httpMethod').getStringValue(); 
 		
         try {
-            input.body = (String) reader.read('body'); 
+            input.body = parser.get('body').getStringValue(); 
         } 
         catch(Exception ignored) {}
 

@@ -9,7 +9,7 @@ private class DeployMetadataTool_Test {
             .post('/services/data/v60.0/metadata/deployRequest', '{ "deploymentStatus" : "Success"}')
             .mock();
 
-        String jsonParameter = '{ "files": [{ "name": "MyClass.cls", "content": "public class MyClass {}" }] }';
+        String jsonParameter = '{ "files": [{ "fileName": "MyClass.cls", "fileContent": "public class MyClass {}" }] }';
         
         // Exercise
         String response = new DeployMetadataTool().execute(jsonParameter);

@@ -10,6 +10,7 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
         HttpRequest request = new HttpRequest();
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString());
         request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + '/services/data/v60.0/metadata/deployRequest');
+        request.setMethod('POST');
         request.setHeader('Accept', '*/*');
         request.setHeader('Connection', 'Keep-Alive');
         request.setHeader('Content-Type', 'multipart/form-data');
@@ -62,16 +63,13 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
         return new List<Output>{ result };
     }
 
-    public String execute(String jsonParameter) {
-        JsonReader reader = new JsonReader(jsonParameter);
-        
+    public String execute(String paramsJson) {
         List<File> files = new List<File>();
-        List<Map<String, Object>> filesArray = (List<Map<String, Object>>) reader.read('files');
         
-        for(Map<String, Object> properties : filesArray) {
+        for(JSONParse parser : new JsonParse(paramsJson).get('files').asList()) {
             File file = new File();
-            file.name = (String) properties.get('fileName');
-            file.content = (String) properties.get('fileContent');
+            file.name = parser.get('fileName').getStringValue();
+            file.content = parser.get('fileContent').getStringValue();
             
             files.add(file);
         }
