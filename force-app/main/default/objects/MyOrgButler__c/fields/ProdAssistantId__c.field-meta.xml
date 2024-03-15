@@ -4,8 +4,8 @@
     <externalId>true</externalId>
     <label>OpenAI Assitent Id (Prod)</label>
     <length>80</length>
-    <required>true</required>
+    <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>
-    <unique>true</unique>
+    <unique>false</unique>
 </CustomField>
