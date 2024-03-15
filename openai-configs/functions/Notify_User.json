@@ -1,0 +1,30 @@
+{
+    "name": "Notify_User",
+    "description": "Sends an In-org notification message to a set of users optionally linking to a target record",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short title of the notification"
+        },
+        "body": {
+          "type": "string",
+          "description": "Notification text"
+        },
+        "targetId": {
+          "type": "string",
+          "description": "Salesforce Id of the record to link to"
+        },
+        "recipientIds": {
+          "type": "string",
+          "description": "Comma separated list of Salesforce Ids of the users to send the notification to"
+        }
+      },
+      "required": [
+        "recipientIds",
+        "title",
+        "body"
+      ]
+    }
+  }

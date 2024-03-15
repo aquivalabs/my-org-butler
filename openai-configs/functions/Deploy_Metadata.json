@@ -1,0 +1,28 @@
+{
+  "name": "Deploy_Metadata",
+  "description": "Deploys metadata to Salesforce by accepting an array of files, each containing a name and content.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "files": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "fileName": {
+              "type": "string",
+              "description": "The file name including its path relative to the Salesforce metadata structure."
+            },
+            "fileContent": {
+              "type": "string",
+              "description": "The content of the file."
+            }
+          },
+          "required": ["fileName", "fileContent"]
+        },
+        "description": "An array containing file objects, each representing a different metadata component or its supportive file for deployment. Must always contain one file which represents the package.xml"
+      }
+    },
+    "required": ["files"]
+  }
+}
