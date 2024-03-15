@@ -11,7 +11,7 @@ private class NotifyUserTool_Test {
             .post('/services/data/v60.0/actions/standard/customNotificationAction', true)
             .mock();
         
-        String paramsJson = '{ "title" : "test", "body" : "Hello World", "targetId" : "000000000000000AAA"}';
+        String paramsJson = '{ "title" : "test", "body" : "Hello World", "targetId" : "000000000000000AAA", "recipientIds" : "any" }';
 
         // Exercise
         try {

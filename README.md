@@ -2,9 +2,9 @@
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
-- [Install v1.12 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002s4LYAQ)
+- [Install v1.12 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000337pYAA)
 
-- [Install v1.12 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI0000002s4LYAQ)
+- [Install v1.12 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000337pYAA)
 
 ### Highlight
 
@@ -37,11 +37,11 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
 1. Add the [`External Credential > OpenAiApi`](force-app/main/default/externalCredentials/OpenAiApi.externalCredential-meta.xml) to the [`Permission Set MyOrgButler`](force-app/main/default/permissionsets/User.permissionset-meta.xml)
+1. Populate the Assistant Id fields in the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c). There are 2 fields to differentiate between Assistants used in Dev and Production orgs.
+<img src="resources/assistant-setup.png" width="400" />
 
 #### OPTIONAL: Use you own OpenAI Assistant
-1. Create an OpenAI Assistant using Functions, Instructions and Knowledge files like the ones we use. Find them in [`openai-configs`](openai-configs).
-1. Replace `ASSISTANT_ID` with your Id in [`force-app/main/default/classes/OpenAiApi.cls`](force-app/main/default/classes/MyOrgButler.cls#L3)
-<img src="resources/assistant-setup.png" width="400" />
+1. Create an OpenAI Assistant using Functions and Instructions like the ones we use. Find them in [`openai-configs`](openai-configs).
 
 #### OPTIONAL: Fully customize
 
