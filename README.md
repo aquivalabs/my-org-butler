@@ -2,14 +2,14 @@
 
 ...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
 
-- [Install v1.13 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000339RYAQ)
+- [Install v1.14 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI00000033CfYAI)
 
-- [Install v1.13 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000339RYAQ)
+- [Install v1.14 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI00000033CfYAI)
 
 ### Highlight
 
-- Answers questions about data and configuration
-- Performs tasks/changes on the user's behalf
+- Answers questions about data, metadata and org settings
+- Creates and updates data and metadata (delete not supported)
 - Respects the permissions of the users
 - Can explain what it does and self-correct errors
 - Leverages [OpenAI Assistant API](https://platform.openai.com/docs/assistants/overview) (Knowledge Retrieval and State Management)

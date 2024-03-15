@@ -14,7 +14,37 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
         request.setHeader('Accept', '*/*');
         request.setHeader('Connection', 'Keep-Alive');
         request.setHeader('Content-Type', 'multipart/form-data');
-    
+        addBody(request, files);
+
+        HttpResponse response = new Http().send(request);
+        Output result = new Output();
+        if (response.getStatusCode() == 200) {
+            result.deploymentStatus = 'Success';
+        } else {
+            result.deploymentStatus = 'Failed: ' + response.getStatus();
+        }
+
+        return new List<Output>{ result };
+    }
+
+    public String execute(String paramsJson) {
+        List<File> files = new List<File>();
+        
+        for(JSONParse parser : new JsonParse(paramsJson).get('files').asList()) {
+            File file = new File();
+            file.name = parser.get('fileName').getStringValue();
+            file.content = parser.get('fileContent').getStringValue();
+            
+            files.add(file);
+        }
+        
+        List<Output> outputs = execute(files);
+        return outputs.isEmpty() ? '{}' : JSON.serialize(outputs[0]);
+    }
+
+    // PRIVATE
+
+    private static void addBody(HttpRequest request, List<File> files) {
         String jsonPayload = '{' +
             '"deployOptions" : {' +
             '    "allowMissingFiles" : true,' +
@@ -51,34 +81,7 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
         
         //request.setHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
         request.setBodyAsBlob(Blob.valueof(body));
-
-        HttpResponse response = new Http().send(request);
-        Output result = new Output();
-        if (response.getStatusCode() == 200) {
-            result.deploymentStatus = 'Success';
-        } else {
-            result.deploymentStatus = 'Failed: ' + response.getStatus();
-        }
-
-        return new List<Output>{ result };
     }
-
-    public String execute(String paramsJson) {
-        List<File> files = new List<File>();
-        
-        for(JSONParse parser : new JsonParse(paramsJson).get('files').asList()) {
-            File file = new File();
-            file.name = parser.get('fileName').getStringValue();
-            file.content = parser.get('fileContent').getStringValue();
-            
-            files.add(file);
-        }
-        
-        List<Output> outputs = execute(files);
-        return outputs.isEmpty() ? '{}' : JSON.serialize(outputs[0]);
-    }
-
-    // PRIVATE
 
     private static Blob zip(List<File> files) {
         Zippex zip = new Zippex();
