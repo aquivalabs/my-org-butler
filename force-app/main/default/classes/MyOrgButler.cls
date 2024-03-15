@@ -67,7 +67,6 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         Thread thread = Thread.create();
         settings.ThreadId__c = thread.id;
         settings.RunId__c = null;
-System.debug(LoggingLevel.ERROR, settings);
         upsert as system settings;
     }
 
@@ -77,7 +76,6 @@ System.debug(LoggingLevel.ERROR, settings);
         newRun = Run.create(settings.ThreadId__c, newRun);
 
         settings.RunId__c = newRun.id;
-System.debug(LoggingLevel.ERROR, settings);
         update as system settings;
     }
 
