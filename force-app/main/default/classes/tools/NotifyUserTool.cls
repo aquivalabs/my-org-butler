@@ -33,32 +33,19 @@ public with sharing class NotifyUserTool implements MyOrgButler.Tool {
         public String body { get; set; }
         public String targetId { get; set; }
 
-        // PMD False Positive: This Id value means no target and is the official SF way.
-        @SuppressWarnings('PMD.AvoidHardcodingId')
         public Notification(String paramsJson) {
             customNotifTypeId = [SELECT Id FROM CustomNotificationType WHERE DeveloperName='InOrgNotifications'].Id;
             
             JsonParse parser = new JsonParse(paramsJson);
+            title = parser.get('title').getStringValue();
+            body = parser.get('body').getStringValue();
+            targetId = parser.get('targetId').getStringValue();
             recipientIds = recipientIds(parser);
-            title = value(parser, 'title', 'My Org Butler:');
-            body = value(parser, 'body', 'Click to see.');
-            targetId = value(parser, 'targetId', '000000000000000AAA');
         }
 
         private List<String> recipientIds(JsonParse parser) {
-            String result = value(parser, 'recipientIds', UserInfo.getUserId());
+            String result = parser.get('targetId').getStringValue();
             return result.trim().split(',');
         }
-    }
-
-    private static String value(JsonParse parser, String key, String ifNull) {
-        String result = ifNull;
-
-        try {
-            result = parser.get(key).getStringValue();
-        }
-        catch(Exception ignored) {}
-
-        return result;
     }
 }

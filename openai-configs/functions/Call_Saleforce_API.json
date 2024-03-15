@@ -21,12 +21,13 @@
       },
       "body": {
         "type": "string",
-        "description": "Payload data to be sent in the request body"
+        "description": "Payload data to be sent in the request body. Can be null if there is no body."
       }
     },
     "required": [
       "urlIncludingParams",
-      "httpMethod"
+      "httpMethod",
+      "body"
     ]
   }
 }

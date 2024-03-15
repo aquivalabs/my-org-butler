@@ -12,9 +12,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
-        if(inputs[0].body != null) {
-            request.setBody(inputs[0].body);
-        }
+        request.setBody(inputs[0].body);
 
         HttpResponse response = new Http().send(request);
         if(response.getStatusCode() != 200) {
@@ -33,11 +31,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         Input input = new Input();
 		input.urlIncludingParams = parser.get('urlIncludingParams').getStringValue(); 
 		input.httpMethod = parser.get('httpMethod').getStringValue(); 
-		
-        try {
-            input.body = parser.get('body').getStringValue(); 
-        } 
-        catch(Exception ignored) {}
+        input.body = parser.get('body').getStringValue(); 
 
         return execute(new List<Input>{ input })[0].rawResponse;
     }
