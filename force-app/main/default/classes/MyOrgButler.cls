@@ -114,7 +114,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         for(Run.ToolCall current : run.required_action.submit_tool_outputs.tool_calls) {
             Run.ToolOutput result = new Run.ToolOutput(current.id);
 
-            if(TOOLS.containsKey(current.function.name)) {
+            if(!TOOLS.containsKey(current.function.name)) {
                 result.output = 'ERROR: There is no such tool/action/function : ' + current.function.name;
             }
 
