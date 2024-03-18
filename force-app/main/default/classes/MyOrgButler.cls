@@ -4,8 +4,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final Integer WAIT_TIME = 3000;
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
                                                         'Call_Salesforce_API' => new CallSalesforceApiTool(),
-                                                        'Notify_User' => new NotifyUserTool(),
-                                                        'Deploy_Metadata' => new DeployMetadataTool() };
+                                                        'Notify_User' => new NotifyUserTool()  };
     @TestVisible
     private static AssistantCallback__e callback = null;
 
@@ -119,7 +118,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 result.output = TOOLS.get(current.function.name).execute(current.function.arguments);
             } 
             catch(Exception error) {
-                result.output = String.valueOf(error);
+                result.output = error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
+                System.debug(LoggingLevel.ERROR, result.output);
             }
 
             outputs.add(result);
