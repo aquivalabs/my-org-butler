@@ -14,7 +14,7 @@ public with sharing class NotifyUserTool implements MyOrgButler.Tool {
         request.setBody(JSON.serialize(notifications));
 
         HttpResponse response = new Http().send(request);
-        if(response.getStatusCode() != 200) {
+        if(response.getStatusCode() >= 300) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and Notification: ' + response.getBody() + '.');
         }
         return response.getBody();

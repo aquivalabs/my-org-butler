@@ -17,7 +17,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         }
 
         HttpResponse response = new Http().send(request);
-        if(response.getStatusCode() != 200) {
+        if(response.getStatusCode() >= 300) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
         }
         Output result = new Output();
