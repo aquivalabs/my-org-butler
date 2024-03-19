@@ -4,6 +4,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final Integer WAIT_TIME = 3000;
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
                                                         'Call_Salesforce_API' => new CallSalesforceApiTool(),
+                                                        'Deploy_Metadata' => new DeployMetadataTool(),
+                                                        'Check_Deploy_Status' => new CheckDeployStatusTool(),
                                                         'Notify_User' => new NotifyUserTool()  };
     @TestVisible
     private static AssistantCallback__e callback = null;
@@ -58,6 +60,13 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     public void execute(QueueableContext context) {
         poll();
+    }
+
+    // PMD False Positive: Empty while is part of idle algortihm of https://salesforce.stackexchange.com/a/302152/256
+    @SuppressWarnings('PMD')
+    public static void sleep(Integer milliseconds) {
+        Long startTime = DateTime.now().getTime();
+        while(DateTime.now().getTime() - startTime < milliseconds); 
     }
 
     // PRIVATE
@@ -138,13 +147,6 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private void notifyUi(Run run) {
         callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
         EventBus.publish(callback);
-    }
-
-    // PMD False Positive: Empty while is part of idle algortihm of https://salesforce.stackexchange.com/a/302152/256
-    @SuppressWarnings('PMD')
-    private void sleep(Integer milliseconds) {
-        Long startTime = DateTime.now().getTime();
-        while(DateTime.now().getTime() - startTime < milliseconds); 
     }
 
     private String prepareAdditionalInstructions(String context) {

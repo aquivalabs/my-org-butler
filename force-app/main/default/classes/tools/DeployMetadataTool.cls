@@ -1,0 +1,70 @@
+@SuppressWarnings('PMD.ApexSuggestUsingNamedCred') // AvoidUnauthorizedGetSessionIdInApex
+public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
+    
+    public String execute(String paramsJson) {
+        List<File> files = new List<File>();
+        
+        for(JSONParse parser : new JsonParse(paramsJson).get('files').asList()) {
+            File file = new File();
+            file.name = parser.get('fileName').getStringValue();
+            file.content = parser.get('fileContent').getStringValue();
+            
+            files.add(file);
+        }
+        List<Output> outputs = execute(files);
+        return outputs.isEmpty() ? '{}' : JSON.serialize(outputs[0]);
+    }
+
+    public static List<Output> execute(List<File> files) {
+        MetadataService.DeployOptions options = new MetadataService.DeployOptions();
+        options.allowMissingFiles = false;
+        options.autoUpdatePackage = true;
+        options.checkOnly = false;
+        options.ignoreWarnings = true;
+        options.performRetrieve = false;
+        options.purgeOnDelete = false;
+        options.rollbackOnError = true;
+        options.testLevel = 'NoTestRun';
+        options.singlePackage = true;	
+
+        MetadataService.MetadataPort service = new MetadataService.MetadataPort();
+		service.SessionHeader = new MetadataService.SessionHeader_element();
+		service.SessionHeader.sessionId = new SessionId().asString();
+
+        MetadataService.AsyncResult asyncResult = service.deploy(zip(files), options);
+        MyOrgButler.sleep(3000);
+        MetadataService.DeployResult deployResult = service.checkDeployStatus(asyncResult.id, true);
+        
+        Output output = new Output();
+        output.deployResult = deployResult;
+        return new List<Output>{ output };
+    }
+
+    // PRIVATE
+
+    private static String zip(List<File> files) {
+        Zippex zip = new Zippex();
+
+        for (File file : files) {
+            zip.addFile(file.name, Blob.valueOf(file.content), null);
+        }
+
+        return EncodingUtil.base64Encode(zip.getZipArchive());
+    }
+
+
+    // INNER
+
+    public class File {
+        @InvocableVariable(required = true)
+        public String name;
+
+        @InvocableVariable(required = true)
+        public String content;
+    }
+
+    public class Output {
+        @InvocableVariable(required = true)
+        public MetadataService.DeployResult deployResult;
+    }
+}
