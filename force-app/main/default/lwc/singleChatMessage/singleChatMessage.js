@@ -55,7 +55,7 @@ export default class SingleChatMessage extends LightningElement {
                     if(toolCall.type === 'function'){
                         const toolCallArgs = JSON.parse(toolCall.function.arguments);
 
-                        if (toolCall.function.name === 'callSalesforceApi') {
+                        if (toolCall.function.name === 'Call_Salesforce_API') {
                             const method = toolCallArgs.httpMethod;
                             const uri = decodeURI(toolCallArgs.urlIncludingParams);
                             const uriMethod = this.getCodeBlockStyling(method + ' ' + uri);
@@ -65,7 +65,7 @@ export default class SingleChatMessage extends LightningElement {
 
                             const stepInfo = (toolCallouts.length + 1) + '. ' + uriMethod + body + output;
                             toolCallouts.push(stepInfo);
-                        } else if (toolCall.function.name === 'sendNotification') {
+                        } else if (toolCall.function.name === 'Notify_User') {
                             const title = '\n\tTitle' + this.getCodeBlockStyling(toolCallArgs.title);
                             const body = '\n\tBody' + this.getCodeBlockStyling(toolCallArgs.body);
                             const output = toolCall.function.output ? '\n\tOutput' + this.getCodeBlockStyling(toolCall.function.output) : '';
