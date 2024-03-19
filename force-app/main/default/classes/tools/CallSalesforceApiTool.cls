@@ -12,7 +12,7 @@ public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
         request.setHeader('Content-Type', 'application/json');
         request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + inputs[0].urlIncludingParams); 
         request.setMethod(inputs[0].httpMethod);   
-        if(inputs[0].body != null) {
+        if(String.isNotEmpty(inputs[0].body)) {
             request.setBody(inputs[0].body);
         }
 
