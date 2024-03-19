@@ -2,56 +2,25 @@
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred') // AvoidUnauthorizedGetSessionIdInApex
 public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
 
-    @InvocableMethod(label='Callout to Public Salesforce API endpoint on behalf of the current user'
-                     description='For a given endpoint url, http method and body returns the raw response'
-                     category='EinsteinCopilot'
-                     callout=true)
-    public static List<Output> execute(List<Input> inputs) {
+	public String execute(String jsonParameter) {
+        JsonParse parser = new JsonParse(jsonParameter);
+
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
         request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + inputs[0].urlIncludingParams); 
-        request.setMethod(inputs[0].httpMethod);   
-        if(String.isNotEmpty(inputs[0].body)) {
-            request.setBody(inputs[0].body);
+        request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + parser.get('urlIncludingParams').getStringValue()); 
+        request.setMethod(parser.get('httpMethod').getStringValue());   
+
+        String body = parser.get('body').getStringValue();
+        if(String.isNotEmpty(body)) {
+            request.setBody(body);
         }
 
         HttpResponse response = new Http().send(request);
         if(response.getStatusCode() >= 300) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
         }
-        Output result = new Output();
-        result.rawResponse = response.getBody();
-        return new List<Output>{ result };
-        
-    }
 
-	public String execute(String jsonParameter) {
-        JsonParse parser = new JsonParse(jsonParameter);
-        
-        Input input = new Input();
-		input.urlIncludingParams = parser.get('urlIncludingParams').getStringValue(); 
-		input.httpMethod = parser.get('httpMethod').getStringValue(); 
-        input.body = parser.get('body').getStringValue(); 
-
-        return execute(new List<Input>{ input })[0].rawResponse;
-    }
-
-    // INNER
-
-    public class Input {
-        @InvocableVariable(description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added.' required=true) 
-        public String urlIncludingParams;
-
-        @InvocableVariable(description='A HTTP Method for the Callout.' required=true) 
-        public String httpMethod;
-
-        @InvocableVariable(description='The optional body payload of the API Callout.' required=false)
-        public String body;
-    }
-    
-    public class Output {
-        @InvocableVariable(description='The raw HTTP Response body in case of success or an error.' required=true) 
-        public String rawResponse;
+        return response.getBody();
     }
 }
