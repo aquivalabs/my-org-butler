@@ -135,8 +135,8 @@ export default class ChatWindow extends LightningElement {
     }
 
     async handleEnterAskQuestion(event) {
-        // CMD + ENTER must be usable for new lines in prompt
-        if(!event.metaKey && event.keyCode === ENTER_BUTTON_CODE) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
             await this.handleAskQuestion();
         }
     }
