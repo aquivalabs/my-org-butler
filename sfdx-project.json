@@ -5,7 +5,7 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "March '24",
-      "versionNumber": "1.18.0.NEXT",
+      "versionNumber": "1.19.0.NEXT",
       "versionDescription": ""
     }
   ],
@@ -32,6 +32,7 @@
     "my-org-butler@1.15.0-1": "04tVI00000036LpYAI",
     "my-org-butler@1.16.0-1": "04tVI00000037ZdYAI",
     "my-org-butler@1.17.0-1": "04tVI00000037eTYAQ",
-    "my-org-butler@1.18.0-1": "04tVI00000039OXYAY"
+    "my-org-butler@1.18.0-1": "04tVI00000039OXYAY",
+    "my-org-butler@1.19.0-1": "04tVI0000003CSrYAM"
   }
 }

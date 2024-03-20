@@ -4,8 +4,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final Integer WAIT_TIME = 3000;
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
                                                         'Call_Salesforce_API' => new CallSalesforceApiTool(),
-                                                        'Deploy_Metadata' => new DeployMetadataTool(),
-                                                        'Check_Deploy_Status' => new CheckDeployStatusTool(),
+                                                        'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
                                                         'Notify_User' => new NotifyUserTool()  };
     @TestVisible
     private static AssistantCallback__e callback = null;

@@ -57,7 +57,7 @@ export default class SingleChatMessage extends LightningElement {
 
                         if (toolCall.function.name === 'Call_Salesforce_API') {
                             const method = toolCallArgs.httpMethod;
-                            const uri = decodeURI(toolCallArgs.urlIncludingParams);
+                            const uri = toolCallArgs.urlIncludingParams;
                             const uriMethod = this.getCodeBlockStyling(method + ' ' + uri);
 
                             const body = toolCallArgs.body ? this.getCodeBlockStyling(toolCallArgs.body) : '';

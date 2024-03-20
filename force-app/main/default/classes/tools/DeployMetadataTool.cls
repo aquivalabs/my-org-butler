@@ -1,4 +1,3 @@
-@SuppressWarnings('PMD.ApexSuggestUsingNamedCred') // AvoidUnauthorizedGetSessionIdInApex
 public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
     
     public String execute(String paramsJson) {
@@ -11,11 +10,12 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
             
             files.add(file);
         }
-        List<Output> outputs = execute(files);
-        return outputs.isEmpty() ? '{}' : JSON.serialize(outputs[0]);
+        return JSON.serialize(execute(files));
     }
 
-    public static List<Output> execute(List<File> files) {
+    // PRIVATE
+
+    public MetadataService.DeployResult execute(List<File> files) {
         MetadataService.DeployOptions options = new MetadataService.DeployOptions();
         options.allowMissingFiles = false;
         options.autoUpdatePackage = true;
@@ -33,11 +33,8 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
 
         MetadataService.AsyncResult asyncResult = service.deploy(zip(files), options);
         MyOrgButler.sleep(3000);
-        MetadataService.DeployResult deployResult = service.checkDeployStatus(asyncResult.id, true);
-        
-        Output output = new Output();
-        output.deployResult = deployResult;
-        return new List<Output>{ output };
+        MetadataService.DeployResult result = service.checkDeployStatus(asyncResult.id, true);
+        return result;
     }
 
     // PRIVATE
@@ -56,15 +53,7 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
     // INNER
 
     public class File {
-        @InvocableVariable(required = true)
         public String name;
-
-        @InvocableVariable(required = true)
         public String content;
-    }
-
-    public class Output {
-        @InvocableVariable(required = true)
-        public MetadataService.DeployResult deployResult;
     }
 }

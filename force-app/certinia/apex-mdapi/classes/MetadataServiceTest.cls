@@ -30,21 +30,21 @@
 @isTest  
 public class MetadataServiceTest
 {    
-    /**
-     * Dummy Metadata API web service mock class (see MetadataCreateJobTest.cls for a better example)
-     **/
-    public class WebServiceMockImpl implements WebServiceMock 
-    {
-        public void doInvoke(
-            Object stub, Object request, Map<String, Object> response,
-            String endpoint, String soapAction, String requestName,
-            String responseNS, String responseName, String responseType) 
-        {
-            if(request instanceof MetadataService.deploy_element)
-                response.put('response_x', new MetadataService.deployResponse_element());
-            else if(request instanceof MetadataService.checkDeployStatus_element)
+    public class WebServiceMockImpl implements WebServiceMock  {
+
+        public void doInvoke(Object stub, Object request, Map<String, Object> response, String endpoint,
+                            String soapAction, String requestName, String responseNS, String responseName, String responseType) {
+            if(request instanceof MetadataService.deploy_element) {
+                MetadataService.deployResponse_element responseElement = new MetadataService.deployResponse_element();
+                MetadataService.AsyncResult ar = new MetadataService.AsyncResult();
+                ar.id = 'any';
+
+                responseElement.result = ar;
+                response.put('response_x', responseElement);
+            }
+            else if(request instanceof MetadataService.checkDeployStatus_element) {
                 response.put('response_x', new MetadataService.checkDeployStatusResponse_element());
-            return;
+            }
         }
     }    
         

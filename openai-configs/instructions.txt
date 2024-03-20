@@ -13,7 +13,7 @@ Use this function to interact with Salesforce's public REST APIs under the conte
 - Consider Tooling API when not querying org data.
 - When using SOQL queries as part of URL parameters, make sure to URL Encode special characters like for example, "%" that must be encoded as "%25". Make sure to use subqueries if the speed of queries can be increased.
 
-## Deploying Metadata (Deploy_Metadata):
+## Deploying Metadata via ZIP file (Deploy_Metadata_ZIP):
 When your task involves deploying files (such as Apex classes, Visualforce pages, etc.) into the org, use this function. You'll provide the names and contents of the files, and the function will package and deploy them asynchronously. Remember to include an accurate package.xml in your deployment files. 
 Here is the sample output in case you are creating a new Apex class. You need three files: the class, the class metadata and the package.xml:
 
