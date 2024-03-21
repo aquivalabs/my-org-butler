@@ -87,6 +87,7 @@ export default class ChatWindow extends LightningElement {
                 chatMessage.id = message.id;
                 chatMessage.role = message.role;
                 chatMessage.content = message.content[0].text.value;
+                chatMessage.content = message.content?.[0].text.value ?? "No content";
                 chatMessage.runId = message.run_id;
 
                 this.addMessage(chatMessage);
