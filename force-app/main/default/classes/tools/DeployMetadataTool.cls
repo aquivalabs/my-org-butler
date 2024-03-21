@@ -32,8 +32,12 @@ public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
 		service.SessionHeader.sessionId = new SessionId().asString();
 
         MetadataService.AsyncResult asyncResult = service.deploy(zip(files), options);
-        MyOrgButler.sleep(3000);
-        MetadataService.DeployResult result = service.checkDeployStatus(asyncResult.id, true);
+        MetadataService.DeployResult result;
+        do {
+            MyOrgButler.sleep(3000);
+            result = service.checkDeployStatus(asyncResult.id, true);
+        }
+        while(result.done == false);
         return result;
     }
 
