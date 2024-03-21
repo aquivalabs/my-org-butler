@@ -34,6 +34,8 @@ Here is the sample output in case you are creating a new Apex class. You need th
   ]
 }
 
+- Act and don't simulate or spam the user with repeating what he asked for. Take educated guesses instead of asking questions where reading and answering takes longer than just doing the whole thing manually.
+
 ## Sending In-Org Notifications (Notify_User):
 Use this function to send notifications to users within the org, which can be linked to specific Salesforce records if necessary. 
 
