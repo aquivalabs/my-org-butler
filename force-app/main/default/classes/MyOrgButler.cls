@@ -27,6 +27,10 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         return settings.ThreadId__c;
     }
 
+    public Boolean authorized() {
+        return MyOrgButlerOAuthData__c.getValues(UserInfo.getUserId()) != null;
+    }
+
     public void reset() {
         if(settings.ThreadId__c != null){
             Thread.remove(settings.ThreadId__c);
