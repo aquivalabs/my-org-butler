@@ -96,7 +96,15 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     }
 
     private void enqueuePolling() {
-        System.enqueueJob(this);
+        // Note: StackDepth can only be set in the initial enqueueJob
+        if(System.isQueueable()) {
+            System.enqueueJob(this);
+        }
+        else {
+            AsyncOptions options = new AsyncOptions();
+            options.MaximumQueueableStackDepth = 1000;
+            System.enqueueJob(this, options);
+        }
     }
 
     private void poll() {
@@ -139,6 +147,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         submitToolOutput(run.thread_id, run.id, JSON.serialize(outputs));
     }
 
+    // Note: Future was needed after Flow Start
     @future(callout=true)
     private static void submitToolOutput(String threadId, String runId, String outputJson) {
         List<Run.ToolOutput> outputs = (List<Run.ToolOutput>) JSON.deserialize(outputJson,  List<Run.ToolOutput>.class);
