@@ -5,7 +5,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
                                                         'Call_Salesforce_API' => new CallSalesforceApiTool(),
                                                         'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
-                                                        'Notify_User' => new NotifyUserTool()  };
+                                                        'Notify_User' => new NotifyUserTool(),
+                                                        'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool()
+                                                    };
     @TestVisible
     private static AssistantCallback__e callback = null;
 
@@ -54,6 +56,12 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     public void respond(String question, String context) {
         Message.create(settings.ThreadId__c, new Message(question));
         persistNewRun(context);
+        pollOrQueue();
+    }
+
+    public void resume(String threadId) {
+        Message.create(threadId, new Message('Thread resumed after wait. Please continue.'));
+        persistNewRun(null);
         pollOrQueue();
     }
 
@@ -119,33 +127,35 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private void runToolAndCallback(Run run) {
         List<Run.ToolOutput> outputs = new List<Run.ToolOutput>();
 
-        for(Run.ToolCall current : run.required_action.submit_tool_outputs.tool_calls) {
-            Run.ToolOutput result = new Run.ToolOutput(current.id);
-
-            if(!TOOLS.containsKey(current.function.name)) {
-                result.output = 'ERROR: There is no such tool/action/function : ' + current.function.name;
+        for(Run.ToolCall call : run.required_action.submit_tool_outputs.tool_calls) {
+            Run.ToolOutput result = new Run.ToolOutput(call.id);
+System.debug(LoggingLevel.ERROR, call);
+            if(!TOOLS.containsKey(call.function.name)) {
+                result.output = 'ERROR: There is no such tool/action/function : ' + call.function.name;
             }
 
             try {
-                result.output = TOOLS.get(current.function.name).execute(current.function.arguments);
+                result.output = TOOLS.get(call.function.name)
+                                        .setThreadId(run.thread_id)
+                                        .execute(call.function.arguments);
             } 
             catch(Exception error) {
-                result.output = 'ERROR when calling: ' + current.function.name + '( ' + current.function.arguments + ')\n\n' +
+                result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
                                 error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
-                System.debug(LoggingLevel.ERROR, result.output);
             }
-
             outputs.add(result);
         }
-
+System.debug(LoggingLevel.ERROR, outputs);
         new OpenAiApi('/threads/' + run.thread_id + '/runs/' + run.id + '/submit_tool_outputs')
                 .body(new Run.ToolOutputs(outputs))
                 .post();
+System.debug(LoggingLevel.ERROR, 'END');
     }
 
     private void notifyUi(Run run) {
         callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
         EventBus.publish(callback);
+        System.debug(LoggingLevel.ERROR, callback);
     }
 
     private String prepareAdditionalInstructions(String context) {
@@ -154,7 +164,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 '\nuserFirstName=' + UserInfo.getFirstName() +
                 '\nuserLastName=' + UserInfo.getLastName() +
                 '\nuserLanguage=' + UserInfo.getLanguage() +
-                '\nuserDateTime=' + System.now() +
+                '\ncurrentDateTime=' + System.now() +
                 '\nuserEmail=' + UserInfo.getUserEmail() +
                 '\baseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
                 '\ncurrentPage=' +  context;
@@ -168,7 +178,14 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     // INNER
 
-    public interface Tool {
-        String execute(String arguments);
+    public abstract class Tool {
+        protected String threadId;
+
+        public Tool setThreadId(String threadId) {
+            this.threadId = threadId;
+            return this;
+        }
+
+        public abstract String execute(String arguments);
     }
 }

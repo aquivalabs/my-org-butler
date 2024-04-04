@@ -1,8 +1,8 @@
 // PMD False Positive: Calling regular Salesforce APIs can be done with Session Id
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred') // AvoidUnauthorizedGetSessionIdInApex
-public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
+public with sharing class CallSalesforceApiTool extends MyOrgButler.Tool {
 
-	public String execute(String jsonParameter) {
+	public override String execute(String jsonParameter) {
         JsonParse parser = new JsonParse(jsonParameter);
 
         HttpRequest request = new HttpRequest();  

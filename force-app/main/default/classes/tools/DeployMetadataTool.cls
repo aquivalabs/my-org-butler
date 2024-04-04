@@ -1,6 +1,6 @@
-public with sharing class DeployMetadataTool implements MyOrgButler.Tool {
+public with sharing class DeployMetadataTool extends MyOrgButler.Tool {
     
-    public String execute(String paramsJson) {
+    public override String execute(String paramsJson) {
         List<File> files = new List<File>();
         
         for(JSONParse parser : new JsonParse(paramsJson).get('files').asList()) {
