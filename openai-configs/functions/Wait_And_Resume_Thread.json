@@ -1,0 +1,16 @@
+{
+  "name": "Wait_And_Resume_Thread",
+  "description": "Long-running Agent plans need waiting time. This Function just delegates the waiting to a Salesforce Autolaunched Flow with a Wait element. After the resumeAt time has come it calls this thread with a dynamic message. ",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "hoursToWait": {
+        "type": "number",
+        "description": "Hours to wait."
+      }
+    },
+    "required": [
+      "hoursToWait"
+    ]
+  }
+}
