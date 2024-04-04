@@ -1,47 +1,27 @@
 
-public with sharing class WaitAndResumeThreadTool extends MyOrgButler.Tool {
-    
+public with sharing class WaitAndResumeThreadTool extends MyOrgButler.Tool implements Schedulable {
+
     public override String execute(String paramsJson) {
-        Integer hoursToWait = new JSONParse(paramsJson).get('hoursToWait').getIntegerValue();
-
-        FlowInterview result = asObject( startWaitFlow(threadId, hoursToWait) );
-        return JSON.serialize(result);
+        Integer minutesToWait = new JSONParse(paramsJson).get('minutesToWait').getIntegerValue();
+        String cronExp = DateTime.now().addMinutes(minutesToWait).format('ss mm HH dd MM ? yyyy');
+        WaitAndResumeThreadTool tool = (WaitAndResumeThreadTool) new WaitAndResumeThreadTool().setThreadId(threadId);
+        
+        String jobId = System.schedule('MyOrgButler: Pause for ' + minutesToWait + ' minutes:', cronExp, tool);
+        return '{ "scheduledJobId" : "' + jobId + '" }';
     }
 
-    @InvocableMethod(label = 'Resume My Org Butler Thread after wating for a certain time') 
-    public static void resumeThread(List<FlowInput> inputs) {
-        for(FlowInput input : inputs) {
-            new MyOrgButler().resume(input.threadId);
-        }
-    }
-    
-    // PRIVATE
+    public void execute(SchedulableContext context) {
+        resume(threadId);
 
-    private Flow.Interview startWaitFlow(String threadId, Integer hoursToWait) {
-        Map<String, Object> inputs = new Map<String, Object>{
-            'threadId' => threadId,
-            'hoursToWait' => hoursToWait
-        };
-
-        Flow.Interview result = new Flow.Interview.WaitAndResumeThread(inputs);
-        result.start();
-        return result;
+        // Note: Remove outdated Cron Job
+        System.abortJob( context.getTriggerId() );
     }
 
+    // PRIVATE 
 
-    private FlowInterview asObject(Flow.Interview interview) {
-        String guid = interview.getVariableValue('interviewId').toString();
-        FlowInterview result = [SELECT Id, InterviewStatus, PauseLabel FROM FlowInterview WHERE Guid = :guid LIMIT 1];
-        return result;
-    }
-
-    // INNER
-
-    public class FlowInput {
-        @InvocableVariable(label='OpenAI Assistant Thread Id')
-        public String threadId;
-
-        @InvocableVariable(label='Hours to wait until resuming the thread')
-        public Integer hoursToWait;
+    // Note: No callouts from Schedulable
+    @future(callout=true)
+    private static void resume(String threadId) {
+        new MyOrgButler().resume(threadId);
     }
 }

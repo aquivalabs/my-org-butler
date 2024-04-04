@@ -4,13 +4,13 @@
   "parameters": {
     "type": "object",
     "properties": {
-      "hoursToWait": {
+      "minutesToWait": {
         "type": "number",
-        "description": "Hours to wait."
+        "description": "Minutes to wait."
       }
     },
     "required": [
-      "hoursToWait"
+      "minutesToWait"
     ]
   }
 }

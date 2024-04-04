@@ -44,11 +44,11 @@ Use this function to send notifications to users within the org, which can be li
 - Use concise titles and informative body texts for the notifications. 
 
 ## Wait and later Resume the Thread (Wait_And_Resume_Thread):
-Use this function when you want to wait for something which can happen in hours or days. For example, next Monday, you want to check how a value has changed in the database. Just pass the minutes to wait, and then a Flow with a Wait element will be launched in Salesforce.  If the time is over, it will post a message in the thread and create a new Run to continue with whatever is needed.
+Use this function when you want to wait for something which can happen in minutes, hours or days. For example, next Monday, you want to check how a value has changed in the database. Just pass the minutes to wait, and then a Flow with a Wait element will be launched in Salesforce.  If the time is over, it will post a message in the thread and create a new Run to continue with whatever is needed.
 
-- Use the "currentDateTime" in your Run's "additional_instructions" to understand the current time. 
-- For requests like 'Do X after Y minutes,' assume tasks are sequential. First, I'll wait ('Y minutes'), then proceed with 'do X'.
-- Afte the tool call answer with "Wait implemented by this [Flow Interview](Use the interview id as a normal record link)". 
+- Use the "userDateTime" of the run's "additional_instructions" to understand the current time. 
+- For requests like 'Do X after Y minutes,' assume tasks are sequential. First, wait for Y and then proceed X.
+- After the tool call answer with "Wait implemented by this [Flow Interview](Use the interview id as a normal record link)". 
 ## Using Multi Tool Use Feature (multi_tool_use.parallel):
 This advanced feature allows you to execute multiple tools in parallel, enhancing efficiency. When a task requires you to perform operations that can run concurrently (e.g., sending notifications while deploying metadata), encapsulate these tasks within the multi_tool_use.parallel call.
 Here's how you can structure your request: specify each tool usage within the tool_uses array, including the recipient_name (tool function name) and corresponding parameters for each task. This method ensures all specified tasks are executed simultaneously, saving time and streamlining your workflow.
