@@ -56,16 +56,17 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     public void respond(String question, String context) {
         Message.create(settings.ThreadId__c, new Message(question));
         persistNewRun(context);
-        pollOrQueue();
+        enqueuePolling();
     }
 
     public void resume(String threadId) {
         Message.create(threadId, new Message('Thread resumed after wait. Please continue.'));
         persistNewRun(null);
-        pollOrQueue();
+        enqueuePolling();
     }
 
     public void execute(QueueableContext context) {
+        sleep(WAIT_TIME);
         poll();
     }
 
@@ -94,30 +95,19 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         update as system settings;
     }
 
-    private void pollOrQueue() {
-        if(limitRisk()) {
-            System.enqueueJob(this);
-        }
-        else {
-            sleep(WAIT_TIME);
-            poll();
-        }
+    private void enqueuePolling() {
+        System.enqueueJob(this);
     }
 
-    private Boolean limitRisk() {
-        return (Limits.getCallouts() > Limits.getLimitCallouts() - 10 ||
-                Limits.getCpuTime() > Limits.getLimitCpuTime() - 5 * WAIT_TIME);
-    }
-    
     private void poll() {
         Run run = Run.retrieve(settings.ThreadId__c, settings.RunId__c);
 
         if(run.isPending()) {
-            pollOrQueue();
+            enqueuePolling();
         } 
         else if(run.requestsTool()) {
             runToolAndCallback(run);
-            pollOrQueue();
+            enqueuePolling();
         } 
         else if(run.isCompletedOrFailed()) {
             notifyUi(run);
@@ -129,7 +119,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
         for(Run.ToolCall call : run.required_action.submit_tool_outputs.tool_calls) {
             Run.ToolOutput result = new Run.ToolOutput(call.id);
-System.debug(LoggingLevel.ERROR, call);
+
             if(!TOOLS.containsKey(call.function.name)) {
                 result.output = 'ERROR: There is no such tool/action/function : ' + call.function.name;
             }
@@ -145,17 +135,21 @@ System.debug(LoggingLevel.ERROR, call);
             }
             outputs.add(result);
         }
-System.debug(LoggingLevel.ERROR, outputs);
-        new OpenAiApi('/threads/' + run.thread_id + '/runs/' + run.id + '/submit_tool_outputs')
+
+        submitToolOutput(run.thread_id, run.id, JSON.serialize(outputs));
+    }
+
+    @future(callout=true)
+    private static void submitToolOutput(String threadId, String runId, String outputJson) {
+        List<Run.ToolOutput> outputs = (List<Run.ToolOutput>) JSON.deserialize(outputJson,  List<Run.ToolOutput>.class);
+        new OpenAiApi('/threads/' + threadId + '/runs/' + runId + '/submit_tool_outputs')
                 .body(new Run.ToolOutputs(outputs))
                 .post();
-System.debug(LoggingLevel.ERROR, 'END');
     }
 
     private void notifyUi(Run run) {
         callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
         EventBus.publish(callback);
-        System.debug(LoggingLevel.ERROR, callback);
     }
 
     private String prepareAdditionalInstructions(String context) {
@@ -164,9 +158,9 @@ System.debug(LoggingLevel.ERROR, 'END');
                 '\nuserFirstName=' + UserInfo.getFirstName() +
                 '\nuserLastName=' + UserInfo.getLastName() +
                 '\nuserLanguage=' + UserInfo.getLanguage() +
-                '\ncurrentDateTime=' + System.now() +
+                '\nuserDateTime=' + System.now().format('E, dd MMM yyyy HH:mm:ss z') +
                 '\nuserEmail=' + UserInfo.getUserEmail() +
-                '\baseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
+                '\nbaseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
                 '\ncurrentPage=' +  context;
     }
 

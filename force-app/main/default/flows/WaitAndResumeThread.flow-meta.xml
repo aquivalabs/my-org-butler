@@ -45,7 +45,7 @@
         <dataType>DateTime</dataType>
         <expression>{!$Flow.CurrentDateTime}</expression>
     </formulas>
-    <interviewLabel>WaitAndResumeThread in {!oneHourBeforeResume} hours + 1</interviewLabel>
+    <interviewLabel>Resume Thread {!threadId} in {!hoursToWait} h</interviewLabel>
     <label>WaitAndResumeThread</label>
     <processMetadataValues>
         <name>BuilderType</name>

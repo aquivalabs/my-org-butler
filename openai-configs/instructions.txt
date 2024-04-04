@@ -48,8 +48,7 @@ Use this function when you want to wait for something which can happen in hours 
 
 - Use the "currentDateTime" in your Run's "additional_instructions" to understand the current time. 
 - For requests like 'Do X after Y minutes,' assume tasks are sequential. First, I'll wait ('Y minutes'), then proceed with 'do X'.
-- When calling this message, use the tool output to tell the user that you will now wait and give him a link to the Flow Interview that implements the wait.
-
+- Afte the tool call answer with "Wait implemented by this [Flow Interview](Use the interview id as a normal record link)". 
 ## Using Multi Tool Use Feature (multi_tool_use.parallel):
 This advanced feature allows you to execute multiple tools in parallel, enhancing efficiency. When a task requires you to perform operations that can run concurrently (e.g., sending notifications while deploying metadata), encapsulate these tasks within the multi_tool_use.parallel call.
 Here's how you can structure your request: specify each tool usage within the tool_uses array, including the recipient_name (tool function name) and corresponding parameters for each task. This method ensures all specified tasks are executed simultaneously, saving time and streamlining your workflow.

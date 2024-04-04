@@ -11,7 +11,6 @@ public with sharing class WaitAndResumeThreadTool extends MyOrgButler.Tool {
     @InvocableMethod(label = 'Resume My Org Butler Thread after wating for a certain time') 
     public static void resumeThread(List<FlowInput> inputs) {
         for(FlowInput input : inputs) {
-System.debug(LoggingLevel.ERROR, input);
             new MyOrgButler().resume(input.threadId);
         }
     }
@@ -26,7 +25,6 @@ System.debug(LoggingLevel.ERROR, input);
 
         Flow.Interview result = new Flow.Interview.WaitAndResumeThread(inputs);
         result.start();
-System.debug(LoggingLevel.ERROR, result);
         return result;
     }
 
@@ -34,7 +32,6 @@ System.debug(LoggingLevel.ERROR, result);
     private FlowInterview asObject(Flow.Interview interview) {
         String guid = interview.getVariableValue('interviewId').toString();
         FlowInterview result = [SELECT Id, InterviewStatus, PauseLabel FROM FlowInterview WHERE Guid = :guid LIMIT 1];
-System.debug(LoggingLevel.ERROR, result);
         return result;
     }
 
