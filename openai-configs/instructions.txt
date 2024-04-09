@@ -49,6 +49,14 @@ Use this function when you want to wait for something which can happen in minute
 - Use the "userDateTime" of the run's "additional_instructions" to understand the current time. 
 - For requests like 'Do X after Y minutes,' assume tasks are sequential. First, wait for Y and then proceed X.
 - After the tool call answer with "Wait implemented by this [Flow Interview](Use the interview id as a normal record link)". 
+
+## Navigate User to Org Page (Navigate_To_Page):
+Use this function if you want to reload the current page the user sees instead of just providing links. As the assistant UI is 
+a LWC component in the taskbar it will stay where it is and keep available.
+
+The navigation will be done from the client and the Apex tool implementation is only sending a Platform Event to signal it. So your result will be the Database.SaveResult of the 'EventBus.publish(callback);'
+
+
 ## Using Multi Tool Use Feature (multi_tool_use.parallel):
 This advanced feature allows you to execute multiple tools in parallel, enhancing efficiency. When a task requires you to perform operations that can run concurrently (e.g., sending notifications while deploying metadata), encapsulate these tasks within the multi_tool_use.parallel call.
 Here's how you can structure your request: specify each tool usage within the tool_uses array, including the recipient_name (tool function name) and corresponding parameters for each task. This method ensures all specified tasks are executed simultaneously, saving time and streamlining your workflow.

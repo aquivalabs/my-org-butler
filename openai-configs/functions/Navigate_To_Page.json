@@ -1,0 +1,26 @@
+{
+    "name": "Navigate_To_Page",
+    "description": "Defines a PageReference object for navigation within Lightning Experience, Experience Builder sites, or the Salesforce mobile app. The 'type' of the PageReference generates a unique URL format and attributes applicable to all pages of that type. The 'state' parameter allows optional customizations within the page. Here are sample outputs: \r\n\r\n\r\n\/\/ Navigate to the Case object home page.\r\ntype: \"standard__objectPage\",\r\nattributes: {\r\n  objectApiName: \"Case\",\r\n  actionName: \"home\"\r\n}\r\n\r\n\/\/ Navigate to the Contact object's Recent list view.\r\n{\r\n  type: \"standard__objectPage\",\r\n  attributes: {\r\n    objectApiName: \"Contact\",\r\n    actionName: \"list\"\r\n  },\r\n  state: {\r\n    \/\/ 'filterName' is a property on the page 'state'\r\n    \/\/ and identifies the target list view.\r\n    \/\/ It may also be an 18 character list view id.\r\n    filterName: \"Recent\" \/\/ or by 18 char '00BT0000002TONQMA4'\r\n  }\r\n}\r\n    \r\n\r\n\/\/ Opens the new Account record modal\r\n\/\/ to create an Account.\r\ntype: \"standard__objectPage\",\r\nattributes: {\r\n  objectApiName: \"Account\",\r\n  actionName: \"new\"\r\n}\r\n\r\n\/\/ View a custom object record.\r\ntype: \"standard__recordPage\",\r\nattributes: {\r\n  recordId: \"a03B0000002tEurIAE\",\r\n  objectApiName: \"namespace__ObjectName\", \/\/ objectApiName is optional\r\n  actionName: \"view\"\r\n}\r\n\r\n\/\/ Opens the Account record modal\r\n\/\/ to view a particular record.\r\n{\r\n  type: \"standard__recordPage\",\r\n  attributes: {\r\n    recordId: \"001B000000ZBz22IAD\",\r\n    objectApiName: \"Account\", \/\/ objectApiName is optional\r\n    actionName: \"edit\"\r\n  }\r\n}\r\n\r\n\/\/ Navigate to the CaseComments related list page\r\n\/\/ for a specific Case record.\r\n{\r\n  type: \"standard__recordRelationshipPage\",\r\n  attributes: {\r\n    recordId: \"500xx000000Ykt4AAC\",\r\n    objectApiName: \"Case\",\r\n    relationshipApiName: \"CaseComments\",\r\n    actionName: \"view\"\r\n  }\r\n}\r\n\r\n\/\/ Navigate to a specific CustomTab.\r\n{\r\n  type: \"standard__navItemPage\",\r\n  attributes: {\r\n    \/\/ CustomTabs from managed packages are identified by their\r\n    \/\/ namespace prefix followed by two underscores followed by the\r\n    \/\/ developer name. E.g. 'namespace__TabName'\r\n    apiName: \"CustomTabName\",\r\n  }\r\n} ",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A string that identifies the type of page to navigate to, which determines the URL format and necessary attributes."
+        },
+        "attributes": {
+          "type": "object",
+          "description": "A map of name-value pairs that specify the details of the target page, dependent on the page type."
+        },
+        "state": {
+          "type": "object",
+          "description": "Optional key-value pairs with string keys and values that can conditionally customize content within a page. This parameter supports a standard set of properties depending on the page type."
+        }
+      },
+      "required": [
+        "type",
+        "attributes"
+      ]
+    }
+  }
+  
