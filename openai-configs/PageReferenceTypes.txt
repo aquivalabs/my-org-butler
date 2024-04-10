@@ -1,0 +1,509 @@
+PageReference Types
+To navigate in Lightning Experience, Experience Builder sites, or the Salesforce mobile app, define a PageReference object. The PageReference type generates a unique URL format and defines attributes that apply to all pages of that type. For Experience Builder sites, depending on the page type, the PageReference property requirements can differ between LWR sites and Aura sites.
+
+Tip
+
+Use the PageReference object with the NavigationMixin function from the lightning/navigation module. For information about using a PageReference to navigate, see Navigate to Different Page Types.
+
+These page reference types are supported.
+
+App
+External Record Page
+External Record Relationship Page
+Knowledge Article
+Lightning Component
+Login Page
+Managed Content Page (Salesforce CMS)
+Named Page (Experience Builder sites)
+Named Page (Standard)
+Navigation Item Page
+Object Page
+Record Page
+Record Relationship Page
+Web Page
+Note
+
+PageReference objects are supported on a limited basis for Experience Builder sites, as noted for each type. They aren’t supported in Lightning Out.
+
+Navigating using the PageReference objects supersedes the legacy way of using an Aura event to navigate. For example, navigate to web pages using the lightning/navigation module with the standard__webPage page type instead of using force:navigateToURL. See Migrate Events.
+
+App Type 
+
+A standard or custom app available from the App Launcher in an org. Use this type to create custom navigation components that take users to a specific app or to a page within an app. Connected apps aren’t supported.
+
+Note
+
+If you’re navigating users to a different app using a pageRef, the app opens in the same window by default. To open a link in a new tab, see the navigation service documentation.
+
+Type 
+
+standard__app;
+Containers 
+
+Lightning Experience
+
+Type Attributes 
+
+Property	Type	Description	Retired?
+appTarget	String	App that you're navigating to. Pass either the appId or appDeveloperName to the appTarget.
+The appId is the DurableId field on the AppDefinition object.
+To form the appDeveloperName value, concatenate the app's namespace with the developer name. To find the app's developer name, navigate to the App Manager in Setup and look in the Developer Name column.
+For standard apps, the namespace is standard__. For custom apps, it's c__. For managed packages, it's the namespace registered for the package.	Yes
+pageRef	PageREference	Identifies a specific location in the app you're navigating to. Pass in the pageRef and applicable attributes for that pageRef type.	No
+Example Navigating to an App 
+
+{
+    type: 'standard__app',
+    attributes: {
+        appTarget: 'standard__Sales',
+    }
+}
+Example Navigating to a Record in an App 
+
+{
+    type: 'standard__app',
+    attributes: {
+        appTarget: 'standard__LightningSales',
+        pageRef: {
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: '001xx000003DGg0AAG',
+                objectApiName: 'Account',
+                actionName: 'view'
+            }
+        }
+    }
+}
+URL Format 
+
+/lightning/app/{appTarget}{...pageRef}
+URL Format Examples 
+
+Navigate to the app’s homepage using the appId
+
+/lightning/app/06mRM0000008dNrYAI
+Navigate to an object record’s page in the app using the appId
+
+/lightning/app/06mRM0000008dNrYAI/o/Case/home
+Navigate to the app’s homepage using the appDeveloperName
+
+/lightning/app/standard__LightningSales
+Navigate to an object record’s page in the app using the appDeveloperName
+
+/lightning/app/standard__LightningSales/o/Case/home
+External Record Page Type 
+
+A page that interacts with an external record. Currently supports CMS Connect pages.
+
+Type 
+
+comm__externalRecordPage;
+Experience 
+
+Experience Builder Aura Sites
+
+Type Attributes 
+
+Property	Type	Description	Required?
+recordId	String	External record ID.	Yes
+objectType	String	External record type. Currently only supports cms for CMS Connect.	Yes
+objectInfo	Object	Additional information used to identify the record for the objectType.	Yes
+Example 
+
+{
+    type: "comm__externalRecordPage",
+    attributes: {
+        recordId: "26",
+        objectType: "cms",
+        objectInfo: {
+            cmsSourceName: "blog",
+            cmsTypeName: "feed",
+        }
+    },
+    state: {
+        recordName: "coffee-on-the-world-map",
+    }
+}
+URL Format 
+
+/{baseUrl}/{recordId}/{recordName}
+External Record Relationship Page Type 
+
+A page that interacts with an external relationship on a particular record in the org. Currently only supports Quip Related List page.
+
+Type 
+
+comm__externalRecordRelationshipPage;
+Experience 
+
+Experience Builder Aura Sites
+
+Type Attributes 
+
+Property	Type	Description	Required?
+recordId	String	The 18 character record ID.	Yes
+objectType	String	External record type. Currently only supports quip for Quip docs.	Yes
+Example 
+
+{
+    type: "comm__externalRecordRelationshipPage",
+    attributes: {
+        recordId: "001xx000003DGg0AAG",
+        objectType: "quip",
+URL Format 
+
+/{baseUrl}/{recordId}
+Lightning Component Type 
+
+A Lightning component. To make an addressable Lightning web component, embed it in an Aura component that implements the lightning:isUrlAddressable interface.
+
+Type 
+
+standard__component;
+Containers 
+
+Lightning Experience, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+componentName	String	The Lightning component name in the format namespace__componentName.	Yes
+Example 
+
+{
+    type: 'standard__component',
+    attributes: {
+        componentName: 'c__MyLightningComponent'
+    },
+    state: {
+        c__counter: '5'
+    }
+}
+You can pass any key and value in the state object. The key must include a namespace, and the value must be a string.
+
+Knowledge Article Page Type 
+
+A page that interacts with a Knowledge Article record.
+
+Type 
+
+standard__knowledgeArticlePage;
+Containers 
+
+Lightning Experience, Experience Builder sites, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+articleType	String	The articleType API name of the Knowledge Article record.In Experience Builder sites, articleType is ignored.	Yes
+urlName	String	The value of the urlName field on the target KnowledgeArticleVersion record. The urlName is the article's URL.	Yes
+Example 
+
+{
+    type: 'standard__knowledgeArticlePage',
+    attributes: {
+        articleType: 'Briefings',
+        urlName: 'February-2017'
+    }
+}
+Login Page Type 
+
+A page for authentication into an Experience Builder site.
+
+Type 
+
+comm__loginPage;
+Containers 
+
+Experience Builder sites
+
+Attributes 
+
+Property	Type	Description	Required
+actionName	String	A login-related action to be performed. Possible values are:
+login
+logout
+Yes
+Example 
+
+{
+    type: 'comm__loginPage',
+    attributes: {
+        actionName: 'login'
+    }
+}
+Managed Content Page (Salesforce CMS) Type 
+
+A CMS content page in an Experience Builder site with a unique name.
+
+Type 
+
+standard__managedContentPage;
+Containers 
+
+Experience Builder sites
+
+Attributes 
+
+Property	Type	Description	Required
+contentTypeName	String	The name of the Salesforce CMS content type.	Yes
+contentKey	String	The unique content key that identifies CMS content.	Yes
+Example 
+
+{
+    type: 'standard__managedContentPage',
+    attributes :{
+        'contentTypeName': 'news',
+        'contentKey': 'MCOMALJDRAYFFSFPNBQONYXVFHOA'
+    }
+}
+Named Page Type (Experience Builder Sites) 
+
+A standard page used in Experience Builder sites with a unique name. If an error occurs, the error view loads and the URL isn’t updated.
+
+Type 
+
+comm__namedPage;
+Containers 
+
+Experience Builder sites
+
+Attributes 
+
+Property	Type	Description	Required
+name	String	The unique name of the Experience Builder page. The value for name is the API Name value for a supported page. The API Name field can only be defined when a new page is being created, and must be unique. If the API Name isn’t defined upon page creation, it’s automatically generated. The value of home is reserved for the landing page of any Experience Builder site in your org. Supported pages in Experience Builder sites are:
+Home
+Account Management
+Contact Support
+Error
+Login
+My Account
+Top Articles
+Topic Catalog
+Custom page
+Yes
+Example 
+
+{
+    type: 'comm__namedPage',
+    attributes: {
+        name: 'Home'
+    }
+}
+Named Page Type (Standard) 
+
+A standard page with a unique name. If an error occurs, the error view loads and the URL isn’t updated.
+
+Type 
+
+standard__namedPage;
+Containers 
+
+Lightning Experience, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+pageName	String	The unique name of the page. Possible values are:
+home
+chatter
+today
+dataAssessment
+filePreview
+Yes
+Example 
+
+{
+    type: 'standard__namedPage',
+    attributes: {
+        pageName: 'home'
+    }
+}
+Navigation Item Page Type 
+
+A page that displays the content mapped to a custom tab. Visualforce tabs, web tabs, Lightning Pages, and Lightning Component tabs are supported.
+
+Type 
+
+standard__navItemPage;
+Containers 
+
+Lightning Experience, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+apiName	String	The unique name of the custom tab.	Yes
+Example 
+
+{
+    type: 'standard__navItemPage',
+    attributes: {
+        apiName: 'MyCustomTabName'
+    }
+}
+For an example, see Navigate to Different Page Types.
+
+Object Page Type 
+
+A page that interacts with a standard or custom object in the org and supports standard actions for that object.
+
+Type 
+
+standard__objectPage;
+Containers 
+
+Lightning Experience, Experience Builder sites, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+actionName	String	The action name to invoke. Valid values include home, list, and new.In Experience Builder sites, list and home are the same.	Yes
+objectApiName	String	The API name of the standard or custom object. For custom objects that are part of a managed package, prefix the custom object with ns__.	Yes
+State 
+
+Property	Type	Description	Required?
+filterName	String	ID or developer name of the object page. Default is Recent. Supported actions are: list.	No
+defaultFieldValues	String	List of key-value pairs for the default field values that you’re passing. This list is generated by the lightning/pageReferenceUtils module. Supported actions are: new.	No
+nooverride	String	To use a standard action, assign this property any value, such as 1. To use an override action, don’t include this property at all. Supported actions are: home, list, new.	No
+Standard Object Example 
+
+// Opens the case home page.
+{
+    type: 'standard__objectPage',
+    attributes: {
+        objectApiName: 'Case',
+        actionName: 'home'
+    }
+}
+For an example, see Navigate to Different Page Types.
+
+Navigate to a Specific List View Example 
+
+// Navigates to account list with the filter set to Recent.
+{
+    type: 'standard__objectPage',
+    attributes: {
+        objectApiName: 'ns__Widget__c',
+        actionName: 'list'
+    },
+    state: {
+        filterName: 'Recent'
+  }
+}
+Navigate to a Record Create Page with Default Field Values 
+
+// Navigates to a new account page using these default field values:
+//{
+//    Name: 'Salesforce, #1=CRM',
+//    OwnerId: '005XXXXXXXXXXXXXXX',
+//    AccountNumber: 'ACXXXX',
+//    NumberOfEmployees: 35000,
+//    CustomCheckbox__c: true
+//}
+{
+    type: 'standard__objectPage',
+    attributes: {
+        objectApiName: 'Account',
+        actionName: 'new'
+    },
+    state: {
+        defaultFieldValues : 'AccountNumber=ACXXXX,CustomCheckbox__c=true,Name=Salesforce%2C%20%231%3DCRM,NumberOfEmployees=35000,OwnerId=005XXXXXXXXXXXXXXX',
+        nooverride: '1'
+    }
+}
+Record Page Type 
+
+A page that interacts with a record in the org and supports standard actions for that record.
+
+Type 
+
+standard__recordPage;
+Containers 
+
+Lightning Experience, Experience Builder sites, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+actionName	String	The action name to invoke. Valid values include clone, edit, and view.Experience Builder sites don’t support the values clone or edit.	Yes
+objectApiName	String	The API name of the record’s object. Optional for lookups.	
+For Experience Builder LWR sites only: yes.
+For all other containers: no.
+recordId	String	The 18 character record ID.	Yes
+State
+Property	Type	Description	Required?
+nooverride	String	To use a standard action, assign this property any value, such as 1. To use an override action, don’t include this property at all.	No
+Example: Navigate to a Record Page 
+
+{
+        type: 'standard__recordPage',
+        attributes: {
+            recordId: '001xx000003DGg0AAG',
+            objectApiName: 'PersonAccount',
+            actionName: 'view'
+        }
+}
+For an example, see Navigate to Different Page Types.
+
+Record Relationship Page Type 
+
+A page that interacts with a relationship on a particular record in the org. Only related lists are supported.
+
+Type 
+
+standard__recordRelationshipPage;
+Containers 
+
+Lightning Experience, Experience Builder sites, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+actionName	String	The action name to invoke. Only view is supported.	Yes
+objectApiName	String	The API name of the object that defines the relationship. Optional for lookups.	
+For Experience Builder LWR sites only: yes.
+For all other containers: no.
+recordId	String	The 18 character record ID of the record that defines the relationship.	Yes
+relationshipApiName	String	The API name of the object’s relationship field.	Yes
+Example 
+
+{
+    type: 'standard__recordRelationshipPage',
+    attributes: {
+        recordId: '500xx000000Ykt4AAC',
+        objectApiName: 'Case',
+        relationshipApiName: 'CaseComments',
+        actionName: 'view'
+    }
+}
+For an example, see Navigate to Different Page Types.
+
+Web Page Type 
+
+An external URL.
+
+Tip
+
+If you use your Lightning web component in an Aura-based Experience Builder site, note that certain Salesforce URLs have site-specific processing. For example, /apex/ URLs are translated to /sfdcpage/. The Visualforce page is embedded within the site in an iFrame, which is the same behavior as with the force:navigateToURL Aura event. Use window.open if you want to go straight to the URL, such as opening /apex/ directly in a new tab.
+
+Type 
+
+standard__webPage;
+Containers 
+
+Lightning Experience, Experience Builder sites, Salesforce Mobile App
+
+Attributes 
+
+Property	Type	Description	Required
+url	String	The URL of the page you’re navigating to.	Yes
+Example 
+
+{
+    type: 'standard__webPage',
+    attributes: {
+        url: 'http://salesforce.com'
+    }
+}
+For an example, see Navigate to Different Page Types.

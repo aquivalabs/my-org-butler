@@ -1,4 +1,4 @@
-public with sharing class NavigateToPageTool extends MyOrgButler.Tool {
+public with sharing class OpenOrgPageTool extends MyOrgButler.Tool {
 
     private final String CALLBACK_NAVIGATE = 'NAVIGATE';
 

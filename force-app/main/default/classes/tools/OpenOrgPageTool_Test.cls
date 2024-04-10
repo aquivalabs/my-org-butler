@@ -1,5 +1,5 @@
 @IsTest
-private class NavigateToPageTool_Test {
+private class OpenOrgPageTool_Test {
     
     @IsTest
     private static void execute() {
@@ -14,7 +14,7 @@ private class NavigateToPageTool_Test {
 
         try {
             Test.startTest();
-            String rawResult = new NavigateToPageTool().setThreadId('123').execute(pageReferenceJson);
+            String rawResult = new OpenOrgPageTool().setThreadId('123').execute(pageReferenceJson);
             result = (Database.SaveResult) JSON.deserialize(rawResult, Database.SaveResult.class);
             Test.stopTest();
         }
