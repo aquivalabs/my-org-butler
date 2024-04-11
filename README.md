@@ -37,8 +37,14 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
 1. Add the [`External Credential > OpenAiApi`](force-app/main/default/externalCredentials/OpenAiApi.externalCredential-meta.xml) to the [`Permission Set MyOrgButler`](force-app/main/default/permissionsets/User.permissionset-meta.xml)
-1. Populate the Assistant Id fields in the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c). There are 2 fields to differentiate between Assistants used in Dev and Production orgs.
-<img src="resources/assistant-setup.png" width="400" />
+1. Populate the Assistant Id fields in the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c). There are 2 fields to differentiate between Assistants used in Dev and Production orgs. <img src="resources/assistant-setup.png" width="400" />
+1. Configure OAuth
+    1. App Manager -> My Org Butler Connected App -> View -> Manager Consumer Details -> Copy the Consumer Key and Consumer Secret
+    1. Auth. Provider -> My Org Butler Auth Provider -> Edit -> Paste Consumer Key and Consumer Secret -> Save
+    1. From My Org Butler Auth Provider copy Callback URL
+    1. Go back to My Org Butler Connected App -> Edit -> Paste Callback URL -> Save
+    1. Named Credentials -> Edit -> URL -> Paste your Domain address (You can found it in My Domain in Setup)
+    1. Choose External Credential -> My Org Butler External Credentials -> Principals -> Authenticate -> Provide Your Data and Acept
 
 #### OPTIONAL: Use you own OpenAI Assistant
 1. Create an OpenAI Assistant using Functions and Instructions like the ones we use. Find them in [`openai-configs`](openai-configs).
