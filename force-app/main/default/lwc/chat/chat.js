@@ -3,8 +3,6 @@ import { subscribe, unsubscribe} from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
 
-import authorize from '@salesforce/apex/ChatCtrl.authorize';
-import isAuthorized from '@salesforce/apex/ChatCtrl.isAuthorized';
 import init from '@salesforce/apex/ChatCtrl.init';
 import reset from '@salesforce/apex/ChatCtrl.reset';
 import messages from '@salesforce/apex/ChatCtrl.messages';
@@ -34,7 +32,6 @@ export default class ChatWindow extends LightningElement {
     subscription;
     question = '';
     lastMessageId = null;
-    authorized = false;
 
     isLoading = true;
     waitingForResponse = false;
@@ -52,10 +49,6 @@ export default class ChatWindow extends LightningElement {
         return this.waitingForResponse == true;
     }
 
-    get unauthorized() {
-        return !this.authorized;
-    }
-
     addMessage(message) {
         this.messages.push(message);
     }
@@ -71,15 +64,6 @@ export default class ChatWindow extends LightningElement {
     removePreviewMessage() {
         if(this.messages.length !== 0 && this.messages[this.messages.length - 1].preview === true){
             this.messages.pop();
-        }
-    }
-
-    async isAuthorized() {
-        try {
-            this.authorized = await isAuthorized();
-        } 
-        catch(exception) {
-            this.logException(exception);
         }
     }
 
@@ -194,15 +178,6 @@ export default class ChatWindow extends LightningElement {
         }
     }
 
-    async handleAuthorize() {
-        try {
-            this.authorized = await authorize();
-        } 
-        catch(exception) {
-            this.logException(exception);
-        }
-    }
-
     @wire(CurrentPageReference)
     getPageReferenceParameters(currentPageReference) {
         this.currentPage = currentPageReference;
@@ -211,7 +186,6 @@ export default class ChatWindow extends LightningElement {
     async connectedCallback() {
         try {
             this.subscribe();
-            await this.isAuthorized();
             await this.initialize();
             await this.loadMesages();
         } 

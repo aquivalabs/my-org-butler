@@ -8,19 +8,6 @@ public with sharing class ChatCtrl {
     }
 
     @AuraEnabled
-    public static Boolean isAuthorized() {
-        return new MyOrgButler().authorized();
-    }
-
-    @AuraEnabled
-    public static Boolean authorize() {
-        
-
-
-        return new MyOrgButler().authorized();
-    }
-
-    @AuraEnabled
     public static String reset() {
         MyOrgButler butler = new MyOrgButler();
         butler.reset();
