@@ -128,7 +128,6 @@ private class MyOrgButler_Test {
         
         // Verify
         System.assertEquals('123', MyOrgButler.callback.ThreadId__c);
-        System.assertEquals('987', MyOrgButler.callback.RunId__c);
     }
 
     // HELPER

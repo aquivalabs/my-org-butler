@@ -1,8 +1,8 @@
 // PMD False Positive: Calling regular Salesforce APIs can be done with Session Id
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
-public with sharing class NotifyUserTool implements MyOrgButler.Tool {
+public with sharing class NotifyUserTool extends MyOrgButler.Tool {
     
-    public String execute(String jsonParameter) {
+    public override String execute(String jsonParameter) {
         Notifications notifications = new Notifications();
         notifications.inputs = new List<Notification>{ new Notification(jsonParameter) };
         

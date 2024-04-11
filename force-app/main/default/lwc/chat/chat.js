@@ -1,7 +1,7 @@
 import { api, LightningElement, track, wire } from 'lwc';
 import { subscribe, unsubscribe} from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { CurrentPageReference } from 'lightning/navigation';
+import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 
 import init from '@salesforce/apex/ChatCtrl.init';
 import reset from '@salesforce/apex/ChatCtrl.reset';
@@ -22,7 +22,7 @@ const MESSAGE_TYPE_BY_ROLE = {
 
 const ENTER_BUTTON_CODE = 13;
 
-export default class ChatWindow extends LightningElement {
+export default class ChatWindow extends NavigationMixin(LightningElement) {
     @track messages = [];
     @track currentPage; 
 
@@ -106,10 +106,17 @@ export default class ChatWindow extends LightningElement {
             try {
                 const event = JSON.parse(JSON.stringify(response));
                 const threadId = event.data.payload.aquiva_os__ThreadId__c;
+                const eventType = event.data.payload.aquiva_os__Type__c;
 
                 if(this.threadId === threadId) {
-                    await this.loadMesages();
-                    this.waitingForResponse = false;
+                    if(eventType === 'NAVIGATE') {
+                        const pageReference = JSON.parse(event.data.payload.aquiva_os__Payload__c);
+                        this[NavigationMixin.Navigate](pageReference);
+                    }
+                    else if(eventType === 'RUN_FINISHED') {
+                        await this.loadMesages();
+                        this.waitingForResponse = false;
+                    }
                 }
             } 
             catch(exception) {

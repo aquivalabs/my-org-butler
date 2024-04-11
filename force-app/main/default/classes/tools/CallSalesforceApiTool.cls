@@ -1,6 +1,6 @@
-public with sharing class CallSalesforceApiTool implements MyOrgButler.Tool {
+public with sharing class CallSalesforceApiTool extends MyOrgButler.Tool {
 
-	public String execute(String jsonParameter) {
+	public override String execute(String jsonParameter) {
         JsonParse parser = new JsonParse(jsonParameter);
 
         HttpRequest request = new HttpRequest();  

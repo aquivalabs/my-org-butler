@@ -43,7 +43,12 @@ public class MetadataServiceTest
                 response.put('response_x', responseElement);
             }
             else if(request instanceof MetadataService.checkDeployStatus_element) {
-                response.put('response_x', new MetadataService.checkDeployStatusResponse_element());
+                MetadataService.checkDeployStatusResponse_element responseElement = new MetadataService.checkDeployStatusResponse_element();
+                MetadataService.DeployResult dr = new MetadataService.DeployResult();
+                dr.done = true;
+
+                responseElement.result = dr;
+                response.put('response_x', responseElement);
             }
         }
     }    

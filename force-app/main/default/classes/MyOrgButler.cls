@@ -2,10 +2,15 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     private static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
+    private final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
     private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
-                                                        'Call_Salesforce_API' => new CallSalesforceApiTool(),
-                                                        'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
-                                                        'Notify_User' => new NotifyUserTool()  };
+        'Call_Salesforce_API' => new CallSalesforceApiTool(),
+        'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
+        'Notify_User' => new NotifyUserTool(),
+        'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool(),
+        'Open_Org_Page' => new OpenOrgPageTool()
+    };
+
     @TestVisible
     private static AssistantCallback__e callback = null;
 
@@ -54,10 +59,17 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     public void respond(String question, String context) {
         Message.create(settings.ThreadId__c, new Message(question));
         persistNewRun(context);
-        pollOrQueue();
+        enqueuePolling();
+    }
+
+    public void resume(String threadId) {
+        Message.create(threadId, new Message('Thread resumed after wait. Please continue.'));
+        persistNewRun(null);
+        enqueuePolling();
     }
 
     public void execute(QueueableContext context) {
+        sleep(WAIT_TIME);
         poll();
     }
 
@@ -86,30 +98,27 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         update as system settings;
     }
 
-    private void pollOrQueue() {
-        if(limitRisk()) {
+    private void enqueuePolling() {
+        // Note: StackDepth can only be set in the initial enqueueJob
+        if(System.isQueueable()) {
             System.enqueueJob(this);
         }
         else {
-            sleep(WAIT_TIME);
-            poll();
+            AsyncOptions options = new AsyncOptions();
+            options.MaximumQueueableStackDepth = 1000;
+            System.enqueueJob(this, options);
         }
     }
 
-    private Boolean limitRisk() {
-        return (Limits.getCallouts() > Limits.getLimitCallouts() - 10 ||
-                Limits.getCpuTime() > Limits.getLimitCpuTime() - 5 * WAIT_TIME);
-    }
-    
     private void poll() {
         Run run = Run.retrieve(settings.ThreadId__c, settings.RunId__c);
 
         if(run.isPending()) {
-            pollOrQueue();
+            enqueuePolling();
         } 
         else if(run.requestsTool()) {
             runToolAndCallback(run);
-            pollOrQueue();
+            enqueuePolling();
         } 
         else if(run.isCompletedOrFailed()) {
             notifyUi(run);
@@ -119,32 +128,39 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private void runToolAndCallback(Run run) {
         List<Run.ToolOutput> outputs = new List<Run.ToolOutput>();
 
-        for(Run.ToolCall current : run.required_action.submit_tool_outputs.tool_calls) {
-            Run.ToolOutput result = new Run.ToolOutput(current.id);
+        for(Run.ToolCall call : run.required_action.submit_tool_outputs.tool_calls) {
+            Run.ToolOutput result = new Run.ToolOutput(call.id);
 
-            if(!TOOLS.containsKey(current.function.name)) {
-                result.output = 'ERROR: There is no such tool/action/function : ' + current.function.name;
+            if(!TOOLS.containsKey(call.function.name)) {
+                result.output = 'ERROR: There is no such tool/action/function : ' + call.function.name;
             }
 
             try {
-                result.output = TOOLS.get(current.function.name).execute(current.function.arguments);
+                result.output = TOOLS.get(call.function.name)
+                                        .setThreadId(run.thread_id)
+                                        .execute(call.function.arguments);
             } 
             catch(Exception error) {
-                result.output = 'ERROR when calling: ' + current.function.name + '( ' + current.function.arguments + ')\n\n' +
+                result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
                                 error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
-                System.debug(LoggingLevel.ERROR, result.output);
             }
-
             outputs.add(result);
         }
 
-        new OpenAiApi('/threads/' + run.thread_id + '/runs/' + run.id + '/submit_tool_outputs')
+        submitToolOutput(run.thread_id, run.id, JSON.serialize(outputs));
+    }
+
+    // Note: Future was needed after Flow Start
+    @future(callout=true)
+    private static void submitToolOutput(String threadId, String runId, String outputJson) {
+        List<Run.ToolOutput> outputs = (List<Run.ToolOutput>) JSON.deserialize(outputJson,  List<Run.ToolOutput>.class);
+        new OpenAiApi('/threads/' + threadId + '/runs/' + runId + '/submit_tool_outputs')
                 .body(new Run.ToolOutputs(outputs))
                 .post();
     }
 
     private void notifyUi(Run run) {
-        callback = new AssistantCallback__e(ThreadId__c = run.thread_id, RunId__c = run.id);
+        callback = new AssistantCallback__e(Type__c = CALLBACK_RUN_FINISHED, ThreadId__c = run.thread_id);
         EventBus.publish(callback);
     }
 
@@ -154,9 +170,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 '\nuserFirstName=' + UserInfo.getFirstName() +
                 '\nuserLastName=' + UserInfo.getLastName() +
                 '\nuserLanguage=' + UserInfo.getLanguage() +
-                '\nuserDateTime=' + System.now() +
+                '\nuserDateTime=' + System.now().format('E, dd MMM yyyy HH:mm:ss z') +
                 '\nuserEmail=' + UserInfo.getUserEmail() +
-                '\baseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
+                '\nbaseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
                 '\ncurrentPage=' +  context;
     }
 
@@ -168,7 +184,14 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     // INNER
 
-    public interface Tool {
-        String execute(String arguments);
+    public abstract class Tool {
+        protected String threadId;
+
+        public Tool setThreadId(String threadId) {
+            this.threadId = threadId;
+            return this;
+        }
+
+        public abstract String execute(String arguments);
     }
 }
