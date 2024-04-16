@@ -136,9 +136,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
             }
 
             try {
-                result.output = TOOLS.get(call.function.name)
-                                        .setThreadId(run.thread_id)
-                                        .execute(call.function.arguments);
+                Tool tool = TOOLS.get(call.function.name);
+                tool.setThreadId(settings.ThreadId__c);
+                result.output = tool.execute(call.function.arguments);
             } 
             catch(Exception error) {
                 result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
@@ -170,6 +170,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 '\nuserFirstName=' + UserInfo.getFirstName() +
                 '\nuserLastName=' + UserInfo.getLastName() +
                 '\nuserLanguage=' + UserInfo.getLanguage() +
+                '\nuserTimezone=' + UserInfo.getTimeZone() +
                 '\nuserDateTime=' + System.now().format('E, dd MMM yyyy HH:mm:ss z') +
                 '\nuserEmail=' + UserInfo.getUserEmail() +
                 '\nbaseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +

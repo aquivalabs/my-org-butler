@@ -9,9 +9,7 @@ private class WaitAndResumeThreadTool_Test {
 
         
         // Exercise
-        Test.startTest();
         String rawResult = new  WaitAndResumeThreadTool().setThreadId('123').execute(paramsJson);
-        Test.stopTest();
         
         
         // Verify
