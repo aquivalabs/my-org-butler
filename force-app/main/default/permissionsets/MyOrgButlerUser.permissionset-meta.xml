@@ -6,6 +6,10 @@
     </classAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
+        <externalCredentialPrincipal>aquiva_os__MyOrgButlerExternalCredentials-My Org Butler Principle</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
         <externalCredentialPrincipal>aquiva_os__OpenAiApi-ApiKey</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
     <hasActivationRequired>false</hasActivationRequired>
