@@ -9,6 +9,9 @@ public with sharing class ChatCtrl {
 
     @AuraEnabled
     public static String reset() {
+        AquivaTracker.event('MyOrgButlerFeatureAdoption').with('feature', 'reset');
+        AquivaTracker.publish();
+        
         MyOrgButler butler = new MyOrgButler();
         butler.reset();
         return butler.threadId();
