@@ -140,7 +140,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 tool.setThreadId(settings.ThreadId__c);
                 result.output = tool.execute(call.function.arguments);
 
-                AquivaTracker.event('MyOrgButlerToolCall')
+                aquiva.Tracker.event('MyOrgButlerToolCall')
                                 .with('tool', call.function.name)
                                 .with('toolParams', call.function.arguments);
                                 
@@ -149,13 +149,13 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
                                 error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
                 
-                AquivaTracker.event('MyOrgButlerToolError')
+                aquiva.Tracker.event('MyOrgButlerToolError')
                                 .with('error', error);
             }
             outputs.add(result);
         }
 
-        AquivaTracker.publish();
+        aquiva.Tracker.publish();
 
         submitToolOutput(run.thread_id, run.id, JSON.serialize(outputs));
     }
