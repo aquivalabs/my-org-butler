@@ -19,7 +19,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "60.0",
   "packageAliases": {
-    "aquiva-success-tracker": "04tVI0000004YuLYAU",
+    "aquiva-success-tracker": "04tVI0000004amTYAQ",
     "my-org-butler": "0HoVI0000002h2T0AQ",
     "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ",
     "my-org-butler@1.2.0-2": "04tVI0000002o3xYAA",

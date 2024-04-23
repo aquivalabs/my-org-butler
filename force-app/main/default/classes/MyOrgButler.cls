@@ -136,13 +136,17 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
             }
 
             try {
+                aquiva.Tracker.event('MyOrgButlerToolCall')
+                                .with('tool', call.function.name)
+                                .with('toolParams', call.function.arguments)
+                                .with('startTime', Datetime.now());
+
                 Tool tool = TOOLS.get(call.function.name);
                 tool.setThreadId(settings.ThreadId__c);
                 result.output = tool.execute(call.function.arguments);
 
-                aquiva.Tracker.event('MyOrgButlerToolCall')
-                                .with('tool', call.function.name)
-                                .with('toolParams', call.function.arguments);
+                aquiva.Tracker.current()
+                                .with('endTime', Datetime.now());
                                 
             } 
             catch(Exception error) {
