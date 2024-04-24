@@ -68,6 +68,10 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         enqueuePolling();
     }
 
+    public Message modify(Message existingMessage) {
+        return Message.modify(settings.ThreadId__c, existingMessage);
+    }
+
     public void execute(QueueableContext context) {
         sleep(WAIT_TIME);
         poll();
