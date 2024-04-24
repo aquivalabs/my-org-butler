@@ -38,6 +38,10 @@ export default class SingleChatMessage extends LightningElement {
         return `slds-grid slds-chat-message__text slds-chat-message__text_${this.type} slds-text-heading_small`
     }
 
+    get showFeedbackOptions() {
+        return this.type === MESSAGE_TYPE.INBOUND;
+    }
+
     getCodeBlockStyling(code) {
         return code ? '<div style="background-color: rgb(250, 250, 250); border-radius: 10px; padding:10px"><code>'  + code + '</code></div>' : '';
     }
@@ -88,5 +92,10 @@ export default class SingleChatMessage extends LightningElement {
         }
 
         this.visibleQuestion = !this.visibleQuestion;
+    }
+
+    handleVoteClick(event) {
+        console.log(event.detail.isPositive);
+        // TODO: call Apex method
     }
 }

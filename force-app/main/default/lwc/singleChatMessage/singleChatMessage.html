@@ -20,6 +20,11 @@
                         title="Explain the response">
                     </lightning-icon>
                 </div>
+                <c-feedback 
+                    lwc:if={showFeedbackOptions}
+                    class="slds-p-top_xx-small"
+                    onvote={handleVoteClick}
+                ></c-feedback>
             </div>
         </div>
     </li>
