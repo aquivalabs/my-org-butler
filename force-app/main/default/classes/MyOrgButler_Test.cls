@@ -96,7 +96,6 @@ private class MyOrgButler_Test {
         System.assertEquals('completed', steps.data[0].status);
     }
 
-
     
     @IsTest
     private static void respond() {
@@ -128,6 +127,31 @@ private class MyOrgButler_Test {
         
         // Verify
         System.assertEquals('123', MyOrgButler.callback.ThreadId__c);
+    }
+
+    
+    @IsTest
+    private static void modify() {
+
+         // Setup
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123');  
+
+        Message m = new Message('Hi');
+        m.id = '987';
+        m.metadataMap = new Map<String, Object>{ 'key' => 88 };
+
+        new HttpMock()
+                .post('aquiva_os__OpenAiApi/v1/threads/123/messages/987', m)
+                .mock();
+
+        // Exercise
+        // Note: without startTest "uncommited work error" due to Setting DML
+        Test.startTest();
+        m = new MyOrgButler().modify(m);
+        Test.stopTest();
+        
+        // Verify
+        System.assertEquals(88, m.metadataMap.get('key'));
     }
 
     // HELPER

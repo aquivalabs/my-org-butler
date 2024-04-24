@@ -28,6 +28,11 @@ public with sharing class ChatCtrl {
     }
 
     @AuraEnabled
+    public static void modify(Message message) {
+        new MyOrgButler().modify(message);
+    }
+
+    @AuraEnabled
     public static Run.Steps steps(String runId, String order) {
         return new MyOrgButler().steps(runId, order);
     }
