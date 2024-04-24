@@ -1,10 +1,10 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 
 export default class Feedback extends LightningElement {
     FEEDBACK_POSITIVE = 'positive';
     FEEDBACK_NEGATIVE = 'negative';
 
-    isPositive;
+    @api isPositive;
 
     get negativeFeedbackVariant() {
         return this.voted && !this.isPositive ? 'brand' : '';

@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 
 import steps from '@salesforce/apex/ChatCtrl.steps';
+import modify from '@salesforce/apex/ChatCtrl.modify';
 
 import butlerLogo from '@salesforce/contentAssetUrl/myorgbutlertransparent_720';
 
@@ -94,8 +95,7 @@ export default class SingleChatMessage extends LightningElement {
         this.visibleQuestion = !this.visibleQuestion;
     }
 
-    handleVoteClick(event) {
-        console.log(event.detail.isPositive);
-        // TODO: call Apex method
+    async handleVoteClick(event) {
+        await modify({ messageId: this.message.id, isFeedbackPositive: event.detail.isPositive });
     }
 }

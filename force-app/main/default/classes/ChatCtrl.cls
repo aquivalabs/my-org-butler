@@ -28,7 +28,15 @@ public with sharing class ChatCtrl {
     }
 
     @AuraEnabled
-    public static void modify(Message message) {
+    public static void modify(String messageId, Boolean isFeedbackPositive) {
+        // TODO: event publishing to be added
+        Message.Metadata msgMetadata = new Message.Metadata();
+        msgMetadata.isFeedbackPositive = String.valueOf(isFeedbackPositive);
+
+        Message message = new Message();
+        message.id = messageId;
+        message.metadata = msgMetadata;
+        
         new MyOrgButler().modify(message);
     }
 
