@@ -21,6 +21,7 @@ public class Message {
     }
 
     public static Message create(String threadId, Message message) {
+        // Note: We use a map as OpenAI only accepts some Message properties
         Map<String, Object> payload = new Map<String, Object>();
         payload.put('role', message.role);
         payload.put('content', message.content[0].text.value);
@@ -31,9 +32,8 @@ public class Message {
     }
 
     public static Message modify(String threadId, Message message) {
+        // Note: We use a map as OpenAI only accepts some Message properties
         Map<String, Object> payload = new Map<String, Object>();
-        payload.put('role', message.role);
-        payload.put('content', message.content[0].text.value);
         payload.put('metadata', message.metadata);
 
         return (Message) new OpenAiApi('/threads/' +  threadId + '/messages/' + message.id)
