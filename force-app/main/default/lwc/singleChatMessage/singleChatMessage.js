@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 
 import steps from '@salesforce/apex/ChatCtrl.steps';
+import modify from '@salesforce/apex/ChatCtrl.modify';
 
 import butlerLogo from '@salesforce/contentAssetUrl/myorgbutlertransparent_720';
 
@@ -36,6 +37,10 @@ export default class SingleChatMessage extends LightningElement {
 
     get chatMessageTextClass() {
         return `slds-grid slds-chat-message__text slds-chat-message__text_${this.type} slds-text-heading_small`
+    }
+
+    get showFeedbackOptions() {
+        return this.type === MESSAGE_TYPE.INBOUND;
     }
 
     getCodeBlockStyling(code) {
@@ -88,5 +93,16 @@ export default class SingleChatMessage extends LightningElement {
         }
 
         this.visibleQuestion = !this.visibleQuestion;
+    }
+
+    async handleVoteClick(event) {
+        await modify({ 
+            message: { 
+                id: this.message.id, 
+                metadata: { 
+                    isFeedbackPositive: event.detail.isPositive
+                } 
+            } 
+        });
     }
 }

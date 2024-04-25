@@ -69,6 +69,12 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     }
 
     public Message modify(Message existingMessage) {
+        aquiva.Tracker.event('MyOrgButlerMetadata')
+                                .with('messageId', existingMessage.id)
+                                .with('runId', existingMessage.run_id)
+                                .with('isUpvote', existingMessage.metadata.isFeedbackPositive);
+        aquiva.Tracker.publish();
+        
         return Message.modify(settings.ThreadId__c, existingMessage);
     }
 
@@ -140,7 +146,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
             }
 
             try {
-                aquiva.Tracker.event('MyOrgButlerToolCall')
+                aquiva.Tracker.event('MyOrgButlerToolCall') 
+                                .with('runId', run.id)
                                 .with('tool', call.function.name)
                                 .with('toolParams', call.function.arguments)
                                 .with('startTime', Datetime.now());

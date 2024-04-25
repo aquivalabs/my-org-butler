@@ -2,34 +2,22 @@
 @SuppressWarnings('PMD.FieldNamingConventions')
 public class Message {
 
-    @AuraEnabled public String id;
-    @AuraEnabled public String role;
-    @AuraEnabled public String run_id;
-    @AuraEnabled public List<Content> content = new List<Content>();
-    private String metadata;
-    
-    @AuraEnabled 
-    public transient Map<String, Object> metadataMap { 
-        get {
-            Map<String, Object> result = new Map<String, Object>();
-
-            try {
-                result = (Map<String, Object>) JSON.deserializeUntyped(metadata);
-            }
-            catch(Exception ignored) {}
-
-            return result;
-        }
-        set {
-            metadata = JSON.serialize(value);
-        }
-    }
+    @AuraEnabled public String id { get; set; }
+    @AuraEnabled public String role { get; set; }
+    @AuraEnabled public String run_id { get; set; }
+    @AuraEnabled public List<Content> content { get; set; }
+    @AuraEnabled public Metadata metadata { get; set; }
     
     // PUBLIC
 
+    public Message() {
+        content = new List<Content>();
+    }
+
     public Message(String text) {
+        this();
+        content.add(new Content(text));
         role = 'user';
-        content = new List<Content>{ new Content(text) };
     }
 
     public static Message create(String threadId, Message message) {
@@ -46,7 +34,7 @@ public class Message {
         Map<String, Object> payload = new Map<String, Object>();
         payload.put('role', message.role);
         payload.put('content', message.content[0].text.value);
-        payload.put('metadata', JSON.deserializeUntyped(message.metadata));
+        payload.put('metadata', message.metadata);
 
         return (Message) new OpenAiApi('/threads/' +  threadId + '/messages/' + message.id)
                                 .body(payload)
@@ -75,5 +63,9 @@ public class Message {
         public Content(String value) {
             text.value = value;
         }
+    }
+
+    public class Metadata {
+        @AuraEnabled public String isFeedbackPositive { get; set; }
     }
 }

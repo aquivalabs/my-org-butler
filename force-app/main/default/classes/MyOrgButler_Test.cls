@@ -136,22 +136,24 @@ private class MyOrgButler_Test {
          // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123');  
 
-        Message m = new Message('Hi');
-        m.id = '987';
-        m.metadataMap = new Map<String, Object>{ 'key' => 88 };
+        Message message = new Message();
+        message.id = '987';
+
+        Message.Metadata metadata = new Message.Metadata();
+        metadata.isFeedbackPositive = 'true';
+        message.metadata = metadata;
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/123/messages/987', m)
+                .post('aquiva_os__OpenAiApi/v1/threads/123/messages/987', message)
                 .mock();
 
         // Exercise
-        // Note: without startTest "uncommited work error" due to Setting DML
         Test.startTest();
-        m = new MyOrgButler().modify(m);
+        message = new MyOrgButler().modify(message);
         Test.stopTest();
-        
+
         // Verify
-        System.assertEquals(88, m.metadataMap.get('key'));
+        System.assertEquals('true', message.metadata.isFeedbackPositive);
     }
 
     // HELPER
