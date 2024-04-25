@@ -99,6 +99,7 @@ export default class SingleChatMessage extends LightningElement {
         await modify({ 
             message: { 
                 id: this.message.id, 
+                run_id: this.message.runId,
                 metadata: { 
                     isFeedbackPositive: event.detail.isPositive?.toString()
                 } 
