@@ -90,7 +90,7 @@ export default class ChatWindow extends NavigationMixin(LightningElement) {
                 chatMessage.content = message.content?.[0].text.value ?? "No content";
                 chatMessage.runId = message.run_id;
 
-                let isPositive = message.metadata.isFeedbackPositive;
+                let isPositive = message.metadata.isFeedbackPositive?.toLowerCase();
                 chatMessage.isFeedbackPositive = isPositive === 'true' ? true : isPositive === 'false' ? false : isPositive;
 
                 this.addMessage(chatMessage);
