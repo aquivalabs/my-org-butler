@@ -100,7 +100,7 @@ export default class SingleChatMessage extends LightningElement {
             message: { 
                 id: this.message.id, 
                 metadata: { 
-                    isFeedbackPositive: event.detail.isPositive
+                    isFeedbackPositive: event.detail.isPositive?.toString()
                 } 
             } 
         });
