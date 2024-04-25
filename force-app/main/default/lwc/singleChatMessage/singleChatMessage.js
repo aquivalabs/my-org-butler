@@ -96,6 +96,13 @@ export default class SingleChatMessage extends LightningElement {
     }
 
     async handleVoteClick(event) {
-        await modify({ messageId: this.message.id, isFeedbackPositive: event.detail.isPositive });
+        await modify({ 
+            message: { 
+                id: this.message.id, 
+                metadata: { 
+                    isFeedbackPositive: event.detail.isPositive
+                } 
+            } 
+        });
     }
 }

@@ -2,11 +2,11 @@
 @SuppressWarnings('PMD.FieldNamingConventions')
 public class Message {
 
-    @AuraEnabled public String id;
+    @AuraEnabled public String id { get; set; }
     @AuraEnabled public String role;
     @AuraEnabled public String run_id;
     @AuraEnabled public List<Content> content = new List<Content>();
-    @AuraEnabled public Metadata metadata;
+    @AuraEnabled public Metadata metadata { get; set; }
     
     // PUBLIC
 
@@ -61,6 +61,6 @@ public class Message {
     }
 
     public class Metadata {
-        @AuraEnabled public String isFeedbackPositive;
+        @AuraEnabled public String isFeedbackPositive { get; set; }
     }
 }
