@@ -164,7 +164,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
                 result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
                                 error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
                 
-                aquiva.Tracker.current().with('error', error);
+                aquiva.Tracker.current().with('error', result.output);
             }
             outputs.add(result);
         }
