@@ -5,7 +5,7 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "April '24",
-      "versionNumber": "1.30.0.NEXT",
+      "versionNumber": "1.31.0.NEXT",
       "versionDescription": "",
       "dependencies": [
         {
@@ -49,6 +49,7 @@
     "my-org-butler@1.27.0-2": "04tVI0000004YvxYAE",
     "my-org-butler@1.28.0-1": "04tVI0000004YxZYAU",
     "my-org-butler@1.29.0-1": "04tVI0000004f2zYAA",
-    "my-org-butler@1.30.0-1": "04tVI0000004lQ9YAI"
+    "my-org-butler@1.30.0-1": "04tVI0000004lQ9YAI",
+    "my-org-butler@1.31.0-1": "04tVI0000005RpBYAU"
   }
 }
