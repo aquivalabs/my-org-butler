@@ -16,9 +16,6 @@ fi
 echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
-echo "Install dependencies"
-execute sfdx force:package:install --package 04tVI0000004lOXYAY --publish-wait 5 --wait 10 -u $SCRATCH_ORG_ALIAS
-
 echo "Pushing changes to scratch org"
 execute sf force source push
 
