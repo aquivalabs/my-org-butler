@@ -56,10 +56,9 @@
         <exclude name="AvoidDebugStatements" />   
     </rule>
 
-    <rule name="AvoidDebugStatements" language="apex" message="Avoid leaving System.debug() statments in code as they negativly influence performance." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="AvoidDebugStatements" language="apex" message="Avoid leaving System.debug() statements in code as they negativly influence performance." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>   
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2]
             ]]></value></property>
@@ -92,20 +91,18 @@
 
     <!-- Apex Rules -->
 
-    <rule name="CommentsAreAnExcuseForBadCodeAndTests" language="apex" message="Comments are often an excuse for bad code and tests" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="CommentsAreAnExcuseForBadCodeAndTests" language="apex" message="Comments are often an excuse for bad code and tests" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //FormalComment
             ]]></value></property>
         </properties>
     </rule>
 
-    <rule name="UnneedUseIfThisReducesReadability" language="apex" message="Unneeded use of this reduces readability" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="UnneedUseIfThisReducesReadability" language="apex" message="Unneeded use of this reduces readability" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //ThisVariableExpression[
                     ancestor::ReferenceExpression[ancestor::MethodCallExpression] or
@@ -117,10 +114,9 @@
         </properties>
     </rule>
 
-    <rule name="NullValueCheckBeforeEmptyCheck" language="apex" message="Apex code must check != null before .isEmpty()" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="NullValueCheckBeforeEmptyCheck" language="apex" message="Apex code must check != null before .isEmpty()" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //BooleanExpression[@Op="&&"][
                     child::*[2][
@@ -136,10 +132,9 @@
 
     <!-- Metadata XML Rules -->
 
-    <rule name="BumpApiVersion" language="xml" message="Metadata should use the latest API version." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="BumpApiVersion" language="xml" message="Metadata should use the latest API version." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //apiVersion/text[number(@Image) < 50]
             ]]></value></property>
@@ -148,10 +143,9 @@
 
     <!-- Flow Rules -->
 
-    <rule name="DMLStatementInFlowLoop" language="xml" message="DML Operations shouldn't be done inside of Flow loops" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="DMLStatementInFlowLoop" language="xml" message="DML Operations shouldn't be done inside of Flow loops" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                     //Flow/loops//targetReference/text[@Image=//Flow/(recordCreates|recordDeletes|recordUpdates)/name/text/@Image]
             ]]></value></property>
@@ -160,10 +154,9 @@
 
     <!-- Custom Objects / Fields Rules -->
 
-    <rule name="MetadataRequiresDescription" language="xml" message="Add a description to explain custom metadata" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="MetadataRequiresDescription" language="xml" message="Add a description to explain custom metadata" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                     //(CustomObject | CustomField)[not(description)]
             ]]></value></property>
@@ -172,10 +165,9 @@
 
     <!-- Profile and Permission Set Rules -->
 
-    <rule name="ModifyOrViewAllOnPermSet" language="xml" message="Allowing this user permission can give access and ability to modify sensitive data." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ModifyOrViewAllOnPermSet" language="xml" message="Allowing this user permission can give access and ability to modify sensitive data." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //PermissionSet/userPermissions[ name/text[@Image='ModifyAllData' or @Image='ViewAllData'] and enabled/text[@Image='true'] ]
                 ]]> </value>
@@ -183,10 +175,9 @@
         </properties>
     </rule>
 
-    <rule name="ModifyOrViewAllOnSysAdminProfile" language="xml" message="Only Admins can view and modify all data, if any other profile get these permissions, they could manipulate records that shouldn't" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ModifyOrViewAllOnSysAdminProfile" language="xml" message="Only Admins can view and modify all data, if any other profile get these permissions, they could manipulate records that shouldn't" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //Profile/userPermissions[ name/text[@Image='ModifyAllData' or @Image='ViewAllData'] and enabled/text[@Image='true'] and pmd:fileName() != 'System Administrator' ]
                 ]]> </value>
@@ -194,10 +185,9 @@
         </properties>
     </rule>
 
-    <rule name="ManageUsersByNonSysAdmins" language="xml" message="Managing users need to be limited to System Administrator Profile only." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ManageUsersByNonSysAdmins" language="xml" message="Managing users need to be limited to System Administrator Profile only." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //Profile/userPermissions[ pmd:fileName() != 'System Administrator' and name/text[@Image='ManageUsers'] ]
                 ]]> </value>
@@ -205,10 +195,9 @@
         </properties>
     </rule>
 
-    <rule name="ViewSetupByNonSysAdmins" language="xml" message="Exposing the setup menu to non-authorized users." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ViewSetupByNonSysAdmins" language="xml" message="Exposing the setup menu to non-authorized users." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath"><value><![CDATA[
                 //Profile/userPermissions[ pmd:fileName() != 'System Administrator' and enabled/text[@Image='true'] and name/text[@Image='ViewSetup'] ]
                 ]]> </value>
