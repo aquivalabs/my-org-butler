@@ -2,8 +2,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     private static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
-    private final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
-    private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
+    private static final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
+    private static final Map<String, Tool> TOOLS = new Map<String, Tool>{ 
         'Call_Salesforce_API' => new CallSalesforceApiTool(),
         'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
         'Notify_User' => new NotifyUserTool(),
