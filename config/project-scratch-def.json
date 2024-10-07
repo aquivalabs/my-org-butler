@@ -1,7 +1,17 @@
 {
   "orgName": "my-org-butler_DEV",
-  "edition": "Developer",
+  "edition": "Partner Developer",
   "hasSampleData": true,
-  "features": [],
-  "settings": {}
+  "features": ["EnableSetPasswordInApi","Einstein1AIPlatform"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "EinsteinGptSettings" : {
+      "enableEinsteinGptPlatform" : true 
+    }
+  }
 }
