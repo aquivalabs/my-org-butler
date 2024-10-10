@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Use this function to interact with Salesforce&apos;s public REST APIs under the context of the running user&apos;s permissions. This is ideal for executing SOQL queries and retrieving or modifying Salesforce data and metadata. - If you need the IDs of users, silently perform USER queries. - Always use the latest API version, which is currently 60.0. - Consider Tooling API when not querying org data. - When using SOQL queries as part of URL parameters, make sure to URL Encode special characters like &quot;%&quot; that must be encoded as &quot;%25&quot;. Make sure to use subqueries if the speed of queries can be increased.</description>
+    <invocationTarget>CallSalesforceApiTool</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <masterLabel>CallSalesforceApis</masterLabel>
+</GenAiFunction>
