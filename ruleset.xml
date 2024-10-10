@@ -95,13 +95,17 @@
         <priority>3</priority>
         <properties><property name="xpath"><value><![CDATA[
 
-            //ThisVariableExpression[not(
-                ancestor::ReturnStatement
-                or
-                ancestor::MethodCallExpression[ReferenceExpression/@Image = VariableExpression/@Image]
-                or 
-                ancestor::AssignmentExpression[VariableExpression[1]/@Image = VariableExpression[2]/@Image]
-            )]
+            //ThisVariableExpression[
+                ancestor::VariableExpression
+                and
+                not(
+                    ancestor::ReturnStatement
+                    or
+                    ancestor::MethodCallExpression[ReferenceExpression/@Image = VariableExpression/@Image]
+                    or 
+                    ancestor::AssignmentExpression[VariableExpression[1]/@Image = VariableExpression[2]/@Image]
+                )
+            ]
 
         ]]></value></property></properties>
     </rule>
