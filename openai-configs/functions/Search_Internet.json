@@ -1,0 +1,16 @@
+{
+  "name": "Search_Internet",
+  "description": "Performs an internet search using a query and returns the top results.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "The search query string to search the internet for."
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}
