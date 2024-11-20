@@ -10,6 +10,7 @@ public class OpenAiApi {
         request = new HttpRequest();
         request.setEndpoint('callout:aquiva_os__OpenAiApi/v1' + urlFragment);
         request.setHeader('Content-Type', 'application/json');
+        request.setHeader('OpenAI-Beta', 'assistants=v2');
         request.setHeader('Authorization', 'Bearer {!$Credential.OpenAiApi.ApiKey}');
         request.setHeader('OpenAI-Beta', 'assistants=v1');
     }
