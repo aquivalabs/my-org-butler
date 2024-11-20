@@ -8,7 +8,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
         'Notify_User' => new NotifyUserTool(),
         'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool(),
-        'Open_Org_Page' => new OpenOrgPageTool()
+        'Open_Org_Page' => new OpenOrgPageTool(),
+        'Extract_Webpage_Info' => new ExtractWebpageInfoTool(),
+        'Search_Internet' => new SearchInternetTool()
     };
 
     @TestVisible

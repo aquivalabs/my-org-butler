@@ -24,7 +24,7 @@ private class SearchInternetTool_Test {
         new HttpMock().get('/search.json', mockResponse).mock();
 
         // Exercise
-        String response = new InternetSearchTool().execute(new Parameter().asJson());
+        String response = new SearchInternetTool().execute(new Parameter().asJson());
 
         // Verify
         System.assertNotEquals(null, response);
