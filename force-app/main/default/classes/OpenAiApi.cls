@@ -12,7 +12,7 @@ public class OpenAiApi {
         request.setHeader('Content-Type', 'application/json');
         request.setHeader('OpenAI-Beta', 'assistants=v2');
         request.setHeader('Authorization', 'Bearer {!$Credential.OpenAiApi.ApiKey}');
-        request.setHeader('OpenAI-Beta', 'assistants=v1');
+        request.setHeader('OpenAI-Beta', 'assistants=v2');
     }
 
     // PUBLIC

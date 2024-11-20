@@ -2,8 +2,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
 
     private static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
-    private final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
-    private final static Map<String, Tool> TOOLS = new Map<String, Tool>{ 
+    private static final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
+    private static final Map<String, Tool> TOOLS = new Map<String, Tool>{ 
         'Call_Salesforce_API' => new CallSalesforceApiTool(),
         'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
         'Notify_User' => new NotifyUserTool(),
@@ -69,12 +69,6 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     }
 
     public Message modify(Message existingMessage) {
-        aquiva.Tracker.event('MyOrgButlerMetadata')
-                                .with('messageId', existingMessage.id)
-                                .with('runId', existingMessage.run_id)
-                                .with('isUpvote', existingMessage.metadata.isFeedbackPositive);
-        aquiva.Tracker.publish();
-        
         return Message.modify(settings.ThreadId__c, existingMessage);
     }
 
@@ -146,31 +140,17 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
             }
 
             try {
-                aquiva.Tracker.event('MyOrgButlerToolCall') 
-                                .with('threadId', threadId())
-                                .with('runId', run.id)
-                                .with('tool', call.function.name)
-                                .with('toolParams', call.function.arguments)
-                                .with('startTime', Datetime.now());
-
                 Tool tool = TOOLS.get(call.function.name);
                 tool.setThreadId(settings.ThreadId__c);
                 result.output = tool.execute(call.function.arguments);
-
-                aquiva.Tracker.current().with('endTime', Datetime.now());
                                 
             } 
             catch(Exception error) {
                 result.output = 'ERROR when calling: ' + call.function.name + '( ' + call.function.arguments + ')\n\n' +
                                 error.getTypeName() + ' ' + error.getMessage() + ' ' + error.getStackTraceString();
-                
-                aquiva.Tracker.current().with('error', result.output);
             }
             outputs.add(result);
         }
-
-        aquiva.Tracker.publish();
-
         submitToolOutput(run.thread_id, run.id, JSON.serialize(outputs));
     }
 

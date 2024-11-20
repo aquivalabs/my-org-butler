@@ -1,5 +1,5 @@
 // PMD False Positive: API properties require underscores
-@SuppressWarnings('PMD.FieldNamingConventions')
+@SuppressWarnings('PMD.PropertyNamingConventions')
 public class Message {
 
     @AuraEnabled public String id { get; set; }

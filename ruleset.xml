@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Aquiva Default PMD Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+<ruleset name="OpinionatedSalesforce" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>Aquiva Default PMD Ruleset</description>
 
@@ -11,18 +11,22 @@
     
     <rule ref="category/apex/security.xml">
         <priority>1</priority>
+
+        <!-- Salesforce Graph Engine does this better -->    
+        <exclude name="ApexCRUDViolation" />    
     </rule>  
 
     <rule ref="category/apex/bestpractices.xml">      
         <priority>2</priority>   
-        
+
+        <exclude name="DebugsShouldUseLoggingLevel" /> <!-- Is buggy -->
         <exclude name="ApexUnitTestClassShouldHaveRunAs" /> <!-- No smart person does that -->
         <exclude name="ApexAssertionsShouldIncludeMessage" /> <!-- Better have a focused well named method -->
         <exclude name="ApexUnitTestClassShouldHaveAsserts" /> <!-- Configured below -->
     </rule>
 
     <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
-        <priority>3</priority>
+        <priority>2</priority>
         <properties>
             <property name="additionalAssertMethodPattern" value="((System\.Assert|Assert|Asserts)\.\w+|verify\w+)"/>
         </properties>
@@ -31,48 +35,44 @@
     <rule ref="category/apex/design.xml">      
         <priority>2</priority>  
 
-        <!-- Note: Cognitive Complexity covers all of that better -->     
+        <!-- Salesforce Graph Engine does this better --> 
+        <exclude name="UnusedMethod" />
+
+        <!-- Cognitive Complexity covers all of that better -->     
         <exclude name="AvoidDeeplyNestedIfStmts" />
         <exclude name="StdCyclomaticComplexity" />
         <exclude name="CyclomaticComplexity" />
         <exclude name="ExcessiveClassLength" />
-        <exclude name="ExcessiveParameterList" />
         <exclude name="ExcessivePublicCount" />
         <exclude name="TooManyFields" />
-        <exclude name="NcssConstructorCount" />
-        <exclude name="NcssMethodCount" />
         <exclude name="NcssTypeCount" />
     </rule>
 
     <rule ref="category/apex/performance.xml">      
         <priority>2</priority>   
 
-        <!-- Note: All below should be covered by OperationWithLimitsInLoop -->     
-        <exclude name="AvoidDmlStatementsInLoops" />    
-        <exclude name="AvoidSoqlInLoops" />    
-        <exclude name="AvoidSoslInLoops" />    
-
-        <!-- Improved by AvoidProductionDebugLogs below -->
-        <exclude name="AvoidDebugStatements" />   
+        <exclude name="AvoidNonRestrictiveQueries" />  <!-- Stupid rule, sorry but no -->
+        <exclude name="AvoidDebugStatements" />  <!-- Improved by XPath below --> 
     </rule>
 
-    <rule name="AvoidDebugStatements" language="apex" message="Avoid leaving System.debug() statments in code as they negativly influence performance." class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <priority>2</priority>   
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2]
-            ]]></value></property>
-        </properties>
+    <rule name="DebugsNeedALoggingLevel" language="apex" message="Debug statements should use an explicit Debug Level" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>2</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(//VariableExpression)>2]
+        
+        ]]></value></property></properties>
     </rule>
 
     <rule ref="category/apex/codestyle.xml">      
-        <priority>2</priority>  
-        <!-- Note: Just make a few class naming rules a bit stricter -->   
+        <priority>3</priority>  
+        
+        <!-- Improve by disallowing _ in Classnames -->
+        <exclude name="ClassNamingConventions" />  
     </rule>
 
     <rule ref="category/apex/codestyle.xml/ClassNamingConventions">
-        <priority>2</priority> 
+        <priority>3</priority> 
         <properties>
             <property name="testClassPattern" value="[A-Z][a-zA-Z0-9_]*" />
             <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]*" />
@@ -84,7 +84,6 @@
 
     <rule ref="category/apex/errorprone.xml">      
         <priority>2</priority>  
-        <!-- Note: Stupid category but I think everything in there is valid and a 2 -->     
     </rule>
 
 
@@ -92,127 +91,159 @@
 
     <!-- Apex Rules -->
 
-    <rule name="CommentsAreAnExcuseForBadCodeAndTests" language="apex" message="Comments are often an excuse for bad code and tests" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="UnneededUseOfThisReducesReadability" language="apex" message="Unneeded use of this reduces readability" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //FormalComment
-            ]]></value></property>
-        </properties>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //ThisVariableExpression[
+                ancestor::VariableExpression
+                and
+                not(
+                    ancestor::ReturnStatement
+                    or
+                    ancestor::MethodCallExpression[ReferenceExpression/@Image = VariableExpression/@Image]
+                    or 
+                    ancestor::AssignmentExpression[VariableExpression[1]/@Image = VariableExpression[2]/@Image]
+                )
+            ]
+
+        ]]></value></property></properties>
     </rule>
 
-    <rule name="UnneedUseIfThisReducesReadability" language="apex" message="Unneeded use of this reduces readability" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="OnlyOneReturnPerMethod" language="apex" message="Method with multiple returns are confusing" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //ThisVariableExpression[
-                    ancestor::ReferenceExpression[ancestor::MethodCallExpression] or
-                    ancestor::AssignmentExpression/VariableExpression[1][
-                        @Image != following-sibling::VariableExpression[1]/@Image
-                    ]
-                ]
-            ]]></value></property>
-        </properties>
+        <properties><property name="xpath"><value><![CDATA[
+            
+            //Method[count(.//ReturnStatement) > 1]
+
+        ]]></value></property></properties>
     </rule>
 
-    <rule name="NullValueCheckBeforeEmptyCheck" language="apex" message="Apex code must check != null before .isEmpty()" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="TestsShouldNotStartWithTest" language="apex" message="Test results are harder to grasp when tests start with the word test" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //Method[
+                starts-with(lower-case(@Image), "test") 
+                and 
+                descendant::ModifierNode/Annotation[@Image="IsTest"]
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+
+    <rule name="DeclareWhatYouReturnFirstAndCallItResult" language="apex" message="What you return call it result and declare it in the first line" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //ReturnStatement[
+                lower-case(@Image) != 'result' 
+                and
+                ancestor::Method[
+                    @Synthetic = false() 
+                    and 
+                    lower-case(@ReturnType)!='void'
+                ] 
+                and
+                preceding-sibling::VariableDeclarationStatements/VariableDeclaration[1][@Image != 'result'
+            ]]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="NullValueCheckBeforeEmptyCheck" language="apex" message="Apex code must check != null before .isEmpty()" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //BooleanExpression[@Op="&&"][
-                    child::*[2][
-                    self::BooleanExpression[@Op="!="][
-                        child::*[1][self::VariableExpression] and
-                        child::*[2][self::LiteralExpression[@LiteralType="NULL"]]
-                    ]
-                    ]
+        <properties><property name="xpath"><value><![CDATA[
+
+            //BooleanExpression[@Op="&&"][
+                child::*[2][
+                self::BooleanExpression[@Op="!="][
+                    child::*[1][self::VariableExpression] and
+                    child::*[2][self::LiteralExpression[@LiteralType="NULL"]]
                 ]
-            ]]></value></property>
-        </properties>
+                ]
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="CheckIfProperFalsePositive" language="apex" message="Only False Positives can be supressed and need a proper comment." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>5</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //Annotation[@Image='SuppressWarnings']/AnnotationParameter[starts-with(@Value, 'PMD.')]
+        
+        ]]></value></property></properties>
+    </rule>
+    
+    <rule name="CommentsOftenExcuseForBadCodeAndTests" language="apex" message="Formal class or method comments are often an excuse for bad code and tests" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>4</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //FormalComment
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="PreferRealObjectsOverStaticHelpers" language="apex" message="Use real objects with data and state instead of static messy helpers." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //UserClass[not(.//Method[@Constructor=true()])]//Method/ModifierNode[@Static=true()]
+        
+        ]]></value></property></properties>
     </rule>
 
     <!-- Metadata XML Rules -->
 
-    <rule name="BumpApiVersion" language="xml" message="Metadata should use the latest API version." class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
+    <rule name="BumpApiVersion" language="xml" message="Metadata should use the latest API version." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>2</priority>
+        <properties><property name="xpath"><value><![CDATA[
                 //apiVersion/text[number(@Image) < 50]
-            ]]></value></property>
-        </properties>
+
+        ]]></value></property></properties>
     </rule>
 
     <!-- Flow Rules -->
 
-    <rule name="DMLStatementInFlowLoop" language="xml" message="DML Operations shouldn't be done inside of Flow loops" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="DMLStatementInFlowLoop" language="xml" message="DML Operations shouldn't be done inside of Flow loops" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                    //Flow/loops//targetReference/text[@Image=//Flow/(recordCreates|recordDeletes|recordUpdates)/name/text/@Image]
-            ]]></value></property>
-        </properties>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //Flow/loops//targetReference[not(ancestor::noMoreValuesConnector)]/text[@Image=//Flow/(recordCreates|recordDeletes|recordUpdates)/name/text/@Image]
+
+        ]]></value></property></properties>
     </rule>
 
     <!-- Custom Objects / Fields Rules -->
 
-    <rule name="MetadataRequiresDescription" language="xml" message="Add a description to explain custom metadata" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="MetadataRequiresDescription" language="xml" message="Add a description to explain custom metadata" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>2</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                    //(CustomObject | CustomField)[not(description)]
-            ]]></value></property>
-        </properties>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //(CustomObject | CustomField | PermissionSet)[not(description)]
+
+        ]]></value></property></properties>
     </rule>
 
     <!-- Profile and Permission Set Rules -->
 
-    <rule name="ModifyOrViewAllOnPermSet" language="xml" message="Allowing this user permission can give access and ability to modify sensitive data." class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ModifyOrViewAllOnPermSet" language="xml" message="Allowing this user permission can give access and ability to modify sensitive data." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //PermissionSet/userPermissions[ name/text[@Image='ModifyAllData' or @Image='ViewAllData'] and enabled/text[@Image='true'] ]
-                ]]> </value>
-            </property>
-        </properties>
+        <properties><property name="xpath"><value><![CDATA[
+    
+            //PermissionSet/userPermissions[ name/text[@Image='ModifyAllData' or @Image='ViewAllData'] and enabled/text[@Image='true'] ]
+
+        ]]></value></property></properties>
     </rule>
 
-    <rule name="ModifyOrViewAllOnSysAdminProfile" language="xml" message="Only Admins can view and modify all data, if any other profile get these permissions, they could manipulate records that shouldn't" class="net.sourceforge.pmd.lang.rule.XPathRule">
+    <rule name="ViewSetupByNonSysAdmins" language="xml" message="Exposing the setup menu to non-authorized users." class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //Profile/userPermissions[ name/text[@Image='ModifyAllData' or @Image='ViewAllData'] and enabled/text[@Image='true'] and pmd:fileName() != 'System Administrator' ]
-                ]]> </value>
-            </property>
-        </properties>
-    </rule>
+        <properties><property name="xpath"><value><![CDATA[
 
-    <rule name="ManageUsersByNonSysAdmins" language="xml" message="Managing users need to be limited to System Administrator Profile only." class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
-                //Profile/userPermissions[ pmd:fileName() != 'System Administrator' and name/text[@Image='ManageUsers'] ]
-                ]]> </value>
-            </property>
-        </properties>
-    </rule>
-
-    <rule name="ViewSetupByNonSysAdmins" language="xml" message="Exposing the setup menu to non-authorized users." class="net.sourceforge.pmd.lang.rule.XPathRule">
-        <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath"><value><![CDATA[
                 //Profile/userPermissions[ pmd:fileName() != 'System Administrator' and enabled/text[@Image='true'] and name/text[@Image='ViewSetup'] ]
-                ]]> </value>
-            </property>
-        </properties>
+        
+        ]]></value></property></properties>
     </rule>
 </ruleset>

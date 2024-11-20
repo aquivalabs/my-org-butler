@@ -5,13 +5,8 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "April '24",
-      "versionNumber": "1.30.0.NEXT",
-      "versionDescription": "",
-      "dependencies": [
-        {
-          "package": "aquiva-success-tracker"
-        }
-      ]
+      "versionNumber": "1.32.0.NEXT",
+      "versionDescription": ""
     }
   ],
   "name": "my-org-butler",
@@ -19,7 +14,6 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "62.0",
   "packageAliases": {
-    "aquiva-success-tracker": "04tVI0000004lOXYAY",
     "my-org-butler": "0HoVI0000002h2T0AQ",
     "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ",
     "my-org-butler@1.2.0-2": "04tVI0000002o3xYAA",
@@ -49,6 +43,8 @@
     "my-org-butler@1.27.0-2": "04tVI0000004YvxYAE",
     "my-org-butler@1.28.0-1": "04tVI0000004YxZYAU",
     "my-org-butler@1.29.0-1": "04tVI0000004f2zYAA",
-    "my-org-butler@1.30.0-1": "04tVI0000004lQ9YAI"
+    "my-org-butler@1.30.0-1": "04tVI0000004lQ9YAI",
+    "my-org-butler@1.31.0-1": "04tVI0000005RpBYAU",
+    "my-org-butler@1.32.0-1": "04tVI0000006o5NYAQ"
   }
 }
