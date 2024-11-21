@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RunId__c</fullName>
+    <description>Id of the Current OpenAi Run</description>
     <externalId>true</externalId>
     <label>Run Id</label>
     <length>80</length>

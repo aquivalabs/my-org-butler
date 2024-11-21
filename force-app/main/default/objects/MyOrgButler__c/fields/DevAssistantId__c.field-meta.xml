@@ -3,6 +3,7 @@
     <fullName>DevAssistantId__c</fullName>
     <externalId>true</externalId>
     <label>OpenAI Assitent Id (Dev)</label>
+    <description>OpenAi Assistant Id use in Non Production Orgs</description>
     <length>80</length>
     <required>false</required>
     <trackTrending>false</trackTrending>

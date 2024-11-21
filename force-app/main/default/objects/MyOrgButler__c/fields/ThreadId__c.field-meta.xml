@@ -3,6 +3,7 @@
     <fullName>ThreadId__c</fullName>
     <externalId>true</externalId>
     <label>Thread Id</label>
+    <description>Id of the Current OpenAi Thread</description>
     <length>80</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
