@@ -190,8 +190,13 @@
         <priority>3</priority>
         <properties><property name="xpath"><value><![CDATA[
 
-            //UserClass[not(.//Method[@Constructor=true()])]//Method/ModifierNode[@Static=true()]
-        
+            //UserClass[
+                count(.//Method) = count(.//Method/ModifierNode[@Static=true()])
+                and count(.//Method) > 0
+                and not(descendant::ModifierNode/Annotation[@Image='IsTest'])
+                and not(.//Method/ModifierNode/Annotation[@Image='InvocableMethod' or @Image='AuraEnabled'])
+            ]
+            
         ]]></value></property></properties>
     </rule>
 
