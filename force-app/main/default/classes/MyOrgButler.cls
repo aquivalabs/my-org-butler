@@ -8,7 +8,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
         'Notify_User' => new NotifyUserTool(),
         'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool(),
-        'Open_Org_Page' => new OpenOrgPageTool()
+        'Open_Org_Page' => new OpenOrgPageTool(),
+        'Get_User_Context' => new GetUserContextTool(),
+        'Search_Web' => new SearchWebTool()
     };
 
     @TestVisible
@@ -56,15 +58,15 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         return Run.steps(settings.ThreadId__c, runId, new Params().order(order));
     }
 
-    public void respond(String question, String context) {
+    public void respond(String question) {
         Message.create(settings.ThreadId__c, new Message(question));
-        persistNewRun(context);
+        persistNewRun();
         enqueuePolling();
     }
 
     public void resume(String threadId) {
         Message.create(threadId, new Message('Thread resumed after wait. Please continue.'));
-        persistNewRun(null);
+        persistNewRun();
         enqueuePolling();
     }
 
@@ -93,9 +95,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         upsert as system settings;
     }
 
-    private void persistNewRun(String context) {
+    private void persistNewRun() {
         Run newRun = new Run(settings.ThreadId__c, ASSISTANT_ID);
-        newRun.additional_instructions = prepareAdditionalInstructions(context);
         newRun = Run.create(settings.ThreadId__c, newRun);
 
         settings.RunId__c = newRun.id;
@@ -166,19 +167,6 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private void notifyUi(Run run) {
         callback = new AssistantCallback__e(Type__c = CALLBACK_RUN_FINISHED, ThreadId__c = run.thread_id);
         EventBus.publish(callback);
-    }
-
-    private String prepareAdditionalInstructions(String context) {
-        return 'Execute the users request using this context information. Specially important is the currentPage as it tells you what the user sees and refers to. So when you are asked about to explain or summarize always think about what the user sees and might refer to:\n' +
-                '\nuserId=' + UserInfo.getUserId() +
-                '\nuserFirstName=' + UserInfo.getFirstName() +
-                '\nuserLastName=' + UserInfo.getLastName() +
-                '\nuserLanguage=' + UserInfo.getLanguage() +
-                '\nuserTimezone=' + UserInfo.getTimeZone() +
-                '\nuserDateTime=' + System.now().format('E, dd MMM yyyy HH:mm:ss z') +
-                '\nuserEmail=' + UserInfo.getUserEmail() +
-                '\nbaseUrlForLinks=' + URL.getSalesforceBaseUrl().toExternalForm() +
-                '\ncurrentPage=' +  context;
     }
 
     private static String assistantId() {

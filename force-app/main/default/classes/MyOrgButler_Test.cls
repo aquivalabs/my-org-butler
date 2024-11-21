@@ -122,7 +122,7 @@ private class MyOrgButler_Test {
         // Exercise
         Test.startTest();
         //System.enqueueJob(new MyOrgButler());
-        new MyOrgButler().respond('Save the planet!', '42');
+        new MyOrgButler().respond('Save the planet!');
         Test.stopTest();
         
         // Verify

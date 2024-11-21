@@ -1,7 +1,7 @@
 import { api, LightningElement, track, wire } from 'lwc';
 import { subscribe, unsubscribe} from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
+import { NavigationMixin } from 'lightning/navigation';
 
 import init from '@salesforce/apex/ChatCtrl.init';
 import reset from '@salesforce/apex/ChatCtrl.reset';
@@ -24,8 +24,6 @@ const ENTER_BUTTON_CODE = 13;
 
 export default class ChatWindow extends NavigationMixin(LightningElement) {
     @track messages = [];
-    @track currentPage; 
-
     @api channelName = '/event/aquiva_os__AssistantCallback__e';
 
     threadId;
@@ -160,7 +158,7 @@ export default class ChatWindow extends NavigationMixin(LightningElement) {
 
             this.waitingForResponse = true;
             this.addPreviewMessage(this.question);
-            await respond({ question: this.question, context: JSON.stringify(this.currentPage) });
+            await respond({ question: this.question });
             this.resetQuestion();
         } 
         catch(exception) {
@@ -187,11 +185,6 @@ export default class ChatWindow extends NavigationMixin(LightningElement) {
             this.isLoading = false;
         }
     }
-
-    @wire(CurrentPageReference)
-    getPageReferenceParameters(currentPageReference) {
-        this.currentPage = currentPageReference;
-    }   
 
     async connectedCallback() {
         try {
