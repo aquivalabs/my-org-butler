@@ -4,8 +4,8 @@
       "path": "force-app",
       "default": true,
       "package": "my-org-butler",
-      "versionName": "April '24",
-      "versionNumber": "1.32.0.NEXT",
+      "versionName": "November '24",
+      "versionNumber": "1.33.0.NEXT",
       "versionDescription": ""
     }
   ],
@@ -45,6 +45,9 @@
     "my-org-butler@1.29.0-1": "04tVI0000004f2zYAA",
     "my-org-butler@1.30.0-1": "04tVI0000004lQ9YAI",
     "my-org-butler@1.31.0-1": "04tVI0000005RpBYAU",
-    "my-org-butler@1.32.0-1": "04tVI0000006o5NYAQ"
+    "my-org-butler@1.32.0-1": "04tVI0000006o5NYAQ",
+    "my-org-butler@1.32.0-2": "04tVI000000E7XtYAK",
+    "my-org-butler@1.33.0-1": "04tVI000000E7eLYAS",
+    "my-org-butler@1.33.0-2": "04tVI000000E7jBYAS"
   }
 }
