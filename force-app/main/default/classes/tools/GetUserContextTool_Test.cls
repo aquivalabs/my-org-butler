@@ -16,5 +16,6 @@ private class GetUserContextTool_Test {
         System.assertEquals(UserInfo.getTimeZone().getID(), output.userTimezone);
         System.assertEquals(UserInfo.getUserEmail(), output.userEmail);
         System.assertEquals(URL.getOrgDomainUrl().toExternalForm(), output.baseUrlForLinks);
+        System.assertEquals(UserInfo.getOrganizationId(), output.orgId);
     }
 }

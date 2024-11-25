@@ -21,6 +21,7 @@ public with sharing class GetUserContextTool extends MyOrgButler.Tool {
         result.userDateTime = System.now().format('E, dd MMM yyyy HH:mm:ss z');
         result.userEmail = UserInfo.getUserEmail();
         result.baseUrlForLinks = URL.getOrgDomainUrl().toExternalForm();
+        result.orgId = UserInfo.getOrganizationId();
         return result;
     }
 
@@ -43,5 +44,7 @@ public with sharing class GetUserContextTool extends MyOrgButler.Tool {
         public String userEmail;
         @InvocableVariable
         public String baseUrlForLinks;
+        @InvocableVariable
+        public String orgId;
     }
 }
