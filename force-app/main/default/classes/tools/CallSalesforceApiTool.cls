@@ -14,7 +14,9 @@ public with sharing class CallSalesforceApiTool extends MyOrgButler.Tool {
         return result[0].responseBody;
     }
 
-    @InvocableMethod
+    @InvocableMethod(
+        label='MyOrgButler: Call Salesforce API'
+        description='Call an official public Salesforce API REST endpoint')
     public static List<Output> execute(List<Input> input) {
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
@@ -38,18 +40,30 @@ public with sharing class CallSalesforceApiTool extends MyOrgButler.Tool {
     // INNER
 
     public class Input {
-        @InvocableVariable(required=true)
+        @InvocableVariable(
+            label='Endpoint URL' 
+            description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added' 
+            required=true)
         public String urlIncludingParams;
         
-        @InvocableVariable(required=true)
+        @InvocableVariable(
+            label='HTTP Method' 
+            description='The HTTP method to use' 
+            required=true)
         public String httpMethod;
         
-        @InvocableVariable
+        @InvocableVariable(
+            label='Request Body' 
+            description='Payload data to be sent in the request body. Can be null if there is no body.' 
+            required=true)
         public String requestBody;
     }
 
     public class Output {
-        @InvocableVariable
+        @InvocableVariable(
+            label='Response Body' 
+            description='Raw HTTP Response to be interpreted for Errors or Success' 
+            required=true)
         public String responseBody;
         
         public Output(String body) {

@@ -3,9 +3,17 @@
 public with sharing class NotifyUserTool extends MyOrgButler.Tool {
     
     public override String execute(String jsonParameter) {
-        Notifications notifications = new Notifications();
-        notifications.inputs = new List<Notification>{ new Notification(jsonParameter) };
-        
+        List<Notification> notifications = new List<Notification>{ new Notification(jsonParameter) };
+        List<Output> result = execute(notifications);
+        return JSON.serialize(result[0]);
+    }
+
+
+    @InvocableMethod(
+        label='MyOrgButler: Notify User'
+        description='Sends an In-org notification message to a set of users optionally linking to a target record'
+    )
+    public static List<Output> execute(List<Notification> notifications) {
         HttpRequest request = new HttpRequest();
         request.setEndpoint(Url.getOrgDomainUrl().toExternalForm() + '/services/data/v60.0/actions/standard/customNotificationAction');
         request.setMethod('POST');
@@ -17,7 +25,7 @@ public with sharing class NotifyUserTool extends MyOrgButler.Tool {
         if(response.getStatusCode() >= 300) {
             throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and Notification: ' + response.getBody() + '.');
         }
-        return response.getBody();
+        return new List<Output>{ new Output(response.getBody()) };
     }
 
     // INNER
@@ -27,11 +35,19 @@ public with sharing class NotifyUserTool extends MyOrgButler.Tool {
     }
 
     public class Notification {
-        public String customNotifTypeId { get; set; }
-        public List<String> recipientIds { get; set; }
-        public String title { get; set; }
-        public String body { get; set; }
-        public String targetId { get; set; }
+        public String customNotifTypeId;
+
+        @InvocableVariable(label='Recipient User Ids' description='Comma separated list of Salesforce Ids of the users to send the notification to' required=true)
+        public List<String> recipientIds;
+
+        @InvocableVariable(label='Title' description='Short title of the notification' required=true)
+        public String title;
+
+        @InvocableVariable(label='Body' description='Notification text' required=true)
+        public String body;
+
+        @InvocableVariable(label='Target Id' description='Salesforce Id of the record to link to. If there is none use 000000000000000AAA' required=true)
+        public String targetId;
 
         public Notification(String paramsJson) {
             customNotifTypeId = [SELECT Id FROM CustomNotificationType WHERE DeveloperName='InOrgNotifications'].Id;
@@ -46,6 +62,18 @@ public with sharing class NotifyUserTool extends MyOrgButler.Tool {
         private List<String> recipientIds(JsonParse parser) {
             String result = parser.get('recipientIds').getStringValue();
             return result.trim().split(',');
+        }
+    }
+
+    public class Output {
+        @InvocableVariable(
+            label='Response Body' 
+            description='Raw HTTP Response to be interpreted for Errors or Success' 
+            required=true)
+        public String responseBody;
+        
+        public Output(String body) {
+            responseBody = body;
         }
     }
 }

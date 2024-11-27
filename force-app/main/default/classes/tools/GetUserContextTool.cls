@@ -4,8 +4,11 @@ public with sharing class GetUserContextTool extends MyOrgButler.Tool {
         return JSON.serialize( getContext() );
     }
 
-    @InvocableMethod
-    public static List<Context> execute() {
+    @InvocableMethod(
+        label='MyOrgButler: Get User Context'
+        description='Provides context information about the current user, including user details, time, date, and org information.'
+    )
+    public static List<Context> execute(List<String> ignored) {
         return new List<Context>{ getContext() };
     }
 
@@ -28,23 +31,32 @@ public with sharing class GetUserContextTool extends MyOrgButler.Tool {
     // INNER
 
     public class Context {
-        @InvocableVariable
+        @InvocableVariable(label='User ID' description='The ID of the current user.')
         public String userId;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User First Name' description='The first name of the current user.')
         public String userFirstName;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User Last Name' description='The last name of the current user.')
         public String userLastName;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User Language' description='The language of the current user (e.g., en_US).')
         public String userLanguage;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User Timezone' description='The timezone of the current user.')
         public String userTimezone;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User Date and Time' description='The current date and time in the user’s timezone.')
         public String userDateTime;
-        @InvocableVariable
+    
+        @InvocableVariable(label='User Email' description='The email address of the current user.')
         public String userEmail;
-        @InvocableVariable
+    
+        @InvocableVariable(label='Base URL for Links' description='The base URL for constructing links in the current Salesforce org.')
         public String baseUrlForLinks;
-        @InvocableVariable
+    
+        @InvocableVariable(label='Organization ID' description='The ID of the Salesforce organization.')
         public String orgId;
     }
+    
 }

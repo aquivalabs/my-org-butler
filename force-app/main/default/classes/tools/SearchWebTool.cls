@@ -11,7 +11,10 @@ public with sharing class SearchWebTool extends MyOrgButler.Tool {
         return JSON.serialize(result[0]);
     }
 
-    @InvocableMethod
+    @InvocableMethod(
+        label='MyOrgButler: Search Web'
+        description='Performs a web search using the Tavily API and returns the answer.'
+    )
     public static List<Answer> execute(List<Query> queries) {
         HttpRequest request = new HttpRequest();
         request.setEndpoint('https://api.tavily.com/search');
@@ -49,12 +52,12 @@ public with sharing class SearchWebTool extends MyOrgButler.Tool {
     // INNER
 
     public class Query {
-        @InvocableVariable(required=true)
+        @InvocableVariable(label='Query' description='A natural language search query to search the web for and get an answer for.' required=true)
         public String content;
     }
 
     public class Answer {
-        @InvocableVariable(required=true)
+        @InvocableVariable(label='Answer' description='The Natural Language Answer for the Query generated after doing a Web Search.' required=true)
         public String answer;
     }
 }
