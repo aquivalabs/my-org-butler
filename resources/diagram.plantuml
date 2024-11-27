@@ -1,0 +1,31 @@
+@startuml
+    hide footbox
+
+    actor "Salesforce User" as User
+    participant "Salesforce Org" as Salesforce
+    box "My Org Butler" #LightGrey
+        participant ToolbarChat
+        participant AppLogic
+        participant Tools
+    end box
+    participant "OpenAI Assistant API" as OpenAI
+
+    User -> ToolbarChat : Prompt with task
+    ToolbarChat -> AppLogic : Delegate
+    AppLogic -> OpenAI : Delegate
+    OpenAI -> OpenAI : Reasoning/Planning
+    AppLogic -> OpenAI : Polling: Suggest Tool Call
+    AppLogic -> Tools : Execute Tool Call
+    Tools -> Salesforce : Perform task
+
+    alt [Success]
+        AppLogic <- Salesforce  : Result
+        AppLogic -> OpenAI : Result
+    else [Error]
+        AppLogic <- Salesforce  : Error
+        AppLogic -> OpenAI : Delegate to fix
+    end
+
+    AppLogic <- OpenAI : Summarize result
+    ToolbarChat <- AppLogic : Display result
+@enduml

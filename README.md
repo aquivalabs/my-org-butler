@@ -32,7 +32,7 @@ Those automation are not performed by the LLM but just delegated back to Salesfo
 
 This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Action or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
 
-![](/resources/plantuml.png)
+![](/resources/diagram.png)
 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
