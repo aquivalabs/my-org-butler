@@ -7,7 +7,7 @@ private class SearchWebTool_Test {
         // Setup
         insert new MyOrgButler__c(TavilyApiKey__c = '123');
 
-        SearchWebTool.Answer expected = answerWith('Donald Trump was elected in November 2024.');
+        SearchWeb.Answer expected = answerWith('Donald Trump was elected in November 2024.');
         new HttpMock()
                 .post('/search', expected)
                 .mock();
@@ -18,14 +18,14 @@ private class SearchWebTool_Test {
         Test.stopTest();
 
         // Verify
-        SearchWebTool.Answer actual = (SearchWebTool.Answer) JSON.deserialize(response, SearchWebTool.Answer.class);
+        SearchWeb.Answer actual = (SearchWeb.Answer) JSON.deserialize(response, SearchWeb.Answer.class);
         System.assertEquals(expected.answer, actual.answer);
     }
 
     // HELPER
 
-    private static SearchWebTool.Answer answerWith(String content) {
-        SearchWebTool.Answer result = new SearchWebTool.Answer();
+    private static SearchWeb.Answer answerWith(String content) {
+        SearchWeb.Answer result = new SearchWeb.Answer();
         result.answer = content;
         return result;
     }

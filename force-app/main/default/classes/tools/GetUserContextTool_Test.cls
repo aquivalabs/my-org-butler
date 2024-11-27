@@ -8,7 +8,7 @@ private class GetUserContextTool_Test {
 
         // Verify
         System.assertNotEquals(null, response);
-        GetUserContextTool.Context output = (GetUserContextTool.Context) JSON.deserialize(response, GetUserContextTool.Context.class);
+        GetUserContext.Context output = (GetUserContext.Context) JSON.deserialize(response, GetUserContext.Context.class);
         System.assertEquals(UserInfo.getUserId(), output.userId);
         System.assertEquals(UserInfo.getFirstName(), output.userFirstName);
         System.assertEquals(UserInfo.getLastName(), output.userLastName);
