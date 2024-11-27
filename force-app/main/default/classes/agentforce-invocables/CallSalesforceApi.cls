@@ -44,7 +44,7 @@ global with sharing class CallSalesforceApi {
         @InvocableVariable(
             label='Request Body' 
             description='Payload data to be sent in the request body. Can be null if there is no body.' 
-            required=true)
+            required=false)
         global String requestBody;
     }
 
