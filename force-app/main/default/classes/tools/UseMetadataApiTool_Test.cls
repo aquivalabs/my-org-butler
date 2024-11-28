@@ -10,7 +10,7 @@ private class UseMetadataApiTool_Test {
 
         // Exercise
         try {
-            new UseMetadataApiTool().execute('{ "typeName" : "RemoteSiteSetting", "attributesJson" : "{ \\\"fullName\\\" : \\\"Spiegel\\\", \\\"url\\\" : \\\"https://www.spiegel.de\\\", \\\"isActive\\\" : true }"}');
+            new UseMetadataApiTool().execute('{ "soapAction" : "createMetadata", "typeName" : "RemoteSiteSetting", "attributesJson" : "{ \\\"fullName\\\" : \\\"Spiegel\\\", \\\"url\\\" : \\\"https://www.spiegel.de\\\", \\\"isActive\\\" : true }"}');
         }
         catch(Exception ex) {
             unexpectedException = ex;
