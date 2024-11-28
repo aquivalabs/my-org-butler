@@ -37,6 +37,7 @@ This PoC shows that in the realm of Salesforce where there is a well-documented 
 #### Setup in the Org
 1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
 1. Populate the Assistant Id fields in the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c). There are 2 fields to differentiate between Assistants used in Dev and Production orgs.
+1. To use the Web Search Tool get a [Free Tavily API Key](https://tavily.com/) and put the Key also into the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c).
 <img src="resources/assistant-setup.png" width="400" />
 
 #### OPTIONAL: Use you own OpenAI Assistant
