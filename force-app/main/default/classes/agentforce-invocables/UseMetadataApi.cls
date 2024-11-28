@@ -5,18 +5,17 @@ global with sharing class UseMetadataApi {
 
     public static HttpResponse mockedResponse;
     
-    @InvocableMethod(label='MyOrgButler: Create Metadata' description='Creates XML Metadata (no code) in the org. Uses an Apex Wrapper to call the SOAP MDAPI')
+    @InvocableMethod(label='MyOrgButler: Use Metadata API' description='Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper.')
     global static List<Output> execute(List<MetadataDescription> descriptions) {
         List<Output> result = new List<Output>();
 
         for(MetadataDescription metadata : descriptions) {
             try {
-                Wsdl action = new MdtWsdl('upsertMetadata')
-                                            .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson))
-                                            .setDefaultNamespace('soap')
-                                            .setMockResponse(mockedResponse)
-                                            .call()
-                                            .handleErrors();
+                Wsdl action = actionFor(metadata)
+                                .setDefaultNamespace('soap')
+                                .setMockResponse(mockedResponse)
+                                .call()
+                                .handleErrors();
 
                 result.add(new Output(action.getResponse()?.getBody()));
             }
@@ -30,6 +29,47 @@ global with sharing class UseMetadataApi {
 
     // PRIVATE
 
+    private static Wsdl actionFor(MetadataDescription metadata) {
+        Wsdl result = null;
+    
+        switch on metadata.soapAction {
+            when 'describeMetadata' {
+                result = new MdtWsdl(metadata.soapAction);
+            }
+            when 'upsertMetadata', 'createMetadata', 'updateMetadata' {
+                result = new MdtWsdl(metadata.soapAction)
+                                .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson));
+            }
+            when 'listMetadata' {
+                result = new MdtWsdl(metadata.soapAction)
+                                .setAllOrNone(true)
+                                .addListMetadata(metadata.typeName);
+            }
+            when 'readMetadata' {
+                result = new MdtWsdl(metadata.soapAction)
+                                .setItemMetadataType(metadata.typeName)
+                                .addItemMetadataFullName(metadata.fullName);
+            }
+            when 'deleteMetadata' {
+                result = new MdtWsdl(metadata.soapAction)
+                                .setItemMetadataType(metadata.typeName)
+                                .addItemMetadataFullName(metadata.fullName);
+            }
+            when 'executeAnonymous' {
+                result = new ApxWsdl(metadata.soapAction)
+                                .setLogLevel('DEBUG')
+                                .setLogCategory('APEX_CODE')
+                                .setCode(metadata.code);
+            }
+            when else {
+                throw new ApplicationException('Unsupported SOAP action: ' + metadata.soapAction);
+            }
+        }
+    
+        return result;
+    }
+    
+
     private static Map<String, Object> jsonToMap(String jsonString) {
         return (Map<String, Object>) JSON.deserializeUntyped(jsonString);
     }
@@ -37,11 +77,20 @@ global with sharing class UseMetadataApi {
     // INNER
 
     global class MetadataDescription {
-        @InvocableVariable(label='Metadata Type Name' description='The official Salesforce Metadata Type Name' required=true)
+        @InvocableVariable(label='SOAP Action' description='One of the allowed SOAP Action types: describeMetadata,listMetadata,readMetadata,createMetadata,updateMetadata,renameMetadata,upsertMetadata,deleteMetadata' required=true)
+        global String soapAction;
+
+        @InvocableVariable(label='Metadata Type Name' description='The official Salesforce Metadata Type Name' required=false)
         global String typeName;
         
-        @InvocableVariable(label='Attributes JSON' description='A JSON with all relevant attributes needed to create this metadata type.' required=true)
+        @InvocableVariable(label='Attributes JSON' description='A JSON with all relevant attributes needed to create this metadata type.' required=false)
         global String attributesJson;
+        
+        @InvocableVariable(label='Metadata Full Name' description='Some Actions need a Full Name of the existing Metadata record' required=false)
+        global String fullName;
+        
+        @InvocableVariable(label='Apex Code' description='Code for the executeAnonymous action' required=false)
+        global String code;
     }
 
 

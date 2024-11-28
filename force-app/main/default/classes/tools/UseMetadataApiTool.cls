@@ -4,6 +4,7 @@ public with sharing class UseMetadataApiTool extends MyOrgButler.Tool {
         JsonParse parser = new JsonParse(paramsJson);
 
         UseMetadataApi.MetadataDescription metadata = new UseMetadataApi.MetadataDescription();
+        metadata.soapAction = parser.get('soapAction').getStringValue();
         metadata.typeName = parser.get('typeName').getStringValue();
         metadata.attributesJson = parser.get('attributesJson').getStringValue();
         

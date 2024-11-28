@@ -1,9 +1,14 @@
 {
   "name": "Use_Metadata_API",
-  "description": "Upserts a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper and upsertmetadata",
+  "description": "Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper and upsertmetadata",
   "parameters": {
     "type": "object",
     "properties": {
+      "soapAction": {
+        "type": "string",
+        "enum": ["executeAnonymous", "describeMetadata", "listMetadata", "readMetadata", "createMetadata", "updateMetadata","renameMetadata","upsertMetadata","deleteMetadata"],
+        "description": ""
+      },
       "typeName": {
         "type": "string",
         "description": "The official Salesforce Metadata Type Name. Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm"
@@ -11,11 +16,14 @@
       "attributesJson": {
         "type": "string",
         "description": "A JSON with all relevant attributes needed to create this metadata type.. Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm"
+      },
+      "code": {
+        "type": "string",
+        "description": "Code for the executeAnonymous action"
       }
     },
     "required": [
-      "typeName",
-      "attributesJson"
+      "actionType"
     ]
   }
 }  

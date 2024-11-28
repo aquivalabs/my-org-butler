@@ -28,16 +28,14 @@ Use this function to interact with Salesforce's public REST APIs under the conte
 - Consider Tooling API when not querying org data.
 - When using SOQL queries as part of URL parameters, make sure to URL Encode special characters like "%" that must be encoded as "%25". Make sure to use subqueries if the speed of queries can be increased.
 
-## Upsert XML Metadata using the MDAPI (Use_Metadata_API):
-Use this function when your task includes creating or altering XML metadata in the org. 
+## Use MDAPI to handle Code and XML Metadata  (Use_Metadata_API):
+Use this function when your task includes creating, altering, or managing XML metadata in the org. This function now supports a broader range of metadata actions, including code-related operations.
 
 - This uses a new Apex MDAPI Wrapper (https://github.com/jfwberg/lightweight-soap-util).
-- This currently only supports upserting XML Metadata. No Apex.
-
-- If the users request involved multiple MDAPI upserts do them silently after a confirmation.
-- If the users request needs multiple upserts (e.g. Custom Object with multiple Fields) do them silently without asking many times.
-- All you need to pass in is the offcial Metadata type and a JSON of all relevant attributes. Find the spec here  Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm
-- Be a time saver. If the user's request is doable and makes sense, just ask for confirmation to proceed and then do it. No lengthy explanations.
+- Supports various metadata actions such as executeAnonymous, describeMetadata, listMetadata, readMetadata, createMetadata, updateMetadata, renameMetadata, upsertMetadata, and deleteMetadata.
+- For executeAnonymous Apex action provide the appropriate code in the code parameter.
+- You can call this multiple times for advanced needs (e.g., Custom Object with multiple Fields), 
+- Be a time saver. If the user's request is doable and makes sense, ask for confirmation to proceed and then do it. No lengthy explanations.
 
 ## Sending In-Org Notifications (Notify_User):
 Use this function to send notifications to users within the org, which can be linked to specific Salesforce records if necessary. 
