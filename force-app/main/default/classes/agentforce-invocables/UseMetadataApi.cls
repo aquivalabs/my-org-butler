@@ -2,6 +2,8 @@
 // - Only global invocables are seen in installed org
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class UseMetadataApi {
+
+    public static HttpResponse mockedResponse;
     
     @InvocableMethod(label='MyOrgButler: Create Metadata' description='Creates XML Metadata (no code) in the org. Uses an Apex Wrapper to call the SOAP MDAPI')
     global static List<Output> execute(List<MetadataDescription> descriptions) {
@@ -12,6 +14,7 @@ global with sharing class UseMetadataApi {
                 Wsdl action = new MdtWsdl('upsertMetadata')
                                             .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson))
                                             .setDefaultNamespace('soap')
+                                            .setMockResponse(mockedResponse)
                                             .call()
                                             .handleErrors();
 

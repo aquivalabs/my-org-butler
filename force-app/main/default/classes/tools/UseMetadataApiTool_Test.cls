@@ -5,9 +5,8 @@ private class UseMetadataApiTool_Test {
     private static void happyPath() {
 
         // Setup
-        Test.setMock(HttpCalloutMock.class, new MyHttpCalloutMock());
         Exception unexpectedException = null;
-
+        mockResponse();
 
         // Exercise
         try {
@@ -22,14 +21,13 @@ private class UseMetadataApiTool_Test {
         System.assertEquals(null, unexpectedException);
     }
 
-    // INNER
+    // HELPER
 
-    private class MyHttpCalloutMock implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest request) {
-            HttpResponse result = new HttpResponse();
-            result.setStatusCode(200);
-            result.setBody('asdf');
-            return result;
-        }
+    private static void mockResponse() {
+        HttpResponse response = new HttpResponse();
+        response.setStatusCode(200);
+        response.setBody('asdf');
+
+        UseMetadataApi.mockedResponse = response;
     }
 }
