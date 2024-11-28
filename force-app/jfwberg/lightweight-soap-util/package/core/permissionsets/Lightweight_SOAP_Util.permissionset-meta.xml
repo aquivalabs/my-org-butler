@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>ApxWsdl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>MdtWsdl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ParWsdl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Wsdl</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>XmlWriter</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Permissions to the Apex Classes in the Lightweight - SOAP Util package</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Lightweight SOAP Util</label>
+    <pageAccesses>
+        <apexPage>getSoapApiSessionId</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+</PermissionSet>

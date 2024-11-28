@@ -5,7 +5,7 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
     private static final Map<String, Tool> TOOLS = new Map<String, Tool>{ 
         'Call_Salesforce_API' => new CallSalesforceApiTool(),
-        'Deploy_Metadata_ZIP' => new DeployMetadataTool(),
+        'Use_Metadata_API' => new UseMetadataApiTool(),
         'Notify_User' => new NotifyUserTool(),
         'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool(),
         'Open_Org_Page' => new OpenOrgPageTool(),

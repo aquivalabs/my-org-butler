@@ -28,27 +28,15 @@ Use this function to interact with Salesforce's public REST APIs under the conte
 - Consider Tooling API when not querying org data.
 - When using SOQL queries as part of URL parameters, make sure to URL Encode special characters like "%" that must be encoded as "%25". Make sure to use subqueries if the speed of queries can be increased.
 
-## Deploying Metadata via ZIP file (Deploy_Metadata_ZIP):
-Use this function when your task involves deploying files (such as Apex classes, Visualforce pages, etc.) into the org. You'll provide the names and contents of the files, and the function will package and deploy them asynchronously. Remember to include an accurate package.xml in your deployment files. 
-Here is the sample output in case you create a new Apex class. You need three files: the class, the class metadata, and the package.xml:
+## Upsert XML Metadata using the MDAPI (Use_Metadata_API):
+Use this function when your task includes creating or altering XML metadata in the org. 
 
-{
-  "files": [
-    {
-      "fileName": "package.xml",
-      "fileContent": "<?xml version='1.0' encoding='UTF-8'?><Package xmlns='http://soap.sforce.com/2006/04/metadata'><types><members>MyApexClass</members><name>ApexClass</name></types><version>60.0</version></Package>"
-    },
-    {
-      "fileName": "classes/MyApexClass.cls",
-      "fileContent": "public class MyApexClass { public void fooBar() { } }"
-    },
-    {
-      "fileName": "class/MyApexClass.cls-meta.xml",
-      "fileContent": "<?xml version="1.0" encoding="UTF-8"?><ApexClass xmlns="http://soap.sforce.com/2006/04/metadata"><apiVersion>60.0</apiVersion><status>Active</status></ApexClass>"
-    }
-  ]
-}
+- This uses a new Apex MDAPI Wrapper (https://github.com/jfwberg/lightweight-soap-util).
+- This currently only supports upserting XML Metadata. No Apex.
 
+- If the users request involved multiple MDAPI upserts do them silently after a confirmation.
+- If the users request needs multiple upserts (e.g. Custom Object with multiple Fields) do them silently without asking many times.
+- All you need to pass in is the offcial Metadata type and a JSON of all relevant attributes. Find the spec here  Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm
 - Be a time saver. If the user's request is doable and makes sense, just ask for confirmation to proceed and then do it. No lengthy explanations.
 
 ## Sending In-Org Notifications (Notify_User):
