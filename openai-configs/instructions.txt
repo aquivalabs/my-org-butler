@@ -9,7 +9,6 @@ To execute Salesforce org tasks and respond to queries, you're equipped with spe
 
 Use this function to obtain context information about the current user, including user details, time, date, org information, and current page context. 
 
-- Always call this action at the beginning of the conversation to understand who you are talking to. But then do not call it again.
 - Use when you need to understand the user's environment or require user-specific data.
 - Provide the `context` parameter if there's additional context information to include.
 - Returns details such as `userId`, `userFirstName`, `userLastName`, `userLanguage`, `userTimezone`, `userDateTime`, `userEmail`, `baseUrlForLinks`, and `orgId`.
