@@ -3,7 +3,7 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class UseMetadataApi {
 
-    public static HttpResponse mockedResponse;
+    public static HttpResponse mockedResponse = null;
     
     @InvocableMethod(label='MyOrgButler: Use Metadata API' description='Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper.')
     global static List<Output> execute(List<MetadataDescription> descriptions) {
@@ -12,7 +12,6 @@ global with sharing class UseMetadataApi {
         for(MetadataDescription metadata : descriptions) {
             try {
                 Wsdl action = actionFor(metadata)
-                                .setDefaultNamespace('aquiva_os')
                                 .setMockResponse(mockedResponse)
                                 .call()
                                 .handleErrors();
@@ -36,10 +35,6 @@ global with sharing class UseMetadataApi {
             when 'describeMetadata' {
                 result = new MdtWsdl(metadata.soapAction);
             }
-            when 'createMetadata', 'updateMetadata', 'upsertMetadata' {
-                result = new MdtWsdl(metadata.soapAction)
-                                .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson));
-            }
             when 'listMetadata' {
                 result = new MdtWsdl(metadata.soapAction)
                                 .setAllOrNone(true)
@@ -49,6 +44,10 @@ global with sharing class UseMetadataApi {
                 result = new MdtWsdl(metadata.soapAction)
                                 .setItemMetadataType(metadata.typeName)
                                 .addItemMetadataFullName(metadata.fullName);
+            }
+            when 'createMetadata', 'updateMetadata', 'upsertMetadata' {
+                result = new MdtWsdl(metadata.soapAction)
+                                .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson));
             }
             when 'deleteMetadata' {
                 result = new MdtWsdl(metadata.soapAction)
