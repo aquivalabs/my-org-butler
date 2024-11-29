@@ -513,10 +513,11 @@ global virtual with sharing class Wsdl {
      * @return      An API enabled Session Id
      */
     private String getApiEnabledSessionId(){
+        Set<Quiddity> allowedContexts = new Set<Quiddity>{Quiddity.AURA, Quiddity.INVOCABLE_ACTION};
         return(
             (Test.isRunningTest()) ?
                 Wsdl.VAL_BEARER_TOKEN_HIDDEN_MESSAGE :
-                (System.Request.getCurrent().getQuiddity() == Quiddity.AURA || UserInfo.getUiThemeDisplayed() == Wsdl.VAL_LIGHTNING_UI_DISPLAY_THEME) ?
+                (allowedContexts.contains(System.Request.getCurrent().getQuiddity()) || UserInfo.getUiThemeDisplayed() == Wsdl.VAL_LIGHTNING_UI_DISPLAY_THEME) ?
                     Page.getSoapApiSessionId.getContent().toString().trim() :
                     UserInfo.getSessionId()
         );
