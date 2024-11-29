@@ -7,8 +7,6 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         'Call_Salesforce_API' => new CallSalesforceApiTool(),
         'Use_Metadata_API' => new UseMetadataApiTool(),
         'Notify_User' => new NotifyUserTool(),
-        'Wait_And_Resume_Thread' => new WaitAndResumeThreadTool(),
-        'Open_Org_Page' => new OpenOrgPageTool(),
         'Get_User_Context' => new GetUserContextTool(),
         'Search_Web' => new SearchWebTool()
     };

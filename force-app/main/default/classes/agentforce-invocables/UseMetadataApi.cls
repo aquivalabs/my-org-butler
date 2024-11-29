@@ -12,12 +12,12 @@ global with sharing class UseMetadataApi {
         for(MetadataDescription metadata : descriptions) {
             try {
                 Wsdl action = actionFor(metadata)
-                                .setDefaultNamespace('soap')
+                                .setDefaultNamespace('aquiva_os')
                                 .setMockResponse(mockedResponse)
                                 .call()
                                 .handleErrors();
 
-                result.add(new Output(action.getResponse()?.getBody()));
+                result.add(new Output( action.getResponse()?.getBody() ));
             }
             catch(Wsdl.SoapApiException ex) {
                 throw new ApplicationException('Deploy Metadata Action failed: ' + ex.getMessage(), ex);
@@ -36,7 +36,7 @@ global with sharing class UseMetadataApi {
             when 'describeMetadata' {
                 result = new MdtWsdl(metadata.soapAction);
             }
-            when 'upsertMetadata', 'createMetadata', 'updateMetadata' {
+            when 'createMetadata', 'updateMetadata', 'upsertMetadata' {
                 result = new MdtWsdl(metadata.soapAction)
                                 .addCredMetadata(metadata.typeName, jsonToMap(metadata.attributesJson));
             }
@@ -55,12 +55,6 @@ global with sharing class UseMetadataApi {
                                 .setItemMetadataType(metadata.typeName)
                                 .addItemMetadataFullName(metadata.fullName);
             }
-            when 'executeAnonymous' {
-                result = new ApxWsdl(metadata.soapAction)
-                                .setLogLevel('DEBUG')
-                                .setLogCategory('APEX_CODE')
-                                .setCode(metadata.code);
-            }
             when else {
                 throw new ApplicationException('Unsupported SOAP action: ' + metadata.soapAction);
             }
@@ -77,7 +71,7 @@ global with sharing class UseMetadataApi {
     // INNER
 
     global class MetadataDescription {
-        @InvocableVariable(label='SOAP Action' description='One of the allowed SOAP Action types: describeMetadata,listMetadata,readMetadata,createMetadata,updateMetadata,renameMetadata,upsertMetadata,deleteMetadata' required=true)
+        @InvocableVariable(label='SOAP Action' description='One of the allowed SOAP Action types: describeMetadata,listMetadata,readMetadata,createMetadata,updateMetadata,upsertMetadata,deleteMetadata' required=true)
         global String soapAction;
 
         @InvocableVariable(label='Metadata Type Name' description='The official Salesforce Metadata Type Name' required=false)
@@ -88,9 +82,6 @@ global with sharing class UseMetadataApi {
         
         @InvocableVariable(label='Metadata Full Name' description='Some Actions need a Full Name of the existing Metadata record' required=false)
         global String fullName;
-        
-        @InvocableVariable(label='Apex Code' description='Code for the executeAnonymous action' required=false)
-        global String code;
     }
 
 
