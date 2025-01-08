@@ -1,12 +1,11 @@
 
 // PMD False Positives: 
-// - Only global invocables are seen in installed org
 // - Calling regular Salesforce APIs can be done with Session Id
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexSuggestUsingNamedCred')
-global with sharing class CallSalesforceApi {
+@SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
+public  with sharing class CallSalesforceApi {
 
     @InvocableMethod(label='MyOrgButler: Call Salesforce API' description='Call an official public Salesforce API REST endpoint')
-    global static List<Output> execute(List<Input> input) {
+    public  static List<Output> execute(List<Input> input) {
         HttpRequest request = new HttpRequest();  
         request.setHeader('Authorization', 'Bearer ' + new SessionId().asString()); 
         request.setHeader('Content-Type', 'application/json');
@@ -28,32 +27,32 @@ global with sharing class CallSalesforceApi {
 
     // INNER
 
-    global class Input {
+    public  class Input {
         @InvocableVariable(
             label='Endpoint URL' 
             description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added' 
             required=true)
-        global String urlIncludingParams;
+        public  String urlIncludingParams;
         
         @InvocableVariable(
             label='HTTP Method' 
             description='The HTTP method to use' 
             required=true)
-        global String httpMethod;
+        public  String httpMethod;
         
         @InvocableVariable(
             label='Request Body' 
             description='Payload data to be sent in the request body. Can be null if there is no body.' 
             required=false)
-        global String requestBody;
+        public  String requestBody;
     }
 
-    global class Output {
+    public  class Output {
         @InvocableVariable(
             label='Response Body' 
             description='Raw HTTP Response to be interpreted for Errors or Success' 
             required=true)
-        global String responseBody;
+        public  String responseBody;
         
         public Output(String body) {
             responseBody = body;

@@ -1,12 +1,9 @@
-// PMD False Positives: 
-// - Only global invocables are seen in installed org
-@SuppressWarnings('PMD.AvoidGlobalModifier')
-global with sharing class UseMetadataApi {
+public with sharing class UseMetadataApi {
 
     public static HttpResponse mockedResponse = null;
     
     @InvocableMethod(label='MyOrgButler: Use Metadata API' description='Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper.')
-    global static List<Output> execute(List<MetadataDescription> descriptions) {
+    public  static List<Output> execute(List<MetadataDescription> descriptions) {
         List<Output> result = new List<Output>();
 
         for(MetadataDescription metadata : descriptions) {
@@ -69,24 +66,24 @@ global with sharing class UseMetadataApi {
 
     // INNER
 
-    global class MetadataDescription {
+    public class MetadataDescription {
         @InvocableVariable(label='SOAP Action' description='One of the allowed SOAP Action types: describeMetadata,listMetadata,readMetadata,createMetadata,updateMetadata,upsertMetadata,deleteMetadata' required=true)
-        global String soapAction;
+        public  String soapAction;
 
         @InvocableVariable(label='Metadata Type Name' description='The official Salesforce Metadata Type Name' required=false)
-        global String typeName;
+        public  String typeName;
         
         @InvocableVariable(label='Attributes JSON' description='A JSON with all relevant attributes needed to create this metadata type.' required=false)
-        global String attributesJson;
+        public  String attributesJson;
         
         @InvocableVariable(label='Metadata Full Name' description='Some Actions need a Full Name of the existing Metadata record' required=false)
-        global String fullName;
+        public  String fullName;
     }
 
 
-    global class Output {
+    public class Output {
         @InvocableVariable(label='Response Body' description='Raw HTTP Response to be interpreted for Errors or Success')
-        global String responseBody;
+        public String responseBody;
         
         public Output(String body) {
             responseBody = body;

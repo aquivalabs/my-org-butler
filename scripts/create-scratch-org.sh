@@ -17,10 +17,10 @@ echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
 echo "Pushing changes to scratch org"
-execute sf force source push
+execute sf project deploy start
 
 echo "Assigning permissions"
-execute sf force user permset assign --perm-set-name MyOrgButlerUser 
+execute sf org assign permset --name MyOrgButlerUser 
 
 echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"

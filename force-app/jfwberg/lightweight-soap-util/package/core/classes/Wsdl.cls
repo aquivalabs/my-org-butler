@@ -4,13 +4,13 @@
  * @copyright      (c) 2024 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
  * @description    Class that contains a set of Salesforce SOAP API  Utilities
- * @note           This class is to be used in a managed package and contains Global methods that
+ * @note           This class is to be used in a managed package and contains public  methods that
  *                 should be made public or private in org based implementations or unlocked
  *                 packages.
  *                 Can be modified to make smaller in your own implementation
  */
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock, PMD.TooManyFields, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.ApexSuggestUsingNamedCred, PMD.ApexDoc')
-global virtual with sharing class Wsdl {
+@SuppressWarnings('PMD.EmptyStatementBlock, PMD.TooManyFields, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.ApexSuggestUsingNamedCred, PMD.ApexDoc')
+public  virtual with sharing class Wsdl {
 
     /** **************************************************************************************************** **
      **                                          PRIVATE VARIABLES                                           **
@@ -176,12 +176,12 @@ global virtual with sharing class Wsdl {
 
 
     /** **************************************************************************************************** **
-     **                                            GLOBAL SETTERS                                            **
+     **                                            public  SETTERS                                            **
      ** **************************************************************************************************** **/
     /**
      * @description Method to set the api version
      */
-    global Wsdl setApiVersion(String apiVersion){
+    public  Wsdl setApiVersion(String apiVersion){
         
         // Validate the API version has the expected format
         if(String.isBlank(apiVersion) || !Pattern.matches(Wsdl.VAL_API_VERSION, apiVersion)){    
@@ -205,7 +205,7 @@ global virtual with sharing class Wsdl {
      * @description Method to set the clientId value used in the CallOptions header
      *              Client Id is used for API activation in professional edition
      */
-    global Wsdl setClientId(String clientId){
+    public  Wsdl setClientId(String clientId){
         
         // Set the value
         this.clientId = clientId;
@@ -220,7 +220,7 @@ global virtual with sharing class Wsdl {
      *              Default namespace can be used to auto prefix all fields in a namespaced org
      *              This is very handy for package orgs or scratch orgs with a namespace
      */
-    global Wsdl setDefaultNamespace(String defaultNamespace){
+    public  Wsdl setDefaultNamespace(String defaultNamespace){
 
         // Set the value
         this.defaultNamespace = defaultNamespace;
@@ -235,7 +235,7 @@ global virtual with sharing class Wsdl {
      *    @param          soapAction The name of the API soapAction attribute
      *    @return         self
      */
-    global Wsdl setSoapAction(String soapAction){
+    public  Wsdl setSoapAction(String soapAction){
         if(this.soapActionMap.keySet().contains(soapAction)){
             this.soapAction = soapAction;
         }else{
@@ -250,14 +250,14 @@ global virtual with sharing class Wsdl {
      *    @param          mockResponse The HttpResponse object to be returned by the call() method
      *    @return         self
      */
-    global Wsdl setMockResponse(HttpResponse mockResponse){
+    public  Wsdl setMockResponse(HttpResponse mockResponse){
         this.mockResponse = mockResponse;
         return this;
     }
 
     
     /** **************************************************************************************************** **
-     **                                       GLOBAL SUPPORT METHODS                                         **
+     **                                       public  SUPPORT METHODS                                         **
      ** **************************************************************************************************** **/
 
 
@@ -266,7 +266,7 @@ global virtual with sharing class Wsdl {
      * @description Method to generate and execute the HTTP request
      * @return      self
      */
-    global Wsdl call(){
+    public  Wsdl call(){
         
         // Generate the http request
         this.setupRequest();
@@ -297,7 +297,7 @@ global virtual with sharing class Wsdl {
      *              type of error.
      * @return      self
      */
-    global virtual Wsdl handleErrors(){
+    public  virtual Wsdl handleErrors(){
 
         // Validate there has been a callout and handle common HTTP Error Status Codes
         if(String.isBlank(this.response?.getBody())){
@@ -343,13 +343,13 @@ global virtual with sharing class Wsdl {
 
 
     /** **************************************************************************************************** **
-     **                                            GLOBAL GETTERS                                            **
+     **                                            public  GETTERS                                            **
      ** **************************************************************************************************** **/
     /**
      * @description Method to get the HttpRequest related to the current rest callout
      * @return      Soap API Request
      */
-    global HttpRequest getRequest(){
+    public  HttpRequest getRequest(){
         return this.request;
     }
 
@@ -359,7 +359,7 @@ global virtual with sharing class Wsdl {
      *              Use this after the callout has been executed
      * @return      The current HttpResponse object
      */
-    global HttpResponse getResponse(){
+    public  HttpResponse getResponse(){
         return this.response;
     }
 
@@ -368,7 +368,7 @@ global virtual with sharing class Wsdl {
      * @description Method to get the execution time
      * @return      The number of milliseconds it took to execute the request
      */
-    global Integer getExecutionTime(){
+    public  Integer getExecutionTime(){
         return this.executionTime;
     }
 
@@ -381,7 +381,7 @@ global virtual with sharing class Wsdl {
      *              most memory efficient way of handling SOAP API responses
      * @return      The SOAP API Response as an XmlStreamReader class instance
      */
-    global XmlStreamReader getXsr(){
+    public  XmlStreamReader getXsr(){
         
         // Generate the http request
         this.setupRequest();
@@ -696,8 +696,8 @@ global virtual with sharing class Wsdl {
     /** **************************************************************************************************** **
      **                                          EXCEPTION CLASSES                                           **
      ** **************************************************************************************************** **/
-    global class SoapApiException  extends Exception{}
-    global class SoapUtilException extends Exception{}
+    public  class SoapApiException  extends Exception{}
+    public  class SoapUtilException extends Exception{}
     
     
     /** **************************************************************************************************** **

@@ -4,13 +4,13 @@
 * @copyright      (c) 2024 Justus van den Berg
 * @license        MIT (See LICENSE file in the project root)
 * @description    Class that contains a set of Salesforce SOAP API  Utilities
-* @note           This class is to be used in a managed package and contains Global methods that
+* @note           This class is to be used in a managed package and contains public  methods that
 *                 should be made public or private in org based implementations or unlocked
 *                 packages.
 *                 Can be modified to make smaller in your own implementation
 */
-@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.EmptyStatementBlock, PMD.ExcessivePublicCount')
-global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
+@SuppressWarnings('PMD.EmptyStatementBlock, PMD.ExcessivePublicCount')
+public  with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
 
 
     /** **************************************************************************************************** **
@@ -44,19 +44,19 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
      **                                             CONSTRUCTORS                                             **
      ** **************************************************************************************************** **/
     // Constructor for default soap action
-    global MdtWsdl(String soapAction){
+    public  MdtWsdl(String soapAction){
         this.setupMetadataService( String.isBlank(soapAction) ? MdtWsdl.VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupMyDomain(null, null);
     }
 
     // Constructor for default soap action
-    global MdtWsdl(String namedCredentialName, String soapAction){
+    public  MdtWsdl(String namedCredentialName, String soapAction){
         this.setupMetadataService( String.isBlank(soapAction) ? MdtWsdl.VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupNamedCredential(namedCredentialName);
     }
 
     // Constructor for user specified soap action
-    global MdtWsdl(String myDomainUrl, String sessionId, String soapAction){
+    public  MdtWsdl(String myDomainUrl, String sessionId, String soapAction){
         this.setupMetadataService(String.isBlank(soapAction) ? MdtWsdl.VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupMyDomain(myDomainUrl, sessionId);
     }
@@ -190,12 +190,12 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
 
 
     /** **************************************************************************************************** **
-     **                                           GLOBAL SETTERS                                             **
+     **                                           public  SETTERS                                             **
      ** **************************************************************************************************** **/
     /**
      * @description Method to set all or none
      */
-    global MdtWsdl setAllOrNone(Boolean allOrNone){
+    public  MdtWsdl setAllOrNone(Boolean allOrNone){
         this.allOrNone = allOrNone;
         return this;
     } 
@@ -204,7 +204,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
     /**
      *	@description Overload method to add a metadata type without a folder to the list metadata map
      */
-    global MdtWsdl addListMetadata(String metadataType){
+    public  MdtWsdl addListMetadata(String metadataType){
         this.addListMetadata(metadataType,null);
         return this;
     }
@@ -213,7 +213,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
     /**
      *	@description Method to add a metadata type with a folder to the list metadata map
      */
-    global MdtWsdl addListMetadata(String metadataType, String folder){
+    public  MdtWsdl addListMetadata(String metadataType, String folder){
         if(this.listMetadata == null){
             this.listMetadata = new ListMetadata();
         }
@@ -226,7 +226,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
      * @description Method to add the type of the meta data to ITEM
      *              Will reset the items as you should start with this first
      */
-    global MdtWsdl setItemMetadataType(String typeName){
+    public  MdtWsdl setItemMetadataType(String typeName){
         this.itemMetadata = new ItemMetadata(typeName);
         return this;
     }
@@ -235,7 +235,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
     /**
      * @description Method to add a ITEM metadata type
      */
-    global MdtWsdl addItemMetadataFullName(String fullName){
+    public  MdtWsdl addItemMetadataFullName(String fullName){
         if(this.itemMetadata == null){
             throw new Wsdl.SoapUtilException(MSG_ITEM_TYPE_REQUIRED);
         }
@@ -247,7 +247,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
     /**
      * @description Method to add a CRED Metadata type
      */
-    global MdtWsdl addCredMetadata(String metadataType, Map<String,Object> attributeMap){
+    public  MdtWsdl addCredMetadata(String metadataType, Map<String,Object> attributeMap){
         if(this.credMetadata == null){
             this.credMetadata = new CredMetadata();
         }
@@ -259,7 +259,7 @@ global with sharing class MdtWsdl extends Wsdl implements Wsdl.IWsdl{
     /**
      * @description Method to add a RENAME Metadata type
      */
-    global MdtWsdl setRenameMetadata(String metadataType, String oldFullName, String newFullName){
+    public  MdtWsdl setRenameMetadata(String metadataType, String oldFullName, String newFullName){
         if(this.renameMetadata == null){
             this.renameMetadata = new RenameMetadata();
         }

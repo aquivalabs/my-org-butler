@@ -4,13 +4,12 @@
  * @copyright      (c) 2024 Justus van den Berg
  * @license        MIT (See LICENSE file in the project root)
  * @description    Class that contains a set of Salesforce SOAP API Utilities
- * @note           This class is to be used in a managed package and contains Global methods that
+ * @note           This class is to be used in a managed package and contains public  methods that
  *                 should be made public or private in org based implementations or unlocked
  *                 packages.
  *                 Can be modified to make smaller in your own implementation
  */
-@SuppressWarnings('PMD.AvoidGlobalModifier')
-global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
+public  with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
 
     /** **************************************************************************************************** **
      **                                          PRIVATE VARIABLES                                           **
@@ -65,19 +64,19 @@ global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
      **                                             CONSTRUCTORS                                             **
      ** **************************************************************************************************** **/
     // Constructor for default soap action
-    global ApxWsdl(String soapAction){
+    public  ApxWsdl(String soapAction){
         this.setupApexApiService( String.isEmpty(soapAction) ? VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupMyDomain(null, null);
     }
 
     // Constructor for default soap action
-    global ApxWsdl(String namedCredentialName, String soapAction){
+    public  ApxWsdl(String namedCredentialName, String soapAction){
         this.setupApexApiService( String.isEmpty(soapAction) ? VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupNamedCredential(namedCredentialName);
     }
 
     // Constructor for user specified soap action
-    global ApxWsdl(String myDomainUrl, String sessionId, String soapAction){
+    public  ApxWsdl(String myDomainUrl, String sessionId, String soapAction){
         this.setupApexApiService(String.isEmpty(soapAction) ? VAL_DEFAULT_SOAP_ACTION : soapAction);
         this.setupMyDomain(myDomainUrl, sessionId);
     }
@@ -211,9 +210,9 @@ global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
     }
 
     /** **************************************************************************************************** **
-     **                                           GLOBAL SETTERS                                             **
+     **                                           public  SETTERS                                             **
      ** **************************************************************************************************** **/
-    global ApxWsdl setCode(String code){
+    public  ApxWsdl setCode(String code){
         if(String.isBlank(code)){
             throw new Wsdl.SoapUtilException(MSG_CODE_CANNOT_BE_BLANK); 
         }
@@ -222,7 +221,7 @@ global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
     }
 
 
-    global ApxWsdl setLogLevel(String logLevel){
+    public  ApxWsdl setLogLevel(String logLevel){
         if(!VAL_LOG_LEVELS.contains(logLevel)){
             throw new Wsdl.SoapUtilException(String.format(MSG_INVALID_LOG_LEVEL, new String[]{logLevel}));
         }
@@ -231,7 +230,7 @@ global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
     }
 
     
-    global ApxWsdl setLogCategory(String logCategory){
+    public  ApxWsdl setLogCategory(String logCategory){
         if(!VAL_LOG_CATEGORIES.contains(logCategory)){
             throw new Wsdl.SoapUtilException(String.format(MSG_INVALID_LOG_CATEGORY, new String[]{logCategory}));
             
@@ -241,7 +240,7 @@ global with sharing class ApxWsdl extends Wsdl implements Wsdl.IWsdl{
     }
 
 
-    global ApxWsdl addScript(String script){
+    public  ApxWsdl addScript(String script){
         if(String.isBlank(script)){
             throw new Wsdl.SoapUtilException(MSG_CODE_CANNOT_BE_BLANK);
         }

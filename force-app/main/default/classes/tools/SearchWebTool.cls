@@ -1,5 +1,5 @@
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
-global with sharing class SearchWebTool extends MyOrgButler.Tool {
+public  with sharing class SearchWebTool extends MyOrgButler.Tool {
 
     public override String execute(String paramsJson) {
         JsonParse parser = new JsonParse(paramsJson);
