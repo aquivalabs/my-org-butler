@@ -15,10 +15,14 @@
 - Leverages [OpenAI Assistant API](https://platform.openai.com/docs/assistants/overview) (Knowledge Retrieval and State Management)
 - Implements [autonomous ReAct / AutoGPT agent](https://arxiv.org/pdf/2210.03629.pdf)
 - Uses [packageable Named Credentials](/Users/rsoesemann/dev/aquivalabs-open-source/my-org-butler/force-app/main/default/namedCredentials/OpenAiApi.namedCredential-meta.xml) for API Authentication
+- Instructions and all tools can be directly used as **[Salesforce Agentforce 2.0]**(https://www.salesforce.com/agentforce/) actions
 
-### Demo Video
+### Demo Videos
 
 [![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
+
+[![](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "") Agentforce Version
+
 
 ### Documentation
 
