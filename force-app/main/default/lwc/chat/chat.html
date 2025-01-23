@@ -6,7 +6,7 @@
             <ul class="slds-chat-list slds-scrollable slds-var-p-horizontal_small" lwc:ref="chatMessages">
                 <template for:each={messagesToDisplay} for:item="chatMessage">
                     <c-single-chat-message
-                        key={chatMessage.order}
+                        key={chatMessage.key}
                         message={chatMessage.message}
                         type={chatMessage.messageType}
                     ></c-single-chat-message>

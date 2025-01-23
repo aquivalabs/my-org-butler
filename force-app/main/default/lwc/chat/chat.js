@@ -40,6 +40,7 @@ export default class ChatWindow extends NavigationMixin(LightningElement) {
                 order: index,
                 message: message,
                 messageType: MESSAGE_TYPE_BY_ROLE[message.role],
+                key: message.id
             }));
     }
 
