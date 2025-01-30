@@ -1,0 +1,13 @@
+engines:
+  pmd:
+    custom_rulesets:
+      - ruleset.xml
+    file_extensions:
+      apex:
+        - .cls
+        - .trigger
+      visualforce:
+        - .page
+        - .component
+      xml:
+        - .xml
