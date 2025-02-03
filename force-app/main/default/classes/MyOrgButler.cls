@@ -77,6 +77,37 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         poll();
     }
 
+    public Run sendMessage(String content) {
+        Message.create(settings.ThreadId__c, new Message(content));
+        Run run = persistNewRun();
+        sleep(WAIT_TIME);
+        return run;
+    }
+
+
+    public String pollForResponse() {
+        String result = null;
+
+        String threadId = settings.ThreadId__c;
+        String runId = settings.RunId__c;
+
+        sleep(WAIT_TIME);
+
+        Run run = Run.retrieve(threadId, runId);
+        if(run.isPending()) {
+            result = 'Response for ThreadId: ' + threadId + ' and RunId: ' + runId + ' pending.';
+        } 
+        else if(run.isCompletedOrFailed()) {
+            List<Message> messages = Message.retrieve(threadId).data;
+            result = messages[0].content[0].text.value;
+        }
+        else {
+            throw new ApplicationException('OpenAI Run in invalid state: ' + run);
+        }
+
+        return result;
+    }
+
     // PMD False Positive: Empty while is part of idle algortihm of https://salesforce.stackexchange.com/a/302152/256
     @SuppressWarnings('PMD')
     public static void sleep(Integer milliseconds) {
@@ -93,12 +124,13 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         upsert as system settings;
     }
 
-    private void persistNewRun() {
+    private Run persistNewRun() {
         Run newRun = new Run(settings.ThreadId__c, ASSISTANT_ID);
         newRun = Run.create(settings.ThreadId__c, newRun);
 
         settings.RunId__c = newRun.id;
         update as system settings;
+        return newRun;
     }
 
     private void enqueuePolling() {

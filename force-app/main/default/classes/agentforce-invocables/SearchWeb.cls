@@ -1,7 +1,6 @@
 // PMD False Positives: 
 // - Only public  invocables are seen in installed org
 // - Calling regular Salesforce APIs can be done with Session Id
-@SuppressWarnings('PMD.Avoidpublic Modifier, PMD.ApexSuggestUsingNamedCred')
 public  with sharing class SearchWeb {
 
     @InvocableMethod(label='MyOrgButler: Search Web' description='Performs a web search using the Tavily API and returns the answer.'

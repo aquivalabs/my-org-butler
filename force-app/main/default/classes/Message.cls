@@ -46,6 +46,11 @@ public class Message {
                                         .get(Message.Messages.class);
     }
 
+    public static Message.Messages retrieve(String threadId) {
+        return (Message.Messages) new OpenAiApi('/threads/' +  threadId + '/messages')
+                                        .get(Message.Messages.class);
+    }
+
     // INNER
 
     public class Messages {
