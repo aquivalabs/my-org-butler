@@ -1,13 +1,165 @@
+rules:
+  pmd:
+    "ApexBadCrypto":
+      tags:
+        - Custom
+    "ApexCSRF":
+      tags:
+        - Custom
+    "ApexDangerousMethods":
+      tags:
+        - Custom
+    "ApexInsecureEndpoint":
+      tags:
+        - Custom
+    "ApexOpenRedirect":
+      tags:
+        - Custom
+    "ApexSharingViolations":
+      tags:
+        - Custom
+    "ApexSOQLInjection":
+      tags:
+        - Custom
+    "ApexSuggestUsingNamedCred":
+      tags:
+        - Custom
+    "ApexUnitTestMethodShouldHaveIsTestAnnotation":
+      tags:
+        - Custom
+    "ApexUnitTestShouldNotUseSeeAllDataTrue":
+      tags:
+        - Custom
+    "ApexXSSFromEscapeFalse":
+      tags:
+        - Custom
+    "ApexXSSFromURLParam":
+      tags:
+        - Custom
+    "AvoidDirectAccessTriggerMap":
+      tags:
+        - Custom
+    "AvoidGlobalModifier":
+      tags:
+        - Custom
+    "AvoidHardcodingId":
+      tags:
+        - Custom
+    "AvoidLogicInTrigger":
+      tags:
+        - Custom
+    "AvoidNonExistentAnnotations":
+      tags:
+        - Custom
+    "CognitiveComplexity":
+      tags:
+        - Custom
+    "EagerlyLoadedDescribeSObjectResult":
+      tags:
+        - Custom
+    "EmptyCatchBlock":
+      tags:
+        - Custom
+    "EmptyIfStmt":
+      tags:
+        - Custom
+    "EmptyStatementBlock":
+      tags:
+        - Custom
+    "EmptyTryOrFinallyBlock":
+      tags:
+        - Custom
+    "EmptyWhileStmt":
+      tags:
+        - Custom
+    "ExcessiveParameterList":
+      tags:
+        - Custom
+    "FieldDeclarationsShouldBeAtStart":
+      tags:
+        - Custom
+    "FieldNamingConventions":
+      tags:
+        - Custom
+    "ForLoopsMustUseBraces":
+      tags:
+        - Custom
+    "FormalParameterNamingConventions":
+      tags:
+        - Custom
+    "IfElseStmtsMustUseBraces":
+      tags:
+        - Custom
+    "IfStmtsMustUseBraces":
+      tags:
+        - Custom
+    "InaccessibleAuraEnabledGetter":
+      tags:
+        - Custom
+    "LocalVariableNamingConventions":
+      tags:
+        - Custom
+    "MethodNamingConventions":
+      tags:
+        - Custom
+    "MethodWithSameNameAsEnclosingClass":
+      tags:
+        - Custom
+    "NcssConstructorCount":
+      tags:
+        - Custom
+    "NcssMethodCount":
+      tags:
+        - Custom
+    "OneDeclarationPerLine":
+      tags:
+        - Custom
+    "OperationWithHighCostInLoop":
+      tags:
+        - Custom
+    "OperationWithLimitsInLoop":
+      tags:
+        - Custom
+    "OverrideBothEqualsAndHashcode":
+      tags:
+        - Custom
+    "PropertyNamingConventions":
+      tags:
+        - Custom
+    "QueueableWithoutFinalizer":
+      tags:
+        - Custom
+    "TestMethodsMustBeInTestClasses":
+      tags:
+        - Custom
+    "UnusedLocalVariable":
+      tags:
+        - Custom
+    "VfCsrf":
+      tags:
+        - Custom
+    "VfHtmlStyleTagXss":
+      tags:
+        - Custom
+    "VfUnescapeEl":
+      tags:
+        - Custom
+    "WhileLoopsMustUseBraces":
+      tags:
+        - Custom
 engines:
   pmd:
-    custom_rulesets:
-      - ruleset.xml
-    file_extensions:
-      apex:
-        - .cls
-        - .trigger
-      visualforce:
-        - .page
-        - .component
-      xml:
-        - .xml
+    custom_rulesets: ['pmd-ruleset.xml']
+    file_extensions: {
+      "apex":[
+          ".cls",
+          ".trigger"
+      ],
+      "visualforce":[
+          ".page",
+          ".component"
+      ],
+      "xml":[
+          ".xml"
+      ]
+    }

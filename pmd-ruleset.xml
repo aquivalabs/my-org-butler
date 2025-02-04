@@ -6,7 +6,6 @@
     <!-- IGNORE EXTERNAL LIBS -->
     <include-pattern>.*/force-app/main/default/.*</include-pattern>
 
-
     <!-- STANDARD RULES -->  
     
     <rule ref="category/apex/security.xml">
