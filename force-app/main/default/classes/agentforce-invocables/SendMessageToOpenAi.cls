@@ -3,9 +3,11 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class SendMessageToOpenAi {
 
+    private static MyOrgButler butler = new MyOrgButler();
+
     @InvocableMethod(label='MyOrgButler: Send User Message to OpenAI' description='Sends the User Message to OpenAI and returns a Run Id. To fetch the asynchronous response directly call the PollOpenAiForResponse action until the Response or an error is available.')
     global static List<Output> execute(List<Input> input) {
-        Run newRun = new MyOrgButler().sendMessage(input[0].userMessage);
+        Run newRun = butler.sendMessage(input[0].userMessage);
 
         Output result = new Output();
         result.threadId = newRun.thread_id;

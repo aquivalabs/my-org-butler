@@ -5,7 +5,7 @@ private class MyOrgButler_Test {
     private static void initCreatesAndPersistsNewThread() {
 
         // Setup
-        Thread t = new Thread().id('123');
+        Thread t = new Thread().id('t1');
         new HttpMock().post('aquiva_os__OpenAiApi/v1/threads', t).mock();
 
         // Exercise
@@ -25,12 +25,12 @@ private class MyOrgButler_Test {
     private static void resetCleansUpCorrectly() {
 
         // Setup
-        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123', RunId__c = '987');
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1', RunId__c = 'r1');
         
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/123/runs/987/cancel', true) 
-                .del('aquiva_os__OpenAiApi/v1/threads/123', true)
-                .post('aquiva_os__OpenAiApi/v1/threads', new Thread().id('999'))
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/cancel', true) 
+                .del('aquiva_os__OpenAiApi/v1/threads/t1', true)
+                .post('aquiva_os__OpenAiApi/v1/threads', new Thread().id('t2'))
                 .mock();
 
         // Exercise
@@ -42,7 +42,7 @@ private class MyOrgButler_Test {
         // Verify
         MyOrgButler__c settings = MyOrgButler__c.getInstance(UserInfo.getUserId());
         System.assertNotEquals(null, settings);
-        System.assertEquals('999', settings.ThreadId__c);
+        System.assertEquals('t2', settings.ThreadId__c);
         System.assertEquals(null, settings.RunId__c);
     }
 
@@ -51,12 +51,12 @@ private class MyOrgButler_Test {
     private static void messages() {
 
         // Setup
-        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123');  
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
         Message.Messages messages = new Message.Messages();
         messages.data = new List<Message>{ new Message('Hi') };
 
-        new HttpMock().get('aquiva_os__OpenAiApi/v1/threads/123/messages', messages).mock();
+        new HttpMock().get('aquiva_os__OpenAiApi/v1/threads/t1/messages', messages).mock();
 
         // Exercise
         // Note: without startTest "uncommited work error" due to Setting DML
@@ -74,21 +74,21 @@ private class MyOrgButler_Test {
     private static void steps() {
 
         // Setup
-        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123');  
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
         Message m = new Message('Hi');
-        m.run_id = '987';
+        m.run_id = 'r1';
         Message.Messages messages = new Message.Messages();
         messages.data = new List<Message>{ m };
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed'))
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps', new Run.Steps('completed'))
                 .mock();
 
         // Exercise
         // Note: without startTest "uncommited work error" due to Setting DML
         Test.startTest();
-        Run.Steps steps = new MyOrgButler().steps('987');
+        Run.Steps steps = new MyOrgButler().steps('r1');
         Test.stopTest();
         
         // Verify
@@ -101,22 +101,22 @@ private class MyOrgButler_Test {
     private static void respond() {
 
         // Setup
-        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123', RunId__c = '987');
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1', RunId__c = 'r1');
 
-        Run run = new Run('123', 'abc');
-        run.id = '987';
+        Run run = new Run('t1', 'a1');
+        run.id = 'r1';
         run.status = 'requires_action';
         run.required_action.type = 'submit_tool_outputs';
         run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('callSalesforceApi', ''));
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/123/messages', new Message('any'))
-                .post('aquiva_os__OpenAiApi/v1/threads/123/runs', run)
-                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987', run) // run calls tool
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages', new Message('any'))
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs', run)
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1', run) // run calls tool
                 .get('/services/rest', 300) // tool call
-                .post('aquiva_os__OpenAiApi/v1/threads/123/runs/987/submit_tool_outputs', 300) // delegate back
-                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987', run.status('completed'))
-                .get('aquiva_os__OpenAiApi/v1/threads/123/runs/987/steps', new Run.Steps('completed')) 
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/submit_tool_outputs', 300) // delegate back
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1', run.status('completed'))
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps', new Run.Steps('completed')) 
                 .mock();
 
         // Exercise
@@ -126,7 +126,7 @@ private class MyOrgButler_Test {
         Test.stopTest();
         
         // Verify
-        System.assertEquals('123', MyOrgButler.callback.ThreadId__c);
+        System.assertEquals('t1', MyOrgButler.callback.ThreadId__c);
     }
 
     
@@ -134,17 +134,17 @@ private class MyOrgButler_Test {
     private static void modify() {
 
          // Setup
-        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = '123');  
+        insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
         Message message = new Message();
-        message.id = '987';
+        message.id = 'm1';
 
         Message.Metadata metadata = new Message.Metadata();
         metadata.isFeedbackPositive = 'true';
         message.metadata = metadata;
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/123/messages/987', message)
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages/m1', message)
                 .mock();
 
         // Exercise

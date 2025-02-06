@@ -1,0 +1,39 @@
+{
+  "name": "Use_Tooling_API",
+  "description": "Query, create, update, or delete records using the Tooling API. Supports SOQL queries and CRUD operations on Tooling API objects like ApexClass, CustomField, etc.",
+  "strict": false,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "query",
+          "create",
+          "update",
+          "delete"
+        ],
+        "description": "The Tooling API action to perform"
+      },
+      "objectType": {
+        "type": "string",
+        "description": "The Tooling API object type (e.g., ApexClass, CustomField, CustomObject). Required for create, update, and delete actions"
+      },
+      "soql": {
+        "type": "string",
+        "description": "The SOQL query to execute. Required for query action. Example: SELECT Id, Name FROM ApexClass"
+      },
+      "recordJson": {
+        "type": "string",
+        "description": "JSON representation of the record to create or update. Required for create and update actions"
+      },
+      "recordId": {
+        "type": "string",
+        "description": "Id of the record to update or delete. Required for update and delete actions"
+      }
+    },
+    "required": [
+      "action"
+    ]
+  }
+}
