@@ -47,6 +47,11 @@
                         title="Ask Question"
                         variant="brand"
                     ></lightning-button-icon>
+                    <c-speech-input
+                        class="slds-var-m-left_small"
+                        disabled={askingQuestionsDisabled}
+                        onspeechresult={handleSpeechResult}
+                    ></c-speech-input>
                 </div>
             </div>
         </div>

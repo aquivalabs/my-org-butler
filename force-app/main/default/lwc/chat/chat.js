@@ -210,4 +210,8 @@ export default class ChatWindow extends NavigationMixin(LightningElement) {
             this.refs.chatMessages.scrollTop = this.refs.chatMessages.scrollHeight;
         }
     }
+
+    handleSpeechResult(event) {
+        this.question = event.detail;
+    }
 }
