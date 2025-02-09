@@ -44,6 +44,10 @@ export default class SingleChatMessage extends LightningElement {
         return `slds-p-left_small explanation-content ${this.isExpanded ? 'expanded' : ''}`;
     }
 
+    get explanationText() {
+        return this.explanationSteps.length === 0 ? "(no tools were used)" : "Behind the scenes";
+    }
+
     async connectedCallback() {
         if (this.type === MESSAGE_TYPE.INBOUND) {
             await this.getExplanation();
