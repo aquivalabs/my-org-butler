@@ -9,23 +9,46 @@
             </lightning-avatar>
             <div class="slds-chat-message__body">
                 <div class={chatMessageTextClass}>
-                    <c-markdown-preview body={visibleMessage}></c-markdown-preview>
-                    <lightning-icon
-                        alternative-text="Explain the response"
-                        class="slds-var-m-left_xx-small"
-                        icon-name="utility:info"
-                        lwc:if={isExplanationVisible}
-                        onclick={handleExplain}
-                        size="x-small"
-                        title="Explain the response">
-                    </lightning-icon>
+                    <div class="chat-content">
+                        <c-markdown-preview body={message.content}></c-markdown-preview>
+                        
+                        <template lwc:if={isExplanationVisible}>
+                            <div class="explanation-section">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <div class="explanation-header" onclick={toggleExplanation}>
+                                        <lightning-button-icon
+                                            icon-name={toggleIcon}
+                                            variant="bare"
+                                            alternative-text="Toggle Explanation"
+                                            class="toggle-button">
+                                        </lightning-button-icon>
+                                        <span class="slds-p-left_x-small">Behind the scenes</span>
+                                    </div>
+                                    
+                                    <c-feedback 
+                                        lwc:if={showFeedbackOptions}
+                                        onvote={handleVoteClick}
+                                        is-positive={message.isFeedbackPositive}>
+                                    </c-feedback>
+                                </div>
+                                
+                                <div class={contentClass} lwc:if={isExpanded}>
+                                    <template for:each={explanationSteps} for:item="step">
+                                        <div key={step.id} class="explanation-step slds-box slds-m-bottom_x-small">
+                                            <div class="step-title">{step.title}</div>
+                                            <div class="slds-p-top_x-small">
+                                                <div class="slds-text-title">Arguments:</div>
+                                                <pre class="slds-p-around_x-small slds-box">{step.args}</pre>
+                                                <div class="slds-text-title slds-p-top_small">Output:</div>
+                                                <pre class="slds-p-around_x-small slds-box">{step.output}</pre>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
-                <c-feedback 
-                    lwc:if={showFeedbackOptions}
-                    class="slds-p-top_xx-small"
-                    onvote={handleVoteClick}
-                    is-positive={message.isFeedbackPositive}
-                ></c-feedback>
             </div>
         </div>
     </li>

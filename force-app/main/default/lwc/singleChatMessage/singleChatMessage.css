@@ -1,0 +1,60 @@
+.slds-chat-message__text {
+    max-width: 420px;
+}
+
+.chat-content {
+    width: 100%;
+}
+
+.explanation-section {
+    border-top: 1px solid #dddbda;
+    margin-top: 0.25rem;
+    width: 100%;
+}
+
+.explanation-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #706e6b;
+}
+
+.explanation-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    width: 100%;
+}
+
+.explanation-content.expanded {
+    max-height: 2000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.explanation-step {
+    background: #ffffff;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    width: 100%;
+}
+
+.step-title {
+    font-size: 0.875rem;
+    word-break: break-word;
+    color: #3e3e3c;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+    font-size: 11px;
+    background-color: #ffffff;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.toggle-button {
+    flex-shrink: 0;
+}
