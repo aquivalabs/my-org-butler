@@ -1,0 +1,8 @@
+lightning-button-icon {
+    --sds-c-button-color-border: transparent;
+    transform: scale(0.85);
+}
+
+.slds-text-body_small {
+    color: rgb(112, 110, 107);
+}
