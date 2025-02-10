@@ -1,6 +1,6 @@
 public with sharing class MyOrgButler implements Queueable, Database.AllowsCallouts {
 
-    private static final String ASSISTANT_ID = assistantId();
+    public static final String ASSISTANT_ID = assistantId();
     private static final Integer WAIT_TIME = 3000;
     private static final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
     private static final Map<String, Tool> TOOLS = new Map<String, Tool>{ 
@@ -74,46 +74,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     }
 
     public void execute(QueueableContext context) {
-        sleep(WAIT_TIME);
+        new Sleep(WAIT_TIME);
         poll();
-    }
-
-    public Run sendMessage(String content) {
-        Message.create(settings.ThreadId__c, new Message(content));
-        Run run = persistNewRun();
-        sleep(WAIT_TIME);
-        return run;
-    }
-
-
-    public String pollForResponse() {
-        String result = null;
-
-        String threadId = settings.ThreadId__c;
-        String runId = settings.RunId__c;
-
-        sleep(WAIT_TIME);
-
-        Run run = Run.retrieve(threadId, runId);
-        if(run.isPending()) {
-            result = 'Response for ThreadId: ' + threadId + ' and RunId: ' + runId + ' pending.';
-        } 
-        else if(run.isCompletedOrFailed()) {
-            List<Message> messages = Message.retrieve(threadId).data;
-            result = messages[0].content[0].text.value;
-        }
-        else {
-            throw new ApplicationException('OpenAI Run in invalid state: ' + run);
-        }
-
-        return result;
-    }
-
-    // PMD False Positive: Empty while is part of idle algortihm of https://salesforce.stackexchange.com/a/302152/256
-    @SuppressWarnings('PMD')
-    public static void sleep(Integer milliseconds) {
-        Long startTime = DateTime.now().getTime();
-        while(DateTime.now().getTime() - startTime < milliseconds); 
     }
 
     // PRIVATE

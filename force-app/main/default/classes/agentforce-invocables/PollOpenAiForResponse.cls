@@ -5,8 +5,10 @@ global with sharing class PollOpenAiForResponse {// PMD False Positives:
 
     @InvocableMethod(label='MyOrgButler: Poll OpenAI for a response' description='Poll OpenAI with a Run Id to check if the asynchronous response is already available. Call this action multiple times until a final success or error is available.')
     global static List<Output> execute(List<Input> input) {
+        new Sleep(3000);
         Output result = new Output();
-        result.response = new MyOrgButler().pollForResponse();
+        result.response = new OpenAiAssistant(input[0].threadId, input[0].runId)
+                                    .pollForResponse();
         return new List<Output>{ result };
     }
 
