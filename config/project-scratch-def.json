@@ -12,6 +12,11 @@
     },
     "EinsteinGptSettings" : {
       "enableEinsteinGptPlatform" : true 
+    },
+    "securitySettings": {
+        "sessionSettings": {
+          "lockerServiceNext": true
+          }
     }
   }
 }
