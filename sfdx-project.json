@@ -12,7 +12,7 @@
   "name": "my-org-butler",
   "namespace": "aquiva_os",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "62.0",
+  "sourceApiVersion": "63.0",
   "packageAliases": {
     "my-org-butler": "0HoVI0000002h2T0AQ",
     "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ",
