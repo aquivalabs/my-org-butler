@@ -1,0 +1,35 @@
+{
+  "required" : [ "soapAction" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "attributesJson" : {
+      "title" : "Attributes JSON",
+      "description" : "A JSON with all relevant attributes needed to create this metadata type.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "fullName" : {
+      "title" : "Metadata Full Name",
+      "description" : "Some Actions need a Full Name of the existing Metadata record",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "soapAction" : {
+      "title" : "SOAP Action",
+      "description" : "One of the allowed SOAP Action types: describeMetadata,listMetadata,readMetadata,createMetadata,updateMetadata,upsertMetadata,deleteMetadata",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "typeName" : {
+      "title" : "Metadata Type Name",
+      "description" : "The official Salesforce Metadata Type Name",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,20 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "runId" : {
+      "title" : "OpenAI Run Id",
+      "description" : "The OpenAI Run Id under which the User Message was sent to.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "threadId" : {
+      "title" : "OpenAI Thread Id",
+      "description" : "The OpenAI Thread Id under which the User Message was sent to.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Query, create, update, or delete records using the Tooling API. Supports SOQL queries and CRUD operations on Tooling API objects.</description>
+    <invocationTarget>UseToolingApi</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <masterLabel>MyOrgButler: Use Tooling API</masterLabel>
+</GenAiFunction>

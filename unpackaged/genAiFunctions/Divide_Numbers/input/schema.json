@@ -1,0 +1,21 @@
+{
+  "required" : [ "number1", "number2" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "number1" : {
+      "title" : "First Number",
+      "description" : "Number to be divided (dividend)",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "number2" : {
+      "title" : "Second Number",
+      "description" : "Number to divide by (divisor)",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

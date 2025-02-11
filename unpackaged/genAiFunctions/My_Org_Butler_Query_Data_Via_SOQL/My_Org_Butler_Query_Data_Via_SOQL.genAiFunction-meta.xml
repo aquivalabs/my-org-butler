@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Run arbitrary SOQL queries on org data and receive results as JSON</description>
+    <invocationTarget>RunSoqlQueriesAction</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <masterLabel>My Org Butler: Query Data Via SOQL</masterLabel>
+</GenAiFunction>

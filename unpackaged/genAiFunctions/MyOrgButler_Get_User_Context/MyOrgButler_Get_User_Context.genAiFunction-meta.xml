@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Provides context information about the current user, including user details, time, date, and org information.</description>
+    <invocationTarget>GetUserContext</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <masterLabel>MyOrgButler: Get User Context</masterLabel>
+</GenAiFunction>

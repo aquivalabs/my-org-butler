@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper.</description>
+    <invocationTarget>UseMetadataApi</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <masterLabel>MyOrgButler: Use Metadata API</masterLabel>
+</GenAiFunction>

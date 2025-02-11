@@ -1,0 +1,22 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "runId" : {
+      "title" : "OpenAI Run Id",
+      "description" : "The Id of the Run to be passed to the PollOpenAiForResponse action immediatelly after this action finishes.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "threadId" : {
+      "title" : "OpenAI Thread Id",
+      "description" : "The Id of the Thread to be passed to the PollOpenAiForResponse action immediatelly after this action finishes.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

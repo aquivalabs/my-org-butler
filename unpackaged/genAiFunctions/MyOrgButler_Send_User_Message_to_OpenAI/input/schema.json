@@ -1,0 +1,14 @@
+{
+  "required" : [ "userMessage" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "userMessage" : {
+      "title" : "User Message",
+      "description" : "The original message from the user.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

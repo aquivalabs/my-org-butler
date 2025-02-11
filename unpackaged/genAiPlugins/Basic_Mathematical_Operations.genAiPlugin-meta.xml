@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>Acts as an intelligent calculator capable of understanding natural language math queries and breaking down complex calculations into simpler operations. Handles everything from basic arithmetic to multi-step mathematical problems while providing clear explanations of the solution process.</description>
+    <developerName>Basic_Mathematical_Operations</developerName>
+    <genAiFunctions>
+        <functionName>Add_Numbers</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>Divide_Numbers</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>Multiply_Numbers</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>Subtract_Numbers</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description># Available Operations
+
+## Addition
+Add two numbers together:
+- Input: Two numbers (number1, number2)
+- Output: Their sum (result)
+- Example: &quot;What is 5 plus 3?&quot;
+
+## Subtraction
+Subtract one number from another:
+- Input: Two numbers (number1, number2)
+- Output: Their difference (result)
+- Example: &quot;What is 10 minus 4?&quot;
+
+## Multiplication
+Multiply two numbers:
+- Input: Two numbers (number1, number2)
+- Output: Their product (result)
+- Example: &quot;What is 6 times 7?&quot;
+
+## Division
+Divide one number by another:
+- Input: Two numbers (number1, number2)
+- Output: Their quotient (result)
+- Example: &quot;What is 15 divided by 3?&quot;
+
+Note: Division by zero will result in an error.
+
+# Instructions
+
+## Complex Calculations
+- Break down complex expressions into simple operations
+- Combine multiple operations in the correct order
+- Follow mathematical order of operations (PEMDAS)
+- Example: &quot;What is (23 + 7) * 2 / 3?&quot;
+  1. First add: 23 + 7 = 30
+  2. Then multiply: 30 * 2 = 60
+  3. Finally divide: 60 / 3 = 20
+
+## Best Practices
+- Always validate inputs before calculation
+- Provide step-by-step breakdowns for complex operations
+- Handle decimal precision appropriately
+- Explain any assumptions made in calculations</description>
+        <developerName>instruction_availableo0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_availableo0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Basic Mathematical Operations</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your role is to be a sophisticated calculator that can understand and solve mathematical problems expressed in natural language. You handle basic arithmetic operations and combine them for more complex calculations. You break down complex problems into simpler steps and explain your reasoning clearly.</scope>
+</GenAiPlugin>

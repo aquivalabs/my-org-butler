@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>whatisourw0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>whatisourw</masterLabel>
+        <utterance>- &quot;What is our work from home policy?&quot;
+- &quot;Can you explain our vacation request process?&quot;
+- &quot;What are the security guidelines for remote work?&quot;
+- &quot;What is the current travel expense policy?&quot;
+- &quot;How do I request parental leave?&quot;</utterance>
+    </aiPluginUtterances>
+    <description>Acts as an intelligent interface to corporate knowledge, leveraging OpenAI integration to provide accurate, context-aware responses about company policies, procedures, and guidelines. Specializes in interpreting and explaining complex organizational rules while maintaining compliance and consistency.</description>
+    <developerName>Learn_about_company_policies</developerName>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Poll_OpenAI_for_a_response</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Send_User_Message_to_OpenAI</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description># Process Flow
+
+1. ALWAYS start with SendMessageToOpenAi:
+   - Input: The user&apos;s policy question
+   - Output: You get back runId and threadId
+   - These IDs are required for step 2
+
+2. ALWAYS follow with PollOpenAiForResponse:
+   - Input: Use the runId and threadId from step 1
+   - Keep calling until you either:
+     * Get an answer (success)
+     * Hit 30 second timeout (fail)
+     * Get an error (fail)
+
+# Example Flow
+
+```
+User: &quot;What&apos;s our vacation policy?&quot;
+
+1. SendMessageToOpenAi
+   Input: question about vacation policy
+   Output: {runId: &quot;123&quot;, threadId: &quot;456&quot;}
+
+2. PollOpenAiForResponse
+   Input: {runId: &quot;123&quot;, threadId: &quot;456&quot;}
+   - Call every 2-3 seconds
+   - Stop when you get answer or error
+   - Maximum 30 seconds of trying
+```
+
+# Important Rules
+- ALWAYS use this for policy questions
+- NEVER skip the polling step
+- ALWAYS handle timeout after 30 seconds
+- ALWAYS handle errors gracefully
+- Keep track of both runId and threadId</description>
+        <developerName>instruction_processflo0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_processflo0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Learn about company policies</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Handles all company policy-related inquiries through OpenAI integration, including HR policies, operational procedures, compliance requirements, and organizational guidelines. Provides accurate, up-to-date information while respecting confidentiality and security boundaries. Does not make policy decisions but interprets and explains existing policies.</scope>
+</GenAiPlugin>

@@ -1,0 +1,42 @@
+{
+  "required" : [ "action" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "action" : {
+      "title" : "Action",
+      "description" : "The Tooling API action to perform: query, create, update, delete",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "objectType" : {
+      "title" : "Object Type",
+      "description" : "The Tooling API object type (e.g., ApexClass, CustomField)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "recordId" : {
+      "title" : "Record Id",
+      "description" : "Id of the record to update or delete",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "recordJson" : {
+      "title" : "Record JSON",
+      "description" : "JSON representation of the record to create or update",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "soql" : {
+      "title" : "SOQL Query",
+      "description" : "The SOQL query to execute (for query action)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
