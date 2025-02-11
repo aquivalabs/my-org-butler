@@ -3,7 +3,7 @@
   "properties" : {
     "result" : {
       "title" : "Sum",
-      "description" : "The sum of the two numbers",
+      "description" : "The sum XXXX of the two numbers",
       "lightning:type" : "lightning__numberType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : true,

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlanner xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>A helpful assistant built with love by Aquiva Labs</description>
+    <genAiPlugins>
+        <genAiPluginName>Basic_Mathematical_Operations</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>Learn_about_company_policies</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>My_Org_Butler_Personal_Assistant</genAiPluginName>
+    </genAiPlugins>
+    <masterLabel>My Org Butler</masterLabel>
+    <plannerType>AiCopilot__ReAct</plannerType>
+</GenAiPlanner>
