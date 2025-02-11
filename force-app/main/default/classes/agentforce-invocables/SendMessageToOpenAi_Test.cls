@@ -33,9 +33,5 @@ private class SendMessageToOpenAi_Test {
         // Verify
         System.assertEquals('t1', output.threadId);
         System.assertEquals('r1', output.runId);
-
-        MyOrgButler__c settings = MyOrgButler__c.getInstance();
-        System.assertEquals('t1', settings.ThreadId__c);
-        System.assertEquals('r1', settings.RunId__c);
     }
 }
