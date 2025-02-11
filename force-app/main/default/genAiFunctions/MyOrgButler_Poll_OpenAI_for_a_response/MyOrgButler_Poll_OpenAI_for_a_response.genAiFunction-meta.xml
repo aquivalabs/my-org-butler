@@ -4,5 +4,5 @@
     <invocationTarget>PollOpenAiForResponse</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <masterLabel>MyOrgButler: Poll OpenAI for a response</masterLabel>
+    <masterLabel>Poll OpenAI for a response</masterLabel>
 </GenAiFunction>

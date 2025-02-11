@@ -4,5 +4,5 @@
     <invocationTarget>SendMessageToOpenAi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <masterLabel>MyOrgButler: Send User Message to OpenAI</masterLabel>
+    <masterLabel>Send User Message to OpenAI</masterLabel>
 </GenAiFunction>

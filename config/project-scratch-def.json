@@ -11,12 +11,12 @@
       "enableS1EncryptedStoragePref2": false
     },
     "EinsteinGptSettings" : {
-      "enableEinsteinGptPlatform" : true 
+      "enableEinsteinGptPlatform": true 
     },
     "securitySettings": {
-        "sessionSettings": {
-          "lockerServiceNext": true
-          }
+      "sessionSettings": {
+        "lockerServiceNext": true
+      }
     }
   }
 }
