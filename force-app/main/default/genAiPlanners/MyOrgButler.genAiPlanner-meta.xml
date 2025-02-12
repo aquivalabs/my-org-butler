@@ -2,9 +2,6 @@
 <GenAiPlanner xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Planner for ReAct-based Employee copilot.</description>
     <genAiPlugins>
-        <genAiPluginName>Basic_Mathematical_Operations</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
         <genAiPluginName>Learn_about_company_policies</genAiPluginName>
     </genAiPlugins>
     <genAiPlugins>
