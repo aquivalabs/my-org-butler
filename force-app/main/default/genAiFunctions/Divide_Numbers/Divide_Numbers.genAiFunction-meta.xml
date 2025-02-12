@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Divides the first number by the second number</description>
-    <invocationTarget>DivideNumbers</invocationTarget>
-    <invocationTargetType>apex</invocationTargetType>
-    <isConfirmationRequired>false</isConfirmationRequired>
-    <masterLabel>Divide Numbers</masterLabel>
-</GenAiFunction>

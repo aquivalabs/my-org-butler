@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Subtracts the second number from the first number</description>
-    <invocationTarget>SubtractNumbers</invocationTarget>
-    <invocationTargetType>apex</invocationTargetType>
-    <isConfirmationRequired>false</isConfirmationRequired>
-    <masterLabel>Subtract Numbers</masterLabel>
-</GenAiFunction>
