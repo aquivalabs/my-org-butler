@@ -1,7 +1,6 @@
 {
   "orgName": "my-org-butler_DEV",
   "edition": "Partner Developer",
-  "release": "preview",
   "hasSampleData": true,
   "features": ["EnableSetPasswordInApi","Einstein1AIPlatform"],
   "settings": {
