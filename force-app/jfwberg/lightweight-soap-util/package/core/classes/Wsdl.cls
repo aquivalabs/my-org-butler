@@ -26,7 +26,7 @@ public  virtual with sharing class Wsdl {
     private transient String  bearerToken;
 
     // Default API Configuration
-    private String apiVersion = 'v62.0';
+    private String apiVersion = 'v63.0';
     
     // The HTTP Request that is going to be send and the returned response
     // Transient to remove any secret data during serialization
@@ -69,11 +69,11 @@ public  virtual with sharing class Wsdl {
     /** **************************************************************************************************** **
      **                                          PRIVATE CONSTANTS                                           **
      ** **************************************************************************************************** **/
-    // Standard Salesforce API format like v62.0
+    // Standard Salesforce API format like v63.0
     private static final String VAL_API_VERSION                = '[v]\\d\\d[.][0]';
 
     // SOAP Api setup variables
-    private static final String VAL_DEFAULT_API_VERSION        = 'v62.0';
+    private static final String VAL_DEFAULT_API_VERSION        = 'v63.0';
 
     // Lightning theme to validate if the user is in an Aura Context
     private static final String VAL_LIGHTNING_UI_DISPLAY_THEME = 'Theme4d';

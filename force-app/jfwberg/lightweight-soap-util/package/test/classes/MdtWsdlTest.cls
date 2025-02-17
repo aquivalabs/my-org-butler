@@ -18,7 +18,7 @@ private with sharing class MdtWsdlTest {
         // Create a new wsdl to the current org and set the soap action to 'describeMetadata'
         Wsdl metadataWsdl = new MdtWsdl('namedCredentialName','describeMetadata')
             .setupRequest()
-            .setApiVersion('v60.0')
+            .setApiVersion('v63.0')
         ;
         
         // Check the body is as expected
