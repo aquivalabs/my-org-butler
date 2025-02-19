@@ -10,6 +10,7 @@
 - &quot;What is the current travel expense policy?&quot;
 - &quot;How do I request parental leave?&quot;</utterance>
     </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
     <description>Acts as an intelligent interface to corporate knowledge, leveraging OpenAI integration to provide accurate, context-aware responses about company policies, procedures, and guidelines. Specializes in interpreting and explaining complex organizational rules while maintaining compliance and consistency.</description>
     <developerName>Learn_about_company_policies</developerName>
     <genAiFunctions>
