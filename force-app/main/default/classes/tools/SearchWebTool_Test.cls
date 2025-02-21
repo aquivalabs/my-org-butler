@@ -9,7 +9,7 @@ private class SearchWebTool_Test {
 
         SearchWeb.Answer expected = answerWith('Donald Trump was elected in November 2024.');
         new HttpMock()
-                .post('/search', expected)
+                .post('/search').body(expected).statusCodeOk()
                 .mock();
 
         // Exercise

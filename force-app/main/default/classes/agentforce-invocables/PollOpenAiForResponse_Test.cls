@@ -15,14 +15,13 @@ private class PollOpenAiForResponse_Test {
         messages.data = new List<Message>{ new Message('The answer is 42.') };
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1', run)
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/messages', messages)
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1').body(run).statusCodeOk()
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/messages').body(messages).statusCodeOk()
                 .mock();
 
         PollOpenAiForResponse.Input input = new PollOpenAiForResponse.Input();
         input.threadId = 't1';
         input.runId = 'r1';
-
 
         // Exercise
         Test.startTest();   

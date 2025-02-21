@@ -3,9 +3,10 @@ private class CallSalesforceApiTool_Test {
     
     @IsTest
     private static void execute() {
-
         // Setup
-        new HttpMock().get('/services/rest', '{ value : 3}').mock();
+        new HttpMock()
+                .get('/services/rest').body('{ value : 3}').statusCodeOk()
+                .mock();
 
         // Exercise
         String response = new CallSalesforceApiTool().execute(new Parameter().asJson());
@@ -16,11 +17,11 @@ private class CallSalesforceApiTool_Test {
     
     @IsTest
     private static void exposesExceptions() {
-
         // Setup
         Exception expectedException = null;
-
-        new HttpMock().get('/services/rest', new ApplicationException()).mock();
+        new HttpMock()
+                .get('/services/rest').body(new ApplicationException()).statusCodeInternalServerError()
+                .mock();
 
         // Exercise
         try {

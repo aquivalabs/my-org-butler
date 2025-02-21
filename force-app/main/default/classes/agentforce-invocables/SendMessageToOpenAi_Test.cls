@@ -15,14 +15,13 @@ private class SendMessageToOpenAi_Test {
         messages.data = new List<Message>{ new Message('The answer is 41.') };
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads', new Thread().id('t1'))
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages', new Message('What is the answer to all questions?'))
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs', run)
+                .post('aquiva_os__OpenAiApi/v1/threads').body(new Thread().id('t1')).statusCodeOk()
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages').body(new Message('What is the answer to all questions?')).statusCodeOk()
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs').body(run).statusCodeOk()
                 .mock();
 
         SendMessageToOpenAi.Input input = new SendMessageToOpenAi.Input();
         input.userMessage = 'What is the answer to all questions?';
-
 
         // Exercise
         Test.startTest();

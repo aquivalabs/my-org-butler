@@ -3,10 +3,11 @@ private class MyOrgButler_Test {
     
     @IsTest
     private static void initCreatesAndPersistsNewThread() {
-
         // Setup
         Thread t = new Thread().id('t1');
-        new HttpMock().post('aquiva_os__OpenAiApi/v1/threads', t).mock();
+        new HttpMock()
+                .post('aquiva_os__OpenAiApi/v1/threads').body(t).statusCodeOk()
+                .mock();
 
         // Exercise
         Test.startTest();
@@ -20,21 +21,20 @@ private class MyOrgButler_Test {
         System.assertEquals(null, settings.RunId__c);
     }
 
-    
     @IsTest
     private static void resetCleansUpCorrectly() {
-
         // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1', RunId__c = 'r1');
         
+        Thread t = new Thread().id('t2');
+
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/cancel', true) 
-                .del('aquiva_os__OpenAiApi/v1/threads/t1', true)
-                .post('aquiva_os__OpenAiApi/v1/threads', new Thread().id('t2'))
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/cancel').body(true).statusCodeOk()
+                .deletex('aquiva_os__OpenAiApi/v1/threads/t1').body(true).statusCodeOk()
+                .post('aquiva_os__OpenAiApi/v1/threads').body(t).statusCodeOk()
                 .mock();
 
         // Exercise
-        // Note: without startTest "uncommited work error" due to Setting DML
         Test.startTest();
         new MyOrgButler().reset();
         Test.stopTest();
@@ -46,20 +46,19 @@ private class MyOrgButler_Test {
         System.assertEquals(null, settings.RunId__c);
     }
 
-    
     @IsTest
     private static void messages() {
-
         // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
         Message.Messages messages = new Message.Messages();
         messages.data = new List<Message>{ new Message('Hi') };
 
-        new HttpMock().get('aquiva_os__OpenAiApi/v1/threads/t1/messages', messages).mock();
+        new HttpMock()
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/messages').body(messages).statusCodeOk()
+                .mock();
 
         // Exercise
-        // Note: without startTest "uncommited work error" due to Setting DML
         Test.startTest();
         List<Message> retrieved = new MyOrgButler().messages('any');
         Test.stopTest();
@@ -69,10 +68,8 @@ private class MyOrgButler_Test {
         System.assertEquals('Hi', retrieved[0].content[0].text.value);
     }
 
-
     @IsTest
     private static void steps() {
-
         // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
@@ -82,11 +79,10 @@ private class MyOrgButler_Test {
         messages.data = new List<Message>{ m };
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps', new Run.Steps('completed'))
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps').body(new Run.Steps('completed')).statusCodeOk()
                 .mock();
 
         // Exercise
-        // Note: without startTest "uncommited work error" due to Setting DML
         Test.startTest();
         Run.Steps steps = new MyOrgButler().steps('r1');
         Test.stopTest();
@@ -96,10 +92,8 @@ private class MyOrgButler_Test {
         System.assertEquals('completed', steps.data[0].status);
     }
 
-    
     @IsTest
     private static void respond() {
-
         // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1', RunId__c = 'r1');
 
@@ -110,18 +104,17 @@ private class MyOrgButler_Test {
         run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('callSalesforceApi', ''));
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages', new Message('any'))
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs', run)
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1', run) // run calls tool
-                .get('/services/rest', 300) // tool call
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/submit_tool_outputs', 300) // delegate back
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1', run.status('completed'))
-                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps', new Run.Steps('completed')) 
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages').body(new Message('any')).statusCodeOk()
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs').body(run).statusCodeOk()
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1').body(run).statusCodeOk()
+                .get('/services/rest').body(300).statusCodeOk()
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/submit_tool_outputs').body(300).statusCodeOk()
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1').body(run.status('completed')).statusCodeOk()
+                .get('aquiva_os__OpenAiApi/v1/threads/t1/runs/r1/steps').body(new Run.Steps('completed')).statusCodeOk()
                 .mock();
 
         // Exercise
         Test.startTest();
-        //System.enqueueJob(new MyOrgButler());
         new MyOrgButler().respond('Save the planet!');
         Test.stopTest();
         
@@ -129,11 +122,9 @@ private class MyOrgButler_Test {
         System.assertEquals('t1', MyOrgButler.callback.ThreadId__c);
     }
 
-    
     @IsTest
     private static void modify() {
-
-         // Setup
+        // Setup
         insert new MyOrgButler__c(SetupOwnerId = UserInfo.getUserId(), ThreadId__c = 't1');  
 
         Message message = new Message();
@@ -144,7 +135,7 @@ private class MyOrgButler_Test {
         message.metadata = metadata;
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages/m1', message)
+                .post('aquiva_os__OpenAiApi/v1/threads/t1/messages/m1').body(message).statusCodeOk()
                 .mock();
 
         // Exercise
