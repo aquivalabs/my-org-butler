@@ -1,6 +1,6 @@
 public with sharing class ExploreOrgDataModel {
     
-    @InvocableMethod(label='MyOrgButler Explore Org Data Model' description='Retrieve metadata about objects, fields and relationships in the org.')
+    @InvocableMethod(label='MyOrgButler: Explore Org Data Model' description='Retrieve metadata about objects, fields and relationships in the org.')
     public static List<Output> investigateSchema(List<Input> requests) {
         List<Output> results = new List<Output>();
         
@@ -12,6 +12,9 @@ public with sharing class ExploreOrgDataModel {
             } 
             else if(request.scope == 'objectDetails') {
                 response = getObjectFields(request.objects);
+            }
+            else {
+                throw new ApplicationException('Invalid scope value. Must be either "allObjects" or "objectDetails".');
             }
             
             results.add(new Output(response));

@@ -52,6 +52,20 @@
 - Provide clear, concise results
 - Attribute external information appropriately
 
+## Explore Org Data Model (Explore_Org_Data_Model)
+- Use to retrieve metadata about objects, fields and relationships in the org
+- Can list all objects in the org or get detailed field information
+- For field details, provide specific object names in comma-separated format
+- First understand object structure before querying data
+- Use this tool to validate field names and relationships before running SOQL
+
+## Run SOQL Query (Run_SOQL_Query) 
+- Execute SOQL queries to retrieve org data
+- Always verify field and object names with exploreOrgDataModel first
+- Follow security best practices and respect FLS/CRUD
+- Use proper query filtering to avoid timeouts
+- Handle large datasets appropriately with LIMIT clause
+
 # Operational Guidelines
 
 ## API Selection

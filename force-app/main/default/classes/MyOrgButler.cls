@@ -9,7 +9,9 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         'Notify_User' => new NotifyUserTool(),
         'Search_Web' => new SearchWebTool(),
         'Use_Metadata_API' => new UseMetadataApiTool(),
-        'Use_Tooling_API' => new UseToolingApiTool()
+        'Use_Tooling_API' => new UseToolingApiTool(),
+        'Explore_Org_Data_Model' => new ExploreOrgDataModelTool(),
+        'Run_SOQL_Query' => new RunSoqlQueryTool()
     };
 
     @TestVisible

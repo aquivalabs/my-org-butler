@@ -1,9 +1,9 @@
 // PMD False Positives: 
 public with sharing class RunSoqlQueries {
 
-    @InvocableMethod(label='My Org Butler: Query Data Via SOQL' description='Run arbitrary SOQL queries on org data and receive results as JSON')
-    public  static List<Output> execute(List<Input> input) {
-        Output output =  new Output();
+    @InvocableMethod(label='MyOrgButler: Query Data Via SOQL' description='Run arbitrary SOQL queries on org data and receive results as JSON')
+    public static List<Output> execute(List<Input> input) {
+        Output output = new Output();
 
         try {
             List<SObject> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);

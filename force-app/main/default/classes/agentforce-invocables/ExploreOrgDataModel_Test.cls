@@ -79,7 +79,7 @@ private class ExploreOrgDataModel_Test {
 
         // Setup
         ExploreOrgDataModel.Input input = new ExploreOrgDataModel.Input();
-        input.scope = 'specificObject';
+        input.scope = 'objectDetails';  // Changed from 'specificObject' to 'objectDetails'
         input.objects = 'Account,Contact';
         
         // Exercise
@@ -89,5 +89,22 @@ private class ExploreOrgDataModel_Test {
         String response = results[0].response;
         System.assert(response.contains('Object: Account (' ));
         System.assert(response.contains('Object: Contact (' ));
+    }
+
+    @IsTest
+    private static void invalidScope() {
+        // Setup
+        ExploreOrgDataModel.Input input = new ExploreOrgDataModel.Input();
+        input.scope = 'invalidScope';
+        input.objects = 'Account';
+        
+        // Exercise
+        try {
+            ExploreOrgDataModel.investigateSchema(new List<ExploreOrgDataModel.Input>{ input });
+            System.assert(false, 'Should have thrown an exception');
+        } catch(ApplicationException e) {
+            // Verify
+            System.assertEquals('Invalid scope value. Must be either "allObjects" or "objectDetails".', e.getMessage());
+        }
     }
 }

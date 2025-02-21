@@ -1,0 +1,14 @@
+{
+    "name": "Run_SOQL_Query",
+    "description": "Run arbitrary SOQL queries on org data and receive results as JSON. The query must follow Salesforce SOQL syntax and will execute in USER_MODE access level.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "dynamicSoqlQuery": {
+                "type": "string",
+                "description": "The SOQL query to execute. Must follow Salesforce SOQL syntax, e.g. 'SELECT Id, Name FROM Account'"
+            }
+        },
+        "required": ["dynamicSoqlQuery"]
+    }
+}
