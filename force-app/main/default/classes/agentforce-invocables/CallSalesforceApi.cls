@@ -1,4 +1,3 @@
-
 // PMD False Positives: 
 // - Calling regular Salesforce APIs can be done with Session Id
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
