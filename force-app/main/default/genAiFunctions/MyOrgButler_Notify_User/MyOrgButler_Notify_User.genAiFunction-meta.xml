@@ -4,5 +4,6 @@
     <invocationTarget>NotifyUser</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Notify User</masterLabel>
 </GenAiFunction>

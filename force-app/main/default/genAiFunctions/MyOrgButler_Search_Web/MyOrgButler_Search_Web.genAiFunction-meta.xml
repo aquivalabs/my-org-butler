@@ -4,5 +4,6 @@
     <invocationTarget>SearchWeb</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Search Web</masterLabel>
 </GenAiFunction>

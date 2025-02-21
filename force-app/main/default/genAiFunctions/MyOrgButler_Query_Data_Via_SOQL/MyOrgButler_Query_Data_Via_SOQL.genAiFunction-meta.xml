@@ -4,5 +4,6 @@
     <invocationTarget>RunSoqlQueries</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <masterLabel>My Org Butler: Query Data Via SOQL</masterLabel>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Query Data Via SOQL</masterLabel>
 </GenAiFunction>

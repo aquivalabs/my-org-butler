@@ -4,5 +4,6 @@
     <invocationTarget>UseMetadataApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Use Metadata API</masterLabel>
 </GenAiFunction>

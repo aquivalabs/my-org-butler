@@ -4,5 +4,6 @@
     <invocationTarget>SendMessageToOpenAi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>Send User Message to OpenAI</masterLabel>
 </GenAiFunction>

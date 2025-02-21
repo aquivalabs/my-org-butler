@@ -4,5 +4,6 @@
     <invocationTarget>PollOpenAiForResponse</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>Poll OpenAI for a response</masterLabel>
 </GenAiFunction>

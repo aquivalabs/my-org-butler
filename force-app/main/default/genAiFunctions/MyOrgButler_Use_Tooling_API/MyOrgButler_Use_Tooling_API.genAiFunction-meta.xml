@@ -4,5 +4,6 @@
     <invocationTarget>UseToolingApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Use Tooling API</masterLabel>
 </GenAiFunction>

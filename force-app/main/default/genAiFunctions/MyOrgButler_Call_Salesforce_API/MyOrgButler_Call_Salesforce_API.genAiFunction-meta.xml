@@ -4,5 +4,6 @@
     <invocationTarget>CallSalesforceApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Call Salesforce API</masterLabel>
 </GenAiFunction>
