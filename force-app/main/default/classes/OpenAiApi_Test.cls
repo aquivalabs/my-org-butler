@@ -8,7 +8,7 @@ private class OpenAiApi_Test {
         Thread t = new Thread().id('123');
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads/123', t)
+                .get('aquiva_os__OpenAiApi/v1/threads/123').body(t).statusCodeOk()
                 .mock();
 
         // Exercise
@@ -26,7 +26,7 @@ private class OpenAiApi_Test {
         Thread t = new Thread().id('123');
 
         new HttpMock()
-                .post('aquiva_os__OpenAiApi/v1/threads', t)
+                .post('aquiva_os__OpenAiApi/v1/threads').body(t).statusCodeOk()
                 .mock();
 
         // Exercise
@@ -43,7 +43,7 @@ private class OpenAiApi_Test {
         Exception expectedException = null;
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads', false, 500)
+                .get('aquiva_os__OpenAiApi/v1/threads').body(false).statusCode(500)
                 .mock();
 
         // Exercise
@@ -65,7 +65,7 @@ private class OpenAiApi_Test {
         Exception expectedException = null;
 
         new HttpMock()
-                .get('aquiva_os__OpenAiApi/v1/threads', new ApplicationException('asdf'))
+                .get('aquiva_os__OpenAiApi/v1/threads').statusCodeInternalServerError()
                 .mock();
 
         // Exercise

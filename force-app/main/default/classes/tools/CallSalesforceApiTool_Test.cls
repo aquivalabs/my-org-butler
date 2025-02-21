@@ -12,7 +12,7 @@ private class CallSalesforceApiTool_Test {
         String response = new CallSalesforceApiTool().execute(new Parameter().asJson());
 
         // Verify
-        System.assertEquals('"{ value : 3}"', response);
+        System.assertEquals('{ value : 3}', response);
     }
     
     @IsTest
@@ -20,7 +20,7 @@ private class CallSalesforceApiTool_Test {
         // Setup
         Exception expectedException = null;
         new HttpMock()
-                .get('/services/rest').body(new ApplicationException()).statusCodeInternalServerError()
+                .get('/services/rest').statusCodeInternalServerError()
                 .mock();
 
         // Exercise
