@@ -4,14 +4,18 @@
       "path": "force-app",
       "default": true,
       "package": "my-org-butler",
-      "versionName": "November '24",
-      "versionNumber": "1.41.0.NEXT",
+      "versionName": "February '25",
+      "versionNumber": "1.42.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
           "EinsteinGPTPromptTemplateManager"
         ]
       }
+    },
+    {
+      "path": "unpackaged",
+      "default": false
     }
   ],
   "name": "my-org-butler",
@@ -59,6 +63,7 @@
     "my-org-butler@1.36.0-1": "04tVI000000EUizYAG",
     "my-org-butler@1.37.0-1": "04tVI000000EWT3YAO",
     "my-org-butler@1.40.0-1": "04tVI000000EWrFYAW",
-    "my-org-butler@1.41.0-1": "04tVI000000EXddYAG"
+    "my-org-butler@1.41.0-1": "04tVI000000EXddYAG",
+    "my-org-butler@1.42.0-1": "04tVI000000HZpNYAW"
   }
 }
