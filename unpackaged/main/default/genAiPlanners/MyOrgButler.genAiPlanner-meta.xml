@@ -7,6 +7,6 @@
     <genAiPlugins>
         <genAiPluginName>My_Org_Butler_Personal_Assistant</genAiPluginName>
     </genAiPlugins>
-    <masterLabel>EmployeeCopilotPlanner</masterLabel>
+    <masterLabel>MyOrgButler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
 </GenAiPlanner>

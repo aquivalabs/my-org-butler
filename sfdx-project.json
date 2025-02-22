@@ -6,12 +6,7 @@
       "package": "my-org-butler",
       "versionName": "February '25",
       "versionNumber": "1.42.0.NEXT",
-      "versionDescription": "",
-      "packageMetadataAccess": {
-        "permissionSets": [
-          "EinsteinGPTPromptTemplateManager"
-        ]
-      }
+      "versionDescription": ""
     },
     {
       "path": "unpackaged",
