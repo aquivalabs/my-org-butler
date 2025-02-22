@@ -1,0 +1,14 @@
+{
+  "name": "Render_PlantUML",
+  "description": "Converts PlantUML text notation into a rendered diagram image URL. Use for system architecture, sequence diagrams, class diagrams, and other visual representations.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "plantUmlText": {
+        "type": "string",
+        "description": "The PlantUML diagram definition in text format (e.g., @startuml\\nAlice->Bob : hello\\n@enduml)"
+      }
+    },
+    "required": ["plantUmlText"]
+  }
+}

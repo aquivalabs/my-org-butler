@@ -1,7 +1,7 @@
 // PMD False Positives: 
 public with sharing class RunSoqlQueries {
 
-    @InvocableMethod(label='MyOrgButler: Query Data Via SOQL' description='Run arbitrary SOQL queries on org data and receive results as JSON')
+    @InvocableMethod(label='MyOrgButler: Run SOQL queries' description='Run arbitrary SOQL queries on org data and receive results as JSON')
     public static List<Output> execute(List<Input> input) {
         Output output = new Output();
 

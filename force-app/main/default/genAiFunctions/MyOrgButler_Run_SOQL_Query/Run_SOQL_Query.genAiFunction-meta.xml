@@ -5,5 +5,5 @@
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
-    <masterLabel>MyOrgButler: Query Data Via SOQL</masterLabel>
+    <masterLabel>MyOrgButler: Run SOQL Query</masterLabel>
 </GenAiFunction>

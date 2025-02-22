@@ -1,0 +1,14 @@
+{
+  "required" : [ "plantUmlText" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "plantUmlText" : {
+      "title" : "PlantUML Text",
+      "description" : "The PlantUML diagram definition in text format (e.g., @startuml\\nAlice->Bob : hello\\n@enduml)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

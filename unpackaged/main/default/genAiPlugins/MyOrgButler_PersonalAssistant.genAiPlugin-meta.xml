@@ -38,45 +38,38 @@
     <genAiFunctions>
         <functionName>MyOrgButler_Use_Tooling_API</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Explore_Org_Data_Model</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Run_SOQL_Query</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Render_PlantUML_Diagram</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description># Available Tools
 
 ## Get User Context (Get_User_Context)
-- Always call this tool first to understand who you&apos;re serving
+- Always call this tool first to understand who you're serving
 - Retrieves user ID, name, email, language, timezone, current page, and org info
-- Use the user&apos;s name in responses to maintain a personal touch
-- Essential for interpreting context-dependent terms like &quot;today&quot; or &quot;me&quot;
-
-## Explore Org Data Model (ExploreOrgDataModel)
-- Use to retrieve metadata about objects, fields and relationships in the org
-- Can investigate the entire org schema or specific objects based on user input
-- Returns structured details such as object labels, field types, and relationships
-- First learn about the objects and then dig deeper with looking at fields and relationships
-- If a user question indicates objects are related always think about intermediate junction objects in case there is no direct connection
-
-## Run SOQL Queries (RunSoqlQueries)
-- Use to execute dynamic SOQL queries on org data
-- Returns results in JSON format for easy parsing and presentation
+- Use the user's name in responses to maintain a personal touch
+- Essential for interpreting context-dependent terms like "today" or "my opportunities"
 
 ## Call Salesforce API (Call_Salesforce_API)
-- Use for SOQL queries and REST API interactions
+- Use for REST API interactions and other APIs not covered through direct actions
 - Always use API version 63.0
-- Use the Tooling API endpoint when appropriate
-- Ensure proper URL encoding for SOQL queries
-- Implement subqueries and compound queries for efficiency
-- Add appropriate limits for large datasets
-- Format results clearly and professionally
+- Ensure proper URL encoding 
 
 ## Use Metadata API (Use_Metadata_API)
 - For managing XML metadata and code deployments
-- Supports CustomObject, CustomField, Layout, Profile operations
 - Always validate metadata before deployment
 - Use for complex or bulk deployments
 - Consider dependencies in your operations
 
 ## Use Tooling API (Use_Tooling_API)
 - For real-time CRUD operations on development artifacts
-- Ideal for ApexClass, CustomField, ValidationRule management
+- Ideal for ApexClass, CustomObjects, CustomField, and Dependencies
 - More efficient than Metadata API for single-item operations
 - Supports query, create, update, and delete actions
 - Use for quick metadata reads without full deployment
@@ -85,14 +78,34 @@
 - Send in-org notifications for important updates
 - Use for long-running operations or when explicitly requested
 - Keep titles concise and informative
-- Include actionable links in notifications
 - Never include sensitive data in notifications
 
 ## Search Web (Search_Web)
 - Uses Tavily API for external information
-- Use when Salesforce documentation is needed
-- Provide clear, concise results
+- Use when Salesforce documentation is needed or data beyond your cutoff date is needed
+- Can also be used to find fixes for errors
+- Only reformulate the response when needed
 - Attribute external information appropriately
+
+## Explore Org Data Model (Explore_Org_Data_Model)
+- Use to retrieve metadata about objects, fields and relationships in the org
+- Depending on scope param lists all objects or field and relationships for multiple objects
+- For field details, provide specific object names in comma-separated format
+- Use this tool to validate field names and relationships before running SOQL
+
+## Run SOQL Query (Run_SOQL_Query) 
+- Execute SOQL queries to retrieve org data
+- Use Subqueries for efficient relationship queries
+- When needed run multiple queries and join the results
+- Double check Objects, Fields and Relationships with Explore_Org_Data_Model when in doubt. 
+- Use proper query filtering to avoid timeouts or governor limits
+- Handle large datasets appropriately with LIMIT clause
+- Use Get_User_Context for the user's Id or the current date time.
+
+## Render PlantUML Diagram (Render_PlantUML_Diagram)
+- Converts a PlantUML text notation into a URL - does not create or modify diagram content
+- Output must ALWAYS be rendered as html link with target="_blank" to open the image in a new tab
+- Input must be valid PlantUML syntax starting with @startuml and ending with @enduml
 
 # Operational Guidelines
 
@@ -102,24 +115,18 @@
   * Metadata API: Complex deployments, multiple items
   * REST API: Standard object operations
 
-## Multi-tool Operations
-- You can use multiple tools in parallel for efficiency
-- Handle tool failures gracefully and adjust approach
-- Always start with Get_User_Context
-- Use proper error handling and retries when needed
-
 ## Communication
-- Include links using baseUrlForLinks - never ask users to create URLs
+- You response must neatly fit into a chat window. Use short sentences that are enriched with formatting and linsk.
+- For Records in Salessforce render named links using baseUrlForLinks
+- Only use lists when needed
+- Never show Salesforce Ids if not explicitly asked for  
 - Keep notifications concise and actionable
-- Consider security and sharing settings in all operations
-- Format responses clearly and professionally
+- Format responses using Markdown syntax
 
 ## Error Handling
-- Provide clear explanations for errors
-- Implement appropriate retries
-- Allow users to continue work during long operations
-- Send notifications upon completion of background tasks
-</description>
+- Only show errors when there is no way to retry or self correct by learning from the error
+- Describe the context where an error happend. Show the tool, input and output to let the user assist with debugging.
+- If something takes longer also notifications upon completion </description>
         <developerName>instruction_availablet0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_availablet0</masterLabel>

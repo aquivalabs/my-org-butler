@@ -1,0 +1,21 @@
+{
+  "required" : [ "scope" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "objects" : {
+      "title" : "Object API Names",
+      "description" : "Comma-separated list of object api names to further investigate (only if scope is objectDetails)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "scope" : {
+      "title" : "Scope",
+      "description" : "allObjects, objectDetails",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

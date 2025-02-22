@@ -11,7 +11,8 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
         'Use_Metadata_API' => new UseMetadataApiTool(),
         'Use_Tooling_API' => new UseToolingApiTool(),
         'Explore_Org_Data_Model' => new ExploreOrgDataModelTool(),
-        'Run_SOQL_Query' => new RunSoqlQueryTool()
+        'Run_SOQL_Query' => new RunSoqlQueryTool(),
+        'Render_PlantUML' => new RenderPlantumlTool()
     };
 
     @TestVisible
