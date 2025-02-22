@@ -7,8 +7,8 @@ public with sharing class RunSoqlQueryTool extends MyOrgButler.Tool {
         request.dynamicSoqlQuery = parser.get('dynamicSoqlQuery').getStringValue();
 
         List<RunSoqlQueries.Output> result = RunSoqlQueries.execute(new List<RunSoqlQueries.Input>{ request });
-        Map<String, String> response = new Map<String, String>{
-            'result' => result[0].queryResultAsJson,
+        Map<String, Object> response = new Map<String, Object>{
+            'result' => result[0].resultRecords,
             'error' => result[0].queryError
         };
         return JSON.serialize(response);

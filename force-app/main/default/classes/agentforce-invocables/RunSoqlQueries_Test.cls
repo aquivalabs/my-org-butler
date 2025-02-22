@@ -6,7 +6,8 @@ public with sharing class RunSoqlQueries_Test {
     static void execute() {
 
         // Setup
-        insert new Account(Name='AcmeCorp');
+        Account a = new Account(Name='AcmeCorp');
+        insert a;
 
         // Exercise
         RunSoqlQueries.Input input = new RunSoqlQueries.Input();
@@ -18,8 +19,7 @@ public with sharing class RunSoqlQueries_Test {
 
         // Verify
         System.assertEquals(1, result.size());
-        RunSoqlQueries.Output output = result[0];
-        System.assert(output.queryResultAsJson.contains('AcmeCorp'));
+        System.assertEquals(a, result[0].resultRecords[0]);
     }
 
     @IsTest

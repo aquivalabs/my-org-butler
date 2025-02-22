@@ -11,11 +11,11 @@
       "copilotAction:useHydratedPrompt" : false
     },
     "queryResultAsJson" : {
-      "title" : "Query Result as JSON",
-      "description" : "The result of the SOQL query converted to JSON",
+      "title" : "Result Records as List of SObjects",
+      "description" : "The result of the SOQL query as List of SObjects",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
-      "copilotAction:isDisplayable" : false,
+      "copilotAction:isDisplayable" : true,
       "copilotAction:isUsedByPlanner" : true,
       "copilotAction:useHydratedPrompt" : false
     }

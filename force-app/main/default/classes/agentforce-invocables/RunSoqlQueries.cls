@@ -7,9 +7,9 @@ public with sharing class RunSoqlQueries {
 
         try {
             List<SObject> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);
-            output.queryResultAsJson = JSON.serialize(result);
+            output.resultRecords = result;
         }
-        catch(QueryException ex) {
+        catch(Exception ex) {
             output.queryError = ex.getMessage();
         }
 
@@ -24,10 +24,10 @@ public with sharing class RunSoqlQueries {
     }
 
     public class Output {
-        @InvocableVariable(label='Query Result as JSON' description='The result of the SOQL query converted to JSON' required=true)
-        public String queryResultAsJson;
+        @InvocableVariable(label='Result Records as List of SObjects' description='The result of the SOQL query as List of SObjects')
+        public List<SObject> resultRecords;
 
-        @InvocableVariable(label='SOQL Error' description='Full message of an error or exception to learn and correct the query.' required=true)
+        @InvocableVariable(label='SOQL Error' description='Full message of an error or exception to learn and correct the query.')
         public String queryError;
     }
 }
