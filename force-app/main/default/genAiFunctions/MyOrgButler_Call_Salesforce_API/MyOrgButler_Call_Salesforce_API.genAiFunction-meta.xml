@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Call an official public Salesforce API REST endpoint</description>
+    <description>Call Salesforce REST API endpoints with support for all HTTP methods.
+
+USAGE GUIDELINES:
+Endpoint Construction:
+- Base URL automatically added
+- Version-specific endpoints (/v63.0/)
+- Composite resource support
+- SObject endpoints
+- Bulk API 2.0 endpoints
+- Connect API endpoints
+- UI API endpoints
+
+Technical Details:
+- HTTP Methods: GET, POST, PUT, PATCH, DELETE
+- Content-Type: application/json default
+- Authentication: Automatic session handling
+- Response formats: JSON/XML
+- Compression: Automatic handling
+- Batch size limits: Per endpoint
+- Rate limiting: Built-in handling
+- CORS compliance: Automatic
+- Error mapping: Standard format
+- Binary handling: Base64 encoding</description>
     <invocationTarget>CallSalesforceApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Call Salesforce API</masterLabel>
 </GenAiFunction>

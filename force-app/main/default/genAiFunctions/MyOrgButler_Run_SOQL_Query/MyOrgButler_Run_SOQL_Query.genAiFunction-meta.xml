@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Execute SOQL queries on org data with support for relationships and aggregate functions.
+
+USAGE GUIDELINES:
+Query Limits:
+- Maximum result size: 50,000 records
+- Query timeout: 120 seconds
+- Relationship depth: 5 levels max
+- Aggregate grouping: 2,000 groups max
+- OFFSET limit: 2,000 records
+- WHERE clause: 4,000 characters max
+- ORDER BY: 32 fields max
+
+Query Features:
+- Parent-child relationships (up to 5 levels)
+- Aggregate functions (COUNT, SUM, AVG, etc.)
+- Date literals (TODAY, LAST_N_DAYS, etc.)
+- Polymorphic relationships (What/Who fields)
+- Cross-object formulas
+- Subqueries in SELECT
+- Relationship queries (both standard and custom)
+- Dynamic field sets
+
+Best Practices:
+- Validate field names with Explore_Org_Data_Model first
+- Use selective filters to optimize performance
+- Include ORDER BY for consistent pagination
+- Escape special characters in string literals
+- Use bind variables for security
+- Consider sharing rules impact
+- Results returned as JSON</description>
+    <invocationTarget>RunSoqlQuery</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Run SOQL Query</masterLabel>
+</GenAiFunction>

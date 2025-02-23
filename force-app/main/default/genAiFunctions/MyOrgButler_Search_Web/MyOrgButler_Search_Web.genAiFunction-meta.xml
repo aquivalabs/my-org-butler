@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Performs a web search using the Tavily API and returns the answer.</description>
+    <description>Performs web search using Tavily API for external documentation and solutions.
+
+USAGE GUIDELINES:
+Search Categories:
+- Salesforce Documentation
+- Technical Solutions
+- Best Practices
+- API References
+- Error Resolution
+
+Technical Details:
+- Response format: Natural language answer
+- Search scope: Web and documentation
+- Query optimization: Auto-reformulation
+- Language support: Multiple locales
+- Source attribution: Included
+- Context awareness: Integrates with metadata
+- Real-time information: Current docs
+- Links: Preserved in response
+- Maximum query length: 500 chars
+- Rate limits: Respects Tavily API limits</description>
     <invocationTarget>SearchWeb</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Search Web</masterLabel>
 </GenAiFunction>

@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Query, create, update, or delete records using the Tooling API. Supports SOQL queries and CRUD operations on Tooling API objects.</description>
+    <description>Real-time CRUD operations on development artifacts using Tooling API.
+
+USAGE GUIDELINES:
+Supported Actions:
+- query: SOQL queries against Tooling API objects
+- create: Single record creation
+- update: Modify existing records
+- delete: Remove development artifacts
+
+Technical Specifications:
+- Query limits: 2000 records per query
+- Supports LIMIT, OFFSET, ORDER BY in queries
+- Relationship queries limited to 5 levels
+- JSON responses for create/update operations
+- Field-level security respected
+- Supports compound data types
+- Transaction rollback on errors
+- No bulk operation support
+
+Key Object Types:
+- ApexClass: code, status, body, symbols
+- CustomField: metadata, relationships, validation
+- CustomObject: fields, validation rules, layouts
+- ValidationRule: errorMessage, active, metadata
+- ApexTrigger: code, status, usageBeforeUpdate
+- Layout: layout items, buttons, related lists
+- WorkflowRule: criteria, actions, timeTriggered</description>
     <invocationTarget>UseToolingApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>

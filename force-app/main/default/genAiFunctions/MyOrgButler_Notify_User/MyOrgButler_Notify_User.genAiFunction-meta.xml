@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Sends an In-org notification message to a set of users optionally linking to a target record</description>
+    <description>Send in-app notifications to specific users with optional record links.
+
+USAGE GUIDELINES:
+Notification Parameters:
+- recipientIds: Up to 2000 18-char user IDs
+- targetId: Record ID or 000000000000000AAA
+- title: Max 100 chars, clear action context
+- body: Plain text, error details or status
+
+Technical Specifications:
+- Delivery: Real-time push notification
+- Persistence: Platform events based
+- Link handling: Record-aware navigation
+- Queue handling: Ordered delivery
+- Error recovery: Auto-retry on fail
+- Recipient validation: Automatic
+- Accessibility: Respects user settings
+- Mobile support: Cross-device delivery
+- Desktop integration: Toast notifications
+- Click behavior: Context-aware navigation</description>
     <invocationTarget>NotifyUser</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>

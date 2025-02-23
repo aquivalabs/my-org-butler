@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Describe, list, reads, creates, updates, renames or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON. Uses an MDAPI Apex wrapper.</description>
+    <description>Manage metadata using SOAP-based Metadata API wrapper.
+
+USAGE GUIDELINES:
+SOAP Actions:
+- describeMetadata: Get metadata structure, no parameters needed
+- listMetadata: Takes typeName, returns metadata of that type
+- readMetadata: Requires typeName and fullName
+- createMetadata: Requires typeName and attributesJson
+- updateMetadata: Requires typeName and attributesJson, updates existing
+- upsertMetadata: Creates or updates based on existence
+- deleteMetadata: Requires typeName and fullName
+
+Technical Details:
+- JSON attributes must match metadata type structure
+- Supports all deployable metadata types
+- Handles up to 10 items per operation
+- Automatic rollback on partial failures
+- XML-based deployment behind the scenes
+- Responses are raw SOAP XML responses
+- API version matches org's version
+- Namespace aware operations
+- Case-sensitive metadata names</description>
     <invocationTarget>UseMetadataApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Use Metadata API</masterLabel>
 </GenAiFunction>
