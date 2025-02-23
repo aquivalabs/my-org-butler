@@ -30,7 +30,7 @@ Best Practices:
 - Use bind variables for security
 - Consider sharing rules impact
 - Results returned as JSON</description>
-    <invocationTarget>RunSoqlQuery</invocationTarget>
+    <invocationTarget>RunSoqlQueries</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
