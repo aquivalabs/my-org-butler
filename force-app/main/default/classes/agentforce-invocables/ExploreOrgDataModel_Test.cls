@@ -107,4 +107,31 @@ private class ExploreOrgDataModel_Test {
             System.assertEquals('Invalid scope value. Must be either "allObjects" or "objectDetails".', e.getMessage());
         }
     }
+
+    @IsTest
+    private static void objectDetailsWithPicklist() {
+        // Setup
+        ExploreOrgDataModel.Input input = new ExploreOrgDataModel.Input();
+        input.scope = 'objectDetails';
+        input.objects = 'Account';
+
+        // Exercise
+        List<ExploreOrgDataModel.Output> results = ExploreOrgDataModel.investigateSchema(new List<ExploreOrgDataModel.Input>{ input });
+
+        // Verify
+        System.assertNotEquals(null, results[0].response);
+        List<String> lines = results[0].response.split('\n');
+        
+        String industryLine = null;
+        for(String line : lines) {
+            if(line.startsWith('Industry\t')) {
+                industryLine = line;
+                break;
+            }
+        }
+        
+        System.assertNotEquals(null, industryLine);
+        System.assert(industryLine.contains('PICKLIST'));
+        System.assert(industryLine.contains('Agriculture'));  // A known Industry picklist value
+    }
 }

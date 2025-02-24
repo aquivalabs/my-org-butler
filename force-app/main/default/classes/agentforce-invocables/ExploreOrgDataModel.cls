@@ -50,7 +50,7 @@ public with sharing class ExploreOrgDataModel {
                 Schema.DescribeSObjectResult describe = sObjectType.getDescribe();
                 
                 lines.add('Object: ' + objectName + ' (' + describe.getLabel() + ')');
-                lines.add('Field Name\tType\tReferences\tRelationship Name');
+                lines.add('Field Name\tType\tReferences\tRelationship Name\tPicklist Values');
                 lines.add('-------------------------------------------');
                 
                 List<String> fieldLines = new List<String>();
@@ -65,9 +65,21 @@ public with sharing class ExploreOrgDataModel {
                         }
                         line += '\t' + String.join(refs, ',');
                         line += '\t' + fieldDescribe.getRelationshipName();
+                        line += '\t'; // empty picklist values
                     } 
+                    else if(fieldDescribe.getType() == Schema.DisplayType.PICKLIST || 
+                           fieldDescribe.getType() == Schema.DisplayType.MULTIPICKLIST) {
+                        line += '\t\t\t'; // empty refs and relationship
+                        List<String> pickVals = new List<String>();
+                        for(Schema.PicklistEntry entry : fieldDescribe.getPicklistValues()) {
+                            if(entry.isActive()) {
+                                pickVals.add(entry.getValue());
+                            }
+                        }
+                        line += String.join(pickVals, ', ');
+                    }
                     else {
-                        line += '\t\t';
+                        line += '\t\t\t'; // empty refs, relationship and picklist
                     }
                     
                     fieldLines.add(line);

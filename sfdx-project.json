@@ -4,13 +4,9 @@
       "path": "force-app",
       "default": true,
       "package": "my-org-butler",
-      "versionName": "February '25",
-      "versionNumber": "1.43.0.NEXT",
+      "versionName": "March '25",
+      "versionNumber": "1.44.0.NEXT",
       "versionDescription": ""
-    },
-    {
-      "path": "unpackaged",
-      "default": false
     }
   ],
   "name": "my-org-butler",
