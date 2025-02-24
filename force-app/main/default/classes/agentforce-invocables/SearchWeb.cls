@@ -19,10 +19,6 @@ public  with sharing class SearchWeb {
         request.setBody( JSON.serialize(body) );
 
         HttpResponse response = new Http().send(request);
-        if(response.getStatusCode() >= 300) {
-            throw new ApplicationException('Failed to perform web search. HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
-        }
-
         Answer answer = (Answer) JSON.deserialize(response.getBody(), Answer.class);
         return new List<Answer>{ answer };
 

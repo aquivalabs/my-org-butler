@@ -17,10 +17,6 @@ public  with sharing class CallSalesforceApi {
         }
 
         HttpResponse response = new Http().send(request);
-        if(response.getStatusCode() >= 300) {
-            throw new ApplicationException('HTTP Request failed with code: ' + response.getStatusCode() + ' and message: ' + response.getBody() + '.');
-        }
-
         return new List<Output>{ new Output(response.getBody()) };
     }
 
