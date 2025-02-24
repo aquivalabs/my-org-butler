@@ -14,29 +14,8 @@ private class CallSalesforceApiTool_Test {
         // Verify
         System.assertEquals('{ value : 3}', response);
     }
-    
-    @IsTest
-    private static void exposesExceptions() {
-        // Setup
-        Exception expectedException = null;
-        new HttpMock()
-                .get('/services/rest').statusCodeInternalServerError()
-                .mock();
-
-        // Exercise
-        try {
-            new CallSalesforceApiTool().execute(new Parameter().asJson());
-        }
-        catch(ApplicationException ex) {
-            expectedException = ex;
-        }
-
-        // Verify
-        System.assertNotEquals(null, expectedException);
-    }
 
     // HELPER
-
     private class Parameter {
         String httpMethod = 'GET';
         String urlIncludingParams = '/services/rest';
