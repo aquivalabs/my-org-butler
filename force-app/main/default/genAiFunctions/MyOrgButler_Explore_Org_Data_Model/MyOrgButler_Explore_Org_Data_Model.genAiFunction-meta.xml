@@ -3,19 +3,29 @@
     <description>Retrieve metadata about objects, fields and relationships in the org.
 
 USAGE GUIDELINES:
-- Two operation modes: allObjects or objectDetails
+IMPORTANT: This tool MUST be used before executing any SOQL queries to:
+- Validate object existence and accessibility
+- Verify field names and data types
+- Check relationship structures
+- Ensure proper query construction
+
+Operation Modes:
 - allObjects: Lists custom objects only, sorted alphabetically
 - objectDetails: Returns field details for specified objects including:
   * Field API Name
   * Data Type
   * Reference Objects (for lookup/master-detail)
   * Relationship Name
-- Field output format: FieldName\tType\tReferences\tRelationshipName
-- Performance scales with number of objects requested
+
+Best Practices:
+- Use allObjects for broad data model exploration
+- Use objectDetails for specific query planning
+- Always verify relationship fields before joins
+- Check field types for proper query filters
+- Validate object access before querying
+- Consider field-level security
+- Maximum 10 objects per request recommended
 - Case-insensitive object name matching
-- Handles both standard and custom objects
-- Validates object existence before processing
-- Maximum recommended objects per request: 10
 - Returns empty response for inaccessible objects</description>
     <invocationTarget>ExploreOrgDataModel</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

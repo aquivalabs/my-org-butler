@@ -3,24 +3,12 @@
     <description>Execute SOQL queries on org data with support for relationships and aggregate functions.
 
 USAGE GUIDELINES:
-Query Limits:
-- Maximum result size: 50,000 records
-- Query timeout: 120 seconds
-- Relationship depth: 5 levels max
-- Aggregate grouping: 2,000 groups max
-- OFFSET limit: 2,000 records
-- WHERE clause: 4,000 characters max
-- ORDER BY: 32 fields max
+IMPORTANT: Before executing any SOQL query, you MUST:
+1. Use Explore_Org_Data_Model to validate object and field existence
+2. Check field relationships and data types
+3. Verify object accessibility for the current user
 
-Query Features:
-- Parent-child relationships (up to 5 levels)
-- Aggregate functions (COUNT, SUM, AVG, etc.)
-- Date literals (TODAY, LAST_N_DAYS, etc.)
-- Polymorphic relationships (What/Who fields)
-- Cross-object formulas
-- Subqueries in SELECT
-- Relationship queries (both standard and custom)
-- Dynamic field sets
+
 
 Best Practices:
 - Validate field names with Explore_Org_Data_Model first
