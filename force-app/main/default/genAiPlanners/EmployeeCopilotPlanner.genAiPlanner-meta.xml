@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlanner xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Planner for ReAct-based Employee copilot.</description>
+    <genAiFunctions>
+        <genAiFunctionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</genAiFunctionName>
+    </genAiFunctions>
     <genAiPlugins>
         <genAiPluginName>Make_Configuration_Changes</genAiPluginName>
     </genAiPlugins>
@@ -12,9 +15,6 @@
     </genAiPlugins>
     <genAiPlugins>
         <genAiPluginName>Visualize_Data_And_Processes</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>General_Purpose_Tools</genAiPluginName>
     </genAiPlugins>
     <masterLabel>EmployeeCopilotPlanner</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>

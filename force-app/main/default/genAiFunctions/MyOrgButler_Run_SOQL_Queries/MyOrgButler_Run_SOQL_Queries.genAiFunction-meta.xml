@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Run a single SOQL Query and return a list of records or errors.
-
-ALWAYS:
-- Use Explore_Org_Data_Model first when querying Custom Objects
-- Verify field names and relationships before constructing queries
-- Respect the 2000 record query limit
-- Include error handling in your implementation
-
-NEVER:
-- Use Explore for Standard Objects (Account, Contact, User, etc.)
-- Query Custom Objects without checking their existence first
-- Exceed relationship query depth of 5
-- Ignore field-level security</description>
+    <description>Run a single SOQL Query and return a list of records or errors</description>
     <invocationTarget>RunSoqlQueries</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
