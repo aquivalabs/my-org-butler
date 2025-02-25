@@ -1,0 +1,14 @@
+{
+  "required" : [ "dynamicSoqlQuery" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "dynamicSoqlQuery" : {
+      "title" : "SOQL Query",
+      "description" : "Query to be executed as Dynamic SOQL",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
