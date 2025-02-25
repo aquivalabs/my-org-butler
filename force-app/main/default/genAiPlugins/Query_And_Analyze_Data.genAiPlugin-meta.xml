@@ -4,16 +4,16 @@
         <developerName>utterance_analyze0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_analyze0</masterLabel>
-        <utterance>- "Show me all opportunities closing this month"
-- "Find accounts without any contacts"
-- "What's our average deal size by industry?"
-- "List all leads created last week by source"
-- "How many cases are open by priority?"
-- "Show me contacts at companies in California"
-- "What's the total pipeline value by stage?"
-- "Find duplicate accounts"
-- "Show me high-value opportunities at risk"
-- "Get all contacts from accounts modified today"</utterance>
+        <utterance>- &quot;Show me all opportunities closing this month&quot;
+- &quot;Find accounts without any contacts&quot;
+- &quot;What&apos;s our average deal size by industry?&quot;
+- &quot;List all leads created last week by source&quot;
+- &quot;How many cases are open by priority?&quot;
+- &quot;Show me contacts at companies in California&quot;
+- &quot;What&apos;s the total pipeline value by stage?&quot;
+- &quot;Find duplicate accounts&quot;
+- &quot;Show me high-value opportunities at risk&quot;
+- &quot;Get all contacts from accounts modified today&quot;</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>

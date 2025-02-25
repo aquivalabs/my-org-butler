@@ -4,16 +4,16 @@
         <developerName>utterance_records0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_records0</masterLabel>
-        <utterance>- "Create a new account named Acme Corp"
-- "Update status of these opportunities"
-- "Delete test contacts created today"
-- "Create 100 sample leads for testing"
-- "Update ownership of inactive accounts"
-- "Create contacts for this account"
-- "Update all cases to high priority"
-- "Delete duplicate records"
-- "Mass update opportunity stages"
-- "Create related records"</utterance>
+        <utterance>- &quot;Create a new account named Acme Corp&quot;
+- &quot;Update status of these opportunities&quot;
+- &quot;Delete test contacts created today&quot;
+- &quot;Create 100 sample leads for testing&quot;
+- &quot;Update ownership of inactive accounts&quot;
+- &quot;Create contacts for this account&quot;
+- &quot;Update all cases to high priority&quot;
+- &quot;Delete duplicate records&quot;
+- &quot;Mass update opportunity stages&quot;
+- &quot;Create related records&quot;</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users create, update, and delete records in their Salesforce org using REST APIs and data operations. Handles both single record operations and bulk data changes.</description>
@@ -26,6 +26,9 @@
     </genAiFunctions>
     <genAiFunctions>
         <functionName>MyOrgButler_Get_User_Context</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Run_SOQL_Queries</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
         <description># Communication Guidelines

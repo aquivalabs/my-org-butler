@@ -4,16 +4,16 @@
         <developerName>utterance_visualize0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_visualize0</masterLabel>
-        <utterance>- "Show me a diagram of our sales objects"
-- "Create an ERD for Account relationships"
-- "Visualize our approval process"
-- "Draw a diagram of the Lead conversion flow"
-- "Map the relationships between orders and products"
-- "Show me our case escalation workflow"
-- "Create a sequence diagram for this process"
-- "Visualize the Account-Contact hierarchy"
-- "Show dependencies between custom objects"
-- "Map out our integration flow"</utterance>
+        <utterance>- &quot;Show me a diagram of our sales objects&quot;
+- &quot;Create an ERD for Account relationships&quot;
+- &quot;Visualize our approval process&quot;
+- &quot;Draw a diagram of the Lead conversion flow&quot;
+- &quot;Map the relationships between orders and products&quot;
+- &quot;Show me our case escalation workflow&quot;
+- &quot;Create a sequence diagram for this process&quot;
+- &quot;Visualize the Account-Contact hierarchy&quot;
+- &quot;Show dependencies between custom objects&quot;
+- &quot;Map out our integration flow&quot;</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Creates visual representations of data models, processes, and relationships using PlantUML diagrams. Helps users understand complex relationships and workflows through clear visualizations.</description>

@@ -4,16 +4,16 @@
         <developerName>utterance_config0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_config0</masterLabel>
-        <utterance>- "Create a new custom field on Account"
-- "Update this validation rule"
-- "Add a picklist value to Status field"
-- "Create a formula field for commission"
-- "Deploy these field changes"
-- "Update the page layout"
-- "Create a new custom object"
-- "Modify field permissions"
-- "Add a new workflow rule"
-- "Create a roll-up summary field"</utterance>
+        <utterance>- &quot;Create a new custom field on Account&quot;
+- &quot;Update this validation rule&quot;
+- &quot;Add a picklist value to Status field&quot;
+- &quot;Create a formula field for commission&quot;
+- &quot;Deploy these field changes&quot;
+- &quot;Update the page layout&quot;
+- &quot;Create a new custom object&quot;
+- &quot;Modify field permissions&quot;
+- &quot;Add a new workflow rule&quot;
+- &quot;Create a roll-up summary field&quot;</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users implement configuration changes in their Salesforce org through metadata and tooling operations. Handles everything from simple field updates to complex deployments.</description>

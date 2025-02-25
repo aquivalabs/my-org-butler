@@ -10,10 +10,17 @@
       "copilotAction:isUsedByPlanner" : true,
       "copilotAction:useHydratedPrompt" : false
     },
-    "queryResultAsJson" : {
+    "resultRecords" : {
       "title" : "Result Records as List of SObjects",
       "description" : "The result of the SOQL query as List of SObjects",
-      "lightning:type" : "lightning__textType",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "lightning__recordInfoType",
+        "lightning:sObjectInfo" : {
+          "apiName" : "U__resultRecords"
+        }
+      },
+      "lightning:type" : "lightning__listType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : true,
       "copilotAction:isUsedByPlanner" : true,

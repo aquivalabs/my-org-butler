@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Execute SOQL queries on org data with support for relationships and aggregate functions.
-
-USAGE GUIDELINES:
-IMPORTANT: Before executing any SOQL query, you MUST:
-- Use Explore_Org_Data_Model to validate object and field existence
-- Check field relationships and data types
-- Validate field names with Explore_Org_Data_Model first</description>
+    <description>Run a single SOQL Query and return a list of records or errors</description>
     <invocationTarget>RunSoqlQueries</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
     <masterLabel>MyOrgButler: Run SOQL Queries</masterLabel>
+    <progressIndicatorMessage>Run a single SOQL Query and return a list of records or errors</progressIndicatorMessage>
 </GenAiFunction>

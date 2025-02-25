@@ -1,6 +1,6 @@
 public with sharing class RunSoqlQueries {
 
-    @InvocableMethod(label='MyOrgButler: Run SOQL queries' description='Run arbitrary SOQL queries on org data and receive results as JSON')
+    @InvocableMethod(label='MyOrgButler: Run SOQL Queries' description='Run a single SOQL Query and return a list of records or errors')
     public static List<Output> execute(List<Input> input) {
         Output output = new Output();
 
