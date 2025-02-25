@@ -7,6 +7,10 @@
       "versionName": "March '25",
       "versionNumber": "1.44.0.NEXT",
       "versionDescription": ""
+    },
+    {
+      "path": "unpackaged",
+      "default": false
     }
   ],
   "name": "my-org-butler",
