@@ -2,16 +2,16 @@
 <GenAiPlanner xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Planner for ReAct-based Employee copilot.</description>
     <genAiPlugins>
-        <genAiPluginName>Visualize_Data_And_Processes</genAiPluginName>
+        <genAiPluginName>Make_Configuration_Changes</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>Manage_Record_Data</genAiPluginName>
     </genAiPlugins>
     <genAiPlugins>
         <genAiPluginName>Query_And_Analyze_Data</genAiPluginName>
     </genAiPlugins>
     <genAiPlugins>
-        <genAiPluginName>Make_Configuration_Changes</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>Manage_Record_Data</genAiPluginName>
+        <genAiPluginName>Visualize_Data_And_Processes</genAiPluginName>
     </genAiPlugins>
     <masterLabel>MyOrgButler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>

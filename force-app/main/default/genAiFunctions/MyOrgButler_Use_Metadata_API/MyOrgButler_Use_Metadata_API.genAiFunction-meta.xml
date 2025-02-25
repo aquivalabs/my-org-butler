@@ -19,7 +19,7 @@ Technical Details:
 - Automatic rollback on partial failures
 - XML-based deployment behind the scenes
 - Responses are raw SOAP XML responses
-- API version matches org's version
+- API version matches org&apos;s version
 - Namespace aware operations
 - Case-sensitive metadata names</description>
     <invocationTarget>UseMetadataApi</invocationTarget>

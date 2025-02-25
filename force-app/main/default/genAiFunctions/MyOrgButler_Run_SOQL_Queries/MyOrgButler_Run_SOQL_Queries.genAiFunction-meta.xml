@@ -4,23 +4,12 @@
 
 USAGE GUIDELINES:
 IMPORTANT: Before executing any SOQL query, you MUST:
-1. Use Explore_Org_Data_Model to validate object and field existence
-2. Check field relationships and data types
-3. Verify object accessibility for the current user
-
-
-
-Best Practices:
-- Validate field names with Explore_Org_Data_Model first
-- Use selective filters to optimize performance
-- Include ORDER BY for consistent pagination
-- Escape special characters in string literals
-- Use bind variables for security
-- Consider sharing rules impact
-- Results returned as JSON</description>
+- Use Explore_Org_Data_Model to validate object and field existence
+- Check field relationships and data types
+- Validate field names with Explore_Org_Data_Model first</description>
     <invocationTarget>RunSoqlQueries</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
-    <masterLabel>MyOrgButler: Run SOQL Query</masterLabel>
+    <masterLabel>MyOrgButler: Run SOQL Queries</masterLabel>
 </GenAiFunction>

@@ -8,7 +8,7 @@ USAGE GUIDELINES:
 - Syntax must start with @startuml and end with @enduml
 - Use UTF-8 encoding for special characters
 - Skinparams support for colors and styles
-- Supports arrow types: -->, ->>, -->, ..>, ==>, -/, ->/, --/, ../, ==/ 
+- Supports arrow types: --&gt;, -&gt;&gt;, --&gt;, ..&gt;, ==&gt;, -/, -&gt;/, --/, ../, ==/ 
 - Note positions: left, right, top, bottom
 - Participant types: actor, boundary, control, entity, database
 - Supports grouping: alt, loop, par, break, critical

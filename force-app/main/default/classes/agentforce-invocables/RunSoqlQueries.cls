@@ -1,4 +1,3 @@
-// PMD False Positives: 
 public with sharing class RunSoqlQueries {
 
     @InvocableMethod(label='MyOrgButler: Run SOQL queries' description='Run arbitrary SOQL queries on org data and receive results as JSON')

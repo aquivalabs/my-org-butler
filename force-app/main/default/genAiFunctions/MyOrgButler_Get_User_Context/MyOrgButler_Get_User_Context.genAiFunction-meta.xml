@@ -7,12 +7,12 @@ Context Properties:
 - baseUrlForLinks: For constructing clickable Salesforce URLs
 - orgId: 15-character org identifier
 - userId: 18-character user identifier
-- userDateTime: ISO8601 format in user's timezone
-- userEmail: User's email address
-- userFirstName: User's first name
+- userDateTime: ISO8601 format in user&apos;s timezone
+- userEmail: User&apos;s email address
+- userFirstName: User&apos;s first name
 - userLanguage: Locale code (e.g., en_US)
-- userLastName: User's last name
-- userTimezone: User's timezone identifier
+- userLastName: User&apos;s last name
+- userTimezone: User&apos;s timezone identifier
 
 Technical Details:
 - All fields respect field-level security
