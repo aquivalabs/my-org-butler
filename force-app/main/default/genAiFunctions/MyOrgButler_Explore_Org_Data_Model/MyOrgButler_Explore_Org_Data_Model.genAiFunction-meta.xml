@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Retrieve metadata about objects, fields, relationships and picklist values in the org.
+    <description>Retrieve metadata about Custom Objects, their fields, relationships and picklist values in the org.
+NOTE: This tool only works with Custom Objects. It does not show Standard Salesforce Objects.
 
 IMPORTANT
-- When exploring specific objects (objectDetails scope), ALWAYS call this function first with 'allObjects' scope to validate object existence before requesting object details. This prevents errors from attempting to explore non-existent objects.
-- This tool MUST be used before executing SOQL queries to Non Standard Custom objects to:
--- Validate object existence and accessibility
--- Verify field names and data types
--- Check relationship structures
--- Explore picklist values for picklist/multi-picklist fields
--- Ensure proper query construction
-- This tool is NOT needed for well-known standard objects like Account, Contact, Opportunity, etc.
+- When exploring specific Custom Objects (objectDetails scope), ALWAYS call this function first with 'allObjects' scope to validate object existence before requesting object details.
+- This tool MUST be used before executing SOQL queries to Custom Objects to:
+  -- Validate object existence and accessibility
+  -- Verify field names and data types
+  -- Check relationship structures
+  -- Explore picklist values for picklist/multi-picklist fields
+  -- Ensure proper query construction
+- This tool is NOT needed for Standard Salesforce Objects (Account, Contact, Opportunity, etc.)
 
 Operation Modes:
 - allObjects: Lists custom objects only, sorted alphabetically
-- objectDetails: Returns field details for specified objects including:
+- objectDetails: Returns field details for specified Custom Objects including:
   * Field API Name
   * Data Type
   * Reference Objects (for lookup/master-detail)
@@ -22,7 +23,7 @@ Operation Modes:
   * Active Picklist Values (for picklist/multi-picklist fields)
 
 Best Practices:
-- Use allObjects for broad data model exploration
+- Use allObjects for broad custom object exploration
 - Use objectDetails for specific query planning
 - Always verify relationship fields before joins
 - Check field types for proper query filters
