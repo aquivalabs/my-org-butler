@@ -16,7 +16,7 @@ public with sharing class UseMetadataApi {
                 result.add(new Output( action.getResponse()?.getBody() ));
             }
             catch(Wsdl.SoapApiException ex) {
-                throw new ApplicationException('Deploy Metadata Action failed: ' + ex.getMessage(), ex);
+                result.add(new Output( ex.getMessage() ));
             }
         }
             
@@ -50,9 +50,6 @@ public with sharing class UseMetadataApi {
                 result = new MdtWsdl(metadata.soapAction)
                                 .setItemMetadataType(metadata.typeName)
                                 .addItemMetadataFullName(metadata.fullName);
-            }
-            when else {
-                throw new ApplicationException('Unsupported SOAP action: ' + metadata.soapAction);
             }
         }
     
