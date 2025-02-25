@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Reviews a piece of Code or Low-Code source and checks it according to Rules defined in the Prompt template</description>
+    <invocationTarget>ReviewCode</invocationTarget>
+    <invocationTargetType>generatePromptResponse</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Review Code</masterLabel>
+    <progressIndicatorMessage>Reviews a piece of Code or Low-Code source and checks it according to Rules defined in a Prompt template</progressIndicatorMessage>
+</GenAiFunction>

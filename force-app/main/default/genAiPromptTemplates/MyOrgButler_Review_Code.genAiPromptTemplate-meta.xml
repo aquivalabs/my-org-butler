@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>/GoLfjTvoB0/sJvCUTR53nKTtUqzIqK+nmYNVRP60wo=_3</activeVersionIdentifier>
+    <description>Reviews a piece of Code or Low-Code source and checks it according to Rules defined in the Prompt template</description>
+    <developerName>MyOrgButler_ReviewCode</developerName>
+    <masterLabel>MyOrgButler: Review Code</masterLabel>
+    <templateVersions>
+        <content># Salesforce Code and Low Code Review 
+
+## Purpose
+Perform a thorough code review of the provided Salesforce code, identifying issues, suggesting improvements, and ensuring adherence to best practices.
+
+## Input
+The following code/metadata will be reviewed:
+
+{!$Input:Source}
+
+## Review Guidelines
+
+### General Review Criteria
+- Assess code quality, readability, and maintainability
+- Identify potential performance issues
+- Verify error handling and exception management
+- Check for security vulnerabilities
+- Validate compliance with Salesforce best practices
+- Suggest improvements or alternatives
+
+### Apex Code Review Rules
+1. **Bulkification**
+  - Ensure code handles bulk operations (multiple records)
+  - Check for SOQL queries inside loops
+  - Verify bulk DML operations
+
+2. **SOQL and DML Optimization**
+  - Minimize the number of SOQL queries and DML operations
+  - Use selective queries with appropriate filters
+  - Implement proper field selection to avoid over-fetching
+
+3. **Governor Limits**
+  - Assess potential governor limit violations
+  - Evaluate CPU time consumption
+  - Check heap size usage and query limits
+
+4. **Security**
+  - Verify CRUD/FLS enforcement
+  - Check for SOQL/DML injection vulnerabilities
+  - Ensure proper sharing model implementation
+  - Review permission requirements
+
+5. **Error Handling**
+  - Validate try/catch blocks for critical operations
+  - Check for proper error messaging and logging
+  - Verify transaction handling (rollback when needed)
+
+6. **Test Coverage**
+  - Review test methods for comprehensive coverage
+  - Check for assertions and edge case testing
+  - Verify test data creation and cleanup
+
+7. **Apex Design Patterns**
+  - Assess class structure and method organization
+  - Check for proper use of OOP principles
+  - Review separation of concerns
+
+### XML Metadata Review Rules
+1. **Custom Objects/Fields**
+  - Verify proper field types and validation rules
+  - Check object relationships and dependencies
+  - Review field-level security settings
+
+2. **Profiles and Permission Sets**
+  - Assess permission assignments for least privilege
+  - Check for unnecessary permissions
+  - Verify object and field-level access
+
+3. **Flow/Process Builder**
+  - Evaluate logic for efficiency and bulkification
+  - Check for recursive triggers or flows
+  - Verify error handling and fault paths
+
+4. **Lightning Components/Pages**
+  - Review component structure and organization
+  - Check for performance optimizations
+  - Assess accessibility compliance
+
+5. **Visualforce Pages**
+  - Verify controller references and extensions
+  - Check for CSRF protection
+  - Review JavaScript for security vulnerabilities
+
+## Output Format
+Provide a brief, focused review that fits within a chat window:
+
+1. **Top 3 Critical Issues:**
+  - List only the 3 most important issues found
+  - For each issue:
+   * Brief description (1-2 sentences)
+   * Code location
+   * Quick recommendation
+
+2. **Overall Risk Assessment:**
+  - Single sentence summary of risk level (Critical/High/Medium/Low)
+  - One key recommendation for immediate action
+
+Keep all responses under 10 lines where possible. Prioritize issues that impact:
+- Security vulnerabilities
+- Performance bottlenecks
+- Governor limit violations
+- Critical functionality failures
+</content>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>Source</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Source</masterLabel>
+            <referenceName>Input:Source</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT4Omni</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>/GoLfjTvoB0/sJvCUTR53nKTtUqzIqK+nmYNVRP60wo=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>Based on your request to improve the output format to resemble a code review tool (with code snippets, filenames, and line numbers) and to integrate most rules checked by PMD for Apex and the Salesforce Code Analyzer, below is the reworked version of the original prompt. This version ensures a structured, actionable, and comprehensive review process while maintaining conciseness.
+
+---
+
+# Salesforce Code and Low Code Review 
+
+## Purpose
+Perform a thorough code review of the provided Salesforce code and metadata, identifying issues, suggesting improvements, and ensuring adherence to best practices. The review should resemble a code review tool output, including code snippets with filenames and line numbers, and incorporate rules from PMD for Apex and the Salesforce Code Analyzer.
+
+## Input
+The following code/metadata will be reviewed:
+
+{!$Input:Source}
+
+## Review Guidelines
+
+### General Review Criteria
+- Assess code quality, readability, and maintainability.
+- Identify potential performance issues.
+- Verify error handling and exception management.
+- Check for security vulnerabilities.
+- Validate compliance with Salesforce best practices.
+- Suggest improvements or alternatives.
+
+### Apex Code Review Rules
+1. **Bulkification**
+  - Ensure code handles bulk operations (multiple records).
+  - Check for SOQL queries inside loops.
+  - Verify bulk DML operations.
+
+2. **SOQL and DML Optimization**
+  - Minimize the number of SOQL queries and DML operations.
+  - Use selective queries with appropriate filters.
+  - Implement proper field selection to avoid over-fetching.
+
+3. **Governor Limits**
+  - Assess potential governor limit violations.
+  - Evaluate CPU time consumption.
+  - Check heap size usage and query limits.
+
+4. **Security**
+  - Verify CRUD/FLS enforcement.
+  - Check for SOQL/DML injection vulnerabilities.
+  - Ensure proper sharing model implementation.
+  - Review permission requirements.
+
+5. **Error Handling**
+  - Validate try/catch blocks for critical operations.
+  - Check for proper error messaging and logging.
+  - Verify transaction handling (rollback when needed).
+
+6. **Test Coverage**
+  - Review test methods for comprehensive coverage.
+  - Check for assertions and edge case testing.
+  - Verify test data creation and cleanup.
+
+7. **Apex Design Patterns**
+  - Assess class structure and method organization.
+  - Check for proper use of OOP principles.
+  - Review separation of concerns.
+
+### PMD-Specific Checks for Apex
+To align with PMD for Apex and Salesforce Code Analyzer, include the following checks:
+- **Naming Conventions**
+ - Ensure method, property, and variable names follow standard conventions (e.g., MethodNamingConventions, PropertyNamingConventions).
+- **Code Structure**
+ - Check for one declaration per line and proper use of braces in control structures (e.g., OneDeclarationPerLine, WhileLoopsMustUseBraces).
+ - Avoid deeply nested if statements.
+- **Complexity**
+ - Ensure methods do not have excessive cognitive or cyclomatic complexity (e.g., CognitiveComplexity, CyclomaticComplexity).
+- **Performance**
+ - Avoid DML statements in loops and ensure efficient SOQL queries (e.g., AvoidDmlStatementsInLoops, OperationWithLimitsInLoops).
+- **Best Practices**
+ - Avoid using deprecated features and ensure proper exception handling.
+
+### XML Metadata Review Rules
+1. **Custom Objects/Fields**
+  - Verify proper field types and validation rules.
+  - Check object relationships and dependencies.
+  - Review field-level security settings.
+
+2. **Profiles and Permission Sets**
+  - Assess permission assignments for least privilege.
+  - Check for unnecessary permissions.
+  - Verify object and field-level access.
+
+3. **Flow/Process Builder**
+  - Evaluate logic for efficiency and bulkification.
+  - Check for recursive triggers or flows.
+  - Verify error handling and fault paths.
+
+4. **Lightning Components/Pages**
+  - Review component structure and organization.
+  - Check for performance optimizations.
+  - Assess accessibility compliance.
+
+5. **Visualforce Pages**
+  - Verify controller references and extensions.
+  - Check for CSRF protection.
+  - Review JavaScript for security vulnerabilities.
+
+## Output Format
+Provide a brief, focused review that fits within a chat window and resembles a code review tool:
+
+1. **Top 3 Critical Issues:**
+  - List only the 3 most important issues found.
+  - For each issue:
+   - **Brief Description**: 1-2 sentences explaining the issue.
+   - **Code Location**: Filename and line number.
+   - **Code Snippet**: Small snippet of the relevant code (e.g., 3-5 lines).
+   - **Quick Recommendation**: Suggest a brief improvement or fix.
+
+2. **Overall Risk Assessment:**
+  - Single sentence summary of risk level (Critical/High/Medium/Low).
+  - One key recommendation for immediate action.
+
+Keep all responses under 10 lines where possible. Prioritize issues that impact:
+- Security vulnerabilities
+- Performance bottlenecks
+- Governor limit violations
+- Critical functionality failures
+
+</content>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>Source</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Source</masterLabel>
+            <referenceName>Input:Source</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>/GoLfjTvoB0/sJvCUTR53nKTtUqzIqK+nmYNVRP60wo=_2</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content># Salesforce Apex Code Review
+
+## Purpose
+Review the provided Apex code to identify critical issues and suggest improvements.
+
+## Input
+The following Apex code will be reviewed:
+
+&lt;SOURCE&gt;
+{!$Input:Source}
+&lt;/SOURCE&gt;
+
+## Apex Review Rules
+1. **Bulkification**
+  - SOQL queries inside loops
+  - DML operations inside loops
+
+2. **Performance**
+  - Inefficient SOQL queries
+  - Excessive DML statements
+  - Use of SELECT * instead of specific fields
+
+3. **Governor Limits**
+  - Potential limit violations
+  - CPU time issues
+  - Heap size concerns
+
+4. **Security**
+  - CRUD/FLS checks
+  - SOQL/DML injection vulnerabilities
+  - Proper sharing model usage
+
+5. **Error Handling**
+  - Missing try/catch blocks
+  - Improper exception handling
+  - Missing transaction rollbacks
+
+6. **Code Quality**
+  - Excessive complexity
+  - Proper naming conventions
+  - Method length and clarity
+
+## Output Format
+Provide a concise review with exactly:
+
+1. **Top 3 Critical Issues:**
+  - For each issue:
+   * File name and line number
+   * Brief description (1 sentence)
+   * Small code snippet using &lt;pre&gt;
+   * Quick fix suggestion
+
+2. **Risk Level:**
+  - One-line summary (Critical/High/Medium/Low)
+</content>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>Source</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Source</masterLabel>
+            <referenceName>Input:Source</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>/GoLfjTvoB0/sJvCUTR53nKTtUqzIqK+nmYNVRP60wo=_3</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
