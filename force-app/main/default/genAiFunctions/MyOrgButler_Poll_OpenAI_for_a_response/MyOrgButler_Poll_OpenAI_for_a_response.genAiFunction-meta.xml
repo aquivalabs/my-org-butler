@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Poll OpenAI with a Run Id to check if the asynchronous response is already available. Call this action multiple times until a final success or error is available.</description>
-    <invocationTarget>PollOpenAiForResponse</invocationTarget>
-    <invocationTargetType>apex</invocationTargetType>
-    <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
-    <masterLabel>Poll OpenAI for a response</masterLabel>
-</GenAiFunction>

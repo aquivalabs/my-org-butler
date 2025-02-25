@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Sends the User Message to OpenAI and returns a Run Id. To fetch the asynchronous response directly call the PollOpenAiForResponse action until the Response or an error is available.</description>
-    <invocationTarget>SendMessageToOpenAi</invocationTarget>
-    <invocationTargetType>apex</invocationTargetType>
-    <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
-    <masterLabel>Send User Message to OpenAI</masterLabel>
-</GenAiFunction>
