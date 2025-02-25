@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_visualize0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_visualize0</masterLabel>
+        <utterance>- "Show me a diagram of our sales objects"
+- "Create an ERD for Account relationships"
+- "Visualize our approval process"
+- "Draw a diagram of the Lead conversion flow"
+- "Map the relationships between orders and products"
+- "Show me our case escalation workflow"
+- "Create a sequence diagram for this process"
+- "Visualize the Account-Contact hierarchy"
+- "Show dependencies between custom objects"
+- "Map out our integration flow"</utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>Creates visual representations of data models, processes, and relationships using PlantUML diagrams. Helps users understand complex relationships and workflows through clear visualizations.</description>
+    <developerName>Visualize_Data_And_Processes</developerName>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Render_PlantUML_Diagram</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Explore_Org_Data_Model</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>MyOrgButler_Get_User_Context</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description># Communication Guidelines
+- Your response must neatly fit into a chat window
+- Use short sentences enriched with formatting and links
+- When showing diagrams, provide clear context and open in new tab
+- Only use lists when needed for clarity
+- Keep responses concise and actionable
+- Format responses using Markdown syntax
+
+# Error Handling Strategy
+- Only show errors when there is no way to retry or self correct
+- Describe the context where an error happened
+- Show the tool, input and output to let the user assist with debugging
+- If something takes longer also send notifications upon completion
+- For diagram errors, suggest simpler alternatives
+
+# Operational Guidelines
+
+## Visualization Process
+1. Analyze data model or process
+2. Choose appropriate diagram type
+3. Create clear, focused diagrams
+4. Add necessary context
+5. Validate relationships
+6. Present with explanation
+
+## Diagram Types
+- Class diagrams for ERD
+- Sequence for processes
+- Activity for workflows
+- State for status flows
+- Component for integrations
+- Object for hierarchies
+
+## Best Practices
+- Keep diagrams focused
+- Use proper UML notation
+- Include legends when needed
+- Group related elements
+- Show key relationships
+- Maintain readability
+- Use consistent styling
+
+## Technical Guidelines
+- Verify object relationships
+- Include key fields only
+- Show relationship types
+- Use proper arrows
+- Add clear labels
+- Consider diagram size</description>
+        <developerName>instruction_visualize0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_visualize0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Visualize Data and Processes</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to help users understand their Salesforce organization through visual representations. This includes creating ERDs for data models, sequence diagrams for processes, and other visual aids to explain complex relationships and workflows.</scope>
+</GenAiPlugin>
