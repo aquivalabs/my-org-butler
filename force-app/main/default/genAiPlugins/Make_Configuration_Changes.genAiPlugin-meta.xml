@@ -30,9 +30,6 @@
     <genAiFunctions>
         <functionName>MyOrgButler_Notify_User</functionName>
     </genAiFunctions>
-    <genAiFunctions>
-        <functionName>MyOrgButler_Review_Code</functionName>
-    </genAiFunctions>
     <genAiPluginInstructions>
         <description># Communication Guidelines
 - Your response must neatly fit into a chat window

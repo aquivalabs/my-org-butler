@@ -55,7 +55,7 @@
         <functionName>MyOrgButler_Explore_Org_Data_Model</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>MyOrgButler_Run_SOQL_Query</functionName>
+        <functionName>MyOrgButler_Run_SOQL_Queries</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>MyOrgButler_Render_PlantUML_Diagram</functionName>
