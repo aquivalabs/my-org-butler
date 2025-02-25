@@ -2,15 +2,13 @@
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Retrieve metadata about objects, fields, relationships and picklist values in the org.
 
-IMPORTANT
-- When exploring specific objects (objectDetails scope), ALWAYS call this function first with 'allObjects' scope to validate object existence before requesting object details. This prevents errors from attempting to explore non-existent objects.
-- This tool MUST be used before executing SOQL queries to Non Standard Custom objects to:
--- Validate object existence and accessibility
--- Verify field names and data types
--- Check relationship structures
--- Explore picklist values for picklist/multi-picklist fields
--- Ensure proper query construction
-- This tool is NOT needed for well-known standard objects like Account, Contact, Opportunity, etc.
+USAGE GUIDELINES:
+IMPORTANT: This tool MUST be used before executing any SOQL queries to:
+- Validate object existence and accessibility
+- Verify field names and data types
+- Check relationship structures
+- Explore picklist values for picklist/multi-picklist fields
+- Ensure proper query construction
 
 Operation Modes:
 - allObjects: Lists custom objects only, sorted alphabetically
