@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_config0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_config0</masterLabel>
+        <utterance>
+- Show me all installed packages
+- What does this package do?
+- Visualize its core objects
+- Which active Flows do we have and what do they do?
+- Create me an Apex class that does X
+- How are our validation rules configured for Opportunity?
+- Modify this Apex trigger to include additional functionality
+- What custom fields do we have on the Account object?        
+        </utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>
+Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.
+    </description>
+    <developerName>ExplainAndModifyMetadata</developerName>
+    <genAiFunctions>
+        <functionName>GetUserContext</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CallMetadataApi</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CallToolingApi</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CreatePlantUmlUrl</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>SearchWeb</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>
+Always follow this process when using this topic:
+1. Run the GetUserContext action to understand the user's environment.
+2. Identify which type of metadata the user is interested in (Apex classes, Flows, custom objects, etc.).
+3. Determine if this is a read operation (explain) or write operation (create/modify).
+4. For read operations:
+   - Use the CallMetadataApi or CallToolingApi action based on the metadata type
+5. For write operations:
+   - Gather all necessary details from the user
+   - Determine if the Tooling API or Metadata API is appropriate
+   - Draft the metadata in the correct format
+   - Use the appropriate API action to create or modify the metadata
+   - Provide confirmation of success or explain any errors
+6. For package-related inquiries:
+   - Query installed packages and their components
+   - Provide information about package functionality and dependencies
+   - If necessary, search the web for additional package documentation
+7. For Apex code creation:
+   - Ensure the code follows best practices
+   - Include proper error handling and test coverage considerations
+   - Suggest unit tests where appropriate
+8. If visualization would help explain complex metadata relationships, use the CreatePlantUmlUrl action.
+9. Always validate metadata changes for potential impacts to existing functionality.
+        </description>
+        <developerName>instruction_config0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_config0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>MyOrgButler: Explain and Modify Metadata</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>
+Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.
+    </scope>
+</GenAiPlugin>

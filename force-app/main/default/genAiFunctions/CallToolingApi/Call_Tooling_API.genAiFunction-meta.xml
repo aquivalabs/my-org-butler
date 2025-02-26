@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>
+- Use this Action to read and create Metadata that can be handled by the Tooling API
+- When in doubt or the action returns an error use the SearchWeb action to find out which API support that type or activity.
+
+Supported Actions:
+- query: SOQL queries against Tooling API objects
+- create: Single record creation
+- update: Modify existing records
+- delete: Remove development artifacts
+
+Key Object Types:
+- ApexClass: code, status, body, symbols
+- CustomField: metadata, relationships, validation
+- CustomObject: fields, validation rules, layouts
+- ValidationRule: errorMessage, active, metadata
+- ApexTrigger: code, status, usageBeforeUpdate
+- Layout: layout items, buttons, related lists
+- WorkflowRule: criteria, actions, timeTriggered
+    </description>
+    <invocationTarget>CallToolingApi</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Call Tooling API</masterLabel>
+</GenAiFunction>

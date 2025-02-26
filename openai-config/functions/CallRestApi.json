@@ -1,0 +1,33 @@
+{
+  "name": "CallRestApi",
+  "description": "Call an official public Salesforce API REST endpoint",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "urlIncludingParams": {
+        "type": "string",
+        "description": "The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added"
+      },
+      "httpMethod": {
+        "type": "string",
+        "enum": [
+          "GET",
+          "POST",
+          "PUT",
+          "PATCH",
+          "DELETE"
+        ],
+        "description": "The HTTP method to use"
+      },
+      "body": {
+        "type": "string",
+        "description": "Payload data to be sent in the request body. Can be null if there is no body."
+      }
+    },
+    "required": [
+      "urlIncludingParams",
+      "httpMethod",
+      "body"
+    ]
+  }
+}

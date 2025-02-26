@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>
+Use this action to create or modify SObject records in the org. The Action is very generic so that also other APIs that the Salesforce REST API could be called.
+    </description>
+    <invocationTarget>CallRestApi</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Call REST API</masterLabel>
+</GenAiFunction>

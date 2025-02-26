@@ -1,0 +1,9 @@
+{
+    "name": "GetUserContext",
+    "description": "Provides context information about the current user, including user details, time, date, and org information.",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+}

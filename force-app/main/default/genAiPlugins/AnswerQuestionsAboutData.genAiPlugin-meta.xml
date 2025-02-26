@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_analyze0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_analyze0</masterLabel>
+        <utterance>
+- List my Top 5 accounts.
+- Propose the opportunity I should work on next.
+- Who is the boss of X=
+- Which Skill is most requested in Projects in the current year?        
+        </utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>
+    <developerName>AnswerQuestionsAboutData</developerName>
+    <genAiFunctions>
+        <functionName>GetUserContext</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>ExploreOrgSchema</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>QueryRecordsWithSoql</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>SearchWeb</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>
+Always follow this process when using this topic:
+1. Run the GetUserContext action if not already done before to have the context.
+2. If you are in doubt wether the question is about an existing custom object run the Explore_Org_Schema action
+3. When you are sure about Objects, Fields and Relationships run a query 
+4. If you get errors try to fix them by exploring more of the Org schema or search the web.
+5. If answering the users question needs multiple queries don't output intermediate results immediatelly but run further queries and later summarize the results.
+6. Only directly output the result records when they user asked for them. If the user asked for more use the results and instead formulate a nice answer with text and record links.
+7. Make sure you answer is suitable for a small chat window. So don't overdo it with hierarchical lists or to much explanatory text.
+8. In case you are stuck simply ask back and repeat.
+        </description>
+        <developerName>instruction_analysis0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_analysis0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>MyOrgButler: Anwer questions about data</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>
+Use this topic when the user implicitly ask questions about data record in Standard Salesforce apps or apps installed in the org.
+    </scope>
+</GenAiPlugin>

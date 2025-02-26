@@ -4,15 +4,15 @@ public with sharing class MyOrgButler implements Queueable, Database.AllowsCallo
     private static final Integer WAIT_TIME = 3000;
     private static final String CALLBACK_RUN_FINISHED = 'RUN_FINISHED';
     private static final Map<String, Tool> TOOLS = new Map<String, Tool>{ 
-        'Get_User_Context' => new GetUserContextTool(),
-        'Call_Salesforce_API' => new CallSalesforceApiTool(),
-        'Notify_User' => new NotifyUserTool(),
-        'Search_Web' => new SearchWebTool(),
-        'Use_Metadata_API' => new UseMetadataApiTool(),
-        'Use_Tooling_API' => new UseToolingApiTool(),
-        'Explore_Org_Data_Model' => new ExploreOrgDataModelTool(),
-        'Run_SOQL_Query' => new RunSoqlQueryTool(),
-        'Render_PlantUML' => new RenderPlantumlTool()
+        'GetUserContext' => new GetUserContextTool(),
+        'CallRestApi' => new CallRestApiTool(),
+        'NotifyUser' => new NotifyUserTool(),
+        'SearchWeb' => new SearchWebTool(),
+        'CallMetadataApi' => new CallMetadataApiTool(),
+        'CallToolingApi' => new CallToolingApiTool(),
+        'ExploreOrgSchema' => new ExploreOrgSchemaTool(),
+        'QueryRecordsWithSoql' => new QueryRecordsWithSoqlTool(),
+        'CreatePlantUmlUrl' => new CreatePlantUmlUrlTool()
     };
 
     @TestVisible

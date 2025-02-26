@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>
+- Use this action to convert PlantUML diagram text into an image URL
+- This action does not invent the diagram text but only encoded it into an URL
+- Render an image but also an link which opens the image in a seperate browser tab. Use target="_blank" for that.
+- The URL encoding this action uses only works with smaller diagrams. If you get passed a large diagram feel free to reduce its size by removing irrelevant detail like redundant or overly detailed field lists.
+- Maximum URL length: 2048 characters
+- Syntax must start with @startuml and end with @enduml
+- Use UTF-8 encoding for special characters
+    </description>
+    <invocationTarget>CreatePlantUmlUrl</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Create PlantUML URL</masterLabel>
+</GenAiFunction>

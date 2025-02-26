@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>
+- Use this action to query records from Standard and Custom objects.
+- The action takes a SOQL query string and returns a list of records. 
+- If the query is invalid it will return an error message and not an exception. 
+- Use the error message to fix the SOQL query and retry a few times before you return an error to the user and break the flow.
+- If you cannot fix the issue on your own, you can use the SearchWeb action to search the web for possible remedies.
+- Its ok to create SOQL queries for well known Salesforce Standard objects. But never guess the names of Custom Objects and fields. Always use the Explore_Org_Schema tool to find out the right object, field and relationship names.
+    </description>
+    <invocationTarget>QueryRecordsWithSoql</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Query Records with SOQL</masterLabel>
+    <progressIndicatorMessage>Querying records now.</progressIndicatorMessage>
+</GenAiFunction>

@@ -1,0 +1,16 @@
+{
+    "name": "SearchWeb",
+    "description": "Performs a web search using the Tavily API and returns the answer.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string to search the web for."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+}  

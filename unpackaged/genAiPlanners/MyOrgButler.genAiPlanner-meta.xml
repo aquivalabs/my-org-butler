@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlanner xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Helpful assistant for users and admins of a Salesforce Org.</description>
+    <genAiPlugins>
+        <genAiPluginName>AnswerQuestionsAboutData</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>CreateAndModifyData</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>ExplainAndModifyMetadata</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>UnderstandDataModel</genAiPluginName>
+    </genAiPlugins>
+    <masterLabel>Aquiva Labs MyOrgButler</masterLabel>
+    <plannerType>AiCopilot__ReAct</plannerType>
+</GenAiPlanner>

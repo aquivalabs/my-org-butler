@@ -10,17 +10,17 @@ if [ -z "$DEV_HUB_URL" ]; then
   execute sf config set target-dev-hub=$DEV_HUB_ALIAS
 
   echo "Deleting old scratch org"
-  sf org delete scratch --no-prompt --target-org $SCRATCH_ORG_ALIAS
+  execute sf org delete scratch --no-prompt --target-org $SCRATCH_ORG_ALIAS
 fi
 
 echo "Creating scratch org"
-sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
+execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
 echo "Pushing changes to scratch org"
-sf project deploy start
+execute sf project deploy start
 
 echo "Assigning permissions"
-sf org assign permset --name MyOrgButlerUser 
+execute sf org assign permset --name MyOrgButlerUser 
 
 echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"

@@ -101,7 +101,7 @@ private class MyOrgButler_Test {
         run.id = 'r1';
         run.status = 'requires_action';
         run.required_action.type = 'submit_tool_outputs';
-        run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('callSalesforceApi', ''));
+        run.required_action.submit_tool_outputs.tool_calls.add(new Run.ToolCall('CallRestApi', ''));
 
         new HttpMock()
                 .post('aquiva_os__OpenAiApi/v1/threads/t1/messages').body(new Message('any')).statusCodeOk()
