@@ -39,8 +39,6 @@ Always follow this process when using this topic:
    - Proper cardinality notation (1:1, 1:n, n:n)
 6. Use the CreatePlantUmlUrl action to convert the diagram into a viewable image.
 7. If the diagram is large, focus on the most relevant parts of the data model as mentioned by the user.
-8. Accompany the visualization with a clear textual explanation of the key relationships.
-9. If you encounter unfamiliar objects or relationships, use the SearchWeb action to gather more information.
         </description>
         <developerName>instruction_visualize0</developerName>
         <language xsi:nil="true"/>

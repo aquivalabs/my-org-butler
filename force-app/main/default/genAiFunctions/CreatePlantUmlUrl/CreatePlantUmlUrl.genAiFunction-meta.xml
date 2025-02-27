@@ -3,7 +3,7 @@
     <description>
 - Use this action to convert PlantUML diagram text into an image URL
 - This action does not invent the diagram text but only encoded it into an URL
-- Render an image but also an link which opens the image in a seperate browser tab. Use target="_blank" for that.
+- Render as an <img> or Markdown image. Whatever suits.
 - The URL encoding this action uses only works with smaller diagrams. If you get passed a large diagram feel free to reduce its size by removing irrelevant detail like redundant or overly detailed field lists.
 - Maximum URL length: 2048 characters
 - Syntax must start with @startuml and end with @enduml
