@@ -4,7 +4,7 @@
     "encodedImageUrl" : {
       "title" : "Diagram Image URL",
       "description" : "URL to the rendered PlantUML diagram image",
-      "lightning:type" : "lightning__richTextType",
+      "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
       "copilotAction:isUsedByPlanner" : true,
