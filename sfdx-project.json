@@ -5,12 +5,8 @@
       "default": true,
       "package": "my-org-butler",
       "versionName": "March '25",
-      "versionNumber": "1.44.0.NEXT",
+      "versionNumber": "1.45.0.NEXT",
       "versionDescription": ""
-    },
-    {
-      "path": "unpackaged",
-      "default": false
     }
   ],
   "name": "my-org-butler",
@@ -61,6 +57,7 @@
     "my-org-butler@1.41.0-1": "04tVI000000EXddYAG",
     "my-org-butler@1.42.0-1": "04tVI000000HZpNYAW",
     "my-org-butler@1.43.0-1": "04tVI000000HbxdYAC",
-    "my-org-butler@1.44.0-1": "04tVI000000HkcjYAC"
+    "my-org-butler@1.44.0-1": "04tVI000000HkcjYAC",
+    "my-org-butler@1.45.0-1": "04tVI000000HohxYAC"
   }
 }
