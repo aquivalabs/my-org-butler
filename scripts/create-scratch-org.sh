@@ -28,7 +28,7 @@ sf data update record --sobject User --where "Name='User User'" --values "Langua
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
-sf package install --package 04tHs000000W2H2 --publish-wait 5 --wait 10 
+sf package install --package 04tHs000000W2H2 --publish-wait 5 --wait 10 --no-prompt 
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 # sf code-analyzer run --rule-selector Security, AppExchange --output-file ./code-analyzer/output/code-analyzer-security.csv --output-file ./code-analyzer/output/code-analyzer-security.html

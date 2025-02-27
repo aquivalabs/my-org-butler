@@ -31,9 +31,6 @@ Use this topic when the user requests to create new records, update existing rec
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>QueryRecordsWithSoql</functionName>
-    </genAiFunctions>
-    <genAiFunctions>
         <functionName>CallRestApi</functionName>
     </genAiFunctions>
     <genAiFunctions>
