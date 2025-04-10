@@ -10,7 +10,7 @@ if [ -z "$DEV_HUB_URL" ]; then
   execute sf config set target-dev-hub=$DEV_HUB_ALIAS
 
   echo "Deleting old scratch org"
-  execute sf org delete scratch --no-prompt --target-org $SCRATCH_ORG_ALIAS
+  sf org delete scratch --no-prompt --target-org $SCRATCH_ORG_ALIAS
 fi
 
 echo "Creating scratch org"
