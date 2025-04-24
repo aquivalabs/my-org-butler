@@ -5,6 +5,9 @@
         <genAiFunctionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</genAiFunctionName>
     </genAiFunctions>
     <genAiPlugins>
+        <genAiPluginName>MyOrgButler</genAiPluginName>
+    </genAiPlugins>
+    <genAiPlugins>
         <genAiPluginName>AnswerQuestionsAboutData</genAiPluginName>
     </genAiPlugins>
     <genAiPlugins>

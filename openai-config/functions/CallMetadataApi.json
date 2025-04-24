@@ -1,7 +1,6 @@
 {
   "name": "CallMetadataApi",
-  "description": "Describe, list, reads, creates, updates or deletes metadata using an Apex Wrapper lib. Most actions require a Metadata type given its name and attribute map as JSON.",
-  "strict": false,
+  "description": "Metadata API wrapper. Call ONCE per operation. For field creation, first verify field doesn't exist. For updates, first read existing metadata. Each soapAction has specific required attributes.",
   "parameters": {
     "type": "object",
     "properties": {
@@ -16,19 +15,17 @@
           "upsertMetadata",
           "deleteMetadata"
         ],
-        "description": ""
+        "description": "Action to perform. Use readMetadata before updates. Use listMetadata before create to check existence."
       },
       "typeName": {
         "type": "string",
-        "description": "The official Salesforce Metadata Type Name. Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm"
+        "description": "The Metadata Type Name (e.g., CustomField, ValidationRule). Required for all operations except describeMetadata."
       },
       "attributesJson": {
         "type": "string",
-        "description": "A JSON with all relevant attributes needed to create this metadata type.. Find them here https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm"
+        "description": "JSON string of metadata attributes. For fields: {fullName: 'Object__c.Field__c', label: 'Field', type: 'Text/Number/etc'}. For rules: {fullName: 'Object__c.Rule', active: true, errorMessage: 'msg'}"
       }
     },
-    "required": [
-      "actionType"
-    ]
+    "required": ["soapAction"]
   }
 }

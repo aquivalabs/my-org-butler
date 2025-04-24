@@ -1,12 +1,12 @@
 {
   "name": "CallRestApi",
-  "description": "Call an official public Salesforce API REST endpoint",
+  "description": "Call Salesforce REST API endpoints for record operations or custom endpoints. For GET requests, body is optional.",
   "parameters": {
     "type": "object",
     "properties": {
       "urlIncludingParams": {
         "type": "string",
-        "description": "The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added"
+        "description": "The URL fragment of the REST endpoint starting with /. The Org's base URL will be added automatically."
       },
       "httpMethod": {
         "type": "string",
@@ -17,17 +17,16 @@
           "PATCH",
           "DELETE"
         ],
-        "description": "The HTTP method to use"
+        "description": "The HTTP method to use. GET requests can omit the body parameter."
       },
       "body": {
         "type": "string",
-        "description": "Payload data to be sent in the request body. Can be null if there is no body."
+        "description": "JSON payload for the request body. Required for POST/PUT/PATCH, optional for GET/DELETE."
       }
     },
     "required": [
       "urlIncludingParams",
-      "httpMethod",
-      "body"
+      "httpMethod"
     ]
   }
 }
