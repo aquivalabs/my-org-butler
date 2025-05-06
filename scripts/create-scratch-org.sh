@@ -16,6 +16,9 @@ fi
 echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
+echo "Installing dependencies"
+execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
+
 echo "Pushing changes to scratch org"
 execute sf project deploy start
 
@@ -27,8 +30,6 @@ sf data update record --sobject User --where "Name='User User'" --values "Langua
 
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
-
-sf package install --package 04tHs000000W2H2 --publish-wait 5 --wait 10 --no-prompt 
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 # sf code-analyzer run --rule-selector Security, AppExchange --output-file ./code-analyzer/output/code-analyzer-security.csv --output-file ./code-analyzer/output/code-analyzer-security.html

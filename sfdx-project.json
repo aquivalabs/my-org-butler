@@ -1,12 +1,21 @@
 {
   "packageDirectories": [
     {
+      "path": "retrieval-staging",
+      "default": true
+    },
+    {
       "path": "force-app",
-      "default": true,
+      "default": false,
       "package": "my-org-butler",
-      "versionName": "March '25",
-      "versionNumber": "1.45.0.NEXT",
-      "versionDescription": ""
+      "versionName": "May '25",
+      "versionNumber": "1.46.0.NEXT",
+      "versionDescription": "",
+      "dependencies": [
+        {
+          "package": "app-foundations@LATEST"
+        }
+      ]
     }
   ],
   "name": "my-org-butler",
@@ -14,6 +23,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "63.0",
   "packageAliases": {
+    "app-foundations@LATEST": "04tVI000000L3ZBYA0",
     "my-org-butler": "0HoVI0000002h2T0AQ",
     "my-org-butler@1.1.0-1": "04tVI0000002nxVYAQ",
     "my-org-butler@1.2.0-2": "04tVI0000002o3xYAA",
@@ -58,6 +68,7 @@
     "my-org-butler@1.42.0-1": "04tVI000000HZpNYAW",
     "my-org-butler@1.43.0-1": "04tVI000000HbxdYAC",
     "my-org-butler@1.44.0-1": "04tVI000000HkcjYAC",
-    "my-org-butler@1.45.0-1": "04tVI000000HohxYAC"
+    "my-org-butler@1.45.0-1": "04tVI000000HohxYAC",
+    "my-org-butler@1.46.0-1": "04tVI000000L48fYAC"
   }
 }

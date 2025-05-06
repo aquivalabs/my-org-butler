@@ -48,3 +48,6 @@ package-lock.json
 mdapi/
 /.idea/
 .pmdCache
+
+# Exclude the metadata retrieval staging area
+retrieval-staging/
