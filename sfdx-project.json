@@ -9,7 +9,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "May '25",
-      "versionNumber": "1.47.0.NEXT",
+      "versionNumber": "1.49.0.NEXT",
       "versionDescription": "",
       "dependencies": [
         {
@@ -70,6 +70,8 @@
     "my-org-butler@1.44.0-1": "04tVI000000HkcjYAC",
     "my-org-butler@1.45.0-1": "04tVI000000HohxYAC",
     "my-org-butler@1.46.0-1": "04tVI000000L48fYAC",
-    "my-org-butler@1.47.0-1": "04tVI000000L4jlYAC"
+    "my-org-butler@1.47.0-1": "04tVI000000L4jlYAC",
+    "my-org-butler@1.48.0-1": "04tVI000000LLhNYAW",
+    "my-org-butler@1.49.0-1": "04tVI000000LLkbYAG"
   }
 }
