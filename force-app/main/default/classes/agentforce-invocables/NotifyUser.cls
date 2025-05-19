@@ -1,7 +1,9 @@
-public with sharing class NotifyUser {
+// PMD False Positives: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalMethod')
+global with sharing class NotifyUser {
     
     @InvocableMethod(label='MyOrgButler: Notify User' description='Sends an In-org notification message to a set of users optionally linking to a target record')
-    public static List<Output> execute(List<Notification> notifications) {
+    global static List<Output> execute(List<Notification> notifications) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(notifications[0].title);
         notification.setBody(notifications[0].body);
@@ -14,23 +16,23 @@ public with sharing class NotifyUser {
 
     // INNER
 
-    public with sharing class Notification {
+    global with sharing class Notification {
         @InvocableVariable(label='Recipient User Ids' description='Comma separated list of Salesforce Ids of the users to send the notification to' required=true)
-        public List<String> recipientIds;
+        global List<String> recipientIds;
 
         @InvocableVariable(label='Title' description='Short title of the notification' required=true)
-        public String title;
+        global String title;
 
         @InvocableVariable(label='Body' description='Notification text' required=true)
-        public String body;
+        global String body;
 
         @InvocableVariable(label='Target Id' description='Salesforce Id of the record to link to. If there is none use 000000000000000AAA' required=true)
-        public String targetId;
+        global String targetId;
     }
 
-    public class Output {
+    global class Output {
         @InvocableVariable(label='Ignored' description='ignored' required=false)
-        public String ignored;
-        
+        global String ignored;
+
     }
 }

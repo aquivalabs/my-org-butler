@@ -1,11 +1,9 @@
-// PMD False Positives: 
-// - Only public  invocables are seen in installed org
-// - Calling regular Salesforce APIs can be done with Session Id
-public  with sharing class SearchWeb {
+// PMD False Positives: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalMethod')
+global with sharing class SearchWeb {
 
-    @InvocableMethod(label='MyOrgButler: Search Web' description='Performs a web search using the Tavily API and returns the answer.'
-    )
-    public  static List<Answer> execute(List<Query> queries) {
+    @InvocableMethod(label='MyOrgButler: Search Web' description='Performs a web search using the Tavily API and returns the answer.')
+    global static List<Answer> execute(List<Query> queries) {
         HttpRequest request = new HttpRequest();
         request.setEndpoint('https://api.tavily.com/search');
         request.setMethod('POST');
@@ -37,13 +35,13 @@ public  with sharing class SearchWeb {
 
     // INNER
 
-    public  class Query {
+    global class Query {
         @InvocableVariable(label='Query' description='A natural language search query to search the web for and get an answer for.' required=true)
-        public  String content;
+        global String content;
     }
 
-    public  class Answer {
+    global class Answer {
         @InvocableVariable(label='Answer' description='The Natural Language Answer for the Query generated after doing a Web Search.' required=true)
-        public  String answer;
+        global String answer;
     }
 }

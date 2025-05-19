@@ -1,7 +1,9 @@
-public with sharing class ExploreOrgSchema {
+// PMD False Positives: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalMethod')
+global with sharing class ExploreOrgSchema {
     
     @InvocableMethod(label='MyOrgButler: Explore Org Data Model' description='Retrieve metadata about objects, fields and relationships in the org.')
-    public static List<Output> investigateSchema(List<Input> requests) {
+    global static List<Output> investigateSchema(List<Input> requests) {
         List<Output> results = new List<Output>();
         
         for(Input request : requests) {
@@ -124,17 +126,17 @@ public with sharing class ExploreOrgSchema {
     
     // INNER
     
-    public class Input {
+    global class Input {
         @InvocableVariable(label='Scope' description='allObjects, objectDetails' required=true)
-        public String scope;
+        global String scope;
         
         @InvocableVariable(label='Object API Names' description='Specific objects to investigate (if scope is specificObject or relationships)')
-        public String objects;
+        global String objects;
     }
     
-    public class Output {
+    global class Output {
         @InvocableVariable(label='Response as Text' description='Line-separated list of objects or field details')
-        public String response;
+        global String response;
         
         public Output(String response) {
             this.response = response;

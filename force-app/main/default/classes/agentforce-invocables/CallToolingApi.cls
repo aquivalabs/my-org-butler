@@ -1,9 +1,11 @@
-public with sharing class CallToolingApi {
+// PMD False Positives: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalMethod')
+global with sharing class CallToolingApi {
 
     public static HttpResponse mockedResponse = null;
     
     @InvocableMethod(label='MyOrgButler: Use Tooling API' description='Query, create, update, or delete records using the Tooling API. Supports SOQL queries and CRUD operations on Tooling API objects.')
-    public static List<Output> execute(List<ToolingDescription> descriptions) {
+    global static List<Output> execute(List<ToolingDescription> descriptions) {
         List<Output> result = new List<Output>();
         
         for(ToolingDescription tooling : descriptions) {
@@ -53,26 +55,26 @@ public with sharing class CallToolingApi {
     
     // INNER
     
-    public class ToolingDescription {
+    global class ToolingDescription {
         @InvocableVariable(label='Action' description='The Tooling API action to perform: query, create, update, delete' required=true)
-        public String action;
+        global String action;
         
         @InvocableVariable(label='Object Type' description='The Tooling API object type (e.g., ApexClass, CustomField)' required=false)
-        public String objectType;
+        global String objectType;
         
         @InvocableVariable(label='SOQL Query' description='The SOQL query to execute (for query action)' required=false)
-        public String soql;
+        global String soql;
         
         @InvocableVariable(label='Record JSON' description='JSON representation of the record to create or update' required=false)
-        public String recordJson;
+        global String recordJson;
         
         @InvocableVariable(label='Record Id' description='Id of the record to update or delete' required=false)
         public String recordId;
     }
     
-    public class Output {
+    global class Output {
         @InvocableVariable(label='Response Body' description='Raw HTTP Response to be interpreted for Errors or Success')
-        public String responseBody;
+        global String responseBody;
         
         public Output(String body) {
             responseBody = body;
