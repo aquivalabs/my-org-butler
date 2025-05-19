@@ -10,7 +10,6 @@
     
     <rule ref="category/apex/security.xml">
         <priority>1</priority>
-
         <!-- Salesforce Graph Engine does this better -->    
         <exclude name="ApexCRUDViolation" />    
     </rule>  

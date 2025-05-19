@@ -32,6 +32,5 @@ echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
-# sf code-analyzer run --rule-selector Security, AppExchange --output-file ./code-analyzer/output/code-analyzer-security.csv --output-file ./code-analyzer/output/code-analyzer-security.html
-# sf code-analyzer run --rule-selector PMD --config-file ./code-analyzer-config.yml --output-file ./code-analyzer/code-analyzer-cleancode.csv --output-file ./code-analyzer/code-analyzer-cleancode.html
-# sf scanner run dfa --output-file ./code-analyzer/output/graph-engine.csv --target ./ --projectdir ./ --category Security
+sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
+sf code-analyzer run --rule-selector PMD:OpinionatedSalesforce --output-file code-analyzer-cleancode.csv 
