@@ -506,5 +506,5 @@ components:
     <schemaUploadFileName>openapi</schemaUploadFileName>
     <serviceBinding>{&quot;host&quot;:&quot;api.firecrawl.dev&quot;,&quot;basePath&quot;:&quot;/v1&quot;,&quot;allowedSchemes&quot;:[&quot;HTTPS&quot;],&quot;requestMediaTypes&quot;:[],&quot;responseMediaTypes&quot;:[],&quot;compatibleMediaTypes&quot;:{},&quot;extensions&quot;:{}}</serviceBinding>
     <status>Complete</status>
-    <systemVersion>7</systemVersion>
+    <systemVersion>6</systemVersion>
 </ExternalServiceRegistration>

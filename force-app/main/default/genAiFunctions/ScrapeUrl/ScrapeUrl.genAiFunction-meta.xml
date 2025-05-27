@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Scrape a given URL to retrieve content in markdown, HTML, or other formats. This endpoint supports structured data extraction and dynamic actions.</description>
+    <invocationTarget>FirecrawlApi.scrapeUrl</invocationTarget>
+    <invocationTargetType>externalService</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>Scrape Url</masterLabel>
+    <progressIndicatorMessage>Crawling the web</progressIndicatorMessage>
+</GenAiFunction>

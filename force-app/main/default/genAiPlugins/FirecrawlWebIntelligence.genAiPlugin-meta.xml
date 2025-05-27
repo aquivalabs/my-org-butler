@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <aiPluginUtterances>
         <developerName>utterance_scrapetheh0</developerName>
-        <language xsi:nil="true"/>
+        <language>en_US</language>
         <masterLabel>utterance_scrapetheh0</masterLabel>
         <utterance>&quot;Scrape the homepage of acme.com and give me the main content.&quot;
 
@@ -17,35 +17,44 @@
     <canEscalate>false</canEscalate>
     <description>Handles user requests that involve scraping or crawling external websites, mapping links, or extracting structured data using the Firecrawl API. This topic covers web intelligence tasks such as competitor monitoring, lead enrichment, and dynamic content analysis.</description>
     <developerName>FirecrawlWebIntelligence</developerName>
-    <genAiPluginInstructions>
-        <description>If a user asks for data about a website, use /scrape with the url and return the requested formats (e.g. markdown, links).</description>
-        <developerName>instruction_ifauserask0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_ifauserask0</masterLabel>
-    </genAiPluginInstructions>
-    <genAiPluginInstructions>
-        <description>If a user wants to monitor or map a whole website, use /crawl or /map accordingly and inform them that this may take time.</description>
-        <developerName>instruction_ifauserwan1</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_ifauserwan1</masterLabel>
-    </genAiPluginInstructions>
+    <genAiFunctions>
+        <functionName>ScrapeUrl</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>PostCrawl</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>GetCrawlByCrawlId</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>Always use LLM-assisted extraction if the user asks for summaries or structured data.</description>
-        <developerName>instruction_alwaysusel2</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_alwaysusel2</masterLabel>
-    </genAiPluginInstructions>
-    <genAiPluginInstructions>
-        <description>Never return raw HTML unless explicitly asked; prefer markdown or summarized content.</description>
-        <developerName>instruction_neverretur3</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_neverretur3</masterLabel>
+        <developerName>instruction_alwaysusel0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_alwaysusel0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
         <description>If a crawl is in progress, use /crawl/{id} to check status or /crawl/{id} DELETE to cancel if requested.</description>
-        <developerName>instruction_ifacrawlis4</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_ifacrawlis4</masterLabel>
+        <developerName>instruction_ifacrawlis1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_ifacrawlis1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If a user asks for data about a website, use /scrape with the url and return the requested formats (e.g. markdown, links).</description>
+        <developerName>instruction_ifauserask2</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_ifauserask2</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If a user wants to monitor or map a whole website, use /crawl or /map accordingly and inform them that this may take time.</description>
+        <developerName>instruction_ifauserwan3</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_ifauserwan3</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Never return raw HTML unless explicitly asked; prefer markdown or summarized content.</description>
+        <developerName>instruction_neverretur4</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_neverretur4</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>Firecrawl Web Intelligence</masterLabel>
