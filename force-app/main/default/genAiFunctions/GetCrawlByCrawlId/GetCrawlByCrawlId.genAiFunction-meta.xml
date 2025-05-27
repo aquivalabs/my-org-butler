@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Check the status of a crawl job by its ID and retrieve the result.</description>
-    <invocationTarget>FirecrawlApi.getCrawlByCrawl_id</invocationTarget>
+    <invocationTarget>aquiva_os::FirecrawlApi.getCrawlByCrawl_id</invocationTarget>
     <invocationTargetType>externalService</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
