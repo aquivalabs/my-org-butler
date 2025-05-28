@@ -33,4 +33,4 @@ sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-f
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
-sf code-analyzer run --rule-selector PMD:OpinionatedSalesforce --output-file code-analyzer-cleancode.csv 
+sf code-analyzer run --rule-selector PMD:OpinionatedSalesforce --output-file code-analyzer-cleancode.csv --target force-app/main/default
