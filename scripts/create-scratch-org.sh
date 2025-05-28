@@ -23,7 +23,7 @@ echo "Pushing changes to scratch org"
 execute sf project deploy start
 
 echo "Assigning permissions"
-execute sf org assign permset --name MyOrgButlerUser 
+execute sf org assign permset --name MyOrgButlerUser --name CopilotSalesforceUser
 
 echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
