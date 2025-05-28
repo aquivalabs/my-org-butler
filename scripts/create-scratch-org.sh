@@ -16,6 +16,9 @@ fi
 echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
+echo "Enabling Prompt Builder"
+execute sf org assign permset --name EinsteinGPTPromptTemplateManager
+
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
