@@ -16,20 +16,20 @@ fi
 echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30
 
+echo "Make sure Org user is english"
+sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
+
 echo "Enabling Prompt Builder"
-execute sf org assign permset --name EinsteinGPTPromptTemplateManager
+execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name CopilotSalesforceUser
 
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
 echo "Pushing changes to scratch org"
-execute sf project deploy start
+execute sf project deploy start --source-dir force-app
 
 echo "Assigning permissions"
-execute sf org assign permset --name MyOrgButlerUser --name CopilotSalesforceUser
-
-echo "Make sure Org user is english"
-sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
+execute sf org assign permset --name MyOrgButlerUser 
 
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
