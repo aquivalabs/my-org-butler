@@ -5,6 +5,10 @@
       "default": true
     },
     {
+      "path": "unpackaged",
+      "default": false
+    },
+    {
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",

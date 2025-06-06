@@ -20,7 +20,7 @@ echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
 
 echo "Enabling Prompt Builder"
-execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name CopilotSalesforceUser
+execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name CopilotSalesforceAdmin
 
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
