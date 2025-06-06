@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Submits a job to crawl a URL and all accessible subpages.</description>
-    <invocationTarget>aquiva_os::FirecrawlApi.postCrawl</invocationTarget>
-    <invocationTargetType>externalService</invocationTargetType>
-    <isConfirmationRequired>false</isConfirmationRequired>
-    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
-    <masterLabel>Post Crawl</masterLabel>
-</GenAiFunction>
