@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_github_tasks0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_github_tasks0</masterLabel>
+        <utterance>
+- List issues for a repository
+- Create a new issue in a repository
+- Close issue number 123 in a repository
+- List open pull requests in a repository
+- Merge pull request 456 in a repository
+- Get commit details for a given SHA
+- Add a comment to issue #789 in a repository
+- List repositories for a user
+        </utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>
+Use this topic when the user wants to perform GitHub operations such as listing repositories, issues, pull requests, commits, or creating, updating, or commenting on issues and pull requests via the GitHub API.
+    </description>
+    <developerName>GitHubTasks</developerName>
+    <genAiFunctions>
+        <functionName>CallGitHubApi</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>
+Always follow this process when using this topic:
+1. Refer to the simplified OpenAPI YAML spec below to understand available GitHub endpoints and parameters.
+
+openapi: 3.0.1
+info:
+  title: GitHub API
+  version: v3
+servers:
+  - url: https://api.github.com
+paths:
+  /repos/{owner}/{repo}/issues:
+    get:
+      summary: List issues for a repository
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+    post:
+      summary: Create an issue
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+  /repos/{owner}/{repo}/issues/{issue_number}:
+    patch:
+      summary: Update an issue (e.g., close an issue)
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+  /repos/{owner}/{repo}/pulls:
+    get:
+      summary: List pull requests
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+  /repos/{owner}/{repo}/pulls/{pull_number}/merge:
+    put:
+      summary: Merge a pull request
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pull_number
+          in: path
+          required: true
+          schema:
+            type: integer
+
+2. Construct the endpoint path exactly as defined in the spec (for example, `/repos/{owner}/{repo}/issues`).
+3. Use the CallGitHubApi action with the appropriate HTTP method, endpoint, and request body (JSON).
+4. Always set `Content-Type: application/json` when including a request body.
+5. Return the full HTTP status code and response body so the user can interpret success or errors.
+6. Handle errors by returning the response body, allowing the user to see GitHub error messages.
+        </description>
+        <developerName>instruction_github_tasks0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_github_tasks0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>MyOrgButler: GitHub Tasks</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>
+Use this topic for any user request involving GitHub operations such as listing or creating issues, pull requests, commits, or repositories via the GitHub API.
+    </scope>
+</GenAiPlugin>
