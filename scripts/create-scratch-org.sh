@@ -26,7 +26,8 @@ echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
 echo "Pushing changes to scratch org"
-execute sf project deploy start --source-dir force-app
+execute sf project deploy start --source-dir force-app 
+execute sf project deploy start --source-dir unpackaged
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser 
@@ -35,7 +36,7 @@ echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
 echo "Running Agentforce Tests"
-sf agent test run --api-name Multiple_Topics --wait 10
+sf agent test run --api-name RegressionSuite --wait 10
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
