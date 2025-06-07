@@ -20,7 +20,7 @@
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>
-Use this topic when the user wants to browse GitHub repositories, manage issues, or search content. Supports viewing repository information, managing issues and comments, viewing pull requests, and searching repositories and issues. Does not handle repository management, GitHub Actions, or organization management.
+Use this topic when the user wants to browse GitHub repositories, track changes, manage issues, or search content. Supports viewing repository activity, commits, issues, and pull requests. Does not handle repository management, GitHub Actions, or organization management.
     </description>
     <developerName>GitHubTasks</developerName>
     <genAiFunctions>
@@ -28,14 +28,23 @@ Use this topic when the user wants to browse GitHub repositories, manage issues,
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>
-When using this topic, ALWAYS follow these steps:
+When using this topic:
 
-1. For ANY repository-related operation:
-   - FIRST list the user's repositories using GET /user/repos or search repositories using GET /search/repositories
-   - Validate the repository exists before attempting any operation on it
-   - If repository doesn't exist, inform the user and ask for clarification
+1. For repository operations:
+   - FIRST try to find the repository through GET /search/repositories with relevant keywords from the user's request
+   - IF NOT FOUND, then list user's repositories using GET /user/repos to find by name
+   - Only ask the user for clarification if you cannot find the repository after trying both methods
+   - Remember repository details after finding them to avoid repeated lookups
 
-2. For issue/PR operations:
+2. When presenting repository changes:
+   - Always check commits first - they're the primary source of change history
+   - Format commit messages into natural sentences, grouping related changes together
+   - Use relative dates (e.g., "yesterday" or "2 days ago") instead of timestamps
+   - Hide technical details like commit hashes unless specifically requested
+   - Only after summarizing commits, mention any open PRs or issues if they exist
+   - Always present information in clear narrative blocks, not as technical lists
+
+3. For issue/PR operations:
    - After validating repository exists, list current issues/PRs first
    - Use the retrieved information to validate issue/PR numbers exist
    - Reference issues/PRs by both number and title when communicating with users

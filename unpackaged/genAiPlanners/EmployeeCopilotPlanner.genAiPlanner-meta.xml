@@ -3,9 +3,17 @@
     <description>Planner for ReAct-based Employee copilot.</description>
     <genAiPlugins>
         <genAiPluginName>GitHubTasks</genAiPluginName>
+    </genAiPlugins>  
+    <genAiPlugins>  
         <genAiPluginName>AnswerQuestionsAboutData</genAiPluginName>
+    </genAiPlugins>  
+    <genAiPlugins> 
         <genAiPluginName>UnderstandDataModel</genAiPluginName>
+    </genAiPlugins>  
+    <genAiPlugins> 
         <genAiPluginName>CreateAndModifyData</genAiPluginName>
+    </genAiPlugins>  
+    <genAiPlugins> 
         <genAiPluginName>ExplainAndModifyMetadata</genAiPluginName>
     </genAiPlugins>
     <masterLabel>EmployeeCopilotPlanner</masterLabel>
