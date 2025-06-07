@@ -5,19 +5,22 @@
         <language xsi:nil="true"/>
         <masterLabel>utterance_github_tasks0</masterLabel>
         <utterance>
-- List issues for a repository
+- Get information about a GitHub user
+- List my GitHub repositories
+- Show me repository topics
+- Get the README of a repository
+- List and search for issues
 - Create a new issue in a repository
-- Close issue number 123 in a repository
-- List open pull requests in a repository
-- Merge pull request 456 in a repository
-- Get commit details for a given SHA
-- Add a comment to issue #789 in a repository
-- List repositories for a user
+- Update the status of an issue
+- Add a comment to an issue
+- List pull requests for a repository
+- View pull request details and comments
+- Search repositories by topic
         </utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>
-Use this topic when the user wants to perform GitHub operations such as listing repositories, issues, pull requests, commits, or creating, updating, or commenting on issues and pull requests via the GitHub API.
+Use this topic when the user wants to browse GitHub repositories, manage issues, or search content. Supports viewing repository information, managing issues and comments, viewing pull requests, and searching repositories and issues. Does not handle repository management, GitHub Actions, or organization management.
     </description>
     <developerName>GitHubTasks</developerName>
     <genAiFunctions>
@@ -25,16 +28,92 @@ Use this topic when the user wants to perform GitHub operations such as listing 
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>
-Always follow this process when using this topic:
-1. Refer to the simplified OpenAPI YAML spec below to understand available GitHub endpoints and parameters.
+When using this topic, ALWAYS follow these steps:
 
-openapi: 3.0.1
+1. For ANY repository-related operation:
+   - FIRST list the user's repositories using GET /user/repos or search repositories using GET /search/repositories
+   - Validate the repository exists before attempting any operation on it
+   - If repository doesn't exist, inform the user and ask for clarification
+
+2. For issue/PR operations:
+   - After validating repository exists, list current issues/PRs first
+   - Use the retrieved information to validate issue/PR numbers exist
+   - Reference issues/PRs by both number and title when communicating with users
+
+3. When using API endpoints:
+   - Refer to the OpenAPI spec below for available endpoints
+   - Construct paths exactly as defined
+   - Use CallGitHubApi with proper HTTP method and headers
+   - Always include Content-Type: application/json for request bodies
+   - Handle and display error responses to users
+
+Here is the OpenAPI spec for reference:
+
+openapi: 3.0.0
 info:
-  title: GitHub API
-  version: v3
+  title: GitHub API (Minified for AgentForce)
+  version: 1.0.0
 servers:
   - url: https://api.github.com
 paths:
+  /user:
+    get:
+      summary: Get the authenticated user
+      operationId: getAuthenticatedUser
+  /users/{username}:
+    get:
+      summary: Get a user
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+  /user/repos:
+    get:
+      summary: List repositories for the authenticated user
+  /repos/{owner}/{repo}:
+    get:
+      summary: Get a repository
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+  /repos/{owner}/{repo}/topics:
+    get:
+      summary: List repository topics
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+  /repos/{owner}/{repo}/readme:
+    get:
+      summary: Get repository README
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
   /repos/{owner}/{repo}/issues:
     get:
       summary: List issues for a repository
@@ -63,6 +142,7 @@ paths:
           schema:
             type: string
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -74,7 +154,7 @@ paths:
                   type: string
   /repos/{owner}/{repo}/issues/{issue_number}:
     patch:
-      summary: Update an issue (e.g., close an issue)
+      summary: Update an issue
       parameters:
         - name: owner
           in: path
@@ -92,12 +172,59 @@ paths:
           schema:
             type: integer
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 state:
+                  type: string
+  /repos/{owner}/{repo}/issues/{issue_number}/comments:
+    get:
+      summary: List issue comments
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+    post:
+      summary: Create an issue comment
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
                   type: string
   /repos/{owner}/{repo}/pulls:
     get:
@@ -113,9 +240,9 @@ paths:
           required: true
           schema:
             type: string
-  /repos/{owner}/{repo}/pulls/{pull_number}/merge:
-    put:
-      summary: Merge a pull request
+  /repos/{owner}/{repo}/pulls/{pull_number}:
+    get:
+      summary: Get a pull request
       parameters:
         - name: owner
           in: path
@@ -132,12 +259,44 @@ paths:
           required: true
           schema:
             type: integer
+  /repos/{owner}/{repo}/pulls/{pull_number}/comments:
+    get:
+      summary: List pull request comments
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pull_number
+          in: path
+          required: true
+          schema:
+            type: integer
+  /search/repositories:
+    get:
+      summary: Search repositories
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+  /search/issues:
+    get:
+      summary: Search issues
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
 
-2. Construct the endpoint path exactly as defined in the spec (for example, `/repos/{owner}/{repo}/issues`).
-3. Use the CallGitHubApi action with the appropriate HTTP method, endpoint, and request body (JSON).
-4. Always set `Content-Type: application/json` when including a request body.
-5. Return the full HTTP status code and response body so the user can interpret success or errors.
-6. Handle errors by returning the response body, allowing the user to see GitHub error messages.
         </description>
         <developerName>instruction_github_tasks0</developerName>
         <language xsi:nil="true"/>
@@ -147,6 +306,18 @@ paths:
     <masterLabel>MyOrgButler: GitHub Tasks</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>
-Use this topic for any user request involving GitHub operations such as listing or creating issues, pull requests, commits, or repositories via the GitHub API.
+Use this topic for browsing GitHub repositories, managing issues, and viewing pull requests. Includes:
+- User information and repository listing
+- Repository details, topics, and README content
+- Issue management (create, update, comment)
+- Pull request information and comments
+- Search functionality for repositories and issues
+
+Does NOT handle:
+- Repository creation or deletion
+- Organization/team management 
+- GitHub Actions or workflows
+- Pull request merging or approval
+- Security and billing features
     </scope>
 </GenAiPlugin>
