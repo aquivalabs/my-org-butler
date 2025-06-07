@@ -5,6 +5,9 @@
         <language xsi:nil="true"/>
         <masterLabel>utterance_github_tasks0</masterLabel>
         <utterance>
+- Show recent changes in a repository
+- View detailed commit information
+- Compare changes between commits
 - Get information about a GitHub user
 - List my GitHub repositories
 - Show me repository topics
@@ -20,48 +23,44 @@
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>
-Use this topic when the user wants to browse GitHub repositories, track changes, manage issues, or search content. Supports viewing repository activity, commits, issues, and pull requests. Does not handle repository management, GitHub Actions, or organization management.
+Use this topic fxor comprehensive GitHub repository insights. Get detailed commit history with file-level changes, compare commits or branches, manage issues and pull requests, and search across repositories. Provides rich context about code changes, including modified files and their content.
     </description>
     <developerName>GitHubTasks</developerName>
     <genAiFunctions>
         <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>
-When using this topic:
+        <description>BASICS:
+1. Find repositories automatically:
+   - Use the API to find repos, never ask for names
+   - Try searching if needed
+   
+2. Tell stories, not tech details:
+   GOOD: "The login page got a fresh new design and the forgot password feature now works properly"
+   BAD: "feat(ui): redesign login page [abc123]"
 
-1. For repository operations:
-   - FIRST try to find the repository through GET /search/repositories with relevant keywords from the user's request
-   - IF NOT FOUND, then list user's repositories using GET /user/repos to find by name
-   - Only ask the user for clarification if you cannot find the repository after trying both methods
-   - Remember repository details after finding them to avoid repeated lookups
+3. Focus on what matters:
+   - Group related changes together
+   - Explain why things changed
+   - Skip technical jargon
+   - No commit hashes unless asked</description>
+        <developerName>instruction_basics0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_basics0</masterLabel>
+    </genAiPluginInstructions>
 
-2. When presenting repository changes:
-   - Always check commits first - they're the primary source of change history
-   - Format commit messages into natural sentences, grouping related changes together
-   - Use relative dates (e.g., "yesterday" or "2 days ago") instead of timestamps
-   - Hide technical details like commit hashes unless specifically requested
-   - Only after summarizing commits, mention any open PRs or issues if they exist
-   - Always present information in clear narrative blocks, not as technical lists
-
-3. For issue/PR operations:
-   - After validating repository exists, list current issues/PRs first
-   - Use the retrieved information to validate issue/PR numbers exist
-   - Reference issues/PRs by both number and title when communicating with users
-
-3. When using API endpoints:
-   - Refer to the OpenAPI spec below for available endpoints
-   - Construct paths exactly as defined
-   - Use CallGitHubApi with proper HTTP method and headers
-   - Always include Content-Type: application/json for request bodies
-   - Handle and display error responses to users
-
+    <genAiPluginInstructions>
+        <description>OPENAPI SPECIFICATION:
 Here is the OpenAPI spec for reference:
 
 openapi: 3.0.0
 info:
   title: GitHub API (Minified for AgentForce)
-  version: 1.0.0
+  version: 1.4.0
+  description: 
+    A fully consolidated GitHub OpenAPI spec for AgentForce.
+    Includes repository browsing, issues, pull requests, commit diffs,
+    and search, with structured response schemas for reasoning.
 servers:
   - url: https://api.github.com
 paths:
@@ -123,6 +122,139 @@ paths:
           required: true
           schema:
             type: string
+  /repos/{owner}/{repo}/commits:
+    get:
+      summary: List commits
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+  /repos/{owner}/{repo}/commits/{commit_sha}:
+    get:
+      summary: Get a single commit
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: commit_sha
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sha:
+                    type: string
+                  commit:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      author:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          date:
+                            type: string
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        filename:
+                          type: string
+                        status:
+                          type: string
+                        additions:
+                          type: integer
+                        deletions:
+                          type: integer
+                        changes:
+                          type: integer
+                        patch:
+                          type: string
+                        contents_url:
+                          type: string
+  /repos/{owner}/{repo}/compare/{base}...{head}:
+    get:
+      summary: Compare two commits
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: base
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: head
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  ahead_by:
+                    type: integer
+                  behind_by:
+                    type: integer
+                  total_commits:
+                    type: integer
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        filename:
+                          type: string
+                        status:
+                          type: string
+                        additions:
+                          type: integer
+                        deletions:
+                          type: integer
+                        changes:
+                          type: integer
+                        patch:
+                          type: string
+                        contents_url:
+                          type: string
   /repos/{owner}/{repo}/issues:
     get:
       summary: List issues for a repository
@@ -305,6 +437,92 @@ paths:
           required: true
           schema:
             type: string
+components:
+  schemas:
+    CommitFile:
+      type: object
+      properties:
+        filename:
+          type: string
+        status:
+          type: string
+          enum: [added, modified, removed]
+        additions:
+          type: integer
+        deletions:
+          type: integer
+        changes:
+          type: integer
+        patch:
+          type: string
+    CommitStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        additions:
+          type: integer
+        deletions:
+          type: integer
+    CommitResponse:
+      type: object
+      properties:
+        sha:
+          type: string
+        commit:
+          type: object
+          properties:
+            message:
+              type: string
+            author:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                date:
+                  type: string
+        stats:
+          $ref: '#/components/schemas/CommitStats'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommitFile'
+    CompareCommitsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        ahead_by:
+          type: integer
+        behind_by:
+          type: integer
+        total_commits:
+          type: integer
+        commits:
+          type: array
+          items:
+            type: object
+            properties:
+              sha:
+                type: string
+              commit:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  author:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      date:
+                        type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommitFile'
 
         </description>
         <developerName>instruction_github_tasks0</developerName>
