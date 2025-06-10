@@ -433,6 +433,103 @@ paths:
           required: true
           schema:
             type: integer
+  /repos/{owner}/{repo}/contents/{path}:
+    get:
+      summary: Get file content
+      operationId: getFileContent
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema: { type: string }
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+        - name: path
+          in: path
+          required: true
+          schema: { type: string }
+        - name: ref
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type: { type: string, enum: [file] }
+                  encoding: { type: string }
+                  content: { type: string }
+  /repos/{owner}/{repo}/pulls/{pull_number}/reviews:
+    get:
+      summary: List pull request reviews
+      operationId: listPullRequestReviews
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema: { type: string }
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+        - name: pull_number
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    user: { type: object }
+                    body: { type: string }
+                    state: { type: string }
+                    submitted_at: { type: string }
+  /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments:
+    get:
+      summary: List comments in a pull request review
+      operationId: listPullRequestReviewComments
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema: { type: string }
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+        - name: pull_number
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: review_id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path: { type: string }
+                    position: { type: integer }
+                    body: { type: string }            
   /search/repositories:
     get:
       summary: Search repositories
