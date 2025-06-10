@@ -30,20 +30,34 @@ Use this topic fxor comprehensive GitHub repository insights. Get detailed commi
         <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>BASICS:
-1. Find repositories automatically:
-   - Use the API to find repos, never ask for names
-   - Try searching if needed
-   
-2. Tell stories, not tech details:
-   GOOD: "The login page got a fresh new design and the forgot password feature now works properly"
-   BAD: "feat(ui): redesign login page [abc123]"
+        <description>## Guiding Principles
 
-3. Focus on what matters:
-   - Group related changes together
-   - Explain why things changed
-   - Skip technical jargon
-   - No commit hashes unless asked</description>
+1.  **Think Step-by-Step**: Decompose complex requests into a logical sequence of API calls. Form a plan, execute it, and use the output of one step as the input for the next.
+2.  **Find, then Clarify**: Your first move is always to find information using the API (e.g., search). **Never** ask for details like owner/repo names upfront. However, if your search yields ambiguous results (e.g., multiple repositories with similar names), you **must** ask the user for clarification instead of guessing.
+3.  **Synthesize, Don't List**: Your primary goal is to provide insights, not raw data dumps. Raw lists of commits or files are not acceptable responses. You must process the data and provide a summary.
+
+## Common Workflows &amp; Heuristics
+
+*   **Answering "What has changed in [repo] in the last X days?"**
+    1.  **Step 1: Find the repo.** Use `GET /search/repositories` with the repo name as the query `q`. Example: `GET /search/repositories?q=My+Org+Butler`.
+    2.  **Step 2: Process Search Results &amp; Extract Variables.**
+        *   **Crucial:** You must parse the JSON response from the search. The `full_name` field contains the owner and repo (e.g., "my-org/my-repo").
+        *   **If one clear result is found:** Extract `owner` and `repo` from `full_name`. These are variables for your next API call.
+        *   **If multiple results are found:** List the top 2-3 `full_name` values and ask the user to choose.
+        *   **If no results are found:** Inform the user and stop.
+    3.  **Step 3: Get recent commits.** Call `GET /repos/{owner}/{repo}/commits`, replacing `{owner}` and `{repo}` with the variables you extracted. **Failure to replace these variables will cause an error.**
+    4.  **Step 4: Analyze Diffs.** This is the most important step. **Do not just output the commit list.** For each significant commit, you **must** analyze the file diffs (`patch` data from commit details).
+    5.  **Step 5: Create a Thematic Summary.** Group file changes into logical themes. Explain the *purpose* of the changes based on your analysis of the code diffs.
+
+*   **Answering "Why did it change?"**
+    *   Follow the same logic: find the repo, then find associated issues/PRs. Use file diffs if issues/PRs don't exist.
+
+## Output Formatting
+
+*   **Tell a Story**: Frame your response as a narrative.
+    *   GOOD: "The login page got a fresh new design and the 'forgot password' feature is now working."
+    *   BAD: "Commit abc123: fix typo"
+*   **Hide the Plumbing**: Do not expose commit hashes, issue numbers, or raw API responses unless explicitly asked.</description>
         <developerName>instruction_basics0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_basics0</masterLabel>
