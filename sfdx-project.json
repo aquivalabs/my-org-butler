@@ -13,7 +13,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "June '25",
-      "versionNumber": "1.51.0.NEXT",
+      "versionNumber": "2.0.0.NEXT",
       "versionDescription": "",
       "dependencies": [
         {

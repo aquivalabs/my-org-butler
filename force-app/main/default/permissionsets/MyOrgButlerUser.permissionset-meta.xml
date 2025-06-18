@@ -25,10 +25,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>NotifyUser</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>QueryRecordsWithSoql</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -36,10 +32,6 @@
         <apexClass>SearchWeb</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <externalCredentialPrincipalAccesses>
-        <enabled>true</enabled>
-        <externalCredentialPrincipal>aquiva_os__OpenAiApi-ApiKey</externalCredentialPrincipal>
-    </externalCredentialPrincipalAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
         <externalCredentialPrincipal>aquiva_os__GitHubApi-ApiKey</externalCredentialPrincipal>
@@ -60,10 +52,6 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
-    <pageAccesses>
-        <apexPage>sessionId</apexPage>
-        <enabled>true</enabled>
-    </pageAccesses>
     <userPermissions>
         <enabled>true</enabled>
         <name>SendCustomNotifications</name>

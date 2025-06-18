@@ -1,74 +1,63 @@
 ## <img src="resources/logo.png" width="50"/> My Org Butler
 
-...is a Salesforce app with a Utility Bar chat component that helps org users with their daily work. Using natural language it answers questions about data, metadata and configuration. It can also perform tasks on the user's behalf, like creating or modifying records, making configuration changes or notifying other people.
+My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
-> ⚠️ **Important:** Before installing DMD, you must first install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package.
+> ⚠️ **Looking for the custom OpenAI version?**
+> 
+> This is the **Agentforce-only version** that's simple to set up and use. If you're looking for the version that uses OpenAI with custom UI components, please check out the [`openai-agentforce-hybrid`](../../tree/openai-agentforce-hybrid) branch.
 
-- [Install v1.51 as Unlocked Package (Production)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0)
+---
 
-- [Install v1.51 as Unlocked Package (Sandbox)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0)
+### Getting started
 
-### Highlight
+Follow these steps to get My Org Butler running in your org:
 
-- Answers questions about data, metadata and org settings
-- Creates and updates data and metadata (delete not supported)
-- Respects the permissions of the users
-- Can explain what it does and self-correct errors
-- Leverages [OpenAI Assistant API](https://platform.openai.com/docs/assistants/overview) (Knowledge Retrieval and State Management)
-- Implements [autonomous ReAct / AutoGPT agent](https://arxiv.org/pdf/2210.03629.pdf)
-- Uses [packageable Named Credentials](/Users/rsoesemann/dev/aquivalabs-open-source/my-org-butler/force-app/main/default/namedCredentials/OpenAiApi.namedCredential-meta.xml) for API Authentication
-- Instructions and all tools can be directly used as **[Salesforce Agentforce 2.0]**(https://www.salesforce.com/agentforce/) actions
+1. **Install App Foundations** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
+
+2. **Install My Org Butler v1.51** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0)
+
+3. **Enable Agentforce** in your org (if not already enabled)
+
+4. **Optional: Enable web search** - Get a [free Tavily API key](https://tavily.com/) and add it to the `TavilyApi` Named Credential
+
+That's it! The Butler will be available in your Agentforce sidebar.
 
 ### Demo Videos
 
-[![](http://img.youtube.com/vi/fcNnBZFvQHc/hqdefault.jpg)](https://youtu.be/fcNnBZFvQHc "")
+[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
 
-[![](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "") Agentforce Version
+### What it does
 
+Built entirely on Agentforce with 9 functions and 5 plugins. The functions handle Salesforce-specific tasks like querying data, calling APIs, and managing metadata. Agentforce provides the AI reasoning and conversation management.
 
-### Documentation
+**Data & Records:**
+- Answer questions about your org's data, metadata and settings
+- Create and update records (delete not supported)
+- Query complex data relationships and generate reports
 
-#### How it works
+**Metadata & Configuration:**
+- Explain Salesforce metadata components and configurations
+- Create and modify Apex classes, Flows, and custom objects
+- Analyze validation rules, custom fields, and object relationships
+- Generate PlantUML diagrams for data models and processes
 
-It behaves like a good Butler, in the sense that it does things in the background and only bugs the user when something is unclear. It also would not just do harmful things that are not in the permission of a user and could create potential harm.
+**GitHub Integration:**
+- Manage GitHub repositories, issues, and pull requests
+- View commit history and compare code changes
+- Search repositories and track development progress
 
-This is made possible by Open AI's Assitant API, an Agent technology similar to AutoGPT or [Salesforce upcoming Copilots](https://salesforce.vidyard.com/watch/rZYjTDQ956yQ8sCcE879dV). It uses LLM reasoning to understand a request and makes an action plan based on automations that were made available to the agent. Open AI calls them Functions or Plugins, Salesforce calls them Copilot Actions.
+**Advanced Capabilities:**
+- Search the web for additional information using Tavily API
+- Create visual diagrams and documentation
+- Respect user permissions and ask for clarification when needed
+- Explain actions and self-correct errors
 
-Those automation are not performed by the LLM but just delegated back to Salesforce, which then calls deterministic code.
+### Development
 
-This PoC shows that in the realm of Salesforce where there is a well-documented REST API for nearly everything a single Action or Function is sufficient. The Org Butler does everything it does just by constructing REST API requests as shown in this PlantUML:
+Want to customize or extend the Butler?
 
-![](/resources/diagram.png)
-
-#### Setup in the Org
-1. Add your own OpenAI API Key by adding a new Principal Parameter called `ApiKey` in `Setup > Named Credential > External Credential > OpenAiApi.ApiKey` <img src="resources/apikey.png" width="400" />
-1. Populate the Assistant Id fields in the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c). There are 2 fields to differentiate between Assistants used in Dev and Production orgs.
-1. To use the Web Search Tool get a [Free Tavily API Key](https://tavily.com/) and put the Key also into the [`MyOrgButler__c Custom Settings`](force-app/main/default/objects/MyOrgButler__c).
-<img src="resources/assistant-setup.png" width="400" />
-
-#### OPTIONAL: Use you own OpenAI Assistant
-1. Create an OpenAI Assistant using Functions and Instructions like the ones we use. Find them in [`openai-configs`](openai-configs).
-
-#### OPTIONAL: Fully customize
-
-1. Clone the repo
-1. Find and replace `aquiva_os` namespace in this repo's files with your own namespace. You can also make it work without a namespace.
-1. Create Scratch org
-    1. Adjust the DEV_HUB_ALIAS in `/scripts/create-scratch.org.sh`
-    1. Run it via `./scripts/create-scratch.org.sh`
-1. Adjust the code and metadata    
-1. Create a Managed or Unlocked package from it using `/scripts/create-package.sh`
-
----
-> __DISCLAIMER - Simple vs. sophisticated__
->
-> This app was not written with a commercial career in mind. So we cut corners in a few places to keep the projects short and focused. So if you see some ugly parts here 
-> and there, let us know but be kind to us. This project is mainly about sharing 
-> results and excitement in "AI for Salesforce".
->
-> We also made some adjustments, and simplifications to the original code to better 
-> fit the Open Source purpose. To have less loose metadata parts, we:
->
-> - Skipped moving UI text to Custom Labels
-> - Merged classes to have the most related code in one place
->
+1. Clone this repo
+2. Replace `aquiva_os` namespace with your own (or remove it)
+3. Create a scratch org: `./scripts/create-scratch-org.sh`
+4. Make your changes
+5. Create a package: `./scripts/create-package.sh`
