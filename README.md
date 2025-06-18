@@ -17,7 +17,7 @@ Follow these steps to get My Org Butler running in your org:
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler v2.0** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgqDYAS) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgqDYAS)
+2. **Install My Org Butler v2.1** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MhSvYAK) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MhSvYAK)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 
@@ -25,16 +25,16 @@ Follow these steps to get My Org Butler running in your org:
    
    **For GitHub Integration:**
    - Get a [GitHub Personal Access Token](https://github.com/settings/tokens)
-   - Go to Setup → Named Credentials → GitHubApi
-   - Click on the linked External Credential "GitHubApi"
-   - Create a New Named Principal with parameter name "ApiKey" 
+   - Go to Setup → Named Credentials → `GitHubApi`
+   - Click on the linked External Credential `GitHubApi`
+   - Create a New Named Principal with parameter name `ApiKey` 
    - Enter your GitHub token as the value
 
    **For Web Search:**
    - Get a [free Tavily API key](https://tavily.com/)
-   - Go to Setup → Named Credentials → TavilyApi
-   - Click on the linked External Credential "TavilyApi"  
-   - Create a New Named Principal with parameter name "ApiKey"
+   - Go to Setup → Named Credentials → `TavilyApi`
+   - Click on the linked External Credential `TavilyApi`  
+   - Create a New Named Principal with parameter name `ApiKey`
    - Enter your Tavily API key as the value
 
 That's it! The Butler will be available in your Agentforce sidebar.

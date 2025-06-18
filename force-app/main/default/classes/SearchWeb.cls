@@ -5,7 +5,7 @@ global with sharing class SearchWeb {
     @InvocableMethod(label='MyOrgButler: Search Web' description='Performs a web search using the Tavily API and returns the answer.')
     global static List<Answer> execute(List<Query> queries) {
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:TavilyApi/search');
+        request.setEndpoint('callout:aquiva_os__TavilyApi/search');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
 

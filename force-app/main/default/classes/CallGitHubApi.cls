@@ -6,7 +6,7 @@ global with sharing class CallGitHubApi {
     global static List<Output> execute(List<Input> requests) {
         Input req = requests[0];
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:GitHubApi' + req.urlIncludingParams);
+        request.setEndpoint('callout:aquiva_os__GitHubApi' + req.urlIncludingParams);
         request.setMethod(req.httpMethod);
         request.setHeader('Content-Type', 'application/json');
         String body = req.requestBody;
