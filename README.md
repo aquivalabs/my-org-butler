@@ -2,6 +2,9 @@
 
 My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
+[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
+
+
 > ⚠️ **Looking for the custom OpenAI version?**
 > 
 > This is the **Agentforce-only version** that's simple to set up and use. If you're looking for the version that uses OpenAI with custom UI components, please check out the [`openai-agentforce-hybrid`](../../tree/openai-agentforce-hybrid) branch.
@@ -12,19 +15,29 @@ My Org Butler is a showcase for building Agentforce solutions that help Salesfor
 
 Follow these steps to get My Org Butler running in your org:
 
-1. **Install App Foundations** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
+1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler v1.51** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgDVYA0)
+2. **Install My Org Butler v2.0** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgqDYAS) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MgqDYAS)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 
-4. **Optional: Enable web search** - Get a [free Tavily API key](https://tavily.com/) and add it to the `TavilyApi` Named Credential
+4. **Configure Named Credentials** (Optional - only if you want GitHub integration and web search):
+   
+   **For GitHub Integration:**
+   - Get a [GitHub Personal Access Token](https://github.com/settings/tokens)
+   - Go to Setup → Named Credentials → GitHubApi
+   - Click on the linked External Credential "GitHubApi"
+   - Create a New Named Principal with parameter name "ApiKey" 
+   - Enter your GitHub token as the value
+
+   **For Web Search:**
+   - Get a [free Tavily API key](https://tavily.com/)
+   - Go to Setup → Named Credentials → TavilyApi
+   - Click on the linked External Credential "TavilyApi"  
+   - Create a New Named Principal with parameter name "ApiKey"
+   - Enter your Tavily API key as the value
 
 That's it! The Butler will be available in your Agentforce sidebar.
-
-### Demo Videos
-
-[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
 
 ### What it does
 
