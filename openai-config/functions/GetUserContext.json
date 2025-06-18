@@ -1,9 +1,0 @@
-{
-    "name": "GetUserContext",
-    "description": "Gets current user's context. REQUIRED for: 1) Queries containing 'my' or 'team' in the request 2) User-specific tasks or calendar items 3) Permission checks. NOT needed for: general queries, metadata operations, or system-wide operations.",
-    "parameters": {
-      "type": "object",
-      "properties": {},
-      "required": []
-    }
-}
