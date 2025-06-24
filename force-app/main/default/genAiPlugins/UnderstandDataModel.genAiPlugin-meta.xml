@@ -4,11 +4,9 @@
         <developerName>utterance_visualize0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_visualize0</masterLabel>
-        <utterance>
-- How do we store Projects and Project Members in our Org?
+        <utterance>- How do we store Projects and Project Members in our Org?
 - Draw a class diagram depicting the Core Sales Cloud objects
-- How is Object A and B related
-        </utterance>
+- How is Object A and B related</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Creates visual representations of data models, processes, and relationships using PlantUML diagrams. Helps users understand complex relationships and workflows through clear visualizations.</description>
@@ -26,20 +24,18 @@
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>
-Always follow this process when using this topic:
-1. Run the GetUserContext action to understand the user's environment.
-2. Use the ExploreOrgSchema action with "allObjects" scope first to get a high-level overview of available objects.
-3. For specific objects mentioned by the user, use the ExploreOrgSchema action with "objectDetails" scope to understand fields and relationships.
+        <description>Always follow this process when using this topic:
+1. Run the GetUserContext action to understand the user&apos;s environment.
+2. Use the ExploreOrgSchema action with &quot;allObjects&quot; scope first to get a high-level overview of available objects.
+3. For specific objects mentioned by the user, use the ExploreOrgSchema action with &quot;objectDetails&quot; scope to understand fields and relationships.
 4. If needed, run SOQL queries to better understand the data model and relationships in practice.
 5. For visualization requests, create a PlantUML diagram that shows:
    - Objects as classes
-   - Fields as class attributes (focus on key fields, don't overwhelm with all fields)
+   - Fields as class attributes (focus on key fields, don&apos;t overwhelm with all fields)
    - Relationships as connections between classes
    - Proper cardinality notation (1:1, 1:n, n:n)
 6. Use the CreatePlantUmlUrl action to convert the diagram into a viewable image.
-7. If the diagram is large, focus on the most relevant parts of the data model as mentioned by the user.
-        </description>
+7. If the diagram is large, focus on the most relevant parts of the data model as mentioned by the user.</description>
         <developerName>instruction_visualize0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_visualize0</masterLabel>
@@ -47,7 +43,5 @@ Always follow this process when using this topic:
     <language>en_US</language>
     <masterLabel>MyOrgButler: Understand Data Model</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>
-Use this topic when the user asks questions about understanding or visualizing the data model, relationships between objects, entity relationship diagrams, or how different parts of the Salesforce org are connected data-wise.
-    </scope>
+    <scope>Use this topic when the user asks questions about understanding or visualizing the data model, relationships between objects, entity relationship diagrams, or how different parts of the Salesforce org are connected data-wise.</scope>
 </GenAiPlugin>

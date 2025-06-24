@@ -4,21 +4,17 @@
         <developerName>utterance_config0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_config0</masterLabel>
-        <utterance>
-- Show me all installed packages
+        <utterance>- Show me all installed packages
 - What does this package do?
 - Visualize its core objects
 - Which active Flows do we have and what do they do?
 - Create me an Apex class that does X
 - How are our validation rules configured for Opportunity?
 - Modify this Apex trigger to include additional functionality
-- What custom fields do we have on the Account object?        
-        </utterance>
+- What custom fields do we have on the Account object?</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
-    <description>
-Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.
-    </description>
+    <description>Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.</description>
     <developerName>ExplainAndModifyMetadata</developerName>
     <genAiFunctions>
         <functionName>GetUserContext</functionName>
@@ -36,9 +32,8 @@ Use this topic when the user asks about Salesforce metadata components, requests
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>
-Always follow this process when using this topic:
-1. Run the GetUserContext action to understand the user's environment.
+        <description>Always follow this process when using this topic:
+1. Run the GetUserContext action to understand the user&apos;s environment.
 2. Identify which type of metadata the user is interested in (Apex classes, Flows, custom objects, etc.).
 3. Determine if this is a read operation (explain) or write operation (create/modify).
 4. For read operations:
@@ -58,8 +53,7 @@ Always follow this process when using this topic:
    - Include proper error handling and test coverage considerations
    - Suggest unit tests where appropriate
 8. If visualization would help explain complex metadata relationships, use the CreatePlantUmlUrl action.
-9. Always validate metadata changes for potential impacts to existing functionality.
-        </description>
+9. Always validate metadata changes for potential impacts to existing functionality.</description>
         <developerName>instruction_config0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_config0</masterLabel>
@@ -67,7 +61,5 @@ Always follow this process when using this topic:
     <language>en_US</language>
     <masterLabel>MyOrgButler: Explain and Modify Metadata</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>
-Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.
-    </scope>
+    <scope>Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.</scope>
 </GenAiPlugin>

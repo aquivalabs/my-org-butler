@@ -4,25 +4,15 @@
         <developerName>utterance_whatsmycur0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>utterance_whatsmycur0</masterLabel>
-        <utterance>
-- Create a task on this Opportunity for follow-up next week
+        <utterance>- Create a task on this Opportunity for follow-up next week
 - Update the description field on my current case
-- Search the web for this Account's address and populate the address fields
+- Search the web for this Account&apos;s address and populate the address fields
 - Create a new Contact for Company X with information from their website
 - Mark all my open tasks as completed
-- Create an Event with these team members for tomorrow        
-        </utterance>
+- Create an Event with these team members for tomorrow</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
-    <description>
-Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.
-    </description>
-    ### Actions used
-- Get User Context
-- Explore Org Schema
-- Query Records via SOQL
-- Call REST API
-- Search Web
+    <description>Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.</description>
     <developerName>CreateAndModifyData</developerName>
     <genAiFunctions>
         <functionName>GetUserContext</functionName>
@@ -37,13 +27,12 @@ Use this topic when the user requests to create new records, update existing rec
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>
-Always follow this process when using this topic:
-1. Run the GetUserContext action to understand the user's environment and permissions.
+        <description>Always follow this process when using this topic:
+1. Run the GetUserContext action to understand the user&apos;s environment and permissions.
 2. Clearly identify which object(s) the user wants to create or modify data for.
 3. If unsure about the object structure, use the Explore_Org_Schema action to verify object and field names.
 4. For data creation:
-   - Gather all necessary field values from the user's request
+   - Gather all necessary field values from the user&apos;s request
    - If information is missing, ask for clarification
    - Use the CallRestApi action to create the record
    - Provide confirmation with a link to the new record
@@ -52,14 +41,13 @@ Always follow this process when using this topic:
    - Confirm which fields should be modified
    - Use the CallRestApi action to update the record
    - Provide confirmation with details of what was changed
-6. For enrichment requests (e.g., "populate fields with web data"):
+6. For enrichment requests (e.g., &quot;populate fields with web data&quot;):
    - Use the SearchWeb action to gather the required information
    - Format the data appropriately for Salesforce fields
    - Use the CallRestApi action to update with the enriched data
 7. Always provide a clear success or error message after the operation.
 8. For bulk operations, consider performing them in batches and provide progress updates.
-9. If you encounter errors, try to interpret them, fix the issue, and retry before returning an error to the user.
-        </description>
+9. If you encounter errors, try to interpret them, fix the issue, and retry before returning an error to the user.</description>
         <developerName>instruction_availablet0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_availablet0</masterLabel>
@@ -67,7 +55,5 @@ Always follow this process when using this topic:
     <language>en_US</language>
     <masterLabel>MyOrgButler: Create and Modify Data</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>
-Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.
-    </scope>
+    <scope>Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.</scope>
 </GenAiPlugin>
