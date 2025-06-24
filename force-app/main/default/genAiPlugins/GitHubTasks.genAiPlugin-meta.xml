@@ -23,7 +23,7 @@
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>
-Use this topic fxor comprehensive GitHub repository insights. Get detailed commit history with file-level changes, compare commits or branches, manage issues and pull requests, and search across repositories. Provides rich context about code changes, including modified files and their content.
+Use this topic for comprehensive GitHub repository insights. Get detailed commit history with file-level changes, compare commits or branches, manage issues and pull requests, and search across repositories. Provides rich context about code changes, including modified files and their content.
     </description>
     <developerName>GitHubTasks</developerName>
     <genAiFunctions>
