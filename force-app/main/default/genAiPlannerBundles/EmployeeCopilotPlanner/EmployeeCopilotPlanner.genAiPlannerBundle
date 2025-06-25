@@ -15,6 +15,9 @@
     </genAiPlugins>  
     <genAiPlugins> 
         <genAiPluginName>ExplainAndModifyMetadata</genAiPluginName>
+    </genAiPlugins>  
+    <genAiPlugins> 
+        <genAiPluginName>AnswerCompanyQuestions</genAiPluginName>
     </genAiPlugins>
     <masterLabel>EmployeeCopilotPlanner</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>

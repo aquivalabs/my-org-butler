@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>
+- Use this function to search your company's internal knowledge base and get accurate answers based on internal documents and policies.
+- This function searches through vectorized company documents, policies, procedures, and other internal knowledge sources.
+- It returns AI-generated answers that are grounded in your organization's actual documentation.
+- Use this when you need information from internal company sources rather than the public web.
+    </description>
+    <invocationTarget>RetrieveVectorizeChunks</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <masterLabel>MyOrgButler: Search Company Knowledge</masterLabel>
+</GenAiFunction>

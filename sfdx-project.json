@@ -13,8 +13,13 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "June '25",
-      "versionNumber": "2.1.0.NEXT",
+      "versionNumber": "2.2.0.NEXT",
       "versionDescription": "",
+      "packageMetadataAccess": {
+        "permissionSets": [
+          "EinsteinGPTPromptTemplateManager"
+        ]
+      },
       "dependencies": [
         {
           "package": "app-foundations@LATEST"
@@ -80,6 +85,7 @@
     "my-org-butler@1.50.0-1": "04tVI000000LWw9YAG",
     "my-org-butler@1.51.0-1": "04tVI000000MgDVYA0",
     "my-org-butler@2.0.0-1": "04tVI000000MgqDYAS",
-    "my-org-butler@2.1.0-1": "04tVI000000MhSvYAK"
+    "my-org-butler@2.1.0-1": "04tVI000000MhSvYAK",
+    "my-org-butler@2.2.0-1": "04tVI000000N10DYAS"
   }
 }

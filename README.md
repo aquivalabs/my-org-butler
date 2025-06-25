@@ -17,27 +17,40 @@ Follow these steps to get My Org Butler running in your org:
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler v2.1** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MhSvYAK) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000MhSvYAK)
+2. **Install My Org Butler v2.2** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000N10DYAS) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000N10DYAS)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 
-4. **Configure Named Credentials** (Optional - only if you want GitHub integration and web search):
-   
-   **For GitHub Integration:**
-   - Get a [GitHub Personal Access Token](https://github.com/settings/tokens)
-   - Go to Setup → Named Credentials → `GitHubApi`
-   - Click on the linked External Credential `GitHubApi`
-   - Create a New Named Principal with parameter name `ApiKey` 
-   - Enter your GitHub token as the value
+4. **Turn on Optional Features** (choose which capabilities you want to enable):
 
-   **For Web Search:**
-   - Get a [free Tavily API key](https://tavily.com/)
-   - Go to Setup → Named Credentials → `TavilyApi`
-   - Click on the linked External Credential `TavilyApi`  
-   - Create a New Named Principal with parameter name `ApiKey`
-   - Enter your Tavily API key as the value
+   **Turn on GitHub Integration:**
+   1. Get a [GitHub Personal Access Token](https://github.com/settings/tokens)
+   2. Go to **Setup → Named Credentials → `GitHubApi`**
+   3. Click on the linked External Credential `GitHubApi`
+   4. Create a New Named Principal with parameter name `ApiKey` 
+   5. Enter your GitHub token as the value
 
-That's it! The Butler will be available in your Agentforce sidebar.
+   **Turn on Web Search:**
+   1. Get a [free Tavily API key](https://tavily.com/)
+   2. Go to **Setup → Named Credentials → `TavilyApi`**
+   3. Click on the linked External Credential `TavilyApi`  
+   4. Create a New Named Principal with parameter name `ApiKey`
+   5. Enter your Tavily API key as the value
+
+   **Turn on External Knowledge Search:**
+   1. Create a free account at [Vectorize.io](https://platform.vectorize.io/)
+   2. Build a RAG pipeline with your company documents (wikis, documentation, etc.)
+   3. Note your **Organization ID** and **Pipeline ID** from the Vectorize dashboard
+   4. Get your **API token** from the Vectorize backend
+   5. Go to **Setup → Named Credentials → `VectorizeApi`**
+   6. Click on the linked External Credential `VectorizeApi`
+   7. Create a New Named Principal with parameter name `Token`
+   8. Enter your Vectorize API token as the value
+   9. Go to **Setup → Custom Settings → Custom Setting → Manage**
+   10. Create a new record with Name: `VectorizeOrgId`, Value: your Organization ID
+   11. Create another record with Name: `VectorizePipelineId`, Value: your Pipeline ID
+
+That's it! The Butler will be available in your Agentforce sidebar and can now search your external knowledge sources.
 
 ### What it does
 
@@ -61,6 +74,7 @@ Built entirely on Agentforce with 9 functions and 5 plugins. The functions handl
 
 **Advanced Capabilities:**
 - Search the web for additional information using Tavily API
+- Search your company's external knowledge base using Vectorize (wikis, docs, etc.)
 - Create visual diagrams and documentation
 - Respect user permissions and ask for clarification when needed
 - Explain actions and self-correct errors

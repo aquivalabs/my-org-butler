@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <aiPluginUtterances>
+        <developerName>utterance_knowledge0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>utterance_knowledge0</masterLabel>
+        <utterance>- What is our company policy on remote work?
+- How do I submit an expense report?
+- What are the safety procedures for the lab?
+- Where can I find the employee handbook?
+- What is the process for requesting time off?
+- Tell me about our data privacy policy.
+- What is the Aquiva approach to Salesforce Security Review?
+- What is the Aquiva approach to Security Office Hours?
+- How many weeks of PTO can I take in one go?
+- What are Aquiva's security guidelines?
+- Tell me about Aquiva's development processes?
+- What are our company standards and procedures?
+- How does Aquiva handle security reviews?
+- What documentation do I need for security reviews?</utterance>
+    </aiPluginUtterances>
+    <canEscalate>false</canEscalate>
+    <description>Helps users find information from company knowledge sources including policies, procedures, handbooks, and internal documentation. Provides accurate answers grounded in your organization's actual documents.</description>
+    <developerName>AnswerCompanyQuestions</developerName>
+    <genAiFunctions>
+        <functionName>SearchCompanyKnowledge</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>ALWAYS follow this process when helping users find company information:
+
+1. **MANDATORY: Use Search Function**: For ANY question about company policies, procedures, processes, or internal information, you MUST first use the "Search Company Knowledge" function. Never rely on general knowledge - always search the internal knowledge base first.
+
+2. **Search Before Responding**: Before giving any answer about company-specific topics, always call the Search Company Knowledge function with the user's question.
+
+3. **Source Citation with Links**: ALWAYS cite the sources when providing answers, and ALWAYS include source links when available. Use the format: "According to [Document Name] ([Link]), here's what it says..." This allows users to access the full documentation.
+
+4. **Accuracy**: Provide detailed answers based on the retrieved information. If the search returns detailed information, use it fully rather than giving generic responses.
+
+5. **No Generic Responses**: Avoid saying "I couldn't find specific details" if the search function returns relevant information. Use the detailed information provided by the search function.
+
+6. **Link Preservation**: Always include any source links returned by the search function to give users access to the original documentation.
+
+7. **Company-Specific Focus**: This topic is specifically for internal company knowledge. Always prioritize searched internal information over general knowledge.</description>
+        <developerName>instruction_knowledge0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_knowledge0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>MyOrgButler: Answer Company Questions</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Use this topic when users ask questions about company policies, procedures, documentation, or any internal company information that would be found in knowledge bases, handbooks, or internal documents.</scope>
+</GenAiPlugin>

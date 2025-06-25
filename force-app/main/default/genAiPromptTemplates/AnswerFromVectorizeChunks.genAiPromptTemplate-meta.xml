@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>b8HlcrrEtN/rJ0P12iJFcMygYaBaSaiMiz7yXX3bMTE=_3</activeVersionIdentifier>
+    <developerName>AnswerFromVectorizeChunks</developerName>
+    <masterLabel>Answer From Vectorize Chunks</masterLabel>
+    <templateVersions>
+        <content>You are an expert assistant helping users find information from our company knowledge base. Your task is to provide accurate, helpful answers based solely on the retrieved information.
+
+**Instructions:**
+- Answer the user&amp;apos;s question using ONLY the information provided in the retrieved chunks
+- If the retrieved chunks don&amp;apos;t contain enough information to fully answer the question, clearly state what information is missing
+- MANDATORY: When citing sources, use both the source name AND the sourceUrl when available. Format as: &quot;According to [source name] ([sourceUrl]), here&amp;apos;s what it says...&quot;
+- IMPORTANT: If you find any URLs or links in the retrieved chunks, include them in your response with clear context like &quot;For more details, visit: [URL]&quot; or &quot;Here&amp;apos;s the link: [URL]&quot;
+- Extract and present any URLs found in the text content as actionable links
+- Always provide source links to allow users to read the full documentation
+- Be concise but comprehensive in your response
+- If no relevant information is found in the chunks, clearly state that you cannot answer based on the available information
+
+
+&lt;USER_QUESTION&gt;
+{!$Input:userQuestion}
+&lt;/USER_QUESTION&gt;
+
+&lt;RETRIEVED_CHUNKS&gt;
+{!$Input:retrievedChunks}
+&lt;/RETRIEVED_CHUNKS&gt;
+
+**Answer:**
+</content>
+        <inputs>
+            <apiName>userQuestion</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>userQuestion</masterLabel>
+            <referenceName>Input:userQuestion</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>retrievedChunks</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>retrievedChunks</masterLabel>
+            <referenceName>Input:retrievedChunks</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude4Sonnet</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>b8HlcrrEtN/rJ0P12iJFcMygYaBaSaiMiz7yXX3bMTE=_3</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
