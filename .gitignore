@@ -51,3 +51,6 @@ mdapi/
 
 # Exclude the metadata retrieval staging area
 retrieval-staging/
+
+# Environment variables
+.env
