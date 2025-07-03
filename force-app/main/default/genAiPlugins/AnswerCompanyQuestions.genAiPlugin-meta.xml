@@ -26,21 +26,28 @@
         <functionName>SearchCompanyKnowledge</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>ALWAYS follow this process when helping users find company information:
+            <description>ALWAYS follow this process when helping users find company information:
 
-1. **MANDATORY: Use Search Function**: For ANY question about company policies, procedures, processes, or internal information, you MUST first use the "Search Company Knowledge" function. Never rely on general knowledge - always search the internal knowledge base first.
+    1. **FIRST: Data Question Detection**: Before proceeding, check if the question might be about live Salesforce data:
+    - Does it ask about "status", "current", "recent", or specific projects/records?
+    - Does it mention specific names (like "WEX project", "Kaptio project")?
+    - Does it ask about "what's happening now" or time-sensitive information?
+    
+    If YES: Ask the user "This sounds like it could be about live data in Salesforce. Would you like me to search our documentation or query the actual records in Salesforce?"
 
-2. **Search Before Responding**: Before giving any answer about company-specific topics, always call the Search Company Knowledge function with the user's question.
+    2. **MANDATORY: Use Search Function**: For ANY question about company policies, procedures, processes, or internal information, you MUST first use the "Search Company Knowledge" function. Never rely on general knowledge - always search the internal knowledge base first.
 
-3. **Source Citation with Links**: ALWAYS cite the sources when providing answers, and ALWAYS include source links when available. Use the format: "According to [Document Name] ([Link]), here's what it says..." This allows users to access the full documentation.
+    3. **Search Before Responding**: Before giving any answer about company-specific topics, always call the Search Company Knowledge function with the user's question.
 
-4. **Accuracy**: Provide detailed answers based on the retrieved information. If the search returns detailed information, use it fully rather than giving generic responses.
+    4. **Source Citation with Links**: ALWAYS cite the sources when providing answers, and ALWAYS include source links when available. Use the format: "According to [Document Name] ([Link]), here's what it says..." This allows users to access the full documentation.
 
-5. **No Generic Responses**: Avoid saying "I couldn't find specific details" if the search function returns relevant information. Use the detailed information provided by the search function.
+    5. **Accuracy**: Provide detailed answers based on the retrieved information. If the search returns detailed information, use it fully rather than giving generic responses.
 
-6. **Link Preservation**: Always include any source links returned by the search function to give users access to the original documentation.
+    6. **No Generic Responses**: Avoid saying "I couldn't find specific details" if the search function returns relevant information. Use the detailed information provided by the search function.
 
-7. **Company-Specific Focus**: This topic is specifically for internal company knowledge. Always prioritize searched internal information over general knowledge.</description>
+    7. **Link Preservation**: Always include any source links returned by the search function to give users access to the original documentation.
+
+    8. **Company-Specific Focus**: This topic is specifically for internal company knowledge. Always prioritize searched internal information over general knowledge.</description>
         <developerName>instruction_knowledge0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_knowledge0</masterLabel>

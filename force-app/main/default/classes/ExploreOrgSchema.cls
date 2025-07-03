@@ -34,7 +34,7 @@ global with sharing class ExploreOrgSchema {
         for(String objectName : globalDescribe.keySet()) {
             Schema.DescribeSObjectResult describeResult = globalDescribe.get(objectName).getDescribe();
             if(describeResult.isCustom()) {
-                lines.add(describeResult.getName());
+                lines.add(describeResult.getName() + ' (' + describeResult.getLabel() + ')');
             }
         }
         lines.sort();
@@ -52,13 +52,13 @@ global with sharing class ExploreOrgSchema {
                 Schema.DescribeSObjectResult describe = sObjectType.getDescribe();
                 
                 lines.add('Object: ' + objectName + ' (' + describe.getLabel() + ')');
-                lines.add('Field Name\tType\tReferences\tRelationship Name\tPicklist Values');
+                lines.add('Field Name (Label)\tType\tReferences\tRelationship Name\tPicklist Values');
                 lines.add('-------------------------------------------');
                 
                 List<String> fieldLines = new List<String>();
                 for(Schema.SObjectField field : describe.fields.getMap().values()) {
                     Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                    String line = fieldDescribe.getName() + '\t' + fieldDescribe.getType().name();
+                    String line = fieldDescribe.getName() + ' (' + fieldDescribe.getLabel() + ')\t' + fieldDescribe.getType().name();
                     
                     if(fieldDescribe.getType() == Schema.DisplayType.REFERENCE) {
                         List<String> refs = new List<String>();

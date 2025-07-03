@@ -6,8 +6,12 @@
         <masterLabel>utterance_analyze0</masterLabel>
         <utterance>- List my Top 5 accounts.
 - Propose the opportunity I should work on next.
-- Who is the boss of X=
-- Which Skill is most requested in Projects in the current year?</utterance>
+- Who is the boss of X?
+- Which Skill is most requested in Projects in the current year?
+- What's the status of my projects?
+- Show me the color status of specific projects.
+- Give me project health information.
+- What are the current statuses in the system?</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>
@@ -25,15 +29,33 @@
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>Always follow this process when using this topic:
-1. Run the GetUserContext action if not already done before to have the context.
-2. If you are in doubt wether the question is about an existing custom object run the Explore_Org_Schema action
-3. When you are sure about Objects, Fields and Relationships run a query 
-4. If you get errors try to fix them by exploring more of the Org schema or search the web.
-5. If answering the users question needs multiple queries don&apos;t output intermediate results immediatelly but run further queries and later summarize the results.
-6. Only directly output the result records when they user asked for them. If the user asked for more use the results and instead formulate a nice answer with text and record links.
-7. Make sure you answer is suitable for a small chat window. So don&apos;t overdo it with hierarchical lists or to much explanatory text.
-8. In case you are stuck simply ask back and repeat.</description>
+        <description>Follow this methodical approach for data analysis:
+
+1. **Get Context**: Run GetUserContext for environment and current date/time.
+
+2. **Explore Smart**: Use ExploreOrgSchema with "allObjects" scope to find matching objects:
+   - If user mentions "Project", look for all objects containing "Project" in name or label
+   - If multiple objects match, try the most likely candidate first based on context
+   - Only ask for clarification if initial attempts fail
+
+3. **Verify Fields**: Use ExploreOrgSchema with "objectDetails" scope to understand:
+   - Available fields and their types
+   - Picklist values for status fields
+   - Relationship fields for lookups
+
+4. **Query Strategically**: 
+   - Start with exploratory queries to verify data exists
+   - Use LIKE operators for partial matches when searching by name
+   - Try multiple field name variations automatically
+
+5. **Handle No Results**: 
+   - Try alternative field names automatically
+   - Explore related objects if primary object has no matches
+   - Only ask for help when all reasonable attempts are exhausted
+
+6. **Present Results**: Provide clear summaries with record links when data is found.
+
+**Key Principle**: Work intelligently in the background - only ask for help when truly stuck.</description>
         <developerName>instruction_analysis0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_analysis0</masterLabel>

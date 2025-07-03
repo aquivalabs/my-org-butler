@@ -35,7 +35,7 @@ private class ExploreOrgSchema_Test {
         
         String nameLine = null;
         for(String line : lines) {
-            if(line.startsWith('Name\t')) {
+            if(line.startsWith('Name (')) {
                 nameLine = line;
                 break;
             }
@@ -61,7 +61,7 @@ private class ExploreOrgSchema_Test {
         
         String accountIdLine = null;
         for(String line : lines) {
-            if(line.startsWith('AccountId\t')) {
+            if(line.startsWith('AccountId (')) {
                 accountIdLine = line;
                 break;
             }
@@ -124,7 +124,7 @@ private class ExploreOrgSchema_Test {
         
         String industryLine = null;
         for(String line : lines) {
-            if(line.startsWith('Industry\t')) {
+            if(line.startsWith('Industry (')) {
                 industryLine = line;
                 break;
             }
