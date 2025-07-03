@@ -241,7 +241,7 @@
         <includeInPrompt>false</includeInPrompt>
         <label>Contact Id</label>
     </contextVariables>
-    <description>TBD</description>
+    <description>Assist Salesforce users directly in their flow of work. My Org Butler answers questions about data, metadata, and org setup, connects to GitHub for dev insights, and taps into external knowledge via vector search.</description>
     <richContentEnabled>true</richContentEnabled>
     <type>InternalCopilot</type>
 </BotTemplate>
