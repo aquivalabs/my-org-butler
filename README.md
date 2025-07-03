@@ -17,11 +17,13 @@ Follow these steps to get My Org Butler running in your org:
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler v2.2** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000N10DYAS) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000N10DYAS)
+2. **Install My Org Butler v2.3** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000NLerYAG) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000NLerYAG)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 
-4. **Turn on Optional Features** (choose which capabilities you want to enable):
+4. **Create an Agent from Template** - After installing the package, create a new agent from the `My Org Butler` template. See [Salesforce Help](https://help.salesforce.com/s/articleView?id=ai.agent_employee_agent_setup.htm&type=5) for instructions.
+
+5. **Turn on Optional Features** (choose which capabilities you want to enable):
 
    **Turn on GitHub Integration:**
    1. Get a [GitHub Personal Access Token](https://github.com/settings/tokens)

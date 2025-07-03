@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
-    <name>Multiple Topics</name>
-    <subjectName>Copilot_for_Salesforce</subjectName>
+    <name>Regression Evaluations</name>
+    <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
     <testCase>
