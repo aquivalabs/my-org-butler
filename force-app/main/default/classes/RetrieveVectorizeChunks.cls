@@ -26,7 +26,7 @@ global with sharing class RetrieveVectorizeChunks {
         Map<String, Object> body = new Map<String, Object>{ 
             'question' => query,
             'rerank' => true,
-            'numResults' => 5
+            'numResults' => 10
         };
         request.setBody(JSON.serialize(body));
 
@@ -63,19 +63,15 @@ global with sharing class RetrieveVectorizeChunks {
     }
 
     private static String getSourceUrl(Map<String, Object> docMap) {
-        String result = '';
+        Map<String, String> urlByOrigin = new Map<String, String>{
+            'google-drive' => 'https://docs.google.com/file/d/',
+            'confluence-bucket' => 'https://aquiva.atlassian.net/wiki/spaces/STAN/pages/'
+        };
 
         String origin = (String) docMap.get('origin');
         String sourceId = (String) docMap.get('source');
-        
-        if(origin == 'google-drive') {
-            result = 'https://docs.google.com/file/d/';
-        } 
-        else if (origin == 'confluence-bucket') {
-            result = 'https://aquiva.atlassian.net/wiki/spaces/STAN/pages/';
-        } 
 
-        return result + sourceId;
+        return urlByOrigin.get(origin) + sourceId;
     }
 
     private static String generateAnswer(String userQuestion, List<Chunk> chunks) {

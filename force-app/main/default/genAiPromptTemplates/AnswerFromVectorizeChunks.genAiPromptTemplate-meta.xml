@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_3</activeVersionIdentifier>
+    <activeVersionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_4</activeVersionIdentifier>
     <developerName>AnswerFromVectorizeChunks</developerName>
     <masterLabel>Answer From Vectorize Chunks</masterLabel>
     <templateVersions>
@@ -60,9 +60,9 @@ could produce this answer:
             <referenceName>Input:userQuestion</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultGPT41</primaryModel>
+        <primaryModel>sfdc_ai__DefaultVertexAIGemini25Flash001</primaryModel>
         <status>Published</status>
-        <versionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_3</versionIdentifier>
+        <versionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_4</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>
