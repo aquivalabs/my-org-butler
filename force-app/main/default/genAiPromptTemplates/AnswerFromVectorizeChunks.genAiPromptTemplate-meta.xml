@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>DlYYdki6i7PdOCzTpkK9UDIG/E6KNvI7oG1hPVGtM3E=_6</activeVersionIdentifier>
+    <activeVersionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_3</activeVersionIdentifier>
     <developerName>AnswerFromVectorizeChunks</developerName>
     <masterLabel>Answer From Vectorize Chunks</masterLabel>
     <templateVersions>
@@ -47,22 +47,22 @@ could produce this answer:
 &lt;/RETRIEVED_CHUNKS&gt;
 </content>
         <inputs>
-            <apiName>userQuestion</apiName>
-            <definition>primitive://String</definition>
-            <masterLabel>userQuestion</masterLabel>
-            <referenceName>Input:userQuestion</referenceName>
-            <required>true</required>
-        </inputs>
-        <inputs>
             <apiName>retrievedChunks</apiName>
             <definition>primitive://String</definition>
             <masterLabel>retrievedChunks</masterLabel>
             <referenceName>Input:retrievedChunks</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultGPT41Mini</primaryModel>
+        <inputs>
+            <apiName>userQuestion</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>userQuestion</masterLabel>
+            <referenceName>Input:userQuestion</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT41</primaryModel>
         <status>Published</status>
-        <versionIdentifier>DlYYdki6i7PdOCzTpkK9UDIG/E6KNvI7oG1hPVGtM3E=_6</versionIdentifier>
+        <versionIdentifier>q7MyTfwMuUCCWfGws2IzSJ9TWeku2X0yTr1X0oEMjzM=_3</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

@@ -52,7 +52,7 @@ global with sharing class RetrieveVectorizeChunks {
                 Chunk chunk = new Chunk();
                 chunk.text = (String) docMap.get('text');
                 chunk.source = (String) docMap.get('source_display_name');
-                chunk.sourceUrl = 'https://aquiva.atlassian.net/wiki/spaces/ENG/pages/' + docMap.get('source');
+                chunk.sourceUrl = getSourceUrl(docMap);
                 chunk.relevancy = (Decimal) docMap.get('relevancy');
 
                 result.add(chunk);
@@ -60,6 +60,22 @@ global with sharing class RetrieveVectorizeChunks {
         }
         
         return result;
+    }
+
+    private static String getSourceUrl(Map<String, Object> docMap) {
+        String result = '';
+
+        String origin = (String) docMap.get('origin');
+        String sourceId = (String) docMap.get('source');
+        
+        if(origin == 'google-drive') {
+            result = 'https://docs.google.com/file/d/';
+        } 
+        else if (origin == 'confluence-bucket') {
+            result = 'https://aquiva.atlassian.net/wiki/spaces/STAN/pages/';
+        } 
+
+        return result + sourceId;
     }
 
     private static String generateAnswer(String userQuestion, List<Chunk> chunks) {
