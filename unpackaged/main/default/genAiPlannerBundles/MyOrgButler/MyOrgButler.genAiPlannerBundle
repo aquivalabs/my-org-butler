@@ -22,6 +22,9 @@
     <genAiPlugins>
         <genAiPluginName>UnderstandDataModel</genAiPluginName>
     </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>SearchTheWeb</genAiPluginName>
+    </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
 </GenAiPlannerBundle>
