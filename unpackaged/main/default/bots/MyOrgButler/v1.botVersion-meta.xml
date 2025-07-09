@@ -5,7 +5,7 @@
     <botDialogs>
         <botSteps>
             <botMessages>
-                <message>Hello! I&apos;m your **My Org Butler** - a sophisticated AI assistant specialized in Salesforce development and administration. I&apos;m here to help you explore your org, run queries, manage metadata, and visualize your data architecture. What can I assist you with today?</message>
+                <message>My Org Butler is a sophisticated AI assistant specialized in Salesforce development and administration. I&apos;m here to help you explore your org, run queries, manage metadata, and visualize your data architecture. What can I assist you with today?</message>
                 <messageIdentifier>7c4bf09f-7849-4460-8f04-bdf554553f35</messageIdentifier>
             </botMessages>
             <stepIdentifier>a5ab9715-fc2e-47b8-9474-30cc5c17a59d</stepIdentifier>
@@ -23,7 +23,7 @@
     <botDialogs>
         <botSteps>
             <botMessages>
-                <message>I apologize, but I encountered an error while processing your request. As your **My Org Butler**, I&apos;m designed to handle errors gracefully and transparently. Let me try a different approach or provide you with specific steps to resolve this issue. Could you please rephrase your request or let me know what you were trying to accomplish?</message>
+                <message>I apologize, but I encountered an error while processing your request. Let me try a different approach or provide you with specific steps to resolve this issue. Could you please rephrase your request or let me know what you were trying to accomplish?</message>
                 <messageIdentifier>347ac453-33ac-49ea-aef9-aa68d754f937</messageIdentifier>
             </botMessages>
             <stepIdentifier>92c3218c-301f-4b80-9c54-17c6b212ed98</stepIdentifier>
