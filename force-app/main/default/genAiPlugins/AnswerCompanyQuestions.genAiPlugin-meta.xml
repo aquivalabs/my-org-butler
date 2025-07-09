@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <aiPluginUtterances>
-        <developerName>utterance_knowledge0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>utterance_knowledge0</masterLabel>
+        <developerName>utterance_whatisourc0</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_whatisourc0</masterLabel>
         <utterance>- What is our company policy on remote work?
 - How do I submit an expense report?
 - What are the safety procedures for the lab?
@@ -13,47 +13,72 @@
 - What is the Aquiva approach to Salesforce Security Review?
 - What is the Aquiva approach to Security Office Hours?
 - How many weeks of PTO can I take in one go?
-- What are Aquiva's security guidelines?
-- Tell me about Aquiva's development processes?
+- What are Aquiva&apos;s security guidelines?
+- Tell me about Aquiva&apos;s development processes?
 - What are our company standards and procedures?
 - How does Aquiva handle security reviews?
 - What documentation do I need for security reviews?</utterance>
     </aiPluginUtterances>
     <canEscalate>false</canEscalate>
-    <description>Helps users find information from company knowledge sources including policies, procedures, handbooks, and internal documentation. Provides accurate answers grounded in your organization's actual documents.</description>
+    <description>Helps users find information from company knowledge sources including policies, procedures, handbooks, and internal documentation. Provides accurate answers grounded in your organization&apos;s actual documents (Google Drive and Confluence).</description>
     <developerName>AnswerCompanyQuestions</developerName>
     <genAiFunctions>
         <functionName>SearchCompanyKnowledge</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-            <description>ALWAYS follow this process when helping users find company information:
+        <description>ALWAYS follow this process when helping users find company information:
 
-    1. **FIRST: Data Question Detection**: Before proceeding, check if the question might be about live Salesforce data:
-    - Does it ask about "status", "current", "recent", or specific projects/records?
-    - Does it mention specific names (like "WEX project", "Kaptio project")?
-    - Does it ask about "what's happening now" or time-sensitive information?
-    
-    If YES: Ask the user "This sounds like it could be about live data in Salesforce. Would you like me to search our documentation or query the actual records in Salesforce?"
+1. **FIRST: Data Question Detection**
+   Before proceeding, check if the question might be about **live Salesforce data**:
 
-    2. **MANDATORY: Use Search Function**: For ANY question about company policies, procedures, processes, or internal information, you MUST first use the "Search Company Knowledge" function. Never rely on general knowledge - always search the internal knowledge base first.
+   * Does it ask about “status”, “current”, “recent”, or specific projects/records?
+   * Does it mention specific project names 
+   * Does it ask about “what’s happening now” or other time-sensitive info?
 
-    3. **Search Before Responding**: Before giving any answer about company-specific topics, always call the Search Company Knowledge function with the user's question.
+   **If YES**:
+   Respond: *“This sounds like it could be about live data in Salesforce. Would you like me to search our documentation or query the actual records in Salesforce?”*
+   Then exit this topic.
 
-    4. **Source Citation with Links**: ALWAYS cite the sources when providing answers, and ALWAYS include source links when available. Use the format: "According to [Document Name] ([Link]), here's what it says..." This allows users to access the full documentation.
+2. **MANDATORY: Use Search Function**
+   For **any** question about company policies, procedures, standards, templates, or internal processes, you **must** use the `Search Company Knowledge` function.
+   This includes:
 
-    5. **Accuracy**: Provide detailed answers based on the retrieved information. If the search returns detailed information, use it fully rather than giving generic responses.
+   * Google Drive (project folders, SOWs, templates, presentations)
+   * Confluence (security reviews, engineering guidelines, internal docs)
 
-    6. **No Generic Responses**: Avoid saying "I couldn't find specific details" if the search function returns relevant information. Use the detailed information provided by the search function.
+3. **Search Before Responding**
+   Never answer based on assumptions. **Always** perform the internal search before replying.
 
-    7. **Link Preservation**: Always include any source links returned by the search function to give users access to the original documentation.
+4. **Source Citation with Links**
+   When giving answers, always include source context in this format:
+   *“According to \[Document Name] (\[Link])…”*
+   Only omit the link if none is returned.
 
-    8. **Company-Specific Focus**: This topic is specifically for internal company knowledge. Always prioritize searched internal information over general knowledge.</description>
-        <developerName>instruction_knowledge0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_knowledge0</masterLabel>
+5. **Accuracy**
+   Use the most relevant and detailed parts of the search results. Avoid vague summaries. Synthesize multiple chunks if needed.
+
+6. **No Generic Responses**
+   Avoid:
+
+   * “I couldn’t find anything specific.”
+   * “I don’t know what GDrive or SOW means.”
+   * “Should I check Salesforce?” (unless step 1 applies)
+
+   If search returns anything relevant — use it.
+
+7. **Link Preservation**
+   Always include all source links provided by the search function.
+
+8. **Company-Specific Focus**
+   This topic is limited to **internal company knowledge**.
+   Do **not** use general knowledge or large language model guesses.
+   Stay grounded in actual retrieved content from Confluence and GDrive.</description>
+        <developerName>instruction_alwaysfoll0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_alwaysfoll0</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Answer Company Questions</masterLabel>
+    <masterLabel>MyOrgButler: Answer from internal document sources</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Use this topic when users ask questions about company policies, procedures, documentation, or any internal company information that would be found in knowledge bases, handbooks, or internal documents.</scope>
+    <scope>Use this topic when users ask questions about company policies, procedures, engineering standards, documentation, or any internal company information found in Confluence, Google Drive (e.g. project folders, SOWs), or other internal sources. This topic does not query Salesforce directly When in doubt which source is aimed for ask the user.</scope>
 </GenAiPlugin>
