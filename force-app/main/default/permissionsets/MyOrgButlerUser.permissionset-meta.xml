@@ -48,6 +48,10 @@
         <apexClass>SessionId</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customSettingAccesses>
+        <enabled>true</enabled>
+        <name>CustomSetting__c</name>
+    </customSettingAccesses>
     <externalCredentialPrincipalAccesses>
         <enabled>true</enabled>
         <externalCredentialPrincipal>aquiva_os__GitHubApi-ApiKey</externalCredentialPrincipal>
