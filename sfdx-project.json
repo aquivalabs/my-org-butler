@@ -13,7 +13,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "July '25",
-      "versionNumber": "2.6.0.NEXT",
+      "versionNumber": "2.7.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
@@ -90,6 +90,7 @@
     "my-org-butler@2.3.0-1": "04tVI000000NLerYAG",
     "my-org-butler@2.4.0-1": "04tVI000000NM1RYAW",
     "my-org-butler@2.5.0-1": "04tVI000000NM4fYAG",
-    "my-org-butler@2.6.0-1": "04tVI000000NTULYA4"
+    "my-org-butler@2.6.0-1": "04tVI000000NTULYA4",
+    "my-org-butler@2.7.0-1": "04tVI000000NV1VYAW"
   }
 }

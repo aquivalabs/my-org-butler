@@ -1,10 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
-    <agentType>AgentforceEmployeeAgent</agentType>
-    <botMlDomain>
+<BotTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>My Org Butler</masterLabel>
+    <conversationLanguages>en_US</conversationLanguages>
+    <mainMenuDialog>Main_Menu</mainMenuDialog>
+    <botDialogs>
+        <developerName>Main_Menu</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Main_Menu</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>My Org Butler is a sophisticated AI assistant specialized in Salesforce development and administration. I&apos;m here to help you explore your org, run queries, manage metadata, and visualize your data architecture. What can I assist you with today?</message>
+                <messageIdentifier>7c4bf09f-7849-4460-8f04-bdf554553f35</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>a5ab9715-fc2e-47b8-9474-30cc5c17a59d</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>a65fcef9-2747-4d55-a638-cb7eb49a3773</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Welcome</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Welcome</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Salesforce Application Name.</description>
+        <developerName>currentAppName</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentAppName</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The API name of the Salesforce object (such as Account or Opportunity) associated with the record the user wants to interact with. Do not use this if the user is already talking about another object in the conversation.</description>
+        <developerName>currentObjectApiName</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentObjectApiName</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>Type of Salesforce Page.</description>
+        <developerName>currentPageType</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentPageType</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>The ID of the record on the user&apos;s screen. It may not relate to the user&apos;s input. Only use this if the user input mentions &apos;this&apos;, &apos;current&apos;, &apos;the record&apos;, etc. If in doubt, don&apos;t use it.</description>
+        <developerName>currentRecordId</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentRecordId</label>
+        <visibility>External</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>This variable may also be referred to as VerifiedCustomerId</description>
+        <developerName>VerifiedCustomerId</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>VerifiedCustomerId</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <entryDialog>Welcome</entryDialog>
+    <mlDomain>
         <label>My Org Butler</label>
-        <name>MyOrgButler</name>
-    </botMlDomain>
+        <name>MyOrgButler_v2_Template</name>
+    </mlDomain>
+    <agentType>AgentforceEmployeeAgent</agentType>
     <contextVariables>
         <contextVariableMappings>
             <SObjectType>MessagingEndUser</SObjectType>
@@ -174,9 +242,6 @@
         <label>Routable Id</label>
     </contextVariables>
     <description>TBD</description>
-    <label>My Org Butler</label>
-    <logPrivateConversationData>false</logPrivateConversationData>
     <richContentEnabled>true</richContentEnabled>
-    <sessionTimeout>0</sessionTimeout>
     <type>InternalCopilot</type>
-</Bot>
+</BotTemplate>
