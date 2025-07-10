@@ -173,7 +173,7 @@
         <includeInPrompt>true</includeInPrompt>
         <label>Routable Id</label>
     </contextVariables>
-    <description>TBD</description>
+    <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</description>
     <label>My Org Butler</label>
     <logPrivateConversationData>false</logPrivateConversationData>
     <richContentEnabled>true</richContentEnabled>

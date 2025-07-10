@@ -27,5 +27,5 @@
     </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
-    <botTemplate>MyOrgButler_v2_Template</botTemplate>
+    <botTemplate>MyOrgButler_v3_Template</botTemplate>
 </GenAiPlannerBundle>
