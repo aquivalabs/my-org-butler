@@ -7,11 +7,11 @@ global with sharing class QueryRecordsWithSoql {
         Output output = new Output();
 
         try {
-            List<SObject> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);
-            output.resultRecords = result;
+            List<Object> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);
+            output.resultOrException = JSON.serialize(result);
         }
         catch(Exception ex) {
-            output.queryError = ex.getMessage();
+            output.resultOrException = JSON.serialize(ex);
         }
 
         return new List<Output>{ output };
@@ -25,10 +25,7 @@ global with sharing class QueryRecordsWithSoql {
     }
 
     global class Output {
-        @InvocableVariable(label='Result Records as List of SObjects' description='The result of the SOQL query as List of SObjects')
-        global List<SObject> resultRecords;
-
-        @InvocableVariable(label='SOQL Error' description='Full message of an error or exception to learn and correct the query.')
-        global String queryError;
+        @InvocableVariable(label='Result or Exception JSON' description='JSON array of result records or aggregate results on success, or exception object on error')
+        global String resultOrException;
     }
 }

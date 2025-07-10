@@ -1,28 +1,12 @@
 {
   "unevaluatedProperties" : false,
   "properties" : {
-    "queryError" : {
-      "title" : "SOQL Error",
-      "description" : "Full message of an error or exception to learn and correct the query.",
+    "resultOrException" : {
+      "title" : "Result or Exception JSON",
+      "description" : "JSON array of result records or aggregate results on success, or exception object on error",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
-      "copilotAction:isUsedByPlanner" : true,
-      "copilotAction:useHydratedPrompt" : false
-    },
-    "resultRecords" : {
-      "title" : "Result Records as List of SObjects",
-      "description" : "The result of the SOQL query as List of SObjects",
-      "maxItems" : 2000,
-      "items" : {
-        "lightning:type" : "lightning__recordInfoType",
-        "lightning:sObjectInfo" : {
-          "apiName" : "U__resultRecords"
-        }
-      },
-      "lightning:type" : "lightning__listType",
-      "lightning:isPII" : false,
-      "copilotAction:isDisplayable" : true,
       "copilotAction:isUsedByPlanner" : true,
       "copilotAction:useHydratedPrompt" : false
     }

@@ -21,6 +21,9 @@
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
+        <functionName>QueryRecordsWithSoql</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
         <functionName>CallRestApi</functionName>
     </genAiFunctions>
     <genAiFunctions>
@@ -31,23 +34,24 @@
 1. Run the GetUserContext action to understand the user&apos;s environment and permissions.
 2. Clearly identify which object(s) the user wants to create or modify data for.
 3. If unsure about the object structure, use the Explore_Org_Schema action to verify object and field names.
-4. For data creation:
+4. For data queries, always use QueryRecordsWithSoql - never use CallRestApi for queries.
+5. For data creation:
    - Gather all necessary field values from the user&apos;s request
    - If information is missing, ask for clarification
    - Use the CallRestApi action to create the record
    - Provide confirmation with a link to the new record
-5. For data updates:
-   - First query the existing record(s) to understand current state
+6. For data updates:
+   - First use QueryRecordsWithSoql to query the existing record(s) to understand current state
    - Confirm which fields should be modified
    - Use the CallRestApi action to update the record
    - Provide confirmation with details of what was changed
-6. For enrichment requests (e.g., &quot;populate fields with web data&quot;):
+7. For enrichment requests (e.g., &quot;populate fields with web data&quot;):
    - Use the SearchWeb action to gather the required information
    - Format the data appropriately for Salesforce fields
    - Use the CallRestApi action to update with the enriched data
-7. Always provide a clear success or error message after the operation.
-8. For bulk operations, consider performing them in batches and provide progress updates.
-9. If you encounter errors, try to interpret them, fix the issue, and retry before returning an error to the user.</description>
+8. Always provide a clear success or error message after the operation.
+9. For bulk operations, consider performing them in batches and provide progress updates.
+10. If you encounter errors, try to interpret them, fix the issue, and retry before returning an error to the user.</description>
         <developerName>instruction_availablet0</developerName>
         <language xsi:nil="true"/>
         <masterLabel>instruction_availablet0</masterLabel>
