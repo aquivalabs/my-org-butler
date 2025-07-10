@@ -72,4 +72,8 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ExecutePromptTemplates</name>
+    </userPermissions>
 </PermissionSet>
