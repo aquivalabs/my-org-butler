@@ -11,7 +11,13 @@ global with sharing class QueryRecordsWithSoql {
             output.resultOrException = JSON.serialize(result);
         }
         catch(Exception ex) {
-            output.resultOrException = JSON.serialize(ex);
+            // Create a serializable exception representation
+            Map<String, Object> exceptionInfo = new Map<String, Object>{
+                'message' => ex.getMessage(),
+                'typeName' => ex.getTypeName(),
+                'stackTrace' => ex.getStackTraceString()
+            };
+            output.resultOrException = JSON.serialize(exceptionInfo);
         }
 
         return new List<Output>{ output };

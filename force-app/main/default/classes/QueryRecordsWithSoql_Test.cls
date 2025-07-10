@@ -44,6 +44,7 @@ public with sharing class QueryRecordsWithSoql_Test {
         // Parse JSON to verify exception structure
         Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(output.resultOrException);
         System.assert(exceptionResult.containsKey('message'), 'Should contain message key');
+        System.assert(exceptionResult.containsKey('typeName'), 'Should contain typeName key');
         System.assert(((String)exceptionResult.get('message')).contains('InvalidField'), 'Error should mention the invalid field');
     }
     
