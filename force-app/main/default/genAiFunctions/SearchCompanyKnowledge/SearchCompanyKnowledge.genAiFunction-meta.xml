@@ -5,6 +5,18 @@
 - This function searches through vectorized company documents, policies, procedures, and other internal knowledge sources.
 - It returns AI-generated answers that are grounded in your organization's actual documentation.
 - Use this when you need information from internal company sources rather than the public web.
+
+IMPORTANT: When calling this function, do NOT simply pass the user's last utterance as the question. Instead:
+1. Analyze the entire conversation context and previous exchanges
+2. Reformulate the question to be self-contained and contextually complete
+3. Include relevant background information from the conversation history
+4. Ensure the question clearly states what information is being sought
+5. Make the question specific enough for effective vector search
+
+For example:
+- If user asks "What about remote work?" after discussing employee policies, reformulate to "What are the company's remote work policies and procedures?"
+- If user asks "How do I do that?" after discussing expense reports, reformulate to "What is the process for submitting expense reports?"
+- Always provide context so the search can find the most relevant internal documents.
     </description>
     <invocationTarget>RetrieveVectorizeChunks</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

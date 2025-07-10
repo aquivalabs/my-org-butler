@@ -2,7 +2,7 @@
 @SuppressWarnings('PMD.AvoidGlobalMethod')
 global with sharing class RetrieveVectorizeChunks {
 
-    @InvocableMethod(label='MyOrgButler: Search External Knowledge' description='Searches company knowledge sources and returns an AI-generated answer.')
+    @InvocableMethod(label='MyOrgButler: Search External Knowledge' description='Use Vector Search to find relevant internal document chunks to answer users question.')
     global static List<Answer> execute(List<Question> questions) {
         Answer result = new Answer();
         result.content = getAnswer(questions[0].content);
