@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>
-- Use this helper action whenever you need information that you dont have.
-- It leverage the Tavily API which does a natural language query to the web and return with a single natural language answer.
-    </description>
+    <description>- Use this helper action whenever you need information that you dont have.
+- It leverage the Tavily API which does a natural language query to the web and return with a single natural language answer.</description>
     <invocationTarget>SearchWeb</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>

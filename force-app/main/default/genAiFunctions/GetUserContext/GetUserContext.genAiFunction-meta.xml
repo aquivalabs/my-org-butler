@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>
-- Use this action to get important user specific information like User Id, Name, Timezone or Org-specific data as Org id and Base URL of the Org
-- User and Time specific informations are needed to e.g. create query filtered by the user or that a relative to time information like "last week" "my accounts".
-- The Org Base URL is needed whenever you construct Links to records or pages in the Org.
-    </description>
+    <description>- Use this action to get important user specific information like User Id, Name, Timezone or Org-specific data as Org id and Base URL of the Org
+- User and Time specific informations are needed to e.g. create query filtered by the user or that a relative to time information like &quot;last week&quot; &quot;my accounts&quot;.
+- The Org Base URL is needed whenever you construct Links to records or pages in the Org.</description>
     <invocationTarget>GetUserContext</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>

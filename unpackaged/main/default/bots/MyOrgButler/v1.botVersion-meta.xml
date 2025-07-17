@@ -45,11 +45,11 @@
     </conversationDefinitionPlanners>
     <conversationVariables>
         <dataType>Text</dataType>
-        <description>Salesforce Application Name.</description>
-        <developerName>currentAppName</developerName>
-        <includeInPrompt>true</includeInPrompt>
-        <label>currentAppName</label>
-        <visibility>External</visibility>
+        <description>This variable may also be referred to as VerifiedCustomerId</description>
+        <developerName>VerifiedCustomerId</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>VerifiedCustomerId</label>
+        <visibility>Internal</visibility>
     </conversationVariables>
     <conversationVariables>
         <dataType>Text</dataType>
@@ -61,10 +61,10 @@
     </conversationVariables>
     <conversationVariables>
         <dataType>Text</dataType>
-        <description>Type of Salesforce Page.</description>
-        <developerName>currentPageType</developerName>
+        <description>Salesforce Application Name.</description>
+        <developerName>currentAppName</developerName>
         <includeInPrompt>true</includeInPrompt>
-        <label>currentPageType</label>
+        <label>currentAppName</label>
         <visibility>External</visibility>
     </conversationVariables>
     <conversationVariables>
@@ -77,11 +77,11 @@
     </conversationVariables>
     <conversationVariables>
         <dataType>Text</dataType>
-        <description>This variable may also be referred to as VerifiedCustomerId</description>
-        <developerName>VerifiedCustomerId</developerName>
-        <includeInPrompt>false</includeInPrompt>
-        <label>VerifiedCustomerId</label>
-        <visibility>Internal</visibility>
+        <description>Type of Salesforce Page.</description>
+        <developerName>currentPageType</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>currentPageType</label>
+        <visibility>External</visibility>
     </conversationVariables>
     <copilotPrimaryLanguage>en_US</copilotPrimaryLanguage>
     <copilotSecondaryLanguages>all_languages</copilotSecondaryLanguages>

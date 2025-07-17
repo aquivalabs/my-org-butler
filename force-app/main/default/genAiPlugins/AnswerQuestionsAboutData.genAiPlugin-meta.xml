@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <aiPluginUtterances>
-        <developerName>utterance_analyze0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>utterance_analyze0</masterLabel>
+        <developerName>utterance_listmytopa0</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_listmytopa0</masterLabel>
         <utterance>- List my Top 5 accounts.
 - Propose the opportunity I should work on next.
 - Who is the boss of X?
 - Which Skill is most requested in Projects in the current year?
-- What's the status of my projects?
+- What&apos;s the status of my projects?
 - Show me the color status of specific projects.
 - Give me project health information.
 - What are the current statuses in the system?</utterance>
@@ -23,7 +23,7 @@
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>QueryRecordsWithSoql</functionName>
+        <functionName>QueryRecords</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>SearchWeb</functionName>
@@ -33,32 +33,45 @@
 
 1. **Get Context**: Run GetUserContext for environment and current date/time.
 
-2. **Explore Smart**: Use ExploreOrgSchema with "allObjects" scope to find matching objects:
-   - If user mentions "Project", look for all objects containing "Project" in name or label
+2. **Explore Smart**: Use ExploreOrgSchema with &quot;allObjects&quot; scope to find matching objects:
+   - If user mentions &quot;Project&quot;, look for all objects containing &quot;Project&quot; in name or label
    - If multiple objects match, try the most likely candidate first based on context
    - Only ask for clarification if initial attempts fail
 
-3. **Verify Fields**: Use ExploreOrgSchema with "objectDetails" scope to understand:
+3. **Verify Fields**: Use ExploreOrgSchema with &quot;objectDetails&quot; scope to understand:
    - Available fields and their types
    - Picklist values for status fields
    - Relationship fields for lookups
 
-4. **Query Strategically**: 
-   - Start with exploratory queries to verify data exists
-   - Use LIKE operators for partial matches when searching by name
-   - Try multiple field name variations automatically
+4. **Query Data**: Use QueryRecords function with appropriate mode:
+   - For Standard objects: Use direct SOQL mode when schema is well-known
+   - For Custom objects/apps: Use prompt mode with templates for schema-aware queries
+   - Include user intent and conversation context in prompt mode
+   - Parse error responses and retry with corrected queries
 
 5. **Handle No Results**: 
    - Try alternative field names automatically
    - Explore related objects if primary object has no matches
+   - Use prompt mode for complex custom object queries
    - Only ask for help when all reasonable attempts are exhausted
 
 6. **Present Results**: Provide clear summaries with record links when data is found.
 
-**Key Principle**: Work intelligently in the background - only ask for help when truly stuck.</description>
-        <developerName>instruction_analysis0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_analysis0</masterLabel>
+**Extensibility**: Admins can enhance this topic by:
+- Creating custom prompt templates for specific apps (PSA, etc.)
+- Adding app-specific keywords to trigger prompt mode
+- Including domain knowledge in prompt templates for better SOQL generation
+
+**Key Principle**: Work intelligently in the background - use prompt templates for custom schemas.</description>
+        <developerName>instruction_followthis0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_followthis0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Query project related data always with the Prompt Template &quot;CustomSchemaSoqlSample&quot;</description>
+        <developerName>instruction_queryproje1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_queryproje1</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Anwer questions about data</masterLabel>

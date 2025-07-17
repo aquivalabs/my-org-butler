@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>
-- Use this action to query records from Standard and Custom objects.
+    <description>- Use this action to query records from Standard and Custom objects.
 - The action takes a SOQL query string and returns JSON containing either:
   * On success: JSON array of result records (for regular queries) or aggregate results (for GROUP BY queries)
   * On error: JSON object representing the exception with message, type, and stack trace
@@ -17,8 +16,7 @@ Output Formatting:
 - Compress large datasets by showing key highlights, top results, or summaries
 - Include record links when displaying individual records
 - For aggregate queries, explain what the numbers represent
-- If there are errors, explain them in user-friendly language
-    </description>
+- If there are errors, explain them in user-friendly language</description>
     <invocationTarget>QueryRecordsWithSoql</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>

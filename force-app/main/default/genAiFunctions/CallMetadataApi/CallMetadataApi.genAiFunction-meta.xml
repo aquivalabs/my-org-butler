@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>
-Use this action to read and create Metadata that cannot be handled by the Salesforce tooling API.
-When in doubt or the action returns an error use the SearchWeb action to find out which API support that type or activity.
-    </description>
+    <description>Use this action to read and create Metadata that cannot be handled by the Salesforce tooling API.
+When in doubt or the action returns an error use the SearchWeb action to find out which API support that type or activity.</description>
     <invocationTarget>CallMetadataApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
