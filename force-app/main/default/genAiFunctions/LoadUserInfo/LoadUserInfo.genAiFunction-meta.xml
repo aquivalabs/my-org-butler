@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>- Use this action to get comprehensive user context information formatted as a readable string for AI agents
+- Returns user details (ID, name, email, language, timezone), organization information (ID, base URL), and current date/time
+- Also includes any additional user-specific information stored in the system for personalized assistance
+- User and time specific information is needed for creating user-filtered queries or handling relative time expressions like &quot;last week&quot; or &quot;my accounts&quot;
+- The Org Base URL is needed whenever you construct Links to records or pages in the Org
+- Output is formatted as dash-separated bullet points for easy parsing</description>
+    <invocationTarget>LoadUserInfo</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <mappingAttributes>
+        <label>userInfo</label>
+        <name>output_userInfo</name>
+        <parameterName>userInfo</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <masterLabel>MyOrgButler: Load User Info</masterLabel>
+</GenAiFunction>

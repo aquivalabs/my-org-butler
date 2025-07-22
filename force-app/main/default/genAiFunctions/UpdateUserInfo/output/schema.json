@@ -1,0 +1,14 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "userInfo" : {
+      "title" : "User Info",
+      "description" : "Updated formatted string containing user context information including user details, timezone, organization info, current date/time, and user-specific instructions from memory records",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : true,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

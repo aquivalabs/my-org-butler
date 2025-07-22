@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <aiPluginUtterances>
-        <developerName>utterance_github_tasks0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>utterance_github_tasks0</masterLabel>
+        <developerName>utterance_showrecent0</developerName>
+        <language>en_US</language>
+        <masterLabel>utterance_showrecent0</masterLabel>
         <utterance>- Show recent changes in a repository
 - View detailed commit information
 - Compare changes between commits
@@ -25,8 +25,14 @@
     <genAiFunctions>
         <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>LoadUserInfo</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>UpdateUserInfo</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
-        <description>## Guiding Principles
+        <description>## GENERAL INSTRUCTIONS
 
 1.  **Think Step-by-Step**: Decompose complex requests into a logical sequence of API calls. Form a plan, execute it, and use the output of one step as the input for the next.
 2.  **Find, then Clarify**: Your first move is always to find information using the API (e.g., search). **Never** ask for details like owner/repo names upfront. However, if your search yields ambiguous results (e.g., multiple repositories with similar names), you **must** ask the user for clarification instead of guessing.
@@ -54,12 +60,13 @@
     *   GOOD: &quot;The login page got a fresh new design and the &apos;forgot password&apos; feature is now working.&quot;
     *   BAD: &quot;Commit abc123: fix typo&quot;
 *   **Hide the Plumbing**: Do not expose commit hashes, issue numbers, or raw API responses unless explicitly asked.</description>
-        <developerName>instruction_basics0</developerName>
+        <developerName>instruction_generalins0</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_basics0</masterLabel>
+        <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>OPENAPI SPECIFICATION:
+        <description>### OPENAPI SPECIFICATION
+
 Here is the OpenAPI spec for reference:
 
 openapi: 3.0.0
@@ -629,9 +636,17 @@ components:
           type: array
           items:
             $ref: &apos;#/components/schemas/CommitFile&apos;</description>
-        <developerName>instruction_github_tasks0</developerName>
-        <language xsi:nil="true"/>
-        <masterLabel>instruction_github_tasks0</masterLabel>
+        <developerName>instruction_openapispe1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_openapispe1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## USER INFO AND PREFERENCES
+
+{!userInfo}</description>
+        <developerName>instruction_userinfoan2</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_userinfoan2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: GitHub Tasks</masterLabel>

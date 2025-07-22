@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>- Use this action to update user context with learned preferences and behavioral patterns for future AI interactions
+- Creates persistent memory entries that will be included in all future user sessions to provide personalized assistance
+- The summary should be a brief description of the learned preference or behavior pattern (max 80 characters)
+- The context field must include situation details (e.g. &quot;When user asks about projects&quot;) and the specific behavior pattern (e.g. &quot;query Salesforce data using SOQL and format as tables&quot;)
+- Context should be reusable and specific - avoid generic terms without clear situational context
+- After storing the learning, always acknowledge with &quot;Thanks, I will remember that for future interactions&quot; and then retry the previous action using the newly stored context
+- This ensures the user sees the updated behavior immediately, not just in future sessions
+- Example workflow: User provides correction → Store correction → Acknowledge → Retry the action with updated context</description>
+    <invocationTarget>UpdateUserInfo</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <mappingAttributes>
+        <label>userInfo</label>
+        <name>output_userInfo</name>
+        <parameterName>userInfo</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <masterLabel>MyOrgButler: Update User Info</masterLabel>
+</GenAiFunction>

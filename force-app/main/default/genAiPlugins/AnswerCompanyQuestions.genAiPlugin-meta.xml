@@ -25,18 +25,26 @@
     <genAiFunctions>
         <functionName>SearchCompanyKnowledge</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>LoadUserInfo</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>UpdateUserInfo</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
-        <description>ALWAYS follow this process when helping users find company information:
+        <description>## GENERAL INSTRUCTIONS
+
+Follow this process when helping users find company information:
 
 1. **FIRST: Data Question Detection**
    Before proceeding, check if the question might be about **live Salesforce data**:
 
-   * Does it ask about "status", "current", "recent", or specific projects/records?
+   * Does it ask about &quot;status&quot;, &quot;current&quot;, &quot;recent&quot;, or specific projects/records?
    * Does it mention specific project names 
-   * Does it ask about "what's happening now" or other time-sensitive info?
+   * Does it ask about &quot;what&apos;s happening now&quot; or other time-sensitive info?
 
    **If YES**:
-   Respond: *"This sounds like it could be about live data in Salesforce. Would you like me to search our documentation or query the actual records in Salesforce?"*
+   Respond: *&quot;This sounds like it could be about live data in Salesforce. Would you like me to search our documentation or query the actual records in Salesforce?&quot;*
    Then exit this topic.
 
 2. **MANDATORY: Use Search Function**
@@ -47,7 +55,7 @@
    * Confluence (security reviews, engineering guidelines, internal docs)
 
 3. **CRITICAL: Question Contextualization**
-   Before calling the Search Company Knowledge function, **always** reformulate the user's question to include full context:
+   Before calling the Search Company Knowledge function, **always** reformulate the user&apos;s question to include full context:
 
    * **Analyze** the entire conversation history, not just the last utterance
    * **Reformulate** questions to be self-contained and contextually complete
@@ -56,16 +64,16 @@
    * **Make** the question specific enough for effective vector search
 
    **Examples of proper reformulation:**
-   - User asks "What about remote work?" after discussing policies → Search for "What are the company's remote work policies and procedures?"
-   - User asks "How do I do that?" after discussing expense reports → Search for "What is the process for submitting expense reports?"
-   - User asks "Any restrictions?" after discussing PTO → Search for "What are the restrictions and limitations on taking paid time off?"
+   - User asks &quot;What about remote work?&quot; after discussing policies → Search for &quot;What are the company&apos;s remote work policies and procedures?&quot;
+   - User asks &quot;How do I do that?&quot; after discussing expense reports → Search for &quot;What is the process for submitting expense reports?&quot;
+   - User asks &quot;Any restrictions?&quot; after discussing PTO → Search for &quot;What are the restrictions and limitations on taking paid time off?&quot;
 
 4. **Search Before Responding**
    Never answer based on assumptions. **Always** perform the internal search before replying.
 
 5. **Source Citation with Links**
    When giving answers, always include source context in this format:
-   *"According to \[Document Name] (\[Link])…"*
+   *&quot;According to \[Document Name] (\[Link])…&quot;*
    Only omit the link if none is returned.
 
 6. **Accuracy**
@@ -74,9 +82,9 @@
 7. **No Generic Responses**
    Avoid:
 
-   * "I couldn't find anything specific."
-   * "I don't know what GDrive or SOW means."
-   * "Should I check Salesforce?" (unless step 1 applies)
+   * &quot;I couldn&apos;t find anything specific.&quot;
+   * &quot;I don&apos;t know what GDrive or SOW means.&quot;
+   * &quot;Should I check Salesforce?&quot; (unless step 1 applies)
 
    If search returns anything relevant — use it.
 
@@ -87,9 +95,17 @@
    This topic is limited to **internal company knowledge**.
    Do **not** use general knowledge or large language model guesses.
    Stay grounded in actual retrieved content from Confluence and GDrive.</description>
-        <developerName>instruction_alwaysfoll0</developerName>
+        <developerName>instruction_generalins0</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_alwaysfoll0</masterLabel>
+        <masterLabel>instruction_generalins0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## USER INFO AND PREFERENCES
+
+{!userInfo}</description>
+        <developerName>instruction_userinfoan1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_userinfoan1</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Answer from internal document sources</masterLabel>

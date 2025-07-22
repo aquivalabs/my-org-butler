@@ -17,19 +17,24 @@
     <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>
     <developerName>AnswerQuestionsAboutData</developerName>
     <genAiFunctions>
-        <functionName>GetUserContext</functionName>
+        <functionName>LoadUserInfo</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>UpdateUserInfo</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>QueryRecords</functionName>
+        <functionName>QueryRecordsWithSoql</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>Follow this methodical approach for data analysis:
+        <description>## GENERAL INSTRUCTIONS
+
+Follow this methodical approach for data analysis:
 
 1. **Get Context**: Run GetUserContext for environment and current date/time.
 
@@ -63,15 +68,17 @@
 - Including domain knowledge in prompt templates for better SOQL generation
 
 **Key Principle**: Work intelligently in the background - use prompt templates for custom schemas.</description>
-        <developerName>instruction_followthis0</developerName>
+        <developerName>instruction_generalins0</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_followthis0</masterLabel>
+        <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>Query project related data always with the Prompt Template &quot;CustomSchemaSoqlSample&quot;</description>
-        <developerName>instruction_queryproje1</developerName>
+        <description>## USER INFO AND PREFERENCES
+
+{!userInfo}</description>
+        <developerName>instruction_userinfoan1</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_queryproje1</masterLabel>
+        <masterLabel>instruction_userinfoan1</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Anwer questions about data</masterLabel>

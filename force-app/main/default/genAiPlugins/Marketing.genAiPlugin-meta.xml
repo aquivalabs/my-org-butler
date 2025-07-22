@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Handles inquiries related to marketing activities and campaigns. Includes managing promotional content and addressing marketing-related questions.</description>
+    <developerName>Marketing</developerName>
+    <genAiPluginInstructions>
+        <description>If a user inquires about a current marketing campaign, provide details about the campaign.</description>
+        <developerName>instruction_ifauserinq0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_ifauserinq0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Gather information from the user about their marketing needs by asking clarifying questions.</description>
+        <developerName>instruction_gatherinfo1</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_gatherinfo1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Offer options for users to subscribe to marketing newsletters or updates.</description>
+        <developerName>instruction_offeroptio2</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_offeroptio2</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>When discussing promotional content, include relevant dates and details in your response.</description>
+        <developerName>instruction_whendiscus3</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_whendiscus3</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>Marketing</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is only to handle marketing-related inquiries, manage promotional content, and address questions regarding marketing campaigns. Do not handle inquiries outside of marketing.</scope>
+</GenAiPlugin>

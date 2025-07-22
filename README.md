@@ -17,7 +17,7 @@ Follow these steps to get My Org Butler running in your org:
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler v2.9** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000NXxlYAG) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000NXxlYAG)
+2. **Install My Org Butler v2.10** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000O16DYAS) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000O16DYAS)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 
@@ -78,8 +78,7 @@ Built entirely on Agentforce with 9 functions and 5 plugins. The functions handl
 - Search the web for additional information using Tavily API
 - Search your company's external knowledge base using Vectorize (wikis, docs, etc.)
 - Create visual diagrams and documentation
-- Respect user permissions and ask for clarification when needed
-- Explain actions and self-correct errors
+
 
 ### Development
 
