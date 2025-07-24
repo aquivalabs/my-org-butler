@@ -15,10 +15,10 @@
     <description>Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.</description>
     <developerName>CreateAndModifyData</developerName>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>ExploreOrgSchema</functionName>
@@ -35,7 +35,7 @@
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
 
-1. Run the LoadUserInfo action to understand the user&apos;s environment and permissions.
+1. Load custom instructions to understand the user&apos;s environment and preferences.
 2. Clearly identify which object(s) the user wants to create or modify data for.
 3. If unsure about the object structure, use the Explore_Org_Schema action to verify object and field names.
 4. For data queries, always use QueryRecordsWithSoql - never use CallRestApi for queries.
@@ -61,12 +61,22 @@
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
+        <description>## LEARNING FROM USER FEEDBACK
+
+If the user is unhappy with your data operations, corrects your approach, or asks you to remember specific preferences about how they want data handled:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers batch operations over individual updates&quot;, &quot;Always validate required fields before creating records&quot;, &quot;User wants detailed confirmation messages with all field values&quot;</description>
+        <developerName>instruction_learningfeedback1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
         <description>## USER INFO AND PREFERENCES
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Create and Modify Data</masterLabel>

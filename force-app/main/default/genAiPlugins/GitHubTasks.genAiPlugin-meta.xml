@@ -26,10 +26,10 @@
         <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
@@ -641,12 +641,22 @@ components:
         <masterLabel>instruction_openapispe1</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
+        <description>## LEARNING FROM USER FEEDBACK
+
+If the user is unhappy with your GitHub analysis, corrects your approach, or asks you to remember specific preferences about how they want GitHub information handled:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers detailed commit analysis over high-level summaries&quot;, &quot;Always include issue links when discussing changes&quot;, &quot;User wants technical implementation details in change summaries&quot;</description>
+        <developerName>instruction_learningfeedback2</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback2</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
         <description>## USER INFO AND PREFERENCES
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan2</developerName>
+{!customInstructions}</description>
+        <developerName>instruction_customins3</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan2</masterLabel>
+        <masterLabel>instruction_customins3</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: GitHub Tasks</masterLabel>

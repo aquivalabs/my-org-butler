@@ -7,10 +7,10 @@
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
@@ -24,12 +24,22 @@
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
+        <description>## LEARNING FROM USER FEEDBACK
+
+If the user is unhappy with your web search results, corrects your approach, or asks you to remember specific preferences about how they want web information handled:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers recent sources over older ones&quot;, &quot;Always include publication dates in web search summaries&quot;, &quot;User wants multiple sources for factual claims&quot;</description>
+        <developerName>instruction_learningfeedback1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
         <description>## USER INFO AND PREFERENCES
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Search the Web</masterLabel>

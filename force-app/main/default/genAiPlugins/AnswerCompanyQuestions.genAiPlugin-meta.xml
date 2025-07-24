@@ -26,10 +26,10 @@
         <functionName>SearchCompanyKnowledge</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
@@ -100,12 +100,22 @@ Follow this process when helping users find company information:
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>## USER INFO AND PREFERENCES
+        <description>## LEARNING FROM USER FEEDBACK
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+If the user is unhappy with your document search results, corrects your approach, or asks you to remember specific preferences about how they want company information handled:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers direct quotes from documents over summaries&quot;, &quot;Always search both Confluence and Google Drive for policy questions&quot;, &quot;User wants full document links with every answer&quot;</description>
+        <developerName>instruction_learningfeedback1</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## CUSTOM INSTRUCTIONS AND PREFERENCES
+
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Answer from internal document sources</masterLabel>

@@ -17,10 +17,10 @@
     <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>
     <developerName>AnswerQuestionsAboutData</developerName>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>ExploreOrgSchema</functionName>
@@ -73,12 +73,27 @@ Follow this methodical approach for data analysis:
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
+        <description>## LEARNING FROM USER FEEDBACK
+
+When users express dissatisfaction with your response or ask for corrections:
+- Store a custom instruction about their preference
+- Use a brief, specific summary (max 80 characters)
+- Include the context and desired behavior in the instruction
+- Examples:
+  * "User prefers tables over lists" → "When showing data results, format as tables instead of bullet lists"
+  * "User wants more detail" → "When explaining metadata, include technical details and API names"
+  * "User needs links" → "Always include record links when showing query results"</description>
+        <developerName>instruction_learningfeedback1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
         <description>## USER INFO AND PREFERENCES
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Anwer questions about data</masterLabel>

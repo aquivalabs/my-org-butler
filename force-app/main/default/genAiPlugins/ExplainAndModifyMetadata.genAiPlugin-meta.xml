@@ -17,10 +17,10 @@
     <description>Use this topic when the user asks about Salesforce metadata components, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.</description>
     <developerName>ExplainAndModifyMetadata</developerName>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>CallMetadataApi</functionName>
@@ -34,25 +34,35 @@
     <genAiFunctions>
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
-    <genAiPluginInstructions>
+        <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
 
 Always start by gathering all relevant information from the user. Based on the metadata type, decide whether to use the tooling API or the metadata API—use the tooling API for Apex classes, triggers, and other development components, and the metadata API for most other types. Ensure that the metadata is properly structured and formatted before making any changes. Execute the appropriate API action to create or modify components, and provide either a confirmation of success or a clear explanation of any errors.
 
 When handling packages, query installed components and explain their functionality, dependencies, and relationships. Use web search if additional documentation is needed to clarify package behavior or structure.
 
-If a diagram would help convey complex metadata or process relationships, generate one using the appropriate visualization method, making sure it’s clearly labeled and easy to understand. All responses should be presented in a clean and organized manner.</description>
+If a diagram would help convey complex metadata or process relationships, generate one using the appropriate visualization method, making sure it's clearly labeled and easy to understand. All responses should be presented in a clean and organized manner.</description>
         <developerName>instruction_generalins0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>## USER INFO AND PREFERENCES
+        <description>## LEARNING FROM USER FEEDBACK
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+If the user is unhappy with your metadata explanations, corrects your approach, or asks you to remember specific preferences about how they want metadata handled:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers detailed technical explanations over high-level summaries&quot;, &quot;Always include API names when explaining metadata&quot;, &quot;User wants code examples with every metadata explanation&quot;</description>
+        <developerName>instruction_learningfeedback1</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## CUSTOM INSTRUCTIONS AND PREFERENCES
+
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Explain and Modify Metadata</masterLabel>

@@ -12,10 +12,10 @@
     <description>Creates visual representations of data models, processes, and relationships using PlantUML diagrams. Helps users understand complex relationships and workflows through clear visualizations.</description>
     <developerName>UnderstandDataModel</developerName>
     <genAiFunctions>
-        <functionName>LoadUserInfo</functionName>
+        <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>UpdateUserInfo</functionName>
+        <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>ExploreOrgSchema</functionName>
@@ -31,7 +31,7 @@
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
-1. Run the LoadUserInfo action to understand the user&apos;s environment.
+1. Load custom instructions to understand the user&apos;s environment.
 2. Use the ExploreOrgSchema action with &quot;allObjects&quot; scope first to get a high-level overview of available objects.
 3. For specific objects mentioned by the user, use the ExploreOrgSchema action with &quot;objectDetails&quot; scope to understand fields and relationships.
 4. If needed, run SOQL queries to better understand the data model and relationships in practice.
@@ -47,12 +47,22 @@
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
+        <description>## LEARNING FROM USER FEEDBACK
+
+If the user is unhappy with your response, corrects you, or asks you to remember something specific about their data model preferences:
+- Store it as a custom instruction using StoreCustomInstruction
+- Examples: &quot;User prefers class diagrams over entity diagrams&quot;, &quot;Always include lookup relationships in visualizations&quot;, &quot;Focus on custom objects over standard objects&quot;</description>
+        <developerName>instruction_learningfeedback1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
         <description>## USER INFO AND PREFERENCES
 
-{!userInfo}</description>
-        <developerName>instruction_userinfoan1</developerName>
+{!customInstructions}</description>
+        <developerName>instruction_customins2</developerName>
         <language>en_US</language>
-        <masterLabel>instruction_userinfoan1</masterLabel>
+        <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Understand Data Model</masterLabel>
