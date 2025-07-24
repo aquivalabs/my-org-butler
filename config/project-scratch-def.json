@@ -17,7 +17,7 @@
         "enableBots": true
     },
     "deploymentSettings": {
-      "allowDeployWithScheduledJobs": true
+      "doesSkipAsyncApexValidation": true
     }
   }
 }
