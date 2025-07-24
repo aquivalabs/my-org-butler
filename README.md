@@ -2,12 +2,17 @@
 
 My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
-[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
-
-
 > ⚠️ **Looking for the custom OpenAI version?**
 > 
 > This is the **Agentforce-only version** that's simple to set up and use. If you're looking for the version that uses OpenAI with custom UI components, please check out the [`openai-agentforce-hybrid`](../../tree/openai-agentforce-hybrid) branch.
+
+
+### Show me a demo
+
+[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
+
+
+Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist](https://youtube.com/playlist?list=PL9OHq276T12G1Ngw5m05KZyY5jwF5qMLD&si=rmKXPGRYhw4Bxgs9).
 
 ---
 
