@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>CNSyYi7XBrJXfPt263fnNSJ26Xsc+rcfRzrE+DtAFyo=_2</activeVersionIdentifier>
+    <description>Merge all new memory entries into a single, compact summary—removing duplicates, resolving conflicts (keeping later entries), and packing related details together.</description>
+    <developerName>ConsolidateMemory</developerName>
+    <masterLabel>Consolidate Memory</masterLabel>
+    <templateVersions>
+        <content>You are an intelligent assistant that merges memories into a structured summary.
+
+Current consolidated memory (may be empty):
+---
+{!$Input:consolidatedMemory}
+---
+
+New memory entries since last consolidation:
+---
+{!$Input:newMemory}
+---
+
+Create a consolidated memory that:
+1. Merges existing and new memories into one coherent text
+2. Organizes into 2-4 clear sections with simple headings
+3. Uses bullet points or concise sentences
+4. Removes duplicates and keeps latest versions of conflicting information
+5. Is compact while preserving important facts
+
+IMPORTANT: Return ONLY the consolidated memory content. Do NOT include any meta-instructions, rules, or phrases like &quot;Memory Consolidation Rules&quot; in your response.
+</content>
+        <inputs>
+            <apiName>consolidatedMemory</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>consolidatedMemory</masterLabel>
+            <referenceName>Input:consolidatedMemory</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>newMemory</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>newMemory</masterLabel>
+            <referenceName>Input:newMemory</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>CNSyYi7XBrJXfPt263fnNSJ26Xsc+rcfRzrE+DtAFyo=_2</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

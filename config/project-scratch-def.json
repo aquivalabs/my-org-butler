@@ -15,6 +15,9 @@
     },
     "botSettings": {
         "enableBots": true
+    },
+    "deploymentSettings": {
+      "allowDeployWithScheduledJobs": true
     }
   }
 }
