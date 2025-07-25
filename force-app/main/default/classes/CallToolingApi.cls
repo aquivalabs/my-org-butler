@@ -16,6 +16,29 @@ global with sharing class CallToolingApi {
         return result;
     }
     
+    // PUBLIC
+    
+    public static List<Map<String, Object>> query(String soql) {
+        List<Map<String, Object>> results = new List<Map<String, Object>>();
+        
+        ToolingDescription tooling = new ToolingDescription();
+        tooling.action = 'query';
+        tooling.soql = soql;
+        
+        List<Output> outputs = execute(new List<ToolingDescription>{tooling});
+        String responseBody = outputs[0].responseBody;
+        
+        Map<String, Object> responseMap = (Map<String, Object>)JSON.deserializeUntyped(responseBody);
+        if(responseMap.containsKey('records')) {
+            List<Object> records = (List<Object>)responseMap.get('records');
+            for(Object record : records) {
+                results.add((Map<String, Object>)record);
+            }
+        }
+        
+        return results;
+    }
+    
     // PRIVATE
     
     private static HttpResponse makeRequest(ToolingDescription tooling) {
