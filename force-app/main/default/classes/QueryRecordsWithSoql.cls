@@ -8,10 +8,13 @@ global with sharing class QueryRecordsWithSoql {
 
         try {
             List<Object> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);
-            output.resultOrException = JSON.serialize(result);
+
+            String jsonResult = JSON.serialize(result);
+            String cleanJson = jsonResult.replaceAll('(\\"url\\":\\")/services/data/v[0-9.]+/sobjects/[^/]+/', '$1/');
+
+            output.resultOrException = cleanJson;
         }
         catch(Exception ex) {
-            // Create a serializable exception representation
             Map<String, Object> exceptionInfo = new Map<String, Object>{
                 'message' => ex.getMessage(),
                 'typeName' => ex.getTypeName(),

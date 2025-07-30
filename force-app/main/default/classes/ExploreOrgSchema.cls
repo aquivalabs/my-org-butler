@@ -1,76 +1,169 @@
-// PMD False Positives: Agentforce requires Global
 @SuppressWarnings('PMD.AvoidGlobalMethod')
 global with sharing class ExploreOrgSchema {
 
-    private static final Map<String, Schema.SObjectType> DESCRIBE = Schema.getGlobalDescribe();
-    private static final Map<String, String> OBJECT_SEMANTICS = loadObjectSemantics();
-
-    // PUBLIC
-
-    @InvocableMethod(label='MyOrgButler: Explore Org Data Model' description='Retrieve metadata about objects, fields and relationships in the org.')
+    private static final Map<String, SObjectType> GLOBAL_DESCRIBE = Schema.getGlobalDescribe();
+    
+    @InvocableMethod(label='MyOrgButler: Explore Org Data Model' 
+                     description='Retrieve metadata about objects, fields and relationships in the org.')
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
         
-        Output output = new Output();
-        output.response = (input.scope == 'details') ? prepareDetails(input) : prepareSummary(input);
+        // Process input filters after invocation
+        Set<String> namespaceFilter = parseNamespaces(input.namespaceFilter);
+        Set<String> objectFilter = parseObjects(input.objectFilter);
         
+        Output output = new Output();
+        output.response = (input.scope == 'details') 
+            ? prepareDetails(objectFilter, namespaceFilter)
+            : prepareSummary(namespaceFilter);
+            
         return new List<Output>{ output };
     }
 
-    // PRIVATE
+    // PRIVATE METHODS
 
-    private static String prepareSummary(Input input) {
-        Map<String, NamespaceGroup> result = new Map<String, NamespaceGroup>();
-        Set<String> filter = (input.namespaceFilter == null) ? new Set<String>() : new Set<String>( input.namespaceFilter.split(',') );
+    private static String prepareSummary(Set<String> namespaceFilter) {
+        Map<String, NamespaceInfo> namespaceMap = loadNamespaceInfo();
+        Map<String, String> objectDescriptions = loadObjectDescriptions();
+        
+        // Group objects by namespace
+        for (String objectKey : GLOBAL_DESCRIBE.keySet()) {
+            DescribeSObjectResult objDescribe = GLOBAL_DESCRIBE.get(objectKey).getDescribe();
+            
+            if (!objDescribe.isCustom()) {
+                continue;
+            }
+            
+            String namespace = extractNamespace(objDescribe.getName());
+            
+            // Apply namespace filter
+            if (!namespaceFilter.isEmpty() && !namespaceFilter.contains(namespace)) {
+                continue;
+            }
+            
+            // Ensure namespace exists in map
+            if (!namespaceMap.containsKey(namespace)) {
+                namespaceMap.put(namespace, createDefaultNamespaceInfo(namespace));
+            }
+            
+            // Add object to namespace
+            ObjectSummary objSummary = new ObjectSummary(
+                objDescribe.getName(),
+                objDescribe.getLabel(),
+                objectDescriptions.get(objDescribe.getName())
+            );
+            namespaceMap.get(namespace).objects.add(objSummary);
+        }
+        
+        return JSON.serialize(namespaceMap.values(), true);
+    }
 
-        for(String key : DESCRIBE.keySet()) {
-            Schema.DescribeSObjectResult describeResult = DESCRIBE.get(key).getDescribe();
-            String ns = getNamespace(describeResult.getName());
-            if (describeResult.isCustom()) {
-
-                if (filter.isEmpty() || filter.contains(ns)) {
-                    System.debug(LoggingLevel.ERROR, 'prepareSummary: custom object is in relevant namespace: ns=' + ns);
-                    if(!result.containsKey(ns)) {
-                        result.put(ns, new NamespaceGroup(ns, null));
-                    }
-                    result.get(ns).objects.add(new ObjectSummary(describeResult));
-                }
+    private static String prepareDetails(Set<String> objectFilter, Set<String> namespaceFilter) {
+        Map<String, ObjectDetails> result = new Map<String, ObjectDetails>();
+        Map<String, String> objectDescriptions = loadObjectDescriptions();
+        
+        for (String objectName : objectFilter) {
+            String cleanObjectName = objectName.trim();
+            SObjectType objType = GLOBAL_DESCRIBE.get(cleanObjectName);
+            
+            if (objType != null) {
+                result.put(cleanObjectName, new ObjectDetails(objType, objectDescriptions, namespaceFilter));
             }
         }
-
-        return JSON.serialize(result.values());
+        
+        return JSON.serialize(result, true);
     }
 
-    private static String prepareDetails(Input input) {
-        Map<String, ObjectDetails> result = new Map<String, ObjectDetails>();
-
-        for (String objectName : input.objectFilter.split(',')) {
-            Schema.SObjectType type = DESCRIBE.get(objectName.trim());
-            result.put(objectName, new ObjectDetails(type));
-        }
-
-        return JSON.serialize(result);
-    }
-
-    private static Map<String, String> loadObjectSemantics() {
+    private static Map<String, String> loadObjectDescriptions() {
         Map<String, String> result = new Map<String, String>();
         
-        for (Map<String, Object> record : CallToolingApi.query('SELECT DeveloperName, Description FROM CustomObject')) {
-            String apiName = (String)record.get('DeveloperName');
-            String description = (String)record.get('Description');
-            result.put(apiName, description);
+        List<Map<String, Object>> records = CallToolingApi.query(
+            'SELECT DeveloperName, Description FROM CustomObject'
+        );
+        
+        for (Map<String, Object> record : records) {
+            String apiName = (String) record.get('DeveloperName');
+            String description = (String) record.get('Description');
+            if (apiName != null) {
+                result.put(apiName, description);
+            }
+        }
+        
+        return result;
+    }
+
+    private static Map<String, NamespaceInfo> loadNamespaceInfo() {
+        Map<String, NamespaceInfo> result = new Map<String, NamespaceInfo>();
+        
+        List<Map<String, Object>> records = CallToolingApi.query(
+            'SELECT SubscriberPackage.NamespacePrefix, SubscriberPackage.Name, SubscriberPackage.Description ' +
+            'FROM InstalledSubscriberPackage'
+        );
+        
+        for (Map<String, Object> record : records) {
+            String namespace = (String) record.get('SubscriberPackage.NamespacePrefix');
+            String packageName = (String) record.get('SubscriberPackage.Name');
+            String packageDesc = (String) record.get('SubscriberPackage.Description');
+            
+            if (namespace != null) {
+                result.put(namespace, new NamespaceInfo(namespace, packageName, packageDesc));
+            }
+        }
+        
+        return result;
+    }
+
+    // UTILITY METHODS
+
+    private static String extractNamespace(String objectName) {
+        if (String.isBlank(objectName) || !objectName.contains('__')) {
+            return null;
+        }
+        return objectName.split('__')[0];
+    }
+
+    private static Set<String> parseNamespaces(String namespaceFilter) {
+        if (String.isBlank(namespaceFilter)) {
+            return new Set<String>();
+        }
+        
+        Set<String> result = new Set<String>();
+        for (String ns : namespaceFilter.split(',')) {
+            String cleanNs = ns.trim();
+            if (String.isNotBlank(cleanNs)) {
+                result.add(cleanNs);
+            }
         }
         return result;
     }
 
-    private static String getNamespace(String name) {
-        return name.contains('__') ? name.split('__')[0] : null;
+    private static Set<String> parseObjects(String objectFilter) {
+        if (String.isBlank(objectFilter)) {
+            return new Set<String>();
+        }
+        
+        Set<String> result = new Set<String>();
+        for (String obj : objectFilter.split(',')) {
+            String cleanObj = obj.trim();
+            if (String.isNotBlank(cleanObj)) {
+                result.add(cleanObj);
+            }
+        }
+        return result;
     }
 
-    // INNER
+    private static NamespaceInfo createDefaultNamespaceInfo(String namespace) {
+        return new NamespaceInfo(
+            namespace, 
+            namespace + ' Package', 
+            'Custom objects from ' + (namespace != null ? namespace : 'unmanaged') + ' namespace'
+        );
+    }
+
+    // INNER CLASSES
 
     global class Input {
-        @InvocableVariable(label='Scope' description='Mode of metadata exploration: allObjects or objectDetails')
+        @InvocableVariable(label='Scope' description='Mode of metadata exploration: summary or details')
         global String scope;
 
         @InvocableVariable(label='Namespace Filter' description='Optional namespace prefix to limit objects by package')
@@ -85,36 +178,28 @@ global with sharing class ExploreOrgSchema {
         global String response;
     }
 
-    class NamespaceGroup {
+    class NamespaceInfo {
         String namespace;
-        PackageInfo packageInfo;
+        String packageName;
+        String packageDescription;
         List<ObjectSummary> objects = new List<ObjectSummary>();
-        
-        NamespaceGroup(String namespace, PackageInfo pck) {
+
+        NamespaceInfo(String namespace, String packageName, String packageDescription) {
             this.namespace = namespace;
-            this.packageInfo = pck;
+            this.packageName = packageName;
+            this.packageDescription = packageDescription;
         }
     }
-
-    class PackageInfo {
-        String name;
-        String description;
-
-        PackageInfo(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
-}
 
     class ObjectSummary {
         String apiName;
         String label;
         String description;
 
-        ObjectSummary(Schema.DescribeSObjectResult describe) {
-            apiName = describe.getName();
-            label = describe.getLabel();
-            description = OBJECT_SEMANTICS.get(describe.getName());
+        ObjectSummary(String apiName, String label, String description) {
+            this.apiName = apiName;
+            this.label = label;
+            this.description = description;
         }
     }
 
@@ -126,19 +211,27 @@ global with sharing class ExploreOrgSchema {
         Map<String, FieldDetails> fields = new Map<String, FieldDetails>();
         List<String> childRelationships = new List<String>();
 
-        ObjectDetails(Schema.SObjectType type) {
-            Schema.DescribeSObjectResult describe = type.getDescribe();
-            apiName = describe.getName();
-            label = describe.getLabel();
-            namespace = getNamespace(describe.getName());
-            description = OBJECT_SEMANTICS.get(describe.getName());
+        ObjectDetails(SObjectType objType, Map<String, String> objectDescriptions, Set<String> namespaceFilter) {
+            DescribeSObjectResult describe = objType.getDescribe();
+            this.apiName = describe.getName();
+            this.label = describe.getLabel();
+            this.namespace = extractNamespace(describe.getName());
+            this.description = objectDescriptions.get(describe.getName());
 
-            for (Schema.SObjectField field : describe.fields.getMap().values()) {
-                fields.put(field.getDescribe().getName(), new FieldDetails(field.getDescribe()));
+            // Add fields
+            for (SObjectField field : describe.fields.getMap().values()) {
+                DescribeFieldResult fieldDescribe = field.getDescribe();
+                fields.put(fieldDescribe.getName(), new FieldDetails(fieldDescribe));
             }
 
-            for (Schema.ChildRelationship relationship : describe.getChildRelationships()) {
-                childRelationships.add(relationship.getChildSObject().toString());
+            // Add child relationships with namespace filtering
+            for (ChildRelationship relationship : describe.getChildRelationships()) {
+                String childObjectName = relationship.getChildSObject().getDescribe().getName();
+                String childNamespace = extractNamespace(childObjectName);
+                
+                if (namespaceFilter.isEmpty() || namespaceFilter.contains(childNamespace)) {
+                    childRelationships.add(childObjectName);
+                }
             }
         }
     }
@@ -150,21 +243,32 @@ global with sharing class ExploreOrgSchema {
         String helpText;
         List<String> references;
         String relationshipName;
+        // START: Added property for picklist values
+        List<Map<String, String>> picklistValues; 
+        // END: Added property for picklist values
 
-        FieldDetails(Schema.DescribeFieldResult describe) {
-            label = describe.getLabel();
-            type = String.valueOf(describe.getType());
-            required = !describe.isNillable();
-            helpText = describe.getInlineHelpText();
+        FieldDetails(DescribeFieldResult fieldDescribe) {
+            this.label = fieldDescribe.getLabel();
+            this.type = String.valueOf(fieldDescribe.getType());
+            this.required = !fieldDescribe.isNillable();
+            this.helpText = fieldDescribe.getInlineHelpText();
 
-            if (describe.getType() == Schema.DisplayType.REFERENCE) {
-                references = new List<String>();
-
-                for (Schema.SObjectType r : describe.getReferenceTo()) {
-                    references.add(r.getDescribe().getName());
+            if (fieldDescribe.getType() == DisplayType.REFERENCE) {
+                this.references = new List<String>();
+                for (SObjectType refType : fieldDescribe.getReferenceTo()) {
+                    references.add(refType.getDescribe().getName());
                 }
-
-                relationshipName = describe.getRelationshipName();
+                this.relationshipName = fieldDescribe.getRelationshipName();
+            }
+            
+            if (fieldDescribe.getType() == DisplayType.PICKLIST || fieldDescribe.getType() == DisplayType.MULTIPICKLIST) {
+                this.picklistValues = new List<Map<String, String>>();
+                for (Schema.PicklistEntry entry : fieldDescribe.getPicklistValues()) {
+                    picklistValues.add(new Map<String, String>{
+                        'label' => entry.getLabel(),
+                        'value' => entry.getValue()
+                    });
+                }
             }
         }
     }
