@@ -2,7 +2,8 @@
 @deprecated
 global with sharing class LoadUserInfo {
 
-    @InvocableMethod(label='MyOrgButler: Load User Info' description='Provides a formatted string with user context information including user details, time, date, and org information for AI agents.')
+    @InvocableMethod(label='deprecated' description='deprecated')
+    @deprecated
     global static List<UserInfo> execute(List<String> ignored) {
         return new List<UserInfo>();
     }

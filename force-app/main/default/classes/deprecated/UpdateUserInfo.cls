@@ -2,7 +2,8 @@
 @deprecated
 global with sharing class UpdateUserInfo {
 
-    @InvocableMethod(label='MyOrgButler: Update User Info' description='Updates user context with learned preferences and instructions for future AI agent interactions.')
+    @InvocableMethod(label='deprecated' description='deprecated')
+    @deprecated
     global static List<LoadUserInfo.UserInfo> execute(List<UpdateInput> inputs) {
         return new List<LoadUserInfo.UserInfo>();
     }
