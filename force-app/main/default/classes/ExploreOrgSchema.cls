@@ -1,4 +1,7 @@
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+// PMD False Positives: 
+// - Calling regular Salesforce APIs can be done with Session Id
+// - Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalMethod,PMD.ApexSuggestUsingNamedCred')
 global with sharing class ExploreOrgSchema {
 
     private static final Map<String, SObjectType> GLOBAL_DESCRIBE = Schema.getGlobalDescribe();
@@ -13,9 +16,11 @@ global with sharing class ExploreOrgSchema {
         Set<String> objectFilter = parseObjects(input.objectFilter);
         
         Output output = new Output();
-        output.response = (input.scope == 'details') 
-            ? prepareDetails(objectFilter, namespaceFilter)
-            : prepareSummary(namespaceFilter);
+        if (input.scope == 'details' || input.scope == 'relationships') {
+            output.response = prepareDetails(objectFilter, namespaceFilter, input.scope);
+        } else {
+            output.response = prepareSummary(namespaceFilter);
+        }
             
         return new List<Output>{ output };
     }
@@ -26,7 +31,6 @@ global with sharing class ExploreOrgSchema {
         Map<String, NamespaceInfo> namespaceMap = loadNamespaceInfo();
         Map<String, String> objectDescriptions = loadObjectDescriptions();
         
-        // Group objects by namespace
         for (String objectKey : GLOBAL_DESCRIBE.keySet()) {
             DescribeSObjectResult objDescribe = GLOBAL_DESCRIBE.get(objectKey).getDescribe();
             
@@ -36,17 +40,14 @@ global with sharing class ExploreOrgSchema {
             
             String namespace = extractNamespace(objDescribe.getName());
             
-            // Apply namespace filter
             if (!namespaceFilter.isEmpty() && !namespaceFilter.contains(namespace)) {
                 continue;
             }
             
-            // Ensure namespace exists in map
             if (!namespaceMap.containsKey(namespace)) {
                 namespaceMap.put(namespace, createDefaultNamespaceInfo(namespace));
             }
             
-            // Add object to namespace
             ObjectSummary objSummary = new ObjectSummary(
                 objDescribe.getName(),
                 objDescribe.getLabel(),
@@ -58,7 +59,7 @@ global with sharing class ExploreOrgSchema {
         return JSON.serialize(namespaceMap.values(), true);
     }
 
-    private static String prepareDetails(Set<String> objectFilter, Set<String> namespaceFilter) {
+    private static String prepareDetails(Set<String> objectFilter, Set<String> namespaceFilter, String scope) {
         Map<String, ObjectDetails> result = new Map<String, ObjectDetails>();
         Map<String, String> objectDescriptions = loadObjectDescriptions();
         
@@ -67,7 +68,7 @@ global with sharing class ExploreOrgSchema {
             SObjectType objType = GLOBAL_DESCRIBE.get(cleanObjectName);
             
             if (objType != null) {
-                result.put(cleanObjectName, new ObjectDetails(objType, objectDescriptions, namespaceFilter));
+                result.put(cleanObjectName, new ObjectDetails(objType, objectDescriptions, namespaceFilter, scope));
             }
         }
         
@@ -112,6 +113,7 @@ global with sharing class ExploreOrgSchema {
         
         return result;
     }
+
 
     // UTILITY METHODS
 
@@ -163,7 +165,7 @@ global with sharing class ExploreOrgSchema {
     // INNER CLASSES
 
     global class Input {
-        @InvocableVariable(label='Scope' description='Mode of metadata exploration: summary or details')
+        @InvocableVariable(label='Scope' description='Mode of metadata exploration: summary, details, or relationships')
         global String scope;
 
         @InvocableVariable(label='Namespace Filter' description='Optional namespace prefix to limit objects by package')
@@ -178,11 +180,11 @@ global with sharing class ExploreOrgSchema {
         global String response;
     }
 
-    class NamespaceInfo {
-        String namespace;
-        String packageName;
-        String packageDescription;
-        List<ObjectSummary> objects = new List<ObjectSummary>();
+    public class NamespaceInfo {
+        public String namespace;
+        public String packageName;
+        public String packageDescription;
+        public List<ObjectSummary> objects = new List<ObjectSummary>();
 
         NamespaceInfo(String namespace, String packageName, String packageDescription) {
             this.namespace = namespace;
@@ -191,10 +193,10 @@ global with sharing class ExploreOrgSchema {
         }
     }
 
-    class ObjectSummary {
-        String apiName;
-        String label;
-        String description;
+    public class ObjectSummary {
+        public String apiName;
+        public String label;
+        public String description;
 
         ObjectSummary(String apiName, String label, String description) {
             this.apiName = apiName;
@@ -203,49 +205,63 @@ global with sharing class ExploreOrgSchema {
         }
     }
 
-    class ObjectDetails {
-        String apiName;
-        String label;
-        String description;
-        String namespace;
-        Map<String, FieldDetails> fields = new Map<String, FieldDetails>();
-        List<String> childRelationships = new List<String>();
+    public class ObjectDetails {
+        public String apiName;
+        public String label;
+        public String description;
+        public String namespace;
+        public Map<String, FieldDetails> fields;
+        public List<String> childRelationships;
+        public List<String> parentRelationships;
 
-        ObjectDetails(SObjectType objType, Map<String, String> objectDescriptions, Set<String> namespaceFilter) {
+        ObjectDetails(SObjectType objType, Map<String, String> objectDescriptions, Set<String> namespaceFilter, String scope) {
             DescribeSObjectResult describe = objType.getDescribe();
             this.apiName = describe.getName();
             this.label = describe.getLabel();
             this.namespace = extractNamespace(describe.getName());
             this.description = objectDescriptions.get(describe.getName());
 
-            // Add fields
-            for (SObjectField field : describe.fields.getMap().values()) {
-                DescribeFieldResult fieldDescribe = field.getDescribe();
-                fields.put(fieldDescribe.getName(), new FieldDetails(fieldDescribe));
+            if (scope == 'details') {
+                this.fields = new Map<String, FieldDetails>();
+                for (SObjectField field : describe.fields.getMap().values()) {
+                    DescribeFieldResult fieldDescribe = field.getDescribe();
+                    fields.put(fieldDescribe.getName(), new FieldDetails(fieldDescribe));
+                }
             }
+            
+            if (scope == 'details' || scope == 'relationships') {
+                this.childRelationships = new List<String>();
+                for (ChildRelationship relationship : describe.getChildRelationships()) {
+                    String childObjectName = relationship.getChildSObject().getDescribe().getName();
+                    String childNamespace = extractNamespace(childObjectName);
+                    
+                    if (namespaceFilter.isEmpty() || namespaceFilter.contains(childNamespace)) {
+                        if(relationship.getRelationshipName() != null){
+                            childRelationships.add(relationship.getRelationshipName());
+                        }
+                    }
+                }
 
-            // Add child relationships with namespace filtering
-            for (ChildRelationship relationship : describe.getChildRelationships()) {
-                String childObjectName = relationship.getChildSObject().getDescribe().getName();
-                String childNamespace = extractNamespace(childObjectName);
-                
-                if (namespaceFilter.isEmpty() || namespaceFilter.contains(childNamespace)) {
-                    childRelationships.add(childObjectName);
+                this.parentRelationships = new List<String>();
+                 for (SObjectField field : describe.fields.getMap().values()) {
+                    DescribeFieldResult fieldDescribe = field.getDescribe();
+                    if (fieldDescribe.getType() == DisplayType.REFERENCE && String.isNotBlank(fieldDescribe.getRelationshipName())) {
+                        String targetObjectName = fieldDescribe.getReferenceTo()[0].getDescribe().getName();
+                        parentRelationships.add(fieldDescribe.getRelationshipName() + ' (to ' + targetObjectName + ')');
+                    }
                 }
             }
         }
     }
 
-    class FieldDetails {
-        String label;
-        String type;
-        Boolean required;
-        String helpText;
-        List<String> references;
-        String relationshipName;
-        // START: Added property for picklist values
-        List<Map<String, String>> picklistValues; 
-        // END: Added property for picklist values
+    public class FieldDetails {
+        public String label;
+        public String type;
+        public Boolean required;
+        public String helpText;
+        public List<String> references;
+        public String relationshipName;
+        public List<Map<String, String>> picklistValues; 
 
         FieldDetails(DescribeFieldResult fieldDescribe) {
             this.label = fieldDescribe.getLabel();

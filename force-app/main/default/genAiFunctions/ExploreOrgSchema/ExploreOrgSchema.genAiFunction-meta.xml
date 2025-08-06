@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use this action to explore the Custom Objects, Fields and Relationships in this org. 
-- If you need to find unknown Custom Objects or verify the object names use the &quot;allObjects&quot; scope first which will give you a list of object API names with friendly labels.
-- If you need to find Custom Fields and find out how Custom objects are related to other Custom or Standard objects use the &quot;objectDetails&quot; scope.
-- The &quot;objectDetails&quot; scope allows a comma-separated list of Object API names and returns field API names with their friendly labels.
-- Only use &quot;objectDetails&quot; when you are sure an object name actually exists.</description>
+    <description>This action helps you explore Custom Objects, Fields, and Relationships in your org. Use the "summary" scope to discover available objects, "relationships" to see how an object connects to others, and "details" for a full list of fields and picklist values on a specific object. Only use "details" or "relationships" when you are sure the object exists.</description>
     <invocationTarget>ExploreOrgSchema</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
-    <masterLabel>MyOrgButler: Explore Org Schema</masterLabel>
+    <masterLabel>My Org Butler: Explore Org Schema</masterLabel>
 </GenAiFunction>

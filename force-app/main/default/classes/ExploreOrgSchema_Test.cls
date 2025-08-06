@@ -63,6 +63,29 @@ private class ExploreOrgSchema_Test {
         System.assert(response.contains('Content'), response);
     }
 
+    @IsTest
+    private static void relationships() {
+
+        // Setup
+        mockResponse();
+
+        ExploreOrgSchema.Input input = new ExploreOrgSchema.Input();
+        input.scope = 'relationships';
+        input.objectFilter = 'aquiva_os__Memory__c';
+
+        // Exercise
+        List<ExploreOrgSchema.Output> result = ExploreOrgSchema.execute(new List<ExploreOrgSchema.Input>{ input });
+
+        // Verify
+        System.assertEquals(1, result.size());
+        String response = result[0].response;
+        System.assert(response.contains('aquiva_os__Memory__c'), response);
+        System.assert(response.contains('MyOrgButler Memory'), response);
+        // Even if no custom relationships exist, the response should contain relationship arrays
+        System.assert(response.contains('childRelationships'), response);
+        System.assert(response.contains('parentRelationships'), response);
+    }
+
     // HELPER
 
     private static void mockResponse() {
