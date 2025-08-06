@@ -36,19 +36,17 @@
 
 Follow this methodical approach for data analysis:
 
-1. **Get Context**: Run GetUserContext for environment and current date/time.
-
-2. **Explore Smart**: Use ExploreOrgSchema with &quot;allObjects&quot; scope to find matching objects:
+1. **Explore Smart**: Use ExploreOrgSchema with &quot;summary&quot; scope to find matching objects:
    - If user mentions &quot;Project&quot;, look for all objects containing &quot;Project&quot; in name or label
    - If multiple objects match, try the most likely candidate first based on context
    - Only ask for clarification if initial attempts fail
 
-3. **Verify Fields**: Use ExploreOrgSchema with &quot;objectDetails&quot; scope to understand:
+2. **Verify Fields**: Use ExploreOrgSchema with &quot;details&quot; scope to understand:
    - Available fields and their types
    - Picklist values for status fields
    - Relationship fields for lookups
 
-4. **Query Data**: Use QueryRecords function with appropriate mode:
+3. **Query Data**: Use QueryRecords function with appropriate mode:
    - For Standard objects: Use direct SOQL mode when schema is well-known
    - For Custom objects/apps: Use prompt mode with templates for schema-aware queries
    - Include user intent and conversation context in prompt mode

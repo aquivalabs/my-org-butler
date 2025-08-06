@@ -31,13 +31,13 @@
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
-1. Load custom instructions to understand the user&apos;s environment.
-2. Use the ExploreOrgSchema action with &quot;allObjects&quot; scope first to get a high-level overview of available objects.
-3. For specific objects mentioned by the user, use the ExploreOrgSchema action with &quot;objectDetails&quot; scope to understand fields and relationships.
+1. Use the ExploreOrgSchema action with &quot;summary&quot; scope first to get a high-level overview of available objects.
+2. For specific objects mentioned by the user, use the ExploreOrgSchema action with &quot;details&quot; scope to understand fields and relationships.
+3. For understanding object relationships specifically, use the ExploreOrgSchema action with &quot;relationships&quot; scope.
 4. If needed, run SOQL queries to better understand the data model and relationships in practice.
 5. For visualization requests, create a PlantUML diagram that shows:
    - Objects as classes
-   - Fields as class attributes (focus on key fields, don&apos;t overwhelm with all fields)
+   - Fields as class attributes (focus on key fields, do not overwhelm with all fields)
    - Relationships as connections between classes
    - Proper cardinality notation (1:1, 1:n, n:n)
 6. Use the CreatePlantUmlUrl action to convert the diagram into a viewable image.

@@ -35,8 +35,7 @@
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
 
-1. Load custom instructions to understand the user&apos;s environment and preferences.
-2. Clearly identify which object(s) the user wants to create or modify data for.
+1. Clearly identify which object(s) the user wants to create or modify data for.
 3. If unsure about the object structure, use the Explore_Org_Schema action to verify object and field names.
 4. For data queries, always use QueryRecordsWithSoql - never use CallRestApi for queries.
 5. For data creation:
