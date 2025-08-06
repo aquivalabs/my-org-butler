@@ -1,6 +1,7 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <BotVersion xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>v1</fullName>
+    <fullName>v3</fullName>
     <articleAnswersGPTEnabled>false</articleAnswersGPTEnabled>
     <botDialogs>
         <botSteps>
@@ -41,7 +42,7 @@
     <citationsEnabled>false</citationsEnabled>
     <company>Acme Corp</company>
     <conversationDefinitionPlanners>
-        <genAiPlannerName>MyOrgButler_v1</genAiPlannerName>
+        <genAiPlannerName>MyOrgButler_v3</genAiPlannerName>
     </conversationDefinitionPlanners>
     <conversationVariables>
         <dataType>Text</dataType>

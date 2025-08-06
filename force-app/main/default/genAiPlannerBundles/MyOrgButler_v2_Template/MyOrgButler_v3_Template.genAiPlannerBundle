@@ -212,5 +212,5 @@
         <expressionName>customInstructionsLoaded</expressionName>
         <expressionType>sel</expressionType>
     </ruleExpressions>
-    <botTemplate>MyOrgButler_v1_Template</botTemplate>
+    <botTemplate>MyOrgButler_v3_Template</botTemplate>
 </GenAiPlannerBundle>

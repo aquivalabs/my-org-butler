@@ -45,7 +45,7 @@
     <entryDialog>Welcome</entryDialog>
     <mlDomain>
         <label>My Org Butler</label>
-        <name>MyOrgButler_v1_Template</name>
+        <name>MyOrgButler_v3_Template</name>
     </mlDomain>
     <agentType>AgentforceEmployeeAgent</agentType>
     <contextVariables>
