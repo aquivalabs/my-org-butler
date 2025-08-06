@@ -2,16 +2,23 @@
   "required" : [ "scope" ],
   "unevaluatedProperties" : false,
   "properties" : {
-    "objects" : {
+    "objectFilter" : {
       "title" : "Object API Names",
-      "description" : "Comma-separated list of object api names to further investigate (only if scope is objectDetails)",
+      "description" : "Comma-separated list of object API names to investigate (used with 'details' and 'relationships' scopes).",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "namespaceFilter" : {
+      "title" : "Namespace Filter",
+      "description" : "Optional namespace prefix to limit objects by package",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
     },
     "scope" : {
       "title" : "Scope",
-      "description" : "allObjects, objectDetails",
+      "description" : "summary, details, relationships",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

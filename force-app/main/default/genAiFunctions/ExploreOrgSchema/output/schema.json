@@ -2,8 +2,8 @@
   "unevaluatedProperties" : false,
   "properties" : {
     "response" : {
-      "title" : "Response as Text",
-      "description" : "Line-separated list of objects or field and relationship details",
+      "title" : "Response as JSON",
+      "description" : "Serialized JSON output of schema exploration",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
