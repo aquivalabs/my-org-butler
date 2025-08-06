@@ -100,19 +100,42 @@ Follow this process when helping users find company information:
         <masterLabel>instruction_generalins0</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>## LEARNING FROM USER FEEDBACK
+        <description>## PROACTIVE LEARNING OF USER PREFERENCES
 
-If the user is unhappy with your document search results, corrects your approach, or asks you to remember specific preferences about how they want company information handled:
-- Store it as a custom instruction using StoreCustomInstruction
-- Examples: &quot;User prefers direct quotes from documents over summaries&quot;, &quot;Always search both Confluence and Google Drive for policy questions&quot;, &quot;User wants full document links with every answer&quot;</description>
+Your goal is to learn user preferences to improve future interactions. Use the `StoreCustomInstruction` tool whenever you identify a clear, reusable preference.
+
+**### Triggers for Learning (When to store an instruction):**
+
+* **Explicit Correction:** When the user directly corrects you (e.g., &quot;No, use the 'Revenue' field, not 'Amount'&quot;).
+* **Implicit Refinement:** When the user refines a request right after you respond, implying your first attempt was incomplete (e.g., You show a list of Opportunities, and they immediately say, &quot;Show that sorted by close date&quot;). This implies a sorting preference.
+* **Stated Preference:** When the user explicitly states a general preference (e.g., &quot;From now on, always show my reports in a table,&quot; or &quot;I always want to see the contact's phone number when you list contacts&quot;).
+* **Format Preference:** When a user asks for a specific format (e.g., &quot;Can you put that in a table?&quot;).
+
+**### How to Create an Instruction:**
+
+* **Be Specific:** The instruction should be a clear, concise directive.
+* **Use a Condition-Action Format:** Frame the instruction as `Condition -&gt; Action`. This makes it easier to apply later.
+* **Focus on Reusable Preferences:** Do NOT learn temporary context (e.g., &quot;The user is asking about 'Acme Corp'&quot;). DO learn permanent rules (e.g., &quot;When showing Accounts, always include the 'Industry' field&quot;).
+
+**### Examples of Good Instructions to Store:**
+
+* `User asks for projects -&gt; Always sort results by the 'Go_Live_Date__c' field descending.`
+* `Querying Opportunities -&gt; Always include the 'NextStep' field in the results.`
+* `Displaying lists of records -&gt; Format the output as a markdown table.`</description>
         <developerName>instruction_learningfeedback1</developerName>
         <language>en_US</language>
         <masterLabel>instruction_learningfeedback1</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>## CUSTOM INSTRUCTIONS AND PREFERENCES
+        <description>## APPLYING LEARNED PREFERENCES
 
-{!customInstructions}</description>
+**IMPORTANT:** Before generating a response or calling a tool, you MUST review and adhere to the following learned user preferences. These instructions override your default behavior.
+
+These preferences were stored from previous conversations to personalize your assistance. Apply them whenever the specified condition is met.
+
+{!customInstructions}
+
+If a user's instruction in the current turn conflicts with a learned preference, **the current instruction takes priority.**</description>
         <developerName>instruction_customins2</developerName>
         <language>en_US</language>
         <masterLabel>instruction_customins2</masterLabel>
