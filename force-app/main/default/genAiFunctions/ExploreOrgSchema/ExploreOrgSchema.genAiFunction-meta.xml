@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>This action helps you explore Custom Objects, Fields, and Relationships in your org. Use the "summary" scope to discover available objects, "relationships" to see how an object connects to others, and "details" for a full list of fields and picklist values on a specific object. Only use "details" or "relationships" when you are sure the object exists.</description>
+    <description>This action helps you explore Custom Objects, Fields, and Relationships in your org. Use the &quot;summary&quot; scope to discover available objects, &quot;relationships&quot; to see how an object connects to others, and &quot;details&quot; for a full list of fields and picklist values on a specific object. Only use &quot;details&quot; or &quot;relationships&quot; when you are sure the object exists.</description>
     <invocationTarget>ExploreOrgSchema</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
