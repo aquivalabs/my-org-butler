@@ -1,12 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
-    <agentTemplate>EmployeeCopilot__AgentforceEmployeeAgent</agentTemplate>
-    <agentType>AgentforceEmployeeAgent</agentType>
-    <botMlDomain>
+<BotTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>My Org Butler</masterLabel>
+    <conversationLanguages>en_US</conversationLanguages>
+    <mainMenuDialog>Main_Menu</mainMenuDialog>
+    <botDialogs>
+        <developerName>Main_Menu</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Main_Menu</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <botDialogs>
+        <botSteps>
+            <botMessages>
+                <message>Hi! I&apos;m your helpful bot.</message>
+                <messageIdentifier>d02ccf9f-a873-41cb-9578-6024d127d0a3</messageIdentifier>
+            </botMessages>
+            <stepIdentifier>02030f96-f3b7-4b7a-a98b-3eb37f045b84</stepIdentifier>
+            <type>Message</type>
+        </botSteps>
+        <botSteps>
+            <stepIdentifier>01db377c-b5da-46ba-8f14-950eab443cd7</stepIdentifier>
+            <type>Wait</type>
+        </botSteps>
+        <developerName>Welcome</developerName>
+        <isPlaceholderDialog>false</isPlaceholderDialog>
+        <label>Welcome</label>
+        <showInFooterMenu>false</showInFooterMenu>
+    </botDialogs>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <developerName>customInstructions</developerName>
+        <includeInPrompt>true</includeInPrompt>
+        <label>customInstructions</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <conversationVariables>
+        <dataType>Text</dataType>
+        <description>This variable may also be referred to as VerifiedCustomerId</description>
+        <developerName>VerifiedCustomerId</developerName>
+        <includeInPrompt>false</includeInPrompt>
+        <label>VerifiedCustomerId</label>
+        <visibility>Internal</visibility>
+    </conversationVariables>
+    <entryDialog>Welcome</entryDialog>
+    <mlDomain>
         <label>My Org Butler</label>
-        <name>MyOrgButler</name>
-    </botMlDomain>
-    <botSource>None</botSource>
+        <name>MyOrgButler_v2_Template</name>
+    </mlDomain>
+    <agentType>AgentforceEmployeeAgent</agentType>
     <contextVariables>
         <contextVariableMappings>
             <SObjectType>MessagingSession</SObjectType>
@@ -176,9 +217,6 @@
         <label>Contact Id</label>
     </contextVariables>
     <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</description>
-    <label>My Org Butler</label>
-    <logPrivateConversationData>false</logPrivateConversationData>
     <richContentEnabled>true</richContentEnabled>
-    <sessionTimeout>0</sessionTimeout>
     <type>InternalCopilot</type>
-</Bot>
+</BotTemplate>

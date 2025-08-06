@@ -1,12 +1,16 @@
-public with sharing class NightlyMemoryConsolidation implements Database.Batchable<Id>, Schedulable {
+// PMD False Positives: Package Subscribers need to schedule this class
+@SuppressWarnings('PMD.AvoidGlobalMethod')
+global with sharing class NightlyMemoryConsolidation implements Database.Batchable<Id>, Schedulable {
     
     private static final String CONSOLIDATED_NAME = 'CONSOLIDATED_MEMORY';
-    
-    // PUBLIC
-    
-    public void execute(SchedulableContext context) {
+
+    // GLOBAL
+
+    global void execute(SchedulableContext context) {
         Database.executeBatch(new NightlyMemoryConsolidation());
     }
+    
+    // PUBLIC
     
     public Iterable<Id> start(Database.BatchableContext context) {
         Set<Id> usersWithUnconsolidatedMemory = new Set<Id>();
