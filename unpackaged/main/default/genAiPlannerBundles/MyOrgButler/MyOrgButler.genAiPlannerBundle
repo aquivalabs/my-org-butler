@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <attributeMappings>
-        <attributeName>AnswerCompanyQuestions.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>AnswerCompanyQuestions.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerCompanyQuestions.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>AnswerCompanyQuestions.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerQuestionsAboutData.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>SearchTheWeb.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerQuestionsAboutData.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>SearchTheWeb.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>CreateAndModifyData.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>ExplainAndModifyMetadata.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>CreateAndModifyData.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>ExplainAndModifyMetadata.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>ExplainAndModifyMetadata.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>UnderstandDataModel.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>ExplainAndModifyMetadata.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>UnderstandDataModel.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>GitHubTasks.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>CreateAndModifyData.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>GitHubTasks.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>CreateAndModifyData.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>SearchTheWeb.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>GitHubTasks.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>SearchTheWeb.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>GitHubTasks.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>UnderstandDataModel.UpdateUserInfo.output_userInfo</attributeName>
+        <attributeName>AnswerQuestionsAboutData.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>UnderstandDataModel.LoadUserInfo.output_userInfo</attributeName>
+        <attributeName>AnswerQuestionsAboutData.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>userInfo</mappingTargetName>
+        <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</description>
@@ -109,106 +109,110 @@
     <genAiPlugins>
         <genAiPluginName>UnderstandDataModel</genAiPluginName>
     </genAiPlugins>
+    <genAiPlugins>
+        <genAiPluginName>CaptureUserFeedback</genAiPluginName>
+    </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerCompanyQuestions.SearchCompanyKnowledge</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>AnswerCompanyQuestions.SearchCompanyKnowledge</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerQuestionsAboutData.ExploreOrgSchema</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>AnswerQuestionsAboutData.ExploreOrgSchema</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerQuestionsAboutData.QueryRecordsWithSoql</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>AnswerQuestionsAboutData.QueryRecordsWithSoql</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerQuestionsAboutData.SearchWeb</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>AnswerQuestionsAboutData.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__CreateAndModifyData.CallRestApi</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>CreateAndModifyData.CallRestApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__CreateAndModifyData.ExploreOrgSchema</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>CreateAndModifyData.ExploreOrgSchema</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__CreateAndModifyData.QueryRecordsWithSoql</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>CreateAndModifyData.QueryRecordsWithSoql</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__CreateAndModifyData.SearchWeb</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>CreateAndModifyData.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExplainAndModifyMetadata.CallMetadataApi</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>ExplainAndModifyMetadata.CallMetadataApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExplainAndModifyMetadata.CallToolingApi</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>ExplainAndModifyMetadata.CallToolingApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExplainAndModifyMetadata.CreatePlantUmlUrl</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>ExplainAndModifyMetadata.CreatePlantUmlUrl</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExplainAndModifyMetadata.SearchWeb</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>ExplainAndModifyMetadata.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__GitHubTasks.CallGitHubApi</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>GitHubTasks.CallGitHubApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__SearchTheWeb.SearchWeb</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>SearchTheWeb.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__UnderstandDataModel.CreatePlantUmlUrl</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>UnderstandDataModel.CreatePlantUmlUrl</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__UnderstandDataModel.ExploreOrgSchema</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>UnderstandDataModel.ExploreOrgSchema</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__UnderstandDataModel.QueryRecordsWithSoql</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>UnderstandDataModel.QueryRecordsWithSoql</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
-        <ruleExpressionName>userInfoLoaded</ruleExpressionName>
-        <targetName>aquiva_os__UnderstandDataModel.SearchWeb</targetName>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>UnderstandDataModel.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressions>
         <conditions>
-            <leftOperand>userInfo</leftOperand>
+            <leftOperand>customInstructions</leftOperand>
             <leftOperandType>Variable</leftOperandType>
             <operator>isNotEmpty</operator>
         </conditions>
-        <expressionLabel>User Info Loaded</expressionLabel>
-        <expressionName>userInfoLoaded</expressionName>
+        <expression>customInstructionsLoaded</expression>
+        <expressionLabel>Custom Instructions Loaded</expressionLabel>
+        <expressionName>customInstructionsLoaded</expressionName>
         <expressionType>sel</expressionType>
     </ruleExpressions>
 </GenAiPlannerBundle>
