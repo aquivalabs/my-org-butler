@@ -109,9 +109,6 @@
     <genAiPlugins>
         <genAiPluginName>UnderstandDataModel</genAiPluginName>
     </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>CaptureUserFeedback</genAiPluginName>
-    </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
     <ruleExpressionAssignments>
