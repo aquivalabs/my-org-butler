@@ -80,9 +80,7 @@
         <label>My Org Butler</label>
         <name>MyOrgButler_v1_Template</name>
     </mlDomain>
-    <agentTemplate>EmployeeCopilot__AgentforceEmployeeAgent</agentTemplate>
     <agentType>AgentforceEmployeeAgent</agentType>
-    <botSource>None</botSource>
     <contextVariables>
         <contextVariableMappings>
             <SObjectType>MessagingSession</SObjectType>

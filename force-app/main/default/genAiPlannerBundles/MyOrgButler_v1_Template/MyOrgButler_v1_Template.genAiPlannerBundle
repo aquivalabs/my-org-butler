@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <attributeMappings>
-        <attributeName>AnswerCompanyQuestions.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__AnswerCompanyQuestions.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerCompanyQuestions.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__AnswerCompanyQuestions.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerQuestionsAboutData.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__AnswerQuestionsAboutData.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>AnswerQuestionsAboutData.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__AnswerQuestionsAboutData.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>CreateAndModifyData.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__CreateAndModifyData.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>CreateAndModifyData.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__CreateAndModifyData.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>ExplainAndModifyMetadata.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__ExplainAndModifyMetadata.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>ExplainAndModifyMetadata.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__ExplainAndModifyMetadata.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>GitHubTasks.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__GitHubTasks.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>GitHubTasks.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__GitHubTasks.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>SearchTheWeb.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__SearchTheWeb.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>SearchTheWeb.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__SearchTheWeb.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>UnderstandDataModel.LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__UnderstandDataModel.LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>UnderstandDataModel.StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__UnderstandDataModel.StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
