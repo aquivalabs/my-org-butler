@@ -7,7 +7,7 @@ global with sharing class NightlyMemoryConsolidation implements Database.Batchab
     // GLOBAL
 
     global void execute(SchedulableContext context) {
-        Database.executeBatch(new NightlyMemoryConsolidation());
+        Database.executeBatch(new NightlyMemoryConsolidation(), 1);
     }
     
     // PUBLIC
