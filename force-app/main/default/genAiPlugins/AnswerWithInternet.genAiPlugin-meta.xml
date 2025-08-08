@@ -2,7 +2,7 @@
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <canEscalate>false</canEscalate>
     <description>This topic handles user requests that require searching the web for information not available in Salesforce or internal sources.</description>
-    <developerName>SearchTheWeb</developerName>
+    <developerName>AnswerWithInternet</developerName>
     <genAiFunctions>
         <functionName>SearchWeb</functionName>
     </genAiFunctions>
@@ -65,7 +65,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Search the Web</masterLabel>
+    <masterLabel>MyOrgButler: Answer question using the internet</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Your job is only to search the web for information that is not available in Salesforce or internal sources and provide relevant results to the user.</scope>
 </GenAiPlugin>

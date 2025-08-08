@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canEscalate>false</canEscalate>
+    <description>This topic enables answering user questions based on files and attachments stored directly on Salesforce records. It supports traversing from child records (e.g., Opportunity) to related parents (e.g., Account) to locate relevant documents such as contracts, MSAs, NDAs, or quotes.</description>
+    <developerName>AnswerWithFiles</developerName>
+    <genAiFunctions>
+        <functionName>AnswerWithRelatedFiles</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>AnswerWithCurrentFile</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>EmployeeCopilot__GetRecordDetails</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>EmployeeCopilot__IdentifyRecordByName</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>### Purpose  
+Answer questions based on actual file content stored on Salesforce records.
+
+### File Discovery  
+- Search files and attachments on the current record (e.g., Opportunity)
+- Also include related parent records (e.g., Account)
+
+### Question Types  
+- File lookup: “Is there a signed NDA?”
+- File content: “What are the payment terms in the MSA?”
+- Summaries: “Can you summarize the contract?”
+
+### Behavior  
+- If no file is found, ask the user to clarify or respond accordingly.
+- Be concise. TL;DR first for summaries.
+- Support follow-up questions by maintaining conversational context.</description>
+        <developerName>instruction_purposeans0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_purposeans0</masterLabel>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <masterLabel>MyOrgButler: Answer questions with file content</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Use this topic when the user wants to understand the content of a file or verify whether a document exists on a Salesforce record. Typical questions might involve asking whether an NDA or MSA has been signed, what’s included in a contract, or details from a quote or proposal stored as an attachment.
+
+This topic is appropriate when:
+
+- The user is interacting with a record (e.g., Opportunity) and refers to a file, attachment, or document
+- The question requires reading or summarizing file content
+- The question implies document lookup, even indirectly (“Do we have an NDA on file?”)
+
+Do not use this topic if:
+- The question refers to external sources like Confluence, G-Drive, or embedded content
+- The user is asking about general record fields or metadata (use a data or metadata topic instead)</scope>
+</GenAiPlugin>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</activeVersionIdentifier>
+    <developerName>AnswerFromFile</developerName>
+    <masterLabel>Answer questions about this file</masterLabel>
+    <templateVersions>
+        <content>You&apos;re a business-savvy assistant specialized in analyzing Salesforce files like contracts, proposals, or SOWs.
+
+A user has asked a question about the file you&apos;re currently focused on.
+
+&lt;FILE-METADATA&gt;
+{!$RecordSnapshot:file.Snapshot}
+&lt;/FILE-METADATA&gt;
+
+
+&lt;QUESTION&gt;
+ {!$Input:userQuestion}
+&lt;/QUESTION&gt;
+
+### Answering Instructions
+
+- Use only the file&apos;s content and metadata.
+- If the file doesn&apos;t contain the requested info, say so clearly.
+- If a summary is requested:
+ - Start with a TL;DR (1–2 lines)
+ - Then follow with a more detailed explanation
+- Avoid overly long answers unless explicitly asked
+- Keep responses concise to allow space for follow-ups
+</content>
+        <inputs>
+            <apiName>file</apiName>
+            <definition>SOBJECT://ContentDocument</definition>
+            <masterLabel>file</masterLabel>
+            <referenceName>Input:file</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>userQuestion</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>userQuestion</masterLabel>
+            <referenceName>Input:userQuestion</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getDataForGrounding</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>recordId</parameterName>
+                <valueExpression>{!$Input:file.Id}</valueExpression>
+            </parameters>
+            <referenceName>RecordSnapshot:file</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

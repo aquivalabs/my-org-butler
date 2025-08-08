@@ -20,5 +20,5 @@ For example:
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
-    <masterLabel>MyOrgButler: Search Company Knowledge</masterLabel>
+    <masterLabel>MyOrgButler: Search Vector Database</masterLabel>
 </GenAiFunction>

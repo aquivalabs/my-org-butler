@@ -1,0 +1,31 @@
+{
+  "required" : [ "Input:file", "Input:userQuestion" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "Input:file" : {
+      "title" : "file",
+      "description" : "the current file/attachment",
+      "lightning:type" : "lightning__recordInfoType",
+      "lightning:sObjectInfo" : {
+        "apiName" : "ContentDocument"
+      },
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "Input:userQuestion" : {
+      "title" : "userQuestion",
+      "description" : "This is the original question from the user.\nYou may rewrite it slightly to include implicit context from a previous question and answer, especially if the user asks a follow-up or refers back to previous content (e.g., \"and what about pricing?\").\nOnly do this when it helps clarify intent and improves the response.\n",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "outputLanguage" : {
+      "title" : "Prompt Operation output language",
+      "description" : "Select Prompt Operation output language",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -1,27 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
-    <aiPluginUtterances>
-        <developerName>utterance_showrecent0</developerName>
-        <language>en_US</language>
-        <masterLabel>utterance_showrecent0</masterLabel>
-        <utterance>- Show recent changes in a repository
-- View detailed commit information
-- Compare changes between commits
-- Get information about a GitHub user
-- List my GitHub repositories
-- Show me repository topics
-- Get the README of a repository
-- List and search for issues
-- Create a new issue in a repository
-- Update the status of an issue
-- Add a comment to an issue
-- List pull requests for a repository
-- View pull request details and comments
-- Search repositories by topic</utterance>
-    </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Use this topic for comprehensive GitHub repository insights. Get detailed commit history with file-level changes, compare commits or branches, manage issues and pull requests, and search across repositories. Provides rich context about code changes, including modified files and their content.</description>
-    <developerName>GitHubTasks</developerName>
+    <developerName>ManageGitHub</developerName>
     <genAiFunctions>
         <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
@@ -682,7 +663,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins3</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: GitHub Tasks</masterLabel>
+    <masterLabel>MyOrgButler: Manage GitHub</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Use this topic for browsing GitHub repositories, managing issues, and viewing pull requests. Includes:
 - User information and repository listing

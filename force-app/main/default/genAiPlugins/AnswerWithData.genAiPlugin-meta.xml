@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
-    <aiPluginUtterances>
-        <developerName>utterance_listmytopa0</developerName>
-        <language>en_US</language>
-        <masterLabel>utterance_listmytopa0</masterLabel>
-        <utterance>- List my Top 5 accounts.
-- Propose the opportunity I should work on next.
-- Who is the boss of X?
-- Which Skill is most requested in Projects in the current year?
-- What&apos;s the status of my projects?
-- Show me the color status of specific projects.
-- Give me project health information.
-- What are the current statuses in the system?</utterance>
-    </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users understand and analyze their Salesforce data through data model exploration and SOQL queries. Combines understanding of object relationships with data analysis capabilities.</description>
-    <developerName>AnswerQuestionsAboutData</developerName>
+    <developerName>AnswerWithData</developerName>
     <genAiFunctions>
         <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
@@ -109,7 +96,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Anwer questions about data</masterLabel>
+    <masterLabel>MyOrgButler: Anwer questions with Data</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Use this topic when the user implicitly ask questions about data record in Standard Salesforce apps or apps installed in the org.</scope>
 </GenAiPlugin>

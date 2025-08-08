@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</activeVersionIdentifier>
+    <developerName>AnswerFromRelatedFiles</developerName>
+    <masterLabel>Answer questions with related files</masterLabel>
+    <templateVersions>
+        <content>You&apos;re an expert Sales Assistant with deep knowledge of Sales Cloud, CRM processes, 
+and sales-related documentation.
+
+A Salesforce user has asked a question about this opportunity and its related files.
+
+&lt;QUESTION&gt;
+{!$Input:userQuestion}
+&lt;/QUESTION&gt;
+
+&lt;OPPORTUNITY&gt;
+{!$RecordSnapshot:opportunity.Snapshot}
+&lt;/OPPORTUNITY&gt;
+
+&lt;ATTACHMENTS&gt;
+{!$RelatedList:opportunity.CombinedAttachments.Records}
+{!$RelatedList:opportunity.Account.CombinedAttachments.Records}
+&lt;/ATTACHMENTS&gt;
+
+### Answering Instructions
+
+- Answer using only the content of attached files on the Opportunity and its Account.
+- If no relevant file content is available, respond clearly.
+- If the user asks for a summary:
+ - Start with a TL;DR (1–2 lines)
+ - Then give a longer explanation
+- Stay concise unless more detail is requested
+- Encourage follow-up questions by keeping answers focused
+
+</content>
+        <inputs>
+            <apiName>opportunity</apiName>
+            <definition>SOBJECT://Opportunity</definition>
+            <masterLabel>opportunity</masterLabel>
+            <referenceName>Input:opportunity</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>userQuestion</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>userQuestion</masterLabel>
+            <referenceName>Input:userQuestion</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT41Mini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getRelatedList</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>parentRecordId</parameterName>
+                <valueExpression>{!$Input:opportunity.Id}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>relatedListName</parameterName>
+                <valueExpression>CombinedAttachments</valueExpression>
+            </parameters>
+            <referenceName>RelatedList:opportunity.CombinedAttachments.Records</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getRelatedList</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>parentRecordId</parameterName>
+                <valueExpression>{!$Input:opportunity.Account.Id}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>relatedListName</parameterName>
+                <valueExpression>CombinedAttachments</valueExpression>
+            </parameters>
+            <referenceName>RelatedList:opportunity.Account.CombinedAttachments.Records</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>invocable://getDataForGrounding</definition>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>recordId</parameterName>
+                <valueExpression>{!$Input:opportunity.Id}</valueExpression>
+            </parameters>
+            <referenceName>RecordSnapshot:opportunity</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

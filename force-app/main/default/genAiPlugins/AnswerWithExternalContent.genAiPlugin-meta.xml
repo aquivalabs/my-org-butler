@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
-    <aiPluginUtterances>
-        <developerName>utterance_whatisourc0</developerName>
-        <language>en_US</language>
-        <masterLabel>utterance_whatisourc0</masterLabel>
-        <utterance>- What is our company policy on remote work?
-- How do I submit an expense report?
-- What are the safety procedures for the lab?
-- Where can I find the employee handbook?
-- What is the process for requesting time off?
-- Tell me about our data privacy policy.
-- What is the Aquiva approach to Salesforce Security Review?
-- What is the Aquiva approach to Security Office Hours?
-- How many weeks of PTO can I take in one go?
-- What are Aquiva&apos;s security guidelines?
-- Tell me about Aquiva&apos;s development processes?
-- What are our company standards and procedures?
-- How does Aquiva handle security reviews?
-- What documentation do I need for security reviews?</utterance>
-    </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Helps users find information from company knowledge sources including policies, procedures, handbooks, and internal documentation. Provides accurate answers grounded in your organization&apos;s actual documents (Google Drive and Confluence).</description>
-    <developerName>AnswerCompanyQuestions</developerName>
+    <developerName>AnswerWithExternalContent</developerName>
     <genAiFunctions>
-        <functionName>SearchCompanyKnowledge</functionName>
+        <functionName>SearchVectorDatabase</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>LoadCustomInstructions</functionName>
@@ -141,7 +122,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Answer from internal document sources</masterLabel>
+    <masterLabel>MyOrgButler: Answer questions with external content</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Use this topic when users ask questions about company policies, procedures, engineering standards, documentation, or any internal company information found in Confluence, Google Drive (e.g. project folders, SOWs), or other internal sources. This topic does not query Salesforce directly When in doubt which source is aimed for ask the user.</scope>
 </GenAiPlugin>

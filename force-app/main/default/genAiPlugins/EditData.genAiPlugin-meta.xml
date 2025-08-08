@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
-    <aiPluginUtterances>
-        <developerName>utterance_createatas0</developerName>
-        <language>en_US</language>
-        <masterLabel>utterance_createatas0</masterLabel>
-        <utterance>- Create a task on this Opportunity for follow-up next week
-- Update the description field on my current case
-- Search the web for this Account&apos;s address and populate the address fields
-- Create a new Contact for Company X with information from their website
-- Mark all my open tasks as completed
-- Create an Event with these team members for tomorrow</utterance>
-    </aiPluginUtterances>
     <canEscalate>false</canEscalate>
     <description>Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.</description>
-    <developerName>CreateAndModifyData</developerName>
+    <developerName>EditData</developerName>
     <genAiFunctions>
         <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
@@ -95,7 +84,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Create and Modify Data</masterLabel>
+    <masterLabel>MyOrgButler: Edit Data</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Use this topic when the user requests to create new records, update existing records, or perform other data manipulation operations within their Salesforce org.</scope>
 </GenAiPlugin>

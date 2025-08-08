@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
-    <aiPluginUtterances>
-        <developerName>utterance_howdowesto0</developerName>
-        <language>en_US</language>
-        <masterLabel>utterance_howdowesto0</masterLabel>
-        <utterance>- How do we store Projects and Project Members in our Org?
-- Draw a class diagram depicting the Core Sales Cloud objects
-- How is Object A and B related</utterance>
-    </aiPluginUtterances>
     <canEscalate>false</canEscalate>
-    <description>Creates visual representations of data models, processes, and relationships using PlantUML diagrams. Helps users understand complex relationships and workflows through clear visualizations.</description>
-    <developerName>UnderstandDataModel</developerName>
+    <description>Use this topic when the user asks about Salesforce metadata components, data models, object relationships, requests information about installed packages, wants to understand configuration, create visualizations of data structures, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.</description>
+    <developerName>ExploreAndEditMetadata</developerName>
     <genAiFunctions>
         <functionName>LoadCustomInstructions</functionName>
     </genAiFunctions>
@@ -21,13 +13,20 @@
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
+        <functionName>CallMetadataApi</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CallToolingApi</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
         <functionName>CreatePlantUmlUrl</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
         <description>## GENERAL INSTRUCTIONS
-1. Use the ExploreOrgSchema action with &quot;summary&quot; scope first to get a high-level overview of available objects.
-2. For specific objects mentioned by the user, use the ExploreOrgSchema action with &quot;details&quot; scope to understand fields and relationships.
-3. For understanding object relationships specifically, use the ExploreOrgSchema action with &quot;relationships&quot; scope.
+
+1. Use the ExploreOrgSchema action with "summary" scope first to get a high-level overview of available objects.
+2. For specific objects mentioned by the user, use the ExploreOrgSchema action with "details" scope to understand fields and relationships.
+3. For understanding object relationships specifically, use the ExploreOrgSchema action with "relationships" scope.
 4. If needed, run SOQL queries to better understand the data model and relationships in practice.
 5. For visualization requests, create a PlantUML diagram that shows:
    - Objects as classes
@@ -35,7 +34,10 @@
    - Relationships as connections between classes
    - Proper cardinality notation (1:1, 1:n, n:n)
 6. Use the CreatePlantUmlUrl action to convert the diagram into a viewable image.
-7. If the diagram is large, focus on the most relevant parts of the data model as mentioned by the user.</description>
+7. If the diagram is large, focus on the most relevant parts of the data model as mentioned by the user.
+8. For metadata operations, decide whether to use the tooling API or the metadata API—use the tooling API for Apex classes, triggers, and other development components, and the metadata API for most other types.
+9. Ensure that the metadata is properly structured and formatted before making any changes. Execute the appropriate API action to create or modify components, and provide either a confirmation of success or a clear explanation of any errors.
+10. When handling packages, query installed components and explain their functionality, dependencies, and relationships.</description>
         <developerName>instruction_generalins0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_generalins0</masterLabel>
@@ -82,7 +84,7 @@ If a user&apos;s instruction in the current turn conflicts with a learned prefer
         <masterLabel>instruction_customins2</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
-    <masterLabel>MyOrgButler: Understand Data Model</masterLabel>
+    <masterLabel>MyOrgButler: Explore and Edit Metadata</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Use this topic when the user asks questions about understanding or visualizing the data model, relationships between objects, entity relationship diagrams, or how different parts of the Salesforce org are connected data-wise.</scope>
+    <scope>Use this topic when the user asks about Salesforce metadata components, data models, object relationships, entity relationship diagrams, requests information about installed packages, wants to understand configuration, or needs to create/modify metadata components like Apex classes, Flows, or custom objects.</scope>
 </GenAiPlugin>
