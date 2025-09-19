@@ -98,6 +98,8 @@
     <knowledgeFallbackEnabled>false</knowledgeFallbackEnabled>
     <role>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</role>
     <smallTalkEnabled>false</smallTalkEnabled>
+    <stopRecPrompts>false</stopRecPrompts>
+    <stopWelcomePrompts>false</stopWelcomePrompts>
     <surfacesEnabled>false</surfacesEnabled>
     <toneType>Casual</toneType>
 </BotVersion>

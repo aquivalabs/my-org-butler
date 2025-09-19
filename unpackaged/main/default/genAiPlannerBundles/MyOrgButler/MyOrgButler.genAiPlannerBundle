@@ -92,7 +92,7 @@
         <genAiPluginName>ExploreAndEditMetadata</genAiPluginName>
     </genAiPlugins>
     <genAiPlugins>
-        <genAiPluginName>ManageGithub</genAiPluginName>
+        <genAiPluginName>ManageGitHub</genAiPluginName>
     </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>

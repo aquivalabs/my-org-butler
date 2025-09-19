@@ -22,7 +22,7 @@ Follow these steps to get My Org Butler running in your org:
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
 
-2. **Install My Org Butler 2.17** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000OfV3YAK) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000OfV3YAK)
+2. **Install My Org Butler 2.18** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000QBpRYAW) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000QBpRYAW)
 
 3. **Enable Agentforce** in your org (if not already enabled)
 

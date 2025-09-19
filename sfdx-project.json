@@ -12,8 +12,8 @@
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",
-      "versionName": "August '25",
-      "versionNumber": "2.17.0.NEXT",
+      "versionName": "September '25",
+      "versionNumber": "2.18.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
@@ -101,6 +101,7 @@
     "my-org-butler@2.14.0-1": "04tVI000000Ob01YAC",
     "my-org-butler@2.15.0-1": "04tVI000000Ob1dYAC",
     "my-org-butler@2.16.0-1": "04tVI000000OcLtYAK",
-    "my-org-butler@2.17.0-1": "04tVI000000OfV3YAK"
+    "my-org-butler@2.17.0-1": "04tVI000000OfV3YAK",
+    "my-org-butler@2.18.0-1": "04tVI000000QBpRYAW"
   }
 }

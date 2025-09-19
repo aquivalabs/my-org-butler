@@ -51,53 +51,8 @@ public with sharing class AgentMemory {
         String newMemories = buildMemoryText();
         newMemories = newMemories.left(10000);  // Limit to 10k characters to avoid API limits
         
-        // Try with the current class's approach first
         String result = callPrompt(existing, newMemories);
-        
-        // If we still got an error message, try the alternative approach
-        if (result.startsWith('Failed to consolidate memory')) {
-            result = callPromptAlternative(existing, newMemories);
-        }
-        
         return result;
-    }
-    
-    private String callPromptAlternative(String consolidated, String newMemories) {
-        try {
-            // Try using the pattern from the working class (RetrieveVectorizeChunks)
-            ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
-            input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
-            input.additionalConfig.applicationName = 'MyOrgButler';  // Try a different application name
-            input.isPreview = false;
-            
-            // Create parameters
-            ConnectApi.WrappedValue consolidatedParam = new ConnectApi.WrappedValue();
-            consolidatedParam.value = consolidated;
-            
-            ConnectApi.WrappedValue newMemoriesParam = new ConnectApi.WrappedValue();
-            newMemoriesParam.value = newMemories;
-            
-            // Set parameters
-            input.inputParams = new Map<String, ConnectApi.WrappedValue>{
-                'Input:consolidatedMemory' => consolidatedParam,
-                'Input:newMemory' => newMemoriesParam
-            };
-            
-            // Log attempt
-            System.debug('Trying alternative approach with application name: MyOrgButler');
-            
-            // Try with a timeout
-            Datetime startTime = Datetime.now();
-            ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
-                ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('ConsolidateMemory', input);
-            
-            return output.generations[0].text;
-        } catch(Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Error in alternative approach: ' + e.getMessage());
-            
-            // Return a simple summary as fallback if everything fails
-            return 'CONSOLIDATED MEMORY\n\n' + consolidated + '\n\nNEW MEMORIES\n\n' + newMemories;
-        }
     }
     
     private String buildMemoryText() {
@@ -111,33 +66,29 @@ public with sharing class AgentMemory {
     }
     
     private String callPrompt(String consolidated, String newMemories) {
-        try {
-            // Initialize wrapped values for the parameters
-            ConnectApi.WrappedValue consolidatedMemoryValue = new ConnectApi.WrappedValue();
-            consolidatedMemoryValue.value = consolidated;
-            
-            ConnectApi.WrappedValue newMemoryValue = new ConnectApi.WrappedValue();
-            newMemoryValue.value = newMemories;
-            
-            // Setup input for the API call
-            ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
-            input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
-            input.additionalConfig.applicationName = 'PromptBuilderPreview';
-            input.isPreview = false;
-            input.inputParams = new Map<String, ConnectApi.WrappedValue>{
-                'Input:consolidatedMemory' => consolidatedMemoryValue,
-                'Input:newMemory' => newMemoryValue
-            };
-            
-            ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
-                ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('ConsolidateMemory', input);
-            
-            return output.generations[0].text;
-        } 
-        catch(Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Error in AgentMemory.callPrompt: ' + e.getMessage() + '\n' + e.getStackTraceString());
-            return 'Failed to consolidate memory due to error: ' + e.getMessage();
+        if(Test.isRunningTest()) {
+            return 'Mock response';
         }
+
+        ConnectApi.WrappedValue consolidatedMemoryValue = new ConnectApi.WrappedValue();
+        consolidatedMemoryValue.value = consolidated;
+        
+        ConnectApi.WrappedValue newMemoryValue = new ConnectApi.WrappedValue();
+        newMemoryValue.value = newMemories;
+        
+        ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
+        input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
+        input.additionalConfig.applicationName = 'PromptBuilderPreview';
+        input.isPreview = false;
+        input.inputParams = new Map<String, ConnectApi.WrappedValue>{
+            'Input:consolidatedMemory' => consolidatedMemoryValue,
+            'Input:newMemory' => newMemoryValue
+        };
+        
+        ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
+            ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('ConsolidateMemory', input);
+        
+        return output.generations[0].text;
     }
     
     private void updateConsolidated(String content) {
