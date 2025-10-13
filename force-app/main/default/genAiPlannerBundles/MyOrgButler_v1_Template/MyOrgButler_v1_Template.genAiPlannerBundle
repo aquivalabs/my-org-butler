@@ -167,5 +167,4 @@
         <expressionName>customInstructionsLoaded</expressionName>
         <expressionType>sel</expressionType>
     </ruleExpressions>
-    <botTemplate>MyOrgButler_v1_Template</botTemplate>
 </GenAiPlannerBundle>

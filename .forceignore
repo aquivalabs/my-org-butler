@@ -18,3 +18,5 @@ package.xml
 **/tsconfig.json
 
 **/*.ts
+
+unsupported/
