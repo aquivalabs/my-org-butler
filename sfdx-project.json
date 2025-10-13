@@ -30,7 +30,7 @@
   "name": "my-org-butler",
   "namespace": "aquiva_os",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "64.0",
+  "sourceApiVersion": "65.0",
   "packageAliases": {
     "app-foundations@LATEST": "04tVI000000L3ZBYA0",
     "my-org-butler": "0HoVI0000002h2T0AQ",
