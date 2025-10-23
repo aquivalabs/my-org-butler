@@ -12,8 +12,8 @@
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",
-      "versionName": "September '25",
-      "versionNumber": "2.18.0.NEXT",
+      "versionName": "October '25",
+      "versionNumber": "2.19.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [

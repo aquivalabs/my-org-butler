@@ -22,6 +22,9 @@ sf data update record --sobject User --where "Name='User User'" --values "Langua
 echo "Enabling Prompt Builder"
 execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name AgentPlatformBuilder
 
+echo "Manual step: Please navigate to 'Setup → Agentforce Agents' and enable Agentforce"
+read -p "Press Enter to continue once you have enabled Agentforce"
+
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
@@ -38,8 +41,7 @@ echo "Pushing unpackaged changes to scratch org"
 execute sf project deploy start --source-dir unpackaged
 
 echo "Assigning permissions"
-execute sf org assign permset --name MyOrgButlerUser 
-execute sf org assign permset --name AgentAccess 
+execute sf org assign permset --name MyOrgButlerUser --name AgentAccess 
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
