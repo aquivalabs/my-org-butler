@@ -18,6 +18,12 @@
     },
     "deploymentSettings": {
       "doesSkipAsyncApexValidation": true
+    },
+    "einsteinGptSettings": {
+        "enableEinsteinGptPlatform": true
+    },
+    "agentPlatformSettings": {
+        "enableAgentPlatform": true
     }
   }
 }
