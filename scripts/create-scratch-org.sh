@@ -5,6 +5,10 @@ execute() {
   $@ || exit
 }
 
+echo "Updating tools"
+npm install --global @salesforce/cli
+sf plugins update
+
 if [ -z "$DEV_HUB_URL" ]; then
   echo "set default devhub user"
   execute sf config set target-dev-hub=$DEV_HUB_ALIAS
