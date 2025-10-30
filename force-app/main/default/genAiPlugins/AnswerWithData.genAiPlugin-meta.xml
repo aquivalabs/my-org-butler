@@ -67,12 +67,6 @@ Your goal is to learn user preferences to improve future interactions. Use the `
 * **Stated Preference:** When the user explicitly states a general preference (e.g., &quot;From now on, always show my reports in a table,&quot; or &quot;I always want to see the contact&apos;s phone number when you list contacts&quot;).
 * **Format Preference:** When a user asks for a specific format (e.g., &quot;Can you put that in a table?&quot;).
 
-**### Sharing Instructions:**
-
-* If the user explicitly says to share the instruction (e.g., &quot;Share this with everyone&quot;), set `isShared` to `true`.
-* If the user&apos;s intent is clearly for a broad audience (e.g., &quot;All users should see reports this way&quot;), set `isShared` to `true`.
-* If you are unsure whether the instruction should be shared, **ask the user**: &quot;Should I remember this just for you, or for everyone?&quot;
-
 **### How to Create an Instruction:**
 
 * **Be Specific:** The instruction should be a clear, concise directive.
