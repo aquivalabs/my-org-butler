@@ -69,6 +69,11 @@
         <field>Memory__c.Content__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Memory__c.IsShared__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>MyOrgButler User</label>
     <objectPermissions>

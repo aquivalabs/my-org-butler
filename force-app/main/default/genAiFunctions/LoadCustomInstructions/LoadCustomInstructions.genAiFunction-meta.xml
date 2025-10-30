@@ -8,10 +8,12 @@
 - Use this information to personalize responses, follow the user&apos;s preferred communication style, and apply their specific tool usage patterns
 - User and time information is needed for creating user-filtered queries or handling relative time expressions like &quot;last week&quot; or &quot;my accounts&quot;
 - The Org Base URL is needed when constructing links to records or pages</description>
+    <developerName>LoadCustomInstructions</developerName>
     <invocationTarget>LoadCustomInstructions</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>LoadCustomInstructions</localDeveloperName>
     <mappingAttributes>
         <label>customInstructions</label>
         <name>output_customInstructions</name>

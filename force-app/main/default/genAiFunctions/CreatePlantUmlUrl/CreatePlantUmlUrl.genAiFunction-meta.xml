@@ -7,9 +7,11 @@
 - Maximum URL length: 2048 characters
 - Syntax must start with @startuml and end with @enduml
 - Use UTF-8 encoding for special characters</description>
+    <developerName>CreatePlantUmlUrl</developerName>
     <invocationTarget>CreatePlantUmlUrl</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>CreatePlantUmlUrl</localDeveloperName>
     <masterLabel>MyOrgButler: Create PlantUML URL</masterLabel>
 </GenAiFunction>

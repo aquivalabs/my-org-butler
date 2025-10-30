@@ -17,9 +17,11 @@ Key Object Types:
 - ApexTrigger: code, status, usageBeforeUpdate
 - Layout: layout items, buttons, related lists
 - WorkflowRule: criteria, actions, timeTriggered</description>
+    <developerName>CallToolingApi</developerName>
     <invocationTarget>CallToolingApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <localDeveloperName>CallToolingApi</localDeveloperName>
     <masterLabel>MyOrgButler: Call Tooling API</masterLabel>
 </GenAiFunction>

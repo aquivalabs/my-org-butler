@@ -22,12 +22,14 @@ global with sharing class LoadCustomInstructions {
         lines.add('- Base URL for constructing links in this org: ' + URL.getOrgDomainUrl().toExternalForm());
         lines.add('- Salesforce organization ID: ' + System.UserInfo.getOrganizationId());
 
-        lines.add('\n### User-specific instructions:');
-            
-        for (Memory__c memory : [SELECT Content__c FROM Memory__c WHERE CreatedById = :System.UserInfo.getUserId() WITH SYSTEM_MODE ORDER BY CreatedDate DESC]) {
+        for (Memory__c memory : [SELECT Content__c FROM Memory__c
+                                 WHERE IsShared__c = true OR CreatedById = :System.UserInfo.getUserId()
+                                WITH SYSTEM_MODE
+                                ORDER BY IsShared__c DESC, CreatedDate DESC
+        ]) {
             lines.add('- ' + memory.Content__c.trim());
         }
-        
+
         CustomInstructions result = new CustomInstructions();
         result.customInstructions = String.join(lines, '\n');
         return result;

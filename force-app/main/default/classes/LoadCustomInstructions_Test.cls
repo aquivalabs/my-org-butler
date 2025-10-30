@@ -3,6 +3,11 @@ private class LoadCustomInstructions_Test {
 
     @IsTest
     private static void execute() {
+
+        // Setup
+        insert new Memory__c(Content__c = 'Test shared preference', IsShared__c = true);
+        insert new Memory__c(Content__c = 'Test user preference', IsShared__c = false);
+
         // Exercise
         List<LoadCustomInstructions.CustomInstructions> response = LoadCustomInstructions.execute(new List<String>());
 
@@ -17,20 +22,7 @@ private class LoadCustomInstructions_Test {
         System.assert(output.customInstructions.contains(System.UserInfo.getLastName()));
         System.assert(output.customInstructions.contains(System.UserInfo.getOrganizationId()));
         System.assert(output.customInstructions.contains(URL.getOrgDomainUrl().toExternalForm()));
-    }
-
-    @IsTest 
-    private static void executeWithMemory() {
-
-        // Setup
-        insert new Memory__c(Content__c = 'Test user preference');
-        
-        // Exercise
-        List<LoadCustomInstructions.CustomInstructions> response = LoadCustomInstructions.execute(new List<String>());
-
-        // Verify
-        LoadCustomInstructions.CustomInstructions output = response[0];
-        System.assert(output.customInstructions.contains('User-specific instructions:'));
+        System.assert(output.customInstructions.contains('- Test shared preference'));
         System.assert(output.customInstructions.contains('- Test user preference'));
     }
 }
