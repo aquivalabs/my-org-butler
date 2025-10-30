@@ -16,9 +16,11 @@ For example:
 - If user asks &quot;What about remote work?&quot; after discussing employee policies, reformulate to &quot;What are the company&apos;s remote work policies and procedures?&quot;
 - If user asks &quot;How do I do that?&quot; after discussing expense reports, reformulate to &quot;What is the process for submitting expense reports?&quot;
 - Always provide context so the search can find the most relevant internal documents.</description>
+    <developerName>SearchVectorDatabase</developerName>
     <invocationTarget>RetrieveVectorizeChunks</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>SearchVectorDatabase</localDeveloperName>
     <masterLabel>MyOrgButler: Search Vector Database</masterLabel>
 </GenAiFunction>

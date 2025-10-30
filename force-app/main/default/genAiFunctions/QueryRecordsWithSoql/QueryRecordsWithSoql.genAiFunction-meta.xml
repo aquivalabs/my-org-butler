@@ -17,10 +17,12 @@ Output Formatting:
 - Include record links when displaying individual records
 - For aggregate queries, explain what the numbers represent
 - If there are errors, explain them in user-friendly language</description>
+    <developerName>QueryRecordsWithSoql</developerName>
     <invocationTarget>QueryRecordsWithSoql</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>QueryRecordsWithSoql</localDeveloperName>
     <masterLabel>MyOrgButler: Query Records with SOQL</masterLabel>
     <progressIndicatorMessage>Querying records now.</progressIndicatorMessage>
 </GenAiFunction>

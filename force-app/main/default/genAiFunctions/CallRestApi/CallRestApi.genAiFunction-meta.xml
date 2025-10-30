@@ -11,9 +11,11 @@ This action is intended for:
 - Other REST API operations that modify data
 
 For querying data, always use the dedicated QueryRecordsWithSoql action which handles both regular queries and aggregate queries properly.</description>
+    <developerName>CallRestApi</developerName>
     <invocationTarget>CallRestApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>CallRestApi</localDeveloperName>
     <masterLabel>MyOrgButler: Call REST API</masterLabel>
 </GenAiFunction>

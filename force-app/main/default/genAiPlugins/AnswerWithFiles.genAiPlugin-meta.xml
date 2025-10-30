@@ -41,17 +41,18 @@ Answer questions based on actual file content stored on Salesforce records.
         <developerName>instruction_purposeans0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_purposeans0</masterLabel>
+        <sortOrder>0</sortOrder>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
         <description>## SHARING INSTRUCTIONS
 
 * If the user explicitly says to share the instruction (e.g., &quot;Share this with everyone&quot;), set `isShared` to `true`.
 * If the user&apos;s intent is clearly for a broad audience (e.g., &quot;All users should see reports this way&quot;), set `isShared` to `true`.
-* If you are unsure whether the instruction should be shared, **ask the user**: &quot;Should I remember this just for you, or for everyone?&quot;
-</description>
+* If you are unsure whether the instruction should be shared, **ask the user**: &quot;Should I remember this just for you, or for everyone?&quot;</description>
         <developerName>instruction_sharingmem0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_sharingmem0</masterLabel>
+        <sortOrder>0</sortOrder>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
         <description>## PROACTIVE LEARNING OF USER PREFERENCES
@@ -70,7 +71,7 @@ Your goal is to learn user preferences to improve future interactions. Use the `
 * **Be Specific:** The instruction should be a clear, concise directive.
 * **Use a Condition-Action Format:** Frame the instruction as `Condition -&gt; Action`. This makes it easier to apply later.
 * **Focus on Reusable Preferences:** Do NOT learn temporary context (e.g., &quot;The user is asking about &apos;Acme Corp&apos;&quot;). DO learn permanent rules (e.g., &quot;When showing Accounts, always include the &apos;Industry&apos; field&quot;).
-* **Shared or Personal Instructions?** If the context doesn't make it explicit, ask the user if they have everybody benefit from this instruction.
+* **Shared or Personal Instructions?** If the context doesn&apos;t make it explicit, ask the user if they have everybody benefit from this instruction.
 
 **### Examples of Good Instructions to Store:**
 
@@ -80,8 +81,10 @@ Your goal is to learn user preferences to improve future interactions. Use the `
         <developerName>instruction_learningfeedback1</developerName>
         <language>en_US</language>
         <masterLabel>instruction_learningfeedback1</masterLabel>
+        <sortOrder>0</sortOrder>
     </genAiPluginInstructions>
     <language>en_US</language>
+    <localDeveloperName>AnswerWithFiles</localDeveloperName>
     <masterLabel>MyOrgButler: Answer questions with file content</masterLabel>
     <pluginType>Topic</pluginType>
     <scope>Use this topic when the user wants to understand the content of a file or verify whether a document exists on a Salesforce record. Typical questions might involve asking whether an NDA or MSA has been signed, what’s included in a contract, or details from a quote or proposal stored as an attachment.

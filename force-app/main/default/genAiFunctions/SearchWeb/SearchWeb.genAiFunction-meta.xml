@@ -2,9 +2,17 @@
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>- Use this helper action whenever you need information that you dont have.
 - It leverage the Tavily API which does a natural language query to the web and return with a single natural language answer.</description>
+    <developerName>SearchWeb</developerName>
     <invocationTarget>SearchWeb</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>SearchWeb</localDeveloperName>
+    <mappingAttributes>
+        <label>answer</label>
+        <name>output_answer</name>
+        <parameterName>answer</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
     <masterLabel>MyOrgButler: Search the Web</masterLabel>
 </GenAiFunction>

@@ -4,10 +4,12 @@
 - Respond concisely—prefer TL;DR followed by detail when summarizing.
 - If the file doesn’t contain the answer, say so clearly.
 - Allow follow-up questions by reusing earlier context in rewritten user input.</description>
+    <developerName>AnswerWithCurrentFile</developerName>
     <invocationTarget>AnswerFromFile</invocationTarget>
     <invocationTargetType>generatePromptResponse</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>AnswerWithCurrentFile</localDeveloperName>
     <masterLabel>Answer questions with current file</masterLabel>
     <progressIndicatorMessage>Digesting file content</progressIndicatorMessage>
 </GenAiFunction>

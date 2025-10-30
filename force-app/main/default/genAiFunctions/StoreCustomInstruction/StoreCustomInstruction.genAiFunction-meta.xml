@@ -8,10 +8,12 @@
 - The instruction should specify when and how to apply this: &quot;When showing data results, format as tables instead of bullet points&quot;
 - After storing, acknowledge: &quot;I&apos;ll remember that preference for future interactions&quot; and immediately apply the new instruction
 - This creates persistent memory that improves your responses in all future conversations with this user</description>
+    <developerName>StoreCustomInstruction</developerName>
     <invocationTarget>StoreCustomInstruction</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>StoreCustomInstruction</localDeveloperName>
     <mappingAttributes>
         <label>customInstructions</label>
         <name>output_customInstructions</name>
