@@ -81,7 +81,7 @@
         <name>MyOrgButler_v1_Template</name>
     </mlDomain>
     <agentType>AgentforceEmployeeAgent</agentType>
-    <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</description>
+    <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.#DisableURLRedaction#</description>
     <richContentEnabled>true</richContentEnabled>
     <type>InternalCopilot</type>
 </BotTemplate>
