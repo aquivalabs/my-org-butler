@@ -9,7 +9,7 @@ My Org Butler is a showcase for building Agentforce solutions that help Salesfor
 
 ### Show me a demo
 
-[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/_pz1rgWpDXU "Agentforce Version")
+[![Agentforce Demo](http://img.youtube.com/vi/_pz1rgWpDXU/hqdefault.jpg)](https://youtu.be/LuLv77KKRIo?si=-ya1wjyksBH2jZbG&t=656 "Agentforce Version")
 
 
 Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist](https://youtube.com/playlist?list=PL9OHq276T12G1Ngw5m05KZyY5jwF5qMLD&si=rmKXPGRYhw4Bxgs9).
@@ -93,4 +93,4 @@ Want to customize or extend the Butler?
 2. Replace `aquiva_os` namespace with your own (or remove it)
 3. Create a scratch org: `./scripts/create-scratch-org.sh`
 4. Make your changes
-5. Create a package: `./scripts/create-package.sh`
+5. Create a package and versions: `./scripts/create-package.sh`
