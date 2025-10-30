@@ -2,13 +2,6 @@
 <BotTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <masterLabel>My Org Butler</masterLabel>
     <conversationLanguages>en_US</conversationLanguages>
-    <mainMenuDialog>Main_Menu</mainMenuDialog>
-    <botDialogs>
-        <developerName>Main_Menu</developerName>
-        <isPlaceholderDialog>false</isPlaceholderDialog>
-        <label>Main_Menu</label>
-        <showInFooterMenu>false</showInFooterMenu>
-    </botDialogs>
     <botDialogs>
         <botSteps>
             <botMessages>

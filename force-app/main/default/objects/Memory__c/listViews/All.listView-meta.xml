@@ -3,9 +3,9 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Content__c</columns>
+    <columns>IsShared__c</columns>
     <columns>CREATEDBY_USER</columns>
     <columns>CREATED_DATE</columns>
-    <columns>LAST_UPDATE</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -59,6 +59,7 @@ Your goal is to learn user preferences to improve future interactions. Use the `
 * **Be Specific:** The instruction should be a clear, concise directive.
 * **Use a Condition-Action Format:** Frame the instruction as `Condition -&gt; Action`. This makes it easier to apply later.
 * **Focus on Reusable Preferences:** Do NOT learn temporary context (e.g., &quot;The user is asking about &apos;Acme Corp&apos;&quot;). DO learn permanent rules (e.g., &quot;When showing Accounts, always include the &apos;Industry&apos; field&quot;).
+* **Shared or Personal Instructions?** If the context doesn't make it explicit, ask the user if they have everybody benefit from this instruction.
 
 **### Examples of Good Instructions to Store:**
 

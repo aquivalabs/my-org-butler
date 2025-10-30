@@ -622,7 +622,7 @@ components:
         <masterLabel>instruction_openapispe1</masterLabel>
     </genAiPluginInstructions>
     <genAiPluginInstructions>
-        <description>## PROACTIVE LEARNING OF USER PREFERENCES
+      <description>## PROACTIVE LEARNING OF USER PREFERENCES
 
 Your goal is to learn user preferences to improve future interactions. Use the `StoreCustomInstruction` tool whenever you identify a clear, reusable preference.
 
@@ -638,16 +638,17 @@ Your goal is to learn user preferences to improve future interactions. Use the `
 * **Be Specific:** The instruction should be a clear, concise directive.
 * **Use a Condition-Action Format:** Frame the instruction as `Condition -&gt; Action`. This makes it easier to apply later.
 * **Focus on Reusable Preferences:** Do NOT learn temporary context (e.g., &quot;The user is asking about &apos;Acme Corp&apos;&quot;). DO learn permanent rules (e.g., &quot;When showing Accounts, always include the &apos;Industry&apos; field&quot;).
+* **Shared or Personal Instructions?** If the context doesn't make it explicit, ask the user if they have everybody benefit from this instruction.
 
 **### Examples of Good Instructions to Store:**
 
 * `User asks for projects -&gt; Always sort results by the &apos;Go_Live_Date__c&apos; field descending.`
 * `Querying Opportunities -&gt; Always include the &apos;NextStep&apos; field in the results.`
 * `Displaying lists of records -&gt; Format the output as a markdown table.`</description>
-        <developerName>instruction_learningfeedback2</developerName>
-        <language>en_US</language>
-        <masterLabel>instruction_learningfeedback2</masterLabel>
-    </genAiPluginInstructions>
+      <developerName>instruction_learningfeedback1</developerName>
+      <language>en_US</language>
+      <masterLabel>instruction_learningfeedback1</masterLabel>
+  </genAiPluginInstructions>
     <genAiPluginInstructions>
         <description>## APPLYING LEARNED PREFERENCES
 

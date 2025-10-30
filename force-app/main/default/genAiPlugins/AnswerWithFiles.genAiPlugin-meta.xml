@@ -15,6 +15,12 @@
     <genAiFunctions>
         <functionName>EmployeeCopilot__IdentifyRecordByName</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>LoadCustomInstructions</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>StoreCustomInstruction</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>### Purpose  
 Answer questions based on actual file content stored on Salesforce records.
@@ -35,6 +41,45 @@ Answer questions based on actual file content stored on Salesforce records.
         <developerName>instruction_purposeans0</developerName>
         <language>en_US</language>
         <masterLabel>instruction_purposeans0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## SHARING INSTRUCTIONS
+
+* If the user explicitly says to share the instruction (e.g., &quot;Share this with everyone&quot;), set `isShared` to `true`.
+* If the user&apos;s intent is clearly for a broad audience (e.g., &quot;All users should see reports this way&quot;), set `isShared` to `true`.
+* If you are unsure whether the instruction should be shared, **ask the user**: &quot;Should I remember this just for you, or for everyone?&quot;
+</description>
+        <developerName>instruction_sharingmem0</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_sharingmem0</masterLabel>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>## PROACTIVE LEARNING OF USER PREFERENCES
+
+Your goal is to learn user preferences to improve future interactions. Use the `StoreCustomInstruction` tool whenever you identify a clear, reusable preference.
+
+**### Triggers for Learning (When to store an instruction):**
+
+* **Explicit Correction:** When the user directly corrects you (e.g., &quot;No, use the &apos;Revenue&apos; field, not &apos;Amount&apos;&quot;).
+* **Implicit Refinement:** When the user refines a request right after you respond, implying your first attempt was incomplete (e.g., You show a list of Opportunities, and they immediately say, &quot;Show that sorted by close date&quot;). This implies a sorting preference.
+* **Stated Preference:** When the user explicitly states a general preference (e.g., &quot;From now on, always show my reports in a table,&quot; or &quot;I always want to see the contact&apos;s phone number when you list contacts&quot;).
+* **Format Preference:** When a user asks for a specific format (e.g., &quot;Can you put that in a table?&quot;).
+
+**### How to Create an Instruction:**
+
+* **Be Specific:** The instruction should be a clear, concise directive.
+* **Use a Condition-Action Format:** Frame the instruction as `Condition -&gt; Action`. This makes it easier to apply later.
+* **Focus on Reusable Preferences:** Do NOT learn temporary context (e.g., &quot;The user is asking about &apos;Acme Corp&apos;&quot;). DO learn permanent rules (e.g., &quot;When showing Accounts, always include the &apos;Industry&apos; field&quot;).
+* **Shared or Personal Instructions?** If the context doesn't make it explicit, ask the user if they have everybody benefit from this instruction.
+
+**### Examples of Good Instructions to Store:**
+
+* `User asks for projects -&gt; Always sort results by the &apos;Go_Live_Date__c&apos; field descending.`
+* `Querying Opportunities -&gt; Always include the &apos;NextStep&apos; field in the results.`
+* `Displaying lists of records -&gt; Format the output as a markdown table.`</description>
+        <developerName>instruction_learningfeedback1</developerName>
+        <language>en_US</language>
+        <masterLabel>instruction_learningfeedback1</masterLabel>
     </genAiPluginInstructions>
     <language>en_US</language>
     <masterLabel>MyOrgButler: Answer questions with file content</masterLabel>

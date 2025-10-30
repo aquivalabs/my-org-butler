@@ -9,6 +9,9 @@ global with sharing class StoreCustomInstruction {
             Memory__c memory = new Memory__c();
             memory.Name = input.summary.left(80);
             memory.Content__c = input.instruction.left(255);
+            if(input.isShared != null) {
+                memory.IsShared__c = input.isShared;
+            }
             
             insert as system memory;
         }
@@ -25,5 +28,8 @@ global with sharing class StoreCustomInstruction {
         
         @InvocableVariable(label='Instruction' description='Contextual instruction for future behavior. Include the context (e.g. "When user asks about projects, query Salesforce data using...") and specific guidance (max 255 characters)')
         global String instruction;
+
+        @InvocableVariable(label='Is Shared' description='Set to true to share this memory with other users in the org.' required='false')
+        global Boolean isShared = false;
     }
 }
