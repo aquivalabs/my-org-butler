@@ -15,10 +15,9 @@ global with sharing class NightlyMemoryConsolidation implements Database.Batchab
     public Iterable<Id> start(Database.BatchableContext context) {
         Set<Id> usersWithUnconsolidatedMemory = new Set<Id>();
         
-        for(Memory__c memory : [SELECT CreatedById
-                               FROM Memory__c 
-                               WHERE Name != :CONSOLIDATED_NAME
-                               WITH SYSTEM_MODE]) {
+        for(Memory__c memory : [SELECT CreatedById FROM Memory__c 
+                                WHERE Name != :CONSOLIDATED_NAME AND IsShared__c = false
+                                WITH SYSTEM_MODE]) {
             usersWithUnconsolidatedMemory.add(memory.CreatedById);
         }
         
@@ -32,6 +31,7 @@ global with sharing class NightlyMemoryConsolidation implements Database.Batchab
     }
     
     public void finish(Database.BatchableContext context) {
-        // Memory consolidation complete
+        // Consolidate shared memories in one pass
+        new AgentMemory(null).consolidate();
     }
 }

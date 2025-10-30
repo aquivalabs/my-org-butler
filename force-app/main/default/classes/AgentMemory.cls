@@ -31,19 +31,21 @@ public with sharing class AgentMemory {
     // PRIVATE
     
     private void queryMemories() {
-        for(Memory__c memory : [SELECT Id, Name, Content__c, CreatedDate
-                                FROM Memory__c 
-                                WHERE CreatedById = :userId
-                                WITH SYSTEM_MODE
-                                ORDER BY CreatedDate ASC]) {
+        for(Memory__c memory : (List<Memory__c>)Database.query(memorySoql(), System.AccessLevel.SYSTEM_MODE)) {
             if(memory.Name == CONSOLIDATED_NAME) {
                 consolidated = memory;
-            } else {
+            } 
+            else {
                 newMemory.add(memory);
             }
         }
     }
-    
+
+    private String memorySoql() {
+        String filter = (userId == null) ? 'IsShared__c = true' : 'CreatedById = :userId';
+        return 'SELECT Id, Name, Content__c, CreatedDate FROM Memory__c WHERE ' + filter + ' ORDER BY CreatedDate ASC';
+    }
+
     private String performConsolidation() {
         String existing = consolidated != null ? consolidated.Content__c : '';
         existing = (existing != null) ? existing.left(10000) : '';  // Limit to 10k characters to avoid API limits
