@@ -12,13 +12,13 @@ global with sharing class LoadCustomInstructions {
     private static CustomInstructions getCustomInstructions() {
         List<String> lines = new List<String>();
         lines.add('\n### Basic User Info');
-        lines.add('- Salesforce ID: ' + System.UserInfo.getUserId());
+        lines.add('- User Record Id: ' + System.UserInfo.getUserId());
         lines.add('- First name: ' + System.UserInfo.getFirstName());
         lines.add('- Last name: ' + System.UserInfo.getLastName());
+        lines.add('- Email address: ' + System.UserInfo.getUserEmail());
         lines.add('- Language: ' + System.UserInfo.getLanguage());
         lines.add('- Timezone in this org: ' + System.UserInfo.getTimeZone().getID());
         lines.add('- Current date and time: ' + System.now().format('E, dd MMM yyyy HH:mm:ss z'));
-        lines.add('- Email address: ' + System.UserInfo.getUserEmail());
         lines.add('- Base URL for constructing links in this org: ' + URL.getOrgDomainUrl().toExternalForm());
         lines.add('- Salesforce organization ID: ' + System.UserInfo.getOrganizationId());
 
