@@ -17,6 +17,6 @@ private class CallGitHubApi_Test {
         List<CallGitHubApi.Output> response = CallGitHubApi.execute(new List<CallGitHubApi.Input>{ input });
 
         // Verify
-        System.assertEquals('{ "name": "repo", "full_name": "owner/repo" }', response[0].responseBody);
+        Assert.areEqual('{ "name": "repo", "full_name": "owner/repo" }', response[0].responseBody);
     }
 }

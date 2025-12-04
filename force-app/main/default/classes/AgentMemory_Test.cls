@@ -9,7 +9,7 @@ private class AgentMemory_Test {
 
         // Verify
         List<Memory__c> memories = [SELECT Id FROM Memory__c];
-        System.assertEquals(0, memories.size());
+        Assert.areEqual(0, memories.size());
     }
 
     @IsTest
@@ -26,12 +26,12 @@ private class AgentMemory_Test {
 
         // Verify
         List<Memory__c> memories = [SELECT Name, Content__c FROM Memory__c];
-        System.assertEquals(1, memories.size());
-        System.assertEquals('CONSOLIDATED_MEMORY', memories[0].Name);
-        // Should contain some consolidated content (either AI-generated or fallback)
-        System.assert(memories[0].Content__c != null);
-        System.assert(memories[0].Content__c.length() > 0);
+        Assert.areEqual(1, memories.size());
+        Assert.areEqual('CONSOLIDATED_MEMORY', memories[0].Name);
+        Assert.isNotNull(memories[0].Content__c);
+        Assert.isTrue(memories[0].Content__c.length() > 0);
     }
+
 
     @IsTest
     private static void consolidateWithExistingConsolidated() {
@@ -47,12 +47,12 @@ private class AgentMemory_Test {
 
         // Verify
         List<Memory__c> memories = [SELECT Name, Content__c FROM Memory__c];
-        System.assertEquals(1, memories.size());
-        System.assertEquals('CONSOLIDATED_MEMORY', memories[0].Name);
-        // Should contain some consolidated content (either AI-generated or fallback)
-        System.assert(memories[0].Content__c != null);
-        System.assert(memories[0].Content__c.length() > 0);
+        Assert.areEqual(1, memories.size());
+        Assert.areEqual('CONSOLIDATED_MEMORY', memories[0].Name);
+        Assert.isNotNull(memories[0].Content__c);
+        Assert.isTrue(memories[0].Content__c.length() > 0);
     }
+
 
     @IsTest
     private static void consolidateSharedMemory() {
@@ -68,9 +68,9 @@ private class AgentMemory_Test {
 
         // Verify
         List<Memory__c> memories = [SELECT Name, Content__c FROM Memory__c];
-        System.assertEquals(1, memories.size());
-        System.assertEquals('CONSOLIDATED_MEMORY', memories[0].Name);
-        System.assert(memories[0].Content__c != null);
-        System.assert(memories[0].Content__c.length() > 0);
+        Assert.areEqual(1, memories.size());
+        Assert.areEqual('CONSOLIDATED_MEMORY', memories[0].Name);
+        Assert.isNotNull(memories[0].Content__c);
+        Assert.isTrue(memories[0].Content__c.length() > 0);
     }
 }

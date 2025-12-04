@@ -44,6 +44,7 @@
         <exclude name="ExcessivePublicCount" />
         <exclude name="TooManyFields" />
         <exclude name="NcssTypeCount" />
+        <exclude name="NcssConstructorCount" />
     </rule>
 
     <rule ref="category/apex/performance.xml">      

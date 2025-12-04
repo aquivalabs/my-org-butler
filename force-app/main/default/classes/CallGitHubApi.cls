@@ -1,5 +1,5 @@
-// PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod,PMD.ApexSuggestUsingNamedCred')
+// Note: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class CallGitHubApi {
 
     @InvocableMethod(label='MyOrgButler: Call GitHub API' description='Call the GitHub API using the GitHub Named Credential')
@@ -37,7 +37,7 @@ global with sharing class CallGitHubApi {
         global String responseBody;
 
         public Output(String body) {
-            this.responseBody = body;
+            responseBody = body;
         }
     }
 }

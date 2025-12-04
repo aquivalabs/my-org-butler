@@ -1,28 +1,25 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class StoreCustomInstruction {
 
     @InvocableMethod(label='MyOrgButler: Store Custom Instruction' description='Updates user context with learned preferences and instructions for future AI agent interactions.')
-    global static List<LoadCustomInstructions.CustomInstructions> execute(List<UpdateInput> inputs) {
-        
-        for (UpdateInput input : inputs) {
-            Memory__c memory = new Memory__c();
-            memory.Name = input.summary.left(80);
-            memory.Content__c = input.instruction.left(255);
-            if(input.isShared != null) {
-                memory.IsShared__c = input.isShared;
-            }
-            
-            insert as system memory;
+    global static List<LoadCustomInstructions.CustomInstructions> execute(List<Input> input) {
+        Memory__c memory = new Memory__c();
+        memory.Name = input[0].summary.left(80);
+        memory.Content__c = input[0].instruction.left(255);
+        if(input[0].isShared != null) {
+            memory.IsShared__c = input[0].isShared;
         }
         
-        // Return updated user info including the new memory
+        insert as system memory;
+        
+        // Note: Return updated user info including the new memory
         return LoadCustomInstructions.execute(new List<String>());
     }
 
     // INNER
 
-    global class UpdateInput {
+    global class Input {
         @InvocableVariable(label='Summary' description='Brief summary of the learned preference or behavior (max 80 characters)')
         global String summary;
         

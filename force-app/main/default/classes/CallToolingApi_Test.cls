@@ -13,15 +13,16 @@ private class CallToolingApi_Test {
 
         // Exercise
         try {
-            List<CallToolingApi.Output> result = CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
+            CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
         }
         catch(Exception ex) {
             unexpectedException = ex;
         }
 
         // Verify
-        System.assertEquals(null, unexpectedException);
+        Assert.isNull(unexpectedException);
     }
+
 
     @IsTest
     private static void createAction() {
@@ -36,15 +37,16 @@ private class CallToolingApi_Test {
 
         // Exercise
         try {
-            List<CallToolingApi.Output> result = CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
+            CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
         }
         catch(Exception ex) {
             unexpectedException = ex;
         }
 
         // Verify
-        System.assertEquals(null, unexpectedException);
+        Assert.isNull(unexpectedException);
     }
+
 
     @IsTest
     private static void updateAction() {
@@ -60,15 +62,16 @@ private class CallToolingApi_Test {
 
         // Exercise
         try {
-            List<CallToolingApi.Output> result = CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
+            CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
         }
         catch(Exception ex) {
             unexpectedException = ex;
         }
 
         // Verify
-        System.assertEquals(null, unexpectedException);
+        Assert.isNull(unexpectedException);
     }
+
 
     @IsTest
     private static void deleteAction() {
@@ -83,15 +86,16 @@ private class CallToolingApi_Test {
 
         // Exercise
         try {
-            List<CallToolingApi.Output> result = CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
+            CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
         }
         catch(Exception ex) {
             unexpectedException = ex;
         }
 
         // Verify
-        System.assertEquals(null, unexpectedException);
+        Assert.isNull(unexpectedException);
     }
+
 
     @IsTest
     private static void invalidAction() {
@@ -103,15 +107,15 @@ private class CallToolingApi_Test {
 
         // Exercise
         try {
-            List<CallToolingApi.Output> result = CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
+            CallToolingApi.execute(new List<CallToolingApi.ToolingDescription>{ tooling });
         }
         catch(Exception ex) {
             expectedException = ex;
         }
 
         // Verify
-        System.assertNotEquals(null, expectedException);
-        System.assert(expectedException.getMessage().contains('Unsupported Tooling API action'));
+        Assert.isNotNull(expectedException);
+        Assert.isTrue(expectedException.getMessage().contains('Unsupported Tooling API action'));
     }
 
     // HELPER

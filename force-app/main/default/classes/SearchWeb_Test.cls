@@ -19,9 +19,9 @@ private class SearchWeb_Test {
         Test.stopTest();
 
         // Verify
-        System.assertEquals(1, response.size());
+        Assert.areEqual(1, response.size());
         SearchWeb.Answer actual = response[0];
-        System.assertEquals(expected.answer, actual.answer);
+        Assert.areEqual(expected.answer, actual.answer);
     }
 
     // HELPER

@@ -1,5 +1,5 @@
 // PMD False Positives: Package Subscribers need to schedule this class
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class NightlyMemoryConsolidation implements Database.Batchable<Id>, Schedulable {
     
     private static final String CONSOLIDATED_NAME = 'CONSOLIDATED_MEMORY';

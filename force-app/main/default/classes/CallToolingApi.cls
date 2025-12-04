@@ -1,5 +1,5 @@
-// PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+// Note: Agentforce requires Global; session auth needed to call own org's Tooling API as current user
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexSuggestUsingNamedCred')
 global with sharing class CallToolingApi {
 
     public static HttpResponse mockedResponse = null;

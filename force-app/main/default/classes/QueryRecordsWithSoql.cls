@@ -1,5 +1,5 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class QueryRecordsWithSoql {
 
     @InvocableMethod(label='MyOrgButler: Run SOQL Queries' description='Run a single SOQL Query and return a list of records or errors')

@@ -14,11 +14,12 @@ private class ExploreOrgSchema_Test {
         List<ExploreOrgSchema.Output> result = ExploreOrgSchema.execute(new List<ExploreOrgSchema.Input>{ input });
 
         // Verify
-        System.assertEquals(1, result.size());
+        Assert.areEqual(1, result.size());
         String response = result[0].response;
-        System.assert(response.contains('aquiva_os__Memory__c'), response);
-        System.assert(response.contains('MyOrgButler Memory'), response);
+        Assert.isTrue(response.contains('aquiva_os__Memory__c'));
+        Assert.isTrue(response.contains('MyOrgButler Memory'));
     }
+
 
     @IsTest
     private static void summaryWithNamespaceFilter() {
@@ -34,10 +35,10 @@ private class ExploreOrgSchema_Test {
         List<ExploreOrgSchema.Output> result = ExploreOrgSchema.execute(new List<ExploreOrgSchema.Input>{ input });
 
         // Verify
-        System.assertEquals(1, result.size());
+        Assert.areEqual(1, result.size());
         String response = result[0].response;
-        System.assert(response.contains('aquiva_os__Memory__c'), response);
-        System.assert(response.contains('MyOrgButler Memory'), response);
+        Assert.isTrue(response.contains('aquiva_os__Memory__c'));
+        Assert.isTrue(response.contains('MyOrgButler Memory'));
     }
 
 
@@ -55,13 +56,14 @@ private class ExploreOrgSchema_Test {
         List<ExploreOrgSchema.Output> result = ExploreOrgSchema.execute(new List<ExploreOrgSchema.Input>{ input });
 
         // Verify
-        System.assertEquals(1, result.size());
+        Assert.areEqual(1, result.size());
         String response = result[0].response;
-        System.assert(response.contains('aquiva_os__Memory__c'), response);
-        System.assert(response.contains('MyOrgButler Memory'), response);
-        System.assert(response.contains('Content__c'), response);
-        System.assert(response.contains('Content'), response);
+        Assert.isTrue(response.contains('aquiva_os__Memory__c'));
+        Assert.isTrue(response.contains('MyOrgButler Memory'));
+        Assert.isTrue(response.contains('Content__c'));
+        Assert.isTrue(response.contains('Content'));
     }
+
 
     @IsTest
     private static void relationships() {
@@ -77,13 +79,12 @@ private class ExploreOrgSchema_Test {
         List<ExploreOrgSchema.Output> result = ExploreOrgSchema.execute(new List<ExploreOrgSchema.Input>{ input });
 
         // Verify
-        System.assertEquals(1, result.size());
+        Assert.areEqual(1, result.size());
         String response = result[0].response;
-        System.assert(response.contains('aquiva_os__Memory__c'), response);
-        System.assert(response.contains('MyOrgButler Memory'), response);
-        // Even if no custom relationships exist, the response should contain relationship arrays
-        System.assert(response.contains('childRelationships'), response);
-        System.assert(response.contains('parentRelationships'), response);
+        Assert.isTrue(response.contains('aquiva_os__Memory__c'));
+        Assert.isTrue(response.contains('MyOrgButler Memory'));
+        Assert.isTrue(response.contains('childRelationships'));
+        Assert.isTrue(response.contains('parentRelationships'));
     }
 
     // HELPER

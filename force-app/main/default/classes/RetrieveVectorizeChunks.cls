@@ -1,5 +1,5 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class RetrieveVectorizeChunks {
 
     @InvocableMethod(label='MyOrgButler: Search External Knowledge' description='Use Vector Search to find relevant internal document chunks to answer users question.')
@@ -75,29 +75,31 @@ global with sharing class RetrieveVectorizeChunks {
     }
 
     private static String generateAnswer(String userQuestion, List<Chunk> chunks) {
-        if(Test.isRunningTest()) {
-            return 'Mock answer for testing: ' + userQuestion;
+        String result = 'Mock answer for testing: ' + userQuestion;
+
+        if(!Test.isRunningTest()) {
+            ConnectApi.WrappedValue questionParam = new ConnectApi.WrappedValue();
+            questionParam.value = userQuestion;
+            
+            ConnectApi.WrappedValue chunksParam = new ConnectApi.WrappedValue();
+            chunksParam.value = JSON.serialize(chunks);
+            
+            ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
+            input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
+            input.additionalConfig.applicationName = 'PromptBuilderPreview';
+            input.isPreview = false;
+            input.inputParams = new Map<String, ConnectApi.WrappedValue>{
+                'Input:userQuestion' => questionParam,
+                'Input:retrievedChunks' => chunksParam
+            };
+            
+            ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
+                ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('AnswerFromVectorizeChunks', input);
+            
+            result = output.generations[0].text;
         }
-        
-        ConnectApi.WrappedValue questionParam = new ConnectApi.WrappedValue();
-        questionParam.value = userQuestion;
-        
-        ConnectApi.WrappedValue chunksParam = new ConnectApi.WrappedValue();
-        chunksParam.value = JSON.serialize(chunks);
-        
-        ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
-        input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
-        input.additionalConfig.applicationName = 'PromptBuilderPreview';
-        input.isPreview = false;
-        input.inputParams = new Map<String, ConnectApi.WrappedValue>{
-            'Input:userQuestion' => questionParam,
-            'Input:retrievedChunks' => chunksParam
-        };
-        
-        ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
-            ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('AnswerFromVectorizeChunks', input);
-        
-        return output.generations[0].text;
+
+        return result;
     }
 
     @TestVisible
@@ -120,8 +122,6 @@ global with sharing class RetrieveVectorizeChunks {
     global class Question {
         @InvocableVariable(label='Question' description='The question to search for in the company knowledge base.')
         global String content;
-        
-        global Question() {}
         
         global Question(String content) {
             this.content = content;

@@ -12,17 +12,17 @@ private class LoadCustomInstructions_Test {
         List<LoadCustomInstructions.CustomInstructions> response = LoadCustomInstructions.execute(new List<String>());
 
         // Verify
-        System.assertNotEquals(null, response);
-        System.assertEquals(1, response.size());
+        Assert.isNotNull(response);
+        Assert.areEqual(1, response.size());
 
         LoadCustomInstructions.CustomInstructions output = response[0];
-        System.assertNotEquals(null, output.customInstructions);
-        System.assert(output.customInstructions.contains(System.UserInfo.getUserId()));
-        System.assert(output.customInstructions.contains(System.UserInfo.getFirstName()));
-        System.assert(output.customInstructions.contains(System.UserInfo.getLastName()));
-        System.assert(output.customInstructions.contains(System.UserInfo.getOrganizationId()));
-        System.assert(output.customInstructions.contains(URL.getOrgDomainUrl().toExternalForm()));
-        System.assert(output.customInstructions.contains('- Test shared preference'));
-        System.assert(output.customInstructions.contains('- Test user preference'));
+        Assert.isNotNull(output.customInstructions);
+        Assert.isTrue(output.customInstructions.contains(System.UserInfo.getUserId()));
+        Assert.isTrue(output.customInstructions.contains(System.UserInfo.getFirstName()));
+        Assert.isTrue(output.customInstructions.contains(System.UserInfo.getLastName()));
+        Assert.isTrue(output.customInstructions.contains(System.UserInfo.getOrganizationId()));
+        Assert.isTrue(output.customInstructions.contains(URL.getOrgDomainUrl().toExternalForm()));
+        Assert.isTrue(output.customInstructions.contains('- Test shared preference'));
+        Assert.isTrue(output.customInstructions.contains('- Test user preference'));
     }
 }

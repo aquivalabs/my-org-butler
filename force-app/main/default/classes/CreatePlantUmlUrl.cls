@@ -1,5 +1,5 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class CreatePlantUmlUrl {
     private static final String PLANTUML_URL_PREFIX = 'http://www.plantuml.com/plantuml/png/~h';
     

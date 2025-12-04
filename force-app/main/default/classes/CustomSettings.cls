@@ -1,3 +1,5 @@
+// Note: Small stateless helper - no constructor or state needed, static access is cleaner
+@SuppressWarnings('PMD.PreferRealObjectsOverStaticHelpers')
 public with sharing class CustomSettings {
     
     public static String valueFor(String settingName) {
@@ -16,6 +18,6 @@ public with sharing class CustomSettings {
             Name = settingName,
             Value__c = value
         );
-        upsert setting;
+        upsert as user setting;
     }
 }

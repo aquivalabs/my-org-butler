@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants access to MyOrgButler AI agent capabilities including memory management, API integrations, and knowledge search features.</description>
     <classAccesses>
         <apexClass>CallGitHubApi</apexClass>
         <enabled>true</enabled>

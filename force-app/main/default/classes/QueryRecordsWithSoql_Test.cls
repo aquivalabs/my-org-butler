@@ -1,5 +1,5 @@
 @IsTest
-public with sharing class QueryRecordsWithSoql_Test {
+private class QueryRecordsWithSoql_Test {
   
 
     @IsTest
@@ -18,12 +18,11 @@ public with sharing class QueryRecordsWithSoql_Test {
         );
 
         // Verify
-        System.assertEquals(1, result.size());
-        System.assert(String.isNotBlank(result[0].resultOrException), 'Should contain JSON result');
+        Assert.areEqual(1, result.size());
+        Assert.isTrue(String.isNotBlank(result[0].resultOrException));
         
-        // Parse JSON to verify structure
         List<Object> records = (List<Object>) JSON.deserializeUntyped(result[0].resultOrException);
-        System.assertEquals(1, records.size(), 'Should contain one record');
+        Assert.areEqual(1, records.size());
     }
 
     @IsTest
@@ -37,15 +36,14 @@ public with sharing class QueryRecordsWithSoql_Test {
         );
 
         // Verify
-        System.assertEquals(1, result.size());
+        Assert.areEqual(1, result.size());
         QueryRecordsWithSoql.Output output = result[0];
-        System.assert(String.isNotBlank(output.resultOrException), 'Should contain JSON result');
+        Assert.isTrue(String.isNotBlank(output.resultOrException));
         
-        // Parse JSON to verify exception structure
         Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(output.resultOrException);
-        System.assert(exceptionResult.containsKey('message'), 'Should contain message key');
-        System.assert(exceptionResult.containsKey('typeName'), 'Should contain typeName key');
-        System.assert(((String)exceptionResult.get('message')).contains('InvalidField'), 'Error should mention the invalid field');
+        Assert.isTrue(exceptionResult.containsKey('message'));
+        Assert.isTrue(exceptionResult.containsKey('typeName'));
+        Assert.isTrue(((String)exceptionResult.get('message')).contains('InvalidField'));
     }
     
     @IsTest
@@ -64,15 +62,14 @@ public with sharing class QueryRecordsWithSoql_Test {
         );
 
         // Verify
-        System.assertEquals(1, result.size());
-        System.assert(String.isNotBlank(result[0].resultOrException), 'Should contain JSON result');
+        Assert.areEqual(1, result.size());
+        Assert.isTrue(String.isNotBlank(result[0].resultOrException));
         
-        // Parse JSON to verify aggregate structure
         List<Object> aggregateResults = (List<Object>) JSON.deserializeUntyped(result[0].resultOrException);
-        System.assertEquals(1, aggregateResults.size(), 'Should contain one aggregate result');
+        Assert.areEqual(1, aggregateResults.size());
         
         Map<String, Object> firstResult = (Map<String, Object>) aggregateResults[0];
-        System.assert(firstResult.containsKey('Type'), 'Should contain Type field');
-        System.assert(firstResult.containsKey('recordCount'), 'Should contain count field');
+        Assert.isTrue(firstResult.containsKey('Type'));
+        Assert.isTrue(firstResult.containsKey('recordCount'));
     }
 }

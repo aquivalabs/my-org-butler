@@ -1,7 +1,5 @@
-// PMD False Positives: 
-// - Calling regular Salesforce APIs can be done with Session Id
-// - Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod,PMD.ApexSuggestUsingNamedCred')
+// Note: Agentforce requires Global
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class ExploreOrgSchema {
 
     private static final Map<String, SObjectType> GLOBAL_DESCRIBE = Schema.getGlobalDescribe();
@@ -118,39 +116,42 @@ global with sharing class ExploreOrgSchema {
     // UTILITY METHODS
 
     private static String extractNamespace(String objectName) {
-        if (String.isBlank(objectName) || !objectName.contains('__')) {
-            return null;
+        String result = null;
+
+        if (String.isNotBlank(objectName) && objectName.contains('__')) {
+            result = objectName.split('__')[0];
         }
-        return objectName.split('__')[0];
+
+        return result;
     }
 
     private static Set<String> parseNamespaces(String namespaceFilter) {
-        if (String.isBlank(namespaceFilter)) {
-            return new Set<String>();
-        }
-        
         Set<String> result = new Set<String>();
-        for (String ns : namespaceFilter.split(',')) {
-            String cleanNs = ns.trim();
-            if (String.isNotBlank(cleanNs)) {
-                result.add(cleanNs);
+
+        if (String.isNotBlank(namespaceFilter)) {
+            for (String ns : namespaceFilter.split(',')) {
+                String cleanNs = ns.trim();
+                if (String.isNotBlank(cleanNs)) {
+                    result.add(cleanNs);
+                }
             }
         }
+
         return result;
     }
 
     private static Set<String> parseObjects(String objectFilter) {
-        if (String.isBlank(objectFilter)) {
-            return new Set<String>();
-        }
-        
         Set<String> result = new Set<String>();
-        for (String obj : objectFilter.split(',')) {
-            String cleanObj = obj.trim();
-            if (String.isNotBlank(cleanObj)) {
-                result.add(cleanObj);
+
+        if (String.isNotBlank(objectFilter)) {
+            for (String obj : objectFilter.split(',')) {
+                String cleanObj = obj.trim();
+                if (String.isNotBlank(cleanObj)) {
+                    result.add(cleanObj);
+                }
             }
         }
+
         return result;
     }
 
@@ -205,6 +206,8 @@ global with sharing class ExploreOrgSchema {
         }
     }
 
+    // Note: 4 parameters is acceptable here - introducing a wrapper would add unnecessary complexity
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public class ObjectDetails {
         public String apiName;
         public String label;
@@ -214,43 +217,66 @@ global with sharing class ExploreOrgSchema {
         public List<String> childRelationships;
         public List<String> parentRelationships;
 
-        ObjectDetails(SObjectType objType, Map<String, String> objectDescriptions, Set<String> namespaceFilter, String scope) {
+
+        ObjectDetails(SObjectType objType, Map<String, String> descriptions, Set<String> nsFilter, String scope) {
             DescribeSObjectResult describe = objType.getDescribe();
-            this.apiName = describe.getName();
-            this.label = describe.getLabel();
-            this.namespace = extractNamespace(describe.getName());
-            this.description = objectDescriptions.get(describe.getName());
+            
+            apiName = describe.getName();
+            label = describe.getLabel();
+            namespace = extractNamespace(apiName);
+            description = descriptions.get(apiName);
 
             if (scope == 'details') {
-                this.fields = new Map<String, FieldDetails>();
-                for (SObjectField field : describe.fields.getMap().values()) {
-                    DescribeFieldResult fieldDescribe = field.getDescribe();
-                    fields.put(fieldDescribe.getName(), new FieldDetails(fieldDescribe));
-                }
+                fields = buildFieldsMap(describe);
             }
             
             if (scope == 'details' || scope == 'relationships') {
-                this.childRelationships = new List<String>();
-                for (ChildRelationship relationship : describe.getChildRelationships()) {
-                    String childObjectName = relationship.getChildSObject().getDescribe().getName();
-                    String childNamespace = extractNamespace(childObjectName);
-                    
-                    if (namespaceFilter.isEmpty() || namespaceFilter.contains(childNamespace)) {
-                        if(relationship.getRelationshipName() != null){
-                            childRelationships.add(relationship.getRelationshipName());
-                        }
-                    }
-                }
+                childRelationships = buildChildRelationships(describe, nsFilter);
+                parentRelationships = buildParentRelationships(describe);
+            }
+        }
 
-                this.parentRelationships = new List<String>();
-                 for (SObjectField field : describe.fields.getMap().values()) {
-                    DescribeFieldResult fieldDescribe = field.getDescribe();
-                    if (fieldDescribe.getType() == DisplayType.REFERENCE && String.isNotBlank(fieldDescribe.getRelationshipName())) {
-                        String targetObjectName = fieldDescribe.getReferenceTo()[0].getDescribe().getName();
-                        parentRelationships.add(fieldDescribe.getRelationshipName() + ' (to ' + targetObjectName + ')');
-                    }
+
+        private Map<String, FieldDetails> buildFieldsMap(DescribeSObjectResult describe) {
+            Map<String, FieldDetails> result = new Map<String, FieldDetails>();
+
+            for (SObjectField field : describe.fields.getMap().values()) {
+                DescribeFieldResult fieldDescribe = field.getDescribe();
+                result.put(fieldDescribe.getName(), new FieldDetails(fieldDescribe));
+            }
+
+            return result;
+        }
+
+
+        private List<String> buildChildRelationships(DescribeSObjectResult describe, Set<String> nsFilter) {
+            List<String> result = new List<String>();
+
+            for (ChildRelationship rel : describe.getChildRelationships()) {
+                String childName = rel.getChildSObject().getDescribe().getName();
+                String childNs = extractNamespace(childName);
+                
+                if ((nsFilter.isEmpty() || nsFilter.contains(childNs)) && rel.getRelationshipName() != null) {
+                    result.add(rel.getRelationshipName());
                 }
             }
+
+            return result;
+        }
+
+
+        private List<String> buildParentRelationships(DescribeSObjectResult describe) {
+            List<String> result = new List<String>();
+
+            for (SObjectField field : describe.fields.getMap().values()) {
+                DescribeFieldResult fd = field.getDescribe();
+                if (fd.getType() == DisplayType.REFERENCE && String.isNotBlank(fd.getRelationshipName())) {
+                    String target = fd.getReferenceTo()[0].getDescribe().getName();
+                    result.add(fd.getRelationshipName() + ' (to ' + target + ')');
+                }
+            }
+
+            return result;
         }
     }
 
@@ -264,21 +290,21 @@ global with sharing class ExploreOrgSchema {
         public List<Map<String, String>> picklistValues; 
 
         FieldDetails(DescribeFieldResult fieldDescribe) {
-            this.label = fieldDescribe.getLabel();
-            this.type = String.valueOf(fieldDescribe.getType());
-            this.required = !fieldDescribe.isNillable();
-            this.helpText = fieldDescribe.getInlineHelpText();
+            label = fieldDescribe.getLabel();
+            type = String.valueOf(fieldDescribe.getType());
+            required = !fieldDescribe.isNillable();
+            helpText = fieldDescribe.getInlineHelpText();
 
             if (fieldDescribe.getType() == DisplayType.REFERENCE) {
-                this.references = new List<String>();
+                references = new List<String>();
                 for (SObjectType refType : fieldDescribe.getReferenceTo()) {
                     references.add(refType.getDescribe().getName());
                 }
-                this.relationshipName = fieldDescribe.getRelationshipName();
+                relationshipName = fieldDescribe.getRelationshipName();
             }
             
             if (fieldDescribe.getType() == DisplayType.PICKLIST || fieldDescribe.getType() == DisplayType.MULTIPICKLIST) {
-                this.picklistValues = new List<Map<String, String>>();
+                picklistValues = new List<Map<String, String>>();
                 for (Schema.PicklistEntry entry : fieldDescribe.getPicklistValues()) {
                     picklistValues.add(new Map<String, String>{
                         'label' => entry.getLabel(),

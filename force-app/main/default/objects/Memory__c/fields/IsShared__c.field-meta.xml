@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsShared__c</fullName>
     <defaultValue>false</defaultValue>
+    <description>When checked, this memory is shared with all users in the organization. Otherwise, it is private to the creating user.</description>
     <label>Is Shared</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

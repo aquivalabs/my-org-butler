@@ -1,7 +1,7 @@
 // PMD False Positives: 
 // - Calling regular Salesforce APIs can be done with Session Id
 // - Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod,PMD.ApexSuggestUsingNamedCred')
+@SuppressWarnings('PMD.AvoidGlobalModifier,PMD.ApexSuggestUsingNamedCred')
 global with sharing class CallRestApi {
 
     @InvocableMethod(label='MyOrgButler: Call Salesforce API' description='Call an official public Salesforce API REST endpoint')

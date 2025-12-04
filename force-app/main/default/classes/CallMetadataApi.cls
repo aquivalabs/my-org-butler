@@ -1,5 +1,5 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class CallMetadataApi {
 
     public static HttpResponse mockedResponse = null;

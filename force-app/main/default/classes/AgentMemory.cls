@@ -68,29 +68,31 @@ public with sharing class AgentMemory {
     }
     
     private String callPrompt(String consolidated, String newMemories) {
-        if(Test.isRunningTest()) {
-            return 'Mock response';
+        String result = 'Mock response';
+
+        if(!Test.isRunningTest()) {
+            ConnectApi.WrappedValue consolidatedMemoryValue = new ConnectApi.WrappedValue();
+            consolidatedMemoryValue.value = consolidated;
+            
+            ConnectApi.WrappedValue newMemoryValue = new ConnectApi.WrappedValue();
+            newMemoryValue.value = newMemories;
+            
+            ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
+            input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
+            input.additionalConfig.applicationName = 'PromptBuilderPreview';
+            input.isPreview = false;
+            input.inputParams = new Map<String, ConnectApi.WrappedValue>{
+                'Input:consolidatedMemory' => consolidatedMemoryValue,
+                'Input:newMemory' => newMemoryValue
+            };
+            
+            ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
+                ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('ConsolidateMemory', input);
+            
+            result = output.generations[0].text;
         }
 
-        ConnectApi.WrappedValue consolidatedMemoryValue = new ConnectApi.WrappedValue();
-        consolidatedMemoryValue.value = consolidated;
-        
-        ConnectApi.WrappedValue newMemoryValue = new ConnectApi.WrappedValue();
-        newMemoryValue.value = newMemories;
-        
-        ConnectApi.EinsteinPromptTemplateGenerationsInput input = new ConnectApi.EinsteinPromptTemplateGenerationsInput();
-        input.additionalConfig = new ConnectApi.EinsteinLlmAdditionalConfigInput();
-        input.additionalConfig.applicationName = 'PromptBuilderPreview';
-        input.isPreview = false;
-        input.inputParams = new Map<String, ConnectApi.WrappedValue>{
-            'Input:consolidatedMemory' => consolidatedMemoryValue,
-            'Input:newMemory' => newMemoryValue
-        };
-        
-        ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = 
-            ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate('ConsolidateMemory', input);
-        
-        return output.generations[0].text;
+        return result;
     }
     
     private void updateConsolidated(String content) {

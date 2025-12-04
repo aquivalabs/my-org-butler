@@ -17,6 +17,6 @@ private class CallRestApi_Test {
         List<CallRestApi.Output> response = CallRestApi.execute(new List<CallRestApi.Input>{ input });
 
         // Verify
-        System.assertEquals('{ value : 3}', response[0].responseBody);
+        Assert.areEqual('{ value : 3}', response[0].responseBody);
     }
 }

@@ -1,5 +1,5 @@
 // PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalMethod')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LoadCustomInstructions {
 
     @InvocableMethod(label='MyOrgButler: Load Custom Instructions' description='Provides a formatted string with user context information including user details, time, date, and org information for AI agents.')

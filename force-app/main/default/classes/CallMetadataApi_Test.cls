@@ -15,7 +15,7 @@ private class CallMetadataApi_Test {
 
         // Exercise
         try {
-            List<CallMetadataApi.Output> result = CallMetadataApi.execute(new List<CallMetadataApi.MetadataDescription>{ metadata });
+            CallMetadataApi.execute(new List<CallMetadataApi.MetadataDescription>{ metadata });
         }
         catch(Exception ex) {
             unexpectedException = ex;
@@ -23,7 +23,7 @@ private class CallMetadataApi_Test {
 
 
         // Verify
-        System.assertEquals(null, unexpectedException);
+        Assert.isNull(unexpectedException);
     }
 
     // HELPER
