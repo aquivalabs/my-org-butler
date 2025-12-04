@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="OpinionatedSalesforce" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
-    <description>Aquiva Default PMD Ruleset</description>
+    <description>Opinionated Salesforce Developer</description>
 
     <!-- IGNORE EXTERNAL LIBS -->
     <include-pattern>.*/force-app/main/default/.*</include-pattern>
@@ -74,7 +74,7 @@
         <properties>
             <property name="testClassPattern" value="[A-Z][a-zA-Z0-9_]*" />
             <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]*" />
-            <property name="classPattern" value="[A-Z][a-zA-Z0-9]*" />
+            <property name="classPattern" value="[A-Z][a-zA-Z0-9]*(_t)?" />
             <property name="interfacePattern" value="[A-Z][a-zA-Z0-9]*" />
             <property name="enumPattern" value="[A-Z][a-zA-Z0-9]*" />
         </properties>
@@ -93,17 +93,17 @@
         <priority>3</priority>
         <properties><property name="xpath"><value><![CDATA[
 
-            //ThisVariableExpression[
-                ancestor::VariableExpression
-                and
-                not(
-                    ancestor::ReturnStatement
-                    or
-                    ancestor::MethodCallExpression[ReferenceExpression/@Image = VariableExpression/@Image]
-                    or 
-                    ancestor::AssignmentExpression[VariableExpression[1]/@Image = VariableExpression[2]/@Image]
-                )
-            ]
+        //ThisVariableExpression[
+            ancestor::VariableExpression
+            and
+            not(
+                ancestor::ReturnStatement
+                or
+                ancestor::MethodCallExpression[ReferenceExpression/@Image = VariableExpression/@Image]
+                or 
+                ancestor::VariableExpression/@Image = ancestor::Method//Parameter/@Image
+            )
+        ]
 
         ]]></value></property></properties>
     </rule>
@@ -195,6 +195,76 @@
                 and not(.//Method/ModifierNode/Annotation[@Image='InvocableMethod' or @Image='AuraEnabled'])
             ]
             
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="UseModernAssertClass" language="apex" message="Use the modern Assert class instead of legacy System.assert methods" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //MethodCallExpression[starts-with(lower-case(@FullMethodName), 'system.assert')]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="AssertionsShouldNotHaveMessages" language="apex" message="Assertions don't need messages - let your test method name do the explaining" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>4</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //MethodCallExpression[
+                starts-with(lower-case(@FullMethodName), 'assert.')
+                and count(./ReferenceExpression/following-sibling::*) > 2
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="TestClassesMustEndWithUnderscoreTest" language="apex" message="Test classes must end with _Test suffix" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //UserClass[
+                ModifierNode/Annotation[@Image='IsTest']
+                and not(ends-with(@Image, '_Test'))
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="TestClassesShouldBePrivate" language="apex" message="Test classes should be private - they're not part of your API" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //UserClass[
+                ModifierNode/Annotation[@Image='IsTest']
+                and ModifierNode[@Public = true() or @Global = true()]
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="GetPrefixIsJustNoise" language="apex" message="Skip the 'get' prefix - account.name() reads better than account.getName()" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>4</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //Method[
+                starts-with(@Image, 'get')
+                and @Synthetic = false()
+                and not(ancestor::UserClass/descendant::ModifierNode/Annotation[@Image='IsTest'])
+            ]
+
+        ]]></value></property></properties>
+    </rule>
+
+    <rule name="ClassNamesBecomeSelfFulfillingProphecies" language="apex" message="Service, Handler, Manager, Helper, Util, Wrapper - these names attract messy code like magnets" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <priority>3</priority>
+        <properties><property name="xpath"><value><![CDATA[
+
+            //UserClass[
+                matches(@Image, '.*(Service|Handler|Manager|Helper|Util|Wrapper)$')
+                and not(descendant::ModifierNode/Annotation[@Image='IsTest'])
+            ]
+
         ]]></value></property></properties>
     </rule>
 
