@@ -123,6 +123,8 @@ global with sharing class RetrieveVectorizeChunks {
         @InvocableVariable(label='Question' description='The question to search for in the company knowledge base.')
         global String content;
         
+        global Question() {}
+
         global Question(String content) {
             this.content = content;
         }

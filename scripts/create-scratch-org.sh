@@ -29,15 +29,21 @@ execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name Age
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
+echo "Creating Service Agent user"
+execute sf apex run --file scripts/create-setup-data.apex
+
 echo "Pushing changes to scratch org"
 execute sf project deploy start --source-dir force-app 
+
+echo "Pushing unpackaged changes to scratch org"
+execute sf project deploy start --source-dir unpackaged
+
+echo "Assigning permissions to Service Agent user"
+execute sf org assign permset --name AgentAccess --name AgentforceServiceAgentUser --name MyOrgButlerUser --name EinsteinGPTPromptTemplateUser --on-behalf-of service.agent@example.com
 
 echo "Running Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 #sf agent test run --api-name RegressionSuite --wait 10
-
-echo "Pushing unpackaged changes to scratch org"
-execute sf project deploy start --source-dir unpackaged
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess 
