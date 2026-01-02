@@ -5,9 +5,9 @@ system:
         error: "Sorry, it looks like something has gone wrong."
 
 config:
-  developer_name: "MyOrgButtler"
+  developer_name: "MyOrgButler"
   default_agent_user: "service.agent@example.com"
-  agent_label: "My Org Buttler"
+  agent_label: "My Org Butler"
   description: "Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes."
 variables:
     EndUserId: linked string
@@ -26,7 +26,7 @@ variables:
           description: "This variable may also be referred to as VerifiedCustomerId"
     customInstructions: mutable string
         description: "Stores custom user instructions for personalization."
-    customInstructionsOutOfSync: mutable boolean = False
+    customInstructionsOutOfSync: mutable boolean = True
         description: "Indicates whether custom instructions need to be reloaded. Set to true when StoreCustomInstruction is called, set to false after LoadCustomInstructions completes or after StoreCustomInstruction outputs are captured."
 language:
     default_locale: "en_US"
