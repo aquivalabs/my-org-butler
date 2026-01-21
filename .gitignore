@@ -54,3 +54,4 @@ retrieval-staging/
 
 # Environment variables
 .env
+.claude/settings.local.json
