@@ -30,18 +30,28 @@ echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
 echo "Pushing changes to scratch org"
-execute sf project deploy start --source-dir force-app 
+execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
-echo "Running Tests"
+echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
-#sf agent test run --api-name RegressionSuite --wait 10
 
 echo "Pushing unpackaged changes to scratch org"
-execute sf project deploy start --source-dir unpackaged
+execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
 echo "Assigning permissions"
-execute sf org assign permset --name MyOrgButlerUser --name AgentAccess 
+execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
+
+echo "Activate My Org Butler"
+execute sf agent activate --api-name MyOrgButler
+
+echo "Deploying regressions"
+execute sf project deploy start --source-dir regressions --concise
+
+echo "Running Agent Tests"
+sf agent test run --api-name Research_Test --wait 10
+sf agent test run --api-name Act_Test --wait 10
+sf agent test run --api-name Configure_Test --wait 10
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
-sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
-sf code-analyzer run --rule-selector PMD:OpinionatedSalesforce --output-file code-analyzer-cleancode.csv --target force-app/main/default
+sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file security-review/scans/code-analyzer-security.csv --target force-app/main/default
+sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" --output-file security-review/scans/code-analyzer-cleancode.csv --target force-app/main/default

@@ -9,6 +9,10 @@
       "default": false
     },
     {
+      "path": "regressions",
+      "default": false
+    },
+    {
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",

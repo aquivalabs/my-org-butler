@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>Configure_Test</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Tests for Configure plugin - real admin scenarios exploring unfamiliar data models</description>
+    <testCase>
+        <number>1</number>
+        <inputs>
+            <utterance>I need to understand the aquiva_os package. Show me all custom objects and how they relate to each other.</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Configure</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreOrgSchema']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Describes custom objects in aquiva_os package and their relationships</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>2</number>
+        <inputs>
+            <utterance>Show me the aquiva_os__CustomSetting__c object and explain all its fields</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Configure</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreOrgSchema']</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>3</number>
+        <inputs>
+            <utterance>Show me all Apex classes in the aquiva_os namespace and explain what they do</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Configure</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallToolingApi']</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>4</number>
+        <inputs>
+            <utterance>Render a diagram showing the Account object and its relationships</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Configure</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreOrgSchema','CreatePlantUmlUrl']</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>5</number>
+        <inputs>
+            <utterance>What validation rules exist on the Account object?</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Configure</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallToolingApi']</expectedValue>
+        </expectation>
+    </testCase>
+</AiEvaluationDefinition>

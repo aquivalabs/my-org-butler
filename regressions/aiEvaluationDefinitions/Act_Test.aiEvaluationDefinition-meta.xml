@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>Act_Test</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Tests for Act plugin - verifies topic routing for data modification requests</description>
+    <testCase>
+        <number>1</number>
+        <inputs>
+            <utterance>Create a follow-up task for the Acme account due next Friday</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Act</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallRestApi']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms task was created with a link to the record</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>2</number>
+        <inputs>
+            <utterance>Update the phone number on John Smith's contact to 555-1234</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Act</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallRestApi']</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>3</number>
+        <inputs>
+            <utterance>Create a GitHub issue in aquivalabs/my-org-butler to track the login timeout bug</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Act</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallGitHubApi']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms issue was created with a link</expectedValue>
+        </expectation>
+    </testCase>
+</AiEvaluationDefinition>
