@@ -47,10 +47,16 @@ execute sf agent activate --api-name MyOrgButler
 echo "Deploying regressions"
 execute sf project deploy start --source-dir regressions --concise
 
+echo "Creating Sample Data"
+sf apex run --file scripts/create-sample-data.apex
+
 echo "Running Agent Tests"
 sf agent test run --api-name Research_Test --wait 10
 sf agent test run --api-name Act_Test --wait 10
 sf agent test run --api-name Configure_Test --wait 10
+
+echo "Resetting Sample Data"
+sf apex run --file scripts/create-sample-data.apex
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file security-review/scans/code-analyzer-security.csv --target force-app/main/default

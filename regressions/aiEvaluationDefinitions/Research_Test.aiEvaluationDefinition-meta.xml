@@ -4,11 +4,11 @@
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Tests for Research plugin - from simple queries to complex multi-step exploration</description>
+    <description>Tests for Research plugin - verifies agent reasoning and data retrieval</description>
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>How many open opportunities do we have?</utterance>
+            <utterance>It's Monday morning. Which opportunity should I work on first and why?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -20,13 +20,31 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Returns a count or number of open opportunities</expectedValue>
+            <expectedValue>Recommends the Acme Q1 Expansion Deal opportunity because it has high value and closes within days</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>What are the latest commits in the aquivalabs/my-org-butler repository?</utterance>
+            <utterance>Tell me about the Acme Corporation account</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Research</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['QueryRecordsWithSoql']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Provides account information including that Acme Corporation is located in New York and operates in the Technology industry</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>3</number>
+        <inputs>
+            <utterance>Who introduced the Memory__c custom object in the aquivalabs/my-org-butler repository and when was that?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -38,7 +56,25 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Lists recent commits from the repository</expectedValue>
+            <expectedValue>States that Robert Sösemann introduced the Memory__c object in July 2025</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>4</number>
+        <inputs>
+            <utterance>What custom objects are installed in this org from the aquiva_os namespace?</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>Research</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreOrgSchema']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Lists the custom objects including Memory__c and CustomSetting__c</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>

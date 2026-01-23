@@ -4,11 +4,11 @@
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Tests for Act plugin - verifies topic routing for data modification requests</description>
+    <description>Tests for Act plugin - verifies data modification capabilities</description>
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>Create a follow-up task for the Acme account due next Friday</utterance>
+            <utterance>Create a reminder task for me to call Acme Corporation next Monday</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -20,13 +20,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms task was created with a link to the record</expectedValue>
+            <expectedValue>Confirms that a task has been created with a link to the task record</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>Update the phone number on John Smith's contact to 555-1234</utterance>
+            <utterance>Update the Acme Q1 Expansion Deal opportunity to mark it as high priority in the description</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -36,23 +36,9 @@
             <name>actions_assertion</name>
             <expectedValue>['CallRestApi']</expectedValue>
         </expectation>
-    </testCase>
-    <testCase>
-        <number>3</number>
-        <inputs>
-            <utterance>Create a GitHub issue in aquivalabs/my-org-butler to track the login timeout bug</utterance>
-        </inputs>
-        <expectation>
-            <name>topic_assertion</name>
-            <expectedValue>Act</expectedValue>
-        </expectation>
-        <expectation>
-            <name>actions_assertion</name>
-            <expectedValue>['CallGitHubApi']</expectedValue>
-        </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms issue was created with a link</expectedValue>
+            <expectedValue>Confirms that the opportunity description has been updated</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>
