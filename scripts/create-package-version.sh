@@ -12,7 +12,7 @@ echo "List existing package versions"
 sf package version list -p "$PACKAGE_NAME" --concise
 
 echo "Create new package version"
-PACKAGE_VERSION_OUTPUT=$(sf package version create -p "$PACKAGE_NAME" --installation-key-bypass --wait 40 --code-coverage -f config/project-scratch-def.json --json)
+PACKAGE_VERSION_OUTPUT=$(sf package version create -p "$PACKAGE_NAME" --installation-key-bypass --wait 120 --code-coverage -f config/project-scratch-def.json --json)
 if [ $? -ne 0 ]; then
   echo "Error: Failed to create package version"
   echo "$PACKAGE_VERSION_OUTPUT"
