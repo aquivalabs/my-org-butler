@@ -1,10 +1,13 @@
 // AGENT TEST DATA SETUP
 // Creates realistic demo data for conference talks and agent regression tests
 
-// Cleanup existing test data
-delete [SELECT Id FROM Task WHERE WhatId IN (SELECT Id FROM Account WHERE Name LIKE '%Corporation%' OR Name LIKE '%Industries%' OR Name LIKE '%Tech%' OR Name LIKE '%Global%')];
-delete [SELECT Id FROM Opportunity WHERE AccountId IN (SELECT Id FROM Account WHERE Name LIKE '%Corporation%' OR Name LIKE '%Industries%' OR Name LIKE '%Tech%' OR Name LIKE '%Global%')];
-delete [SELECT Id FROM Account WHERE Name LIKE '%Corporation%' OR Name LIKE '%Industries%' OR Name LIKE '%Tech%' OR Name LIKE '%Global%'];
+// First: Delete ALL old Salesforce sample data (United Oil, Edge, Grand Hotels, etc.)
+// This ensures only OUR demo data exists for clean conference demos
+delete [SELECT Id FROM Task];
+delete [SELECT Id FROM Opportunity];
+delete [SELECT Id FROM Case];
+delete [SELECT Id FROM Contact];
+delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
 
 
 // ACCOUNT 1: Acme Corporation - Primary demo account

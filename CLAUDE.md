@@ -25,12 +25,35 @@ Open-source Salesforce Agentforce assistant. General-purpose AI butler for any S
 | Prompt Templates | `force-app/main/default/genAiPromptTemplates/` |
 | GenAI Functions | `force-app/main/default/genAiFunctions/` |
 | GenAI Plugins | `force-app/main/default/genAiPlugins/` |
-| Agent Tests | `unpackaged/aiEvaluationDefinitions/` |
+| Agent Tests | `regressions/aiEvaluationDefinitions/` |
 | Learnings | `docs/claude-code-learnings.md` |
 
 ## Workflow
 
 **Every code change must be deployed and tested.** Local changes mean nothing in Salesforce.
+
+## Deploying Agent Tests
+
+Agent tests (AiEvaluationDefinitions) require the agent to be deactivated before deployment:
+
+```bash
+# 1. Deactivate agent
+sf agent deactivate --api-name MyOrgButler
+
+# 2. Deploy test definitions
+sf project deploy start --source-dir regressions --concise --ignore-conflicts
+
+# 3. Reactivate agent
+sf agent activate --api-name MyOrgButler
+
+# 4. Reset sample data
+sf apex run --file scripts/create-sample-data.apex
+
+# 5. Run tests
+sf agent test run --api-name Research_Test --wait 10
+sf agent test run --api-name Act_Test --wait 10
+sf agent test run --api-name Configure_Test --wait 10
+```
 
 ## Agentforce Patterns
 
