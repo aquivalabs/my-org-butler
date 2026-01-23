@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
-    <name>ConferenceDemo_Test</name>
+    <name>Regression_Test</name>
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Conference demo story - Tests all key capabilities: SOQL queries, record creation, schema exploration, web search, and GitHub integration</description>
+    <description>Independent tests for all key capabilities: SOQL queries, record creation, schema exploration, web search, and GitHub integration</description>
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>It's Monday morning. Which opportunity should I work on first and why?</utterance>
+            <utterance>Show me all open opportunities sorted by close date</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -20,13 +20,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Recommends the Acme Q1 Expansion Deal opportunity because it has high value and closes within days</expectedValue>
+            <expectedValue>Shows a list of opportunities with their names, amounts, and close dates</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>Create a follow-up task for that opportunity</utterance>
+            <utterance>Create a task called Demo Follow-up for the Acme Corporation account</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -38,7 +38,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms that a follow-up task has been created with a link to the task record</expectedValue>
+            <expectedValue>Confirms that a task has been created with a link to view it</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -62,7 +62,7 @@
     <testCase>
         <number>4</number>
         <inputs>
-            <utterance>Show me an ER diagram of the custom objects</utterance>
+            <utterance>Create an ER diagram showing the custom objects and their relationships</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -74,7 +74,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Provides a PlantUML diagram URL or link showing the custom object relationships</expectedValue>
+            <expectedValue>Provides a PlantUML diagram link showing object relationships</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -92,13 +92,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Provides information about Aquiva Labs as a Salesforce consulting or technology company</expectedValue>
+            <expectedValue>Provides information about Aquiva Labs as a Salesforce company</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>6</number>
         <inputs>
-            <utterance>Create an issue in the aquivalabs/my-org-butler GitHub repo saying the single topic experiment works great</utterance>
+            <utterance>List the open issues in the aquivalabs/my-org-butler GitHub repository</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -110,7 +110,43 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms that a GitHub issue has been created with a link to the issue</expectedValue>
+            <expectedValue>Shows a list of open GitHub issues from the repository</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>7</number>
+        <inputs>
+            <utterance>How many Apex classes are in this org? Use the Tooling API to find out.</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallToolingApi']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Returns the count or list of Apex classes in the org</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>8</number>
+        <inputs>
+            <utterance>List all the custom fields on the Opportunity object using the Metadata API</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['CallMetadataApi']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Lists custom fields on Opportunity object</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>
