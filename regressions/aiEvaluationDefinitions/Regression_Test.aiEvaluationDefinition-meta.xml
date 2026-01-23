@@ -4,11 +4,11 @@
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Independent tests for all key capabilities: SOQL queries, record creation, schema exploration, web search, and GitHub integration</description>
+    <description>Conference demo story: A sales rep discovers their AI assistant's capabilities</description>
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>Show me all open opportunities sorted by close date</utterance>
+            <utterance>which opportunity should I focus on next</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -20,13 +20,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Shows a list of opportunities with their names, amounts, and close dates</expectedValue>
+            <expectedValue>Recommends an opportunity based on value and close date</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>Create a task called Demo Follow-up for the Acme Corporation account</utterance>
+            <utterance>create a follow-up task for the Burlington Textiles opportunity</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -38,13 +38,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms that a task has been created with a link to view it</expectedValue>
+            <expectedValue>Confirms task creation with a link to view it</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>3</number>
         <inputs>
-            <utterance>What custom objects are in this org?</utterance>
+            <utterance>I'm new here, what customizations does this org have?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -62,7 +62,7 @@
     <testCase>
         <number>4</number>
         <inputs>
-            <utterance>Create an ER diagram showing the custom objects and their relationships</utterance>
+            <utterance>show me a diagram of the custom objects in this org</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -74,13 +74,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Provides a PlantUML diagram link showing object relationships</expectedValue>
+            <expectedValue>Provides a diagram link showing object relationships</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>5</number>
         <inputs>
-            <utterance>Search the web for Aquiva Labs</utterance>
+            <utterance>who built this assistant? search the web for Aquiva Labs</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -98,7 +98,7 @@
     <testCase>
         <number>6</number>
         <inputs>
-            <utterance>List the open issues in the aquivalabs/my-org-butler GitHub repository</utterance>
+            <utterance>are there any open issues on the aquivalabs/my-org-butler repo?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -110,13 +110,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Shows a list of open GitHub issues from the repository</expectedValue>
+            <expectedValue>Shows open GitHub issues from the repository</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>7</number>
         <inputs>
-            <utterance>How many Apex classes are in this org? Use the Tooling API to find out.</utterance>
+            <utterance>how much Apex code is in this org?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -128,13 +128,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Returns the count or list of Apex classes in the org</expectedValue>
+            <expectedValue>Returns the count or list of Apex classes</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>8</number>
         <inputs>
-            <utterance>List all the custom fields on the Opportunity object using the Metadata API</utterance>
+            <utterance>use the Metadata API to read the MyOrgButlerUser permission set definition</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -146,7 +146,79 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Lists custom fields on Opportunity object</expectedValue>
+            <expectedValue>Shows the permission set configuration from the Metadata API</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>9</number>
+        <inputs>
+            <utterance>from now on, always show the Amount field when displaying opportunities</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>10</number>
+        <inputs>
+            <utterance>what is Aquiva's work and travel policy?</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['SearchVectorDatabase']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Provides information about Aquiva's work and travel policy from the knowledge base</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>11</number>
+        <inputs>
+            <utterance>read the files attached to the Acme Q1 Expansion Deal and summarize what they contain</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['AnswerWithRelatedFiles']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Summarizes the NDA document content</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>12</number>
+        <inputs>
+            <utterance>open the Acme Corporation NDA 2026 file and tell me what the term length is</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['AnswerWithCurrentFile']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>States the NDA term is two years</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>

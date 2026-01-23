@@ -17,7 +17,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "January 2026",
-      "versionNumber": "2.30.0.NEXT",
+      "versionNumber": "2.31.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [

@@ -8,6 +8,7 @@ delete [SELECT Id FROM Opportunity];
 delete [SELECT Id FROM Case];
 delete [SELECT Id FROM Contact];
 delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
+delete [SELECT Id FROM ContentDocument WHERE Title = 'Acme Corporation NDA 2026'];
 
 
 // ACCOUNT 1: Acme Corporation - Primary demo account
@@ -45,6 +46,18 @@ Account globalMfg = new Account(
     Description = 'Fortune 500 manufacturing company with global operations.'
 );
 insert globalMfg;
+
+// ACCOUNT 4: Burlington Textiles - Standard Salesforce demo company
+Account burlington = new Account(
+    Name = 'Burlington Textiles Corp of America',
+    BillingCity = 'Burlington',
+    BillingCountry = 'USA',
+    Industry = 'Apparel',
+    NumberOfEmployees = 9000,
+    AnnualRevenue = 350000000,
+    Description = 'Leading textile manufacturer with 50+ years of industry experience.'
+);
+insert burlington;
 
 
 // OPPORTUNITIES FOR ACME (Primary demo account)
@@ -119,10 +132,13 @@ Opportunity globalMfgEnterprise = new Opportunity(
 insert globalMfgEnterprise;
 
 
-System.debug('=== Agent Demo Data Created ===');
-System.debug('Accounts: 3 (Acme, TechStart, Global Manufacturing)');
-System.debug('Opportunities: 6 total');
-System.debug('');
-System.debug('KEY DEMO SCENARIO:');
-System.debug('Ask: "Which opportunity should I focus on today?"');
-System.debug('Expected: Acme Q1 Expansion Deal ($500k, closes in 3 days)');
+// OPPORTUNITY FOR BURLINGTON TEXTILES
+Opportunity burlingtonDeal = new Opportunity(
+    Name = 'Burlington Textiles Weaving Plant Generator',
+    AccountId = burlington.Id,
+    Amount = 235000,
+    StageName = 'Id. Decision Makers',
+    CloseDate = Date.today().addDays(60),
+    Description = 'Generator installation for new weaving plant expansion.'
+);
+insert burlingtonDeal;
