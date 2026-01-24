@@ -134,7 +134,7 @@
     <testCase>
         <number>8</number>
         <inputs>
-            <utterance>use the Metadata API to read the MyOrgButlerUser permission set definition</utterance>
+            <utterance>use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
