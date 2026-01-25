@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>CustomInstructions_Test</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Tests memory storage triggers: preference statements, corrections, refinements, and dissatisfaction signals</description>
+    <testCase>
+        <number>1</number>
+        <inputs>
+            <utterance>from now on, show opportunities with the Amount and CloseDate fields</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>2</number>
+        <inputs>
+            <utterance>I prefer tables over bullet lists when you show me data</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>3</number>
+        <inputs>
+            <utterance>always include the Industry field when showing accounts</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>4</number>
+        <inputs>
+            <utterance>from now on, never start your responses with "Let me"</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>5</number>
+        <inputs>
+            <utterance>No, use Revenue field not Amount when showing deals</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this correction for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>6</number>
+        <inputs>
+            <utterance>That's not what I meant. I wanted the contacts sorted by title</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>7</number>
+        <inputs>
+            <utterance>Actually, can you also include the phone number for contacts</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember this preference for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>8</number>
+        <inputs>
+            <utterance>Sort that by close date instead, and remember that for next time</utterance>
+            <conversationHistory>
+                <role>user</role>
+                <message>Show me my opportunities</message>
+                <index>0</index>
+            </conversationHistory>
+            <conversationHistory>
+                <role>agent</role>
+                <message>Here are your opportunities sorted by name: Acme Q1 Expansion ($500K), Burlington Textiles ($235K)</message>
+                <index>1</index>
+            </conversationHistory>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember to sort by close date for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>9</number>
+        <inputs>
+            <utterance>Not quite, from now on only show me high-value opportunities above 100K</utterance>
+            <conversationHistory>
+                <role>user</role>
+                <message>Show me my opportunities</message>
+                <index>0</index>
+            </conversationHistory>
+            <conversationHistory>
+                <role>agent</role>
+                <message>Here are all your opportunities including small deals under 10K</message>
+                <index>1</index>
+            </conversationHistory>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember to only show high-value opportunities</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>10</number>
+        <inputs>
+            <utterance>Wrong, I only wanted Acme opportunities, remember that for next time</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember to show only Acme opportunities</expectedValue>
+        </expectation>
+    </testCase>
+</AiEvaluationDefinition>

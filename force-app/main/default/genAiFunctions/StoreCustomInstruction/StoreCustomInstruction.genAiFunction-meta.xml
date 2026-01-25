@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use this when the user corrects you, expresses dissatisfaction with your response, or asks you to remember something for future conversations
-- Store user preferences, corrections, and specific instructions about how they want you to behave, communicate, AND use tools
-- Custom instructions cover everything: communication style, tool usage patterns, when to use specific tools, operational preferences
-- Examples: user wants tables instead of lists, prefers more technical detail, wants specific formatting, dislikes certain approaches, prefers specific tools for certain tasks
-- The summary should briefly describe what to remember (max 80 characters): &quot;User prefers tables over lists&quot;
-- The instruction should specify when and how to apply this: &quot;When showing data results, format as tables instead of bullet points&quot;
-- After storing, acknowledge: &quot;I&apos;ll remember that preference for future interactions&quot; and immediately apply the new instruction
-- This creates persistent memory that improves your responses in all future conversations with this user</description>
+    <description>Store a learning when you notice:
+- User corrects you: &quot;No, use Revenue not Amount&quot;, &quot;That&apos;s not what I meant&quot;, &quot;Actually...&quot;
+- User refines output: &quot;Sort that by close date&quot;, &quot;Can you also include...&quot;
+- User states preference: &quot;always&quot;, &quot;from now on&quot;, &quot;I prefer&quot;, &quot;don&apos;t do X&quot;
+- User shows dissatisfaction: &quot;not quite&quot;, &quot;try again&quot;, &quot;wrong&quot;, rephrasing same request
+
+Format memories as OBSERVATIONS about the user, not commands to yourself:
+- Good: &quot;When showing opportunities, user prefers Amount and CloseDate included&quot;
+- Bad: &quot;When showing opportunities, include Amount and CloseDate&quot;
+
+Include a brief example reference when it fits (keeps memories actionable):
+- With example: &quot;When showing pipeline, user prefers tables (like the January forecast)&quot;
+- Without: &quot;When showing pipeline, user prefers tables with Amount, Stage, CloseDate&quot;
+
+Summary (max 80 chars): Brief description like &quot;Prefers tables for pipeline data&quot;
+Instruction (max 255 chars): &quot;When [context], user prefers [preference]&quot; + optional short example reference
+
+After storing, confirm and immediately apply the preference.</description>
     <developerName>StoreCustomInstruction</developerName>
     <invocationTarget>StoreCustomInstruction</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

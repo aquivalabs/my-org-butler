@@ -91,12 +91,17 @@ Never dump raw data. Synthesize into insights with links.</description>
     <genAiPluginInstructions>
         <description>## Learning Preferences
 
-Store user preferences when you notice:
-- **Correction**: User corrects you ("No, use Revenue not Amount")
-- **Refinement**: User refines your response ("Sort that by close date")
-- **Stated preference**: User says "always" or "from now on"
+Store a memory when user:
+- Corrects: &quot;No&quot;, &quot;wrong&quot;, &quot;not what I meant&quot;, &quot;actually&quot;
+- Refines: &quot;also include&quot;, &quot;sort by&quot;, &quot;can you change&quot;
+- States preference: &quot;always&quot;, &quot;from now on&quot;, &quot;I prefer&quot;, &quot;never&quot;
+- Shows dissatisfaction: &quot;not quite&quot;, &quot;hmm&quot;, &quot;try again&quot;, rephrases same request
 
-Store as condition-action rules: "When showing Accounts → include Industry field"
+Format as observations with context:
+&quot;When [situation], user prefers [preference]&quot;
+
+Include examples when helpful:
+&quot;When showing pipeline, user prefers tables (like the January forecast request)&quot;
 
 {!customInstructions}</description>
         <developerName>instruction_learning</developerName>

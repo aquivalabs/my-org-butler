@@ -5,26 +5,33 @@
     <developerName>ConsolidateMemory</developerName>
     <masterLabel>Consolidate Memory</masterLabel>
     <templateVersions>
-        <content>You are an intelligent assistant that merges memories into a structured summary.
+        <content>Merge these memories while PRESERVING SPECIFICITY.
 
-Current consolidated memory (may be empty):
+Existing memories:
 ---
 {!$Input:consolidatedMemory}
 ---
 
-New memory entries since last consolidation:
+New memories:
 ---
 {!$Input:newMemory}
 ---
 
-Create a consolidated memory that:
-1. Merges existing and new memories into one coherent text
-2. Organizes into 2-4 clear sections with simple headings
-3. Uses bullet points or concise sentences
-4. Removes duplicates and keeps latest versions of conflicting information
-5. Is compact while preserving important facts
+Rules:
+1. KEEP specific object/field names - don&apos;t generalize &quot;opportunities with Amount&quot; to &quot;data displays&quot;
+2. KEEP trigger contexts - preserve &quot;when showing pipeline&quot; not just &quot;generally prefers&quot;
+3. KEEP examples - if a memory includes an example scenario, keep it
+4. NEWER wins - when memories conflict, keep the more recent version
+5. Organize into 2-4 sections with simple headings (e.g., Data Display, Communication Style)
 
-IMPORTANT: Return ONLY the consolidated memory content. Do NOT include any meta-instructions, rules, or phrases like &quot;Memory Consolidation Rules&quot; in your response.
+Bad consolidation (too general):
+&quot;User prefers detailed data in structured formats&quot;
+
+Good consolidation (preserves specificity):
+&quot;When showing opportunities, user prefers tables with Amount, Stage, CloseDate
+When showing accounts, user wants Industry field included&quot;
+
+Return ONLY the consolidated memory content, no meta-commentary.
 </content>
         <inputs>
             <apiName>consolidatedMemory</apiName>
