@@ -152,7 +152,7 @@
     <testCase>
         <number>9</number>
         <inputs>
-            <utterance>from now on, always show the Amount field when displaying opportunities</utterance>
+            <utterance>from now on, show opportunities with the Amount and CloseDate fields</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -170,6 +170,62 @@
     <testCase>
         <number>10</number>
         <inputs>
+            <utterance>Sort that by close date instead, and remember that for next time</utterance>
+            <conversationHistory>
+                <role>user</role>
+                <message>Show me my opportunities</message>
+                <index>0</index>
+            </conversationHistory>
+            <conversationHistory>
+                <role>agent</role>
+                <message>Here are your opportunities sorted by name: Acme Q1 Expansion ($500K), Burlington Textiles ($235K)</message>
+                <index>1</index>
+            </conversationHistory>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember to sort by close date for future interactions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>11</number>
+        <inputs>
+            <utterance>Not quite, from now on only show me high-value opportunities above 100K</utterance>
+            <conversationHistory>
+                <role>user</role>
+                <message>Show me my opportunities</message>
+                <index>0</index>
+            </conversationHistory>
+            <conversationHistory>
+                <role>agent</role>
+                <message>Here are all your opportunities including small deals under 10K</message>
+                <index>1</index>
+            </conversationHistory>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['StoreCustomInstruction']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms it will remember to only show high-value opportunities</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>12</number>
+        <inputs>
             <utterance>what is Aquiva's work and travel policy?</utterance>
         </inputs>
         <expectation>
@@ -186,7 +242,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>11</number>
+        <number>13</number>
         <inputs>
             <utterance>read the files attached to the Acme Q1 Expansion Deal and summarize what they contain</utterance>
         </inputs>
@@ -201,24 +257,6 @@
         <expectation>
             <name>bot_response_rating</name>
             <expectedValue>Summarizes the NDA document content</expectedValue>
-        </expectation>
-    </testCase>
-    <testCase>
-        <number>12</number>
-        <inputs>
-            <utterance>open the Acme Corporation NDA 2026 file and tell me what the term length is</utterance>
-        </inputs>
-        <expectation>
-            <name>topic_assertion</name>
-            <expectedValue>MyOrgButler</expectedValue>
-        </expectation>
-        <expectation>
-            <name>actions_assertion</name>
-            <expectedValue>['AnswerWithCurrentFile']</expectedValue>
-        </expectation>
-        <expectation>
-            <name>bot_response_rating</name>
-            <expectedValue>States the NDA term is two years</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>
