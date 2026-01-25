@@ -17,7 +17,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "January 2026",
-      "versionNumber": "2.31.0.NEXT",
+      "versionNumber": "2.32.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
@@ -110,6 +110,7 @@
     "my-org-butler@2.19.0-1": "04tVI000000S8FZYA0",
     "my-org-butler@2.20.0-1": "04tVI000000S8NdYAK",
     "my-org-butler@2.30.0-1": "04tVI000000VONpYAO",
-    "my-org-butler@2.31.0-1": "04tVI000000VSODYA4"
+    "my-org-butler@2.31.0-1": "04tVI000000VSODYA4",
+    "my-org-butler@2.32.0-1": "04tVI000000VUBVYA4"
   }
 }
