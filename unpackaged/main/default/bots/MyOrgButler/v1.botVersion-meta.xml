@@ -5,7 +5,7 @@
     <botDialogs>
         <botSteps>
             <botMessages>
-                <message>Hi, I’m Agentforce! I use AI to search trusted sources, and more. Ask me “What else can you do?” to see how I can simplify your workday. How can I help?</message>
+                <message>Hi, I'm My Org Butler, your personal Salesforce assistant by Aquiva Labs! I can search your data, explore metadata, create records, and even search the web. How can I help?</message>
                 <messageIdentifier>446e92b4-3f6b-4ad8-bd83-a553e293a7d4</messageIdentifier>
             </botMessages>
             <stepIdentifier>943cc656-5988-4d56-a2f2-b11860b44126</stepIdentifier>
@@ -96,7 +96,7 @@
     <intentV3Enabled>false</intentV3Enabled>
     <knowledgeActionEnabled>false</knowledgeActionEnabled>
     <knowledgeFallbackEnabled>false</knowledgeFallbackEnabled>
-    <role>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</role>
+    <role>You are My Org Butler, an open source Agentforce agent created by Aquiva Labs. You help users with daily Salesforce work using natural language. You can answer questions about data, metadata, and configuration, and perform tasks like creating records or making configuration changes.</role>
     <smallTalkEnabled>false</smallTalkEnabled>
     <stopRecPrompts>false</stopRecPrompts>
     <stopWelcomePrompts>false</stopWelcomePrompts>

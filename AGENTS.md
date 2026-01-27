@@ -1,4 +1,8 @@
-# AI Agent Configuration
+# Instructions for AI Assistants
+
+**All AI assistants working on this project should read and follow this document.**
+
+---
 
 ## Philosophy
 
@@ -19,12 +23,13 @@ This codebase reflects a set of beliefs about what makes code maintainable:
 These principles are non-negotiable. Many are enforced by PMD rules.
 
 ### One Return Per Method
+
 Methods have exactly one `return` statement at the end. Use the `result` variable pattern:
 
 ```java
 private List<Account> findAccounts(String name) {
     List<Account> result = new List<Account>();
-    
+
     for(Account acc : accounts) {
         if(acc.Name.contains(name)) {
             result.add(acc);
@@ -36,6 +41,7 @@ private List<Account> findAccounts(String name) {
 ```
 
 ### No Forbidden Suffixes
+
 Never use: `Service`, `Handler`, `Manager`, `Helper`, `Util`, `Wrapper`
 
 These names hide intent. Use domain names that reveal what the class represents.
@@ -45,14 +51,18 @@ No JavaDoc/ApexDoc `/** */` comments. If code needs explanation, the code is unc
 
 ### Tests Don't Start With "test"
 Test method names describe behavior. Class + method reads as sentence:
+
 - `Calculator_Test.multipliesTwoIntegers()` → "Calculator multiplies two integers"
 
 ### Test Method Names Describe What Is Asserted
+
 The method name states exactly what the test verifies. The assertion should match the name - nothing more, nothing less:
+
 - Good: `returnsOverdueTasksFirst()` with `Assert.areEqual('Overdue Task', tasks[0].Name)`
 - Bad: `testPrioritization()` with multiple unrelated assertions
 
 ### Deviations Need Explanation
+
 When you deviate from defaults (`without sharing`, `global`, PMD suppression), add a `// Note:` comment explaining why.
 
 ## Project Structure
@@ -78,21 +88,21 @@ Organize with ALL-CAPS section comments. Double blank lines between methods:
 
 ```java
 public with sharing class ClassName {
-    
+
     private static final String CONSTANT = 'value';
-    
+
     private String field;
 
 
     // CONSTRUCTOR
-    
+
     public ClassName() {
         // initialization
     }
 
 
     // PUBLIC
-    
+
     public String process() {
         String result = doWork();
 
@@ -110,7 +120,7 @@ public with sharing class ClassName {
 
 
     // INNER
-    
+
     public class InnerClass {
         public String value;
     }
@@ -124,7 +134,7 @@ Three section comments only: `// Setup`, `// Exercise`, `// Verify`. No other co
 ```java
 @IsTest
 private class ClassName_Test {
-    
+
 
     @IsTest
     private static void returnsExpectedValue() {
@@ -159,7 +169,7 @@ private class ClassName_Test {
 
 
     // HELPER
-    
+
     private static Input createInput() {
         Input result = new Input();
         result.value = 'test';
@@ -171,6 +181,7 @@ private class ClassName_Test {
 
 ### No Assertion Messages
 Assertions have no message parameter. The test method name explains what is being verified:
+
 - Good: `Assert.areEqual('expected', actual)`
 - Bad: `Assert.areEqual('expected', actual, 'Should return expected value')`
 
@@ -201,7 +212,7 @@ Account acc = (Account) new Account_t()
                                 .amount(1000))
                     .persist();
 
-// Custom objects  
+// Custom objects
 Project p = (Project) new Project()
                     .name('My Project')
                     .add(new Task()
@@ -235,10 +246,10 @@ String response = new PromptTemplate('ExtractTasks')
 Long queries: each field on its own line, aligned:
 
 ```java
-List<Project__c> projects = [SELECT Id, Name, 
-                                    Status__c, 
+List<Project__c> projects = [SELECT Id, Name,
+                                    Status__c,
                                     StartDate__c,
-                                    (SELECT Id, Name, 
+                                    (SELECT Id, Name,
                                             OwnerId, Owner.Name
                                     FROM Tasks__r)
                             FROM Project__c
@@ -292,6 +303,7 @@ global with sharing class VerbNounAction {
 ### Methods
 
 No `get` prefix:
+
 - Bad: `getAge()`, `getName()`
 - Good: `age()`, `name()`
 
@@ -345,22 +357,26 @@ A custom PMD ruleset (`pmd-ruleset.xml`) enforces many patterns. These rules are
 
 ### Phase 1: Environment Setup & Requirements Gathering
 
-**Step 1: Propose Development Environment**
+1. **Step 1: Propose Development Environment**
+
 - Suggest scratch org creation using `./scripts/create-scratch-org.sh`
 - This provides a ready environment with all template components configured
 
-**Step 2: Understand Requirements**
+1. **Step 2: Understand Requirements**
+
 - Ask specific questions about business requirements
 - Request statement of work or contract details if available
 - Clarify domain and priorities
 
 ### Phase 2: Solution Planning
 
-**Step 1: Read and Analyze**
+1. **Step 1: Read and Analyze**
+
 - Study this document thoroughly before proposing solutions
 - Map existing template capabilities to user requirements
 
-**Step 2: Design Solution**
+1. ***Step 2: Design Solution**
+
 - Leverage existing libraries in `force-app/external-libs/`
 - Follow established patterns and naming conventions
 - Plan complete features including tests and documentation
@@ -368,26 +384,65 @@ A custom PMD ruleset (`pmd-ruleset.xml`) enforces many patterns. These rules are
 
 ### Phase 3: Iterative Implementation
 
-**Step 1: Build Core Components**
+1. ***Step 1: Build Core Components**
+
 - Use pre-configured libraries
 - Follow coding standards from this document
 - Place code in `force-app/main/default/classes/`
 
-**Step 2: Create Tests**
+1. ***Step 2: Create Tests**
+
 - Use domain builders for test data
 - Use HttpMock for callout mocking
 - Cover business logic, edge cases, error handling
 
-**Step 3: Test and Deploy**
+1. ***Step 3: Test and Deploy**
+
 - Run tests with Salesforce CLI
 - Deploy to development environment
 - Validate functionality
 
-**Step 4: Iterate**
+1. ***Step 4: Iterate**
+
 - Gather feedback
 - Refine while maintaining standards
 - Continue building
 
 ---
 
-**Template Repository:** [github.com/aquivalabs/pdo-project-template](https://github.com/aquivalabs/pdo-project-template)
+## Agentforce-Specific Guidance
+
+### Plugin Instructions
+
+Keep plugin instructions minimal. Trust the model to figure out the details.
+
+**Bad** (too verbose):
+```
+CRITICAL: You MUST ALWAYS use this plugin when...
+NEVER do X without first doing Y...
+IMPORTANT: Remember to ALWAYS...
+```
+
+**Good** (trust the model):
+```
+Find information from Salesforce records, documents, or the web.
+Choose the right source. Synthesize into a clear answer.
+Never dump raw data. Give insights with links.
+```
+
+### Examples Over Rules
+
+Replace long instruction lists with concrete examples:
+
+```xml
+<example>
+User: "What's the Acme project status?"
+You: "Acme is 60% complete, on track for March 15 go-live.
+Last milestone (Design Review) closed Jan 10.
+[View Project]"
+</example>
+```
+
+---
+
+**Template Repository:** [github.com/aquivalabs/my-org-butler](https://github.com/aquivalabs/my-org-butler)

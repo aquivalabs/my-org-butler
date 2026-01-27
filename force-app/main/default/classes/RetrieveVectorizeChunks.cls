@@ -122,7 +122,8 @@ global with sharing class RetrieveVectorizeChunks {
     global class Question {
         @InvocableVariable(label='Question' description='The question to search for in the company knowledge base.')
         global String content;
-        
+
+        @SuppressWarnings('PMD.EmptyStatementBlock')
         global Question() {}
 
         global Question(String content) {

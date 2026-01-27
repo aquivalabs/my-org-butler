@@ -1,14 +1,8 @@
 {
   "orgName": "my-org-butler_DEV",
   "edition": "Partner Developer",
-  "hasSampleData": true,
-  "features": [
-    "EnableSetPasswordInApi",
-    "Einstein1AIPlatform",
-    "Chatbot",
-    "CustomerDataPlatform",
-    "CustomerDataPlatformLite"
-  ],
+  "hasSampleData": false,
+    "features": ["EnableSetPasswordInApi","Einstein1AIPlatform", "Chatbot"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true

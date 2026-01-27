@@ -33,21 +33,33 @@ echo "Creating Service Agent user"
 execute sf apex run --file scripts/create-setup-data.apex
 
 echo "Pushing changes to scratch org"
-execute sf project deploy start --source-dir force-app 
+execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
+
+echo "Running Apex Tests"
+sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
 echo "Pushing unpackaged changes to scratch org"
-execute sf project deploy start --source-dir unpackaged
-
-echo "Assigning permissions to Service Agent user"
-execute sf org assign permset --name AgentAccess --name AgentforceServiceAgentUser --name MyOrgButlerUser --name EinsteinGPTPromptTemplateUser --on-behalf-of service.agent@example.com
-
-echo "Running Tests"
-sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
-#sf agent test run --api-name RegressionSuite --wait 10
+execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
 echo "Assigning permissions"
-execute sf org assign permset --name MyOrgButlerUser --name AgentAccess 
+execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
+
+echo "Activate My Org Butler"
+execute sf agent activate --api-name MyOrgButler
+
+echo "Deploying regressions"
+execute sf project deploy start --source-dir regressions --concise
+
+echo "Creating Sample Data"
+sf apex run --file scripts/create-sample-data.apex
+
+echo "Uploading Sample Files"
+OPP_ID=$(sf data query --query "SELECT Id FROM Opportunity WHERE Name='Acme Q1 Expansion Deal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
+sf data create file --file "scripts/Acme_NDA_2026.pdf" --title "Acme Corporation NDA 2026" --parent-id "$OPP_ID"
+
+echo "Running Agent Tests"
+sf agent test run --api-name Regression_Test --wait 10
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
-sf code-analyzer run --rule-selector Recommended:Security, AppExchange --output-file code-analyzer-security.csv 
-sf code-analyzer run --rule-selector PMD:OpinionatedSalesforce --output-file code-analyzer-cleancode.csv --target force-app/main/default
+sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file security-review/scans/code-analyzer-security.csv --target force-app/main/default
+sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" --output-file security-review/scans/code-analyzer-cleancode.csv --target force-app/main/default

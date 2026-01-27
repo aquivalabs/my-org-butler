@@ -11,6 +11,9 @@ global with sharing class LoadCustomInstructions {
 
     private static CustomInstructions getCustomInstructions() {
         List<String> lines = new List<String>();
+        lines.add('\n### Agent Identity');
+        lines.add('- You are My Org Butler, an open source Agentforce agent created by Aquiva Labs');
+        lines.add('- When asked who you are, introduce yourself as My Org Butler by Aquiva Labs');
         lines.add('\n### Basic User Info');
         lines.add('- User Record Id: ' + System.UserInfo.getUserId());
         lines.add('- First name: ' + System.UserInfo.getFirstName());

@@ -1,85 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithExternalContent.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__MyOrgButler.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithExternalContent.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithData.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithData.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithInternet.aquiva_os__SearchWeb.output_answer</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithInternet.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithFiles.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__AnswerWithFiles.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__EditData.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__EditData.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__ExploreAndEditMetadata.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__ExploreAndEditMetadata.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__ManageGitHub.aquiva_os__LoadCustomInstructions.output_customInstructions</attributeName>
-        <attributeType>CustomPluginFunctionAttribute</attributeType>
-        <mappingTargetName>customInstructions</mappingTargetName>
-        <mappingType>Variable</mappingType>
-    </attributeMappings>
-    <attributeMappings>
-        <attributeName>aquiva_os__ManageGitHub.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
+        <attributeName>aquiva_os__MyOrgButler.aquiva_os__StoreCustomInstruction.output_customInstructions</attributeName>
         <attributeType>CustomPluginFunctionAttribute</attributeType>
         <mappingTargetName>customInstructions</mappingTargetName>
         <mappingType>Variable</mappingType>
@@ -89,101 +17,73 @@
         <genAiFunctionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</genAiFunctionName>
     </genAiFunctions>
     <genAiPlugins>
-        <genAiPluginName>AnswerWithData</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>AnswerWithExternalContent</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>AnswerWithFiles</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>AnswerWithInternet</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>EditData</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>ExploreAndEditMetadata</genAiPluginName>
-    </genAiPlugins>
-    <genAiPlugins>
-        <genAiPluginName>ManageGitHub</genAiPluginName>
+        <genAiPluginName>MyOrgButler</genAiPluginName>
     </genAiPlugins>
     <masterLabel>My Org Butler</masterLabel>
     <plannerType>AiCopilot__ReAct</plannerType>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithData.ExploreOrgSchema</targetName>
+        <targetName>aquiva_os__MyOrgButler.QueryRecordsWithSoql</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithData.QueryRecordsWithSoql</targetName>
+        <targetName>aquiva_os__MyOrgButler.ExploreOrgSchema</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithExternalContent.SearchVectorDatabase</targetName>
+        <targetName>aquiva_os__MyOrgButler.SearchVectorDatabase</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithFiles.AnswerWithCurrentFile</targetName>
+        <targetName>aquiva_os__MyOrgButler.AnswerWithCurrentFile</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithFiles.AnswerWithRelatedFiles</targetName>
+        <targetName>aquiva_os__MyOrgButler.AnswerWithRelatedFiles</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithFiles.EmployeeCopilot__GetRecordDetails</targetName>
+        <targetName>aquiva_os__MyOrgButler.SearchWeb</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithFiles.EmployeeCopilot__IdentifyRecordByName</targetName>
+        <targetName>aquiva_os__MyOrgButler.CallGitHubApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__AnswerWithInternet.SearchWeb</targetName>
+        <targetName>aquiva_os__MyOrgButler.CallRestApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__EditData.CallRestApi</targetName>
+        <targetName>aquiva_os__MyOrgButler.CallMetadataApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__EditData.ExploreOrgSchema</targetName>
+        <targetName>aquiva_os__MyOrgButler.CallToolingApi</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExploreAndEditMetadata.CallMetadataApi</targetName>
+        <targetName>aquiva_os__MyOrgButler.CreatePlantUmlUrl</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExploreAndEditMetadata.CallToolingApi</targetName>
+        <targetName>aquiva_os__MyOrgButler.EmployeeCopilot__GetRecordDetails</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExploreAndEditMetadata.CreatePlantUmlUrl</targetName>
-        <targetType>PluginFunction</targetType>
-    </ruleExpressionAssignments>
-    <ruleExpressionAssignments>
-        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ExploreAndEditMetadata.ExploreOrgSchema</targetName>
-        <targetType>PluginFunction</targetType>
-    </ruleExpressionAssignments>
-    <ruleExpressionAssignments>
-        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
-        <targetName>aquiva_os__ManageGitHub.CallGitHubApi</targetName>
+        <targetName>aquiva_os__MyOrgButler.EmployeeCopilot__IdentifyRecordByName</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
     <ruleExpressions>
