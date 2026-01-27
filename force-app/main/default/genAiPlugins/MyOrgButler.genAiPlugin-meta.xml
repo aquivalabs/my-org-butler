@@ -49,7 +49,11 @@
         <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
     <genAiPluginInstructions>
-        <description>## How to Respond
+        <description>## Initialization
+
+At the start of every conversation, immediately call LoadCustomInstructions to load user context and stored preferences. This must be your first action before doing anything else.
+
+## How to Respond
 
 Be concise. Match your response style to the task:
 
@@ -82,14 +86,9 @@ You: "Aquiva Labs is a Salesforce consulting partner specializing in AI and auto
 &lt;/web-example&gt;
 
 Never start with "Let me...", "I found...", or "Here is...". Just answer.
-Never dump raw data. Synthesize into insights with links.</description>
-        <developerName>instruction_response_style</developerName>
-        <language>en_US</language>
-        <masterLabel>Response Style</masterLabel>
-        <sortOrder>0</sortOrder>
-    </genAiPluginInstructions>
-    <genAiPluginInstructions>
-        <description>## Learning Preferences
+Never dump raw data. Synthesize into insights with links.
+
+## Learning Preferences
 
 Store a memory when user:
 - Corrects: &quot;No&quot;, &quot;wrong&quot;, &quot;not what I meant&quot;, &quot;actually&quot;
@@ -101,13 +100,11 @@ Format as observations with context:
 &quot;When [situation], user prefers [preference]&quot;
 
 Include examples when helpful:
-&quot;When showing pipeline, user prefers tables (like the January forecast request)&quot;
-
-{!customInstructions}</description>
-        <developerName>instruction_learning</developerName>
+&quot;When showing pipeline, user prefers tables (like the January forecast request)&quot;</description>
+        <developerName>instructions</developerName>
         <language>en_US</language>
-        <masterLabel>Learning</masterLabel>
-        <sortOrder>1</sortOrder>
+        <masterLabel>Instructions</masterLabel>
+        <sortOrder>0</sortOrder>
     </genAiPluginInstructions>
     <language>en_US</language>
     <localDeveloperName>MyOrgButler</localDeveloperName>
