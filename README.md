@@ -85,6 +85,16 @@ Built entirely on Agentforce with 9 functions and 5 plugins. The functions handl
 - Create visual diagrams and documentation
 
 
+### Security & Data Access
+
+**Salesforce Data: ✅ Secure** - All queries use `USER_MODE` and `with sharing`. Users only see records they have permission to access. Field-level security, object permissions, and sharing rules are fully enforced.
+
+**Metadata & Tooling API: ✅ Permission-Gated** - Create, update, and delete operations on metadata/code require specific user permissions ("View All Data" for Tooling API, "Modify Metadata" or "Author Apex" for Metadata API). Operations execute with the current user's session - users without these permissions cannot make changes even through the agent.
+
+**Slack Integration: ✅ Secure** - When used in Slack channels, Agentforce shows you a private draft response first. You review it, then decide whether to share it publicly. This prevents accidental exposure of sensitive data.
+
+**External Knowledge (Vectorize): ⚠️ No Permission Filtering** - Vectorize does not automatically sync or enforce Google Drive permissions - all users see identical search results. This is a [known hard problem](https://www.pinecone.io/learn/rag-access-control/) in RAG systems that most vector databases face (see [AWS guidance](https://aws.amazon.com/blogs/security/authorizing-access-to-data-with-rag-implementations/), [Paragon's analysis](https://www.useparagon.com/learn/what-to-know-about-ingesting-google-drive-data-for-rag/)). Solutions require dedicated authorization services with post-filtering. For now: only index documents that all agent users should access.
+
 ### Development
 
 Want to customize or extend the Butler?
