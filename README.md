@@ -85,7 +85,7 @@ Built entirely on Agentforce with 9 functions and 5 plugins. The functions handl
 - Create visual diagrams and documentation
 
 
-### Security & Data Access
+### Is it safe?
 
 **Salesforce Data: ✅ Secure** - All queries use `USER_MODE` and `with sharing`. Users only see records they have permission to access. Field-level security, object permissions, and sharing rules are fully enforced.
 
