@@ -1,20 +1,8 @@
 {
   "packageDirectories": [
     {
-      "path": "retrieval-staging",
-      "default": true
-    },
-    {
-      "path": "unpackaged",
-      "default": false
-    },
-    {
-      "path": "regressions",
-      "default": false
-    },
-    {
       "path": "force-app",
-      "default": false,
+      "default": true,
       "package": "my-org-butler",
       "versionName": "January 2026",
       "versionNumber": "2.32.0.NEXT",
