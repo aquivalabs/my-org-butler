@@ -61,6 +61,10 @@ Everything in the language is plumbing around this duality.
 
 Read `references/agent-script-guide.md` for the full condensed language reference covering all blocks, variable types, action definitions, input bindings, lifecycle hooks, guard clauses, and complete working examples.
 
+## Known Issues & Quirks
+
+When you encounter unexpected behavior, deployment failures, or runtime errors — check `references/known-issues.md` first. It tracks bugs and quirks in Agent Script beta. If you discover a new issue, add it to that file.
+
 ## Verification Protocol
 
 When something fails, is ambiguous, or the user questions output — **do not guess**. Fetch the relevant canonical URL from `references/official-sources.md` and verify before retrying.
