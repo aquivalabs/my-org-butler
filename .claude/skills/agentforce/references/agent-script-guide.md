@@ -9,11 +9,13 @@
 
 Agent Script is a YAML-like DSL for Agentforce agents. It compiles into an "Agent Graph" consumed by the Atlas Reasoning Engine. The core idea: you mix **deterministic logic** (`->` arrow blocks with `if/else`, `run`, `set`, `transition to`) with **LLM prompts** (`|` pipe blocks — natural language the LLM reasons over). That's the entire "hybrid reasoning" concept. Logic runs every time. Prompts are suggestions the LLM interprets.
 
+source: [overview](https://developer.salesforce.com/docs/einstein/genai/guide/agent-script.html) | [intro blog](https://developer.salesforce.com/blogs/2025/10/introducing-hybrid-reasoning-with-agent-script) | [recipes overview](https://developer.salesforce.com/sample-apps/agent-script-recipes/getting-started/overview)
+
 ---
 
 ## File Structure
 
-An `.agent` file is a sequence of top-level blocks. Order matters. Indentation: **3 spaces** (Python-style). Comments: `#`.
+An `.agent` file is a sequence of top-level blocks. Order matters. Indentation: **at least 2 spaces or 1 tab** — pick one method and use it consistently throughout the script. Mixing spaces and tabs causes parsing errors. Comments: `#`.
 
 ```
 config:           # Identity — required
@@ -22,10 +24,12 @@ language:         # Locale settings (optional)
 connection:       # Channel config like Enhanced Chat (optional)
 variables:        # Global state — shared across all topics
 start_agent:      # Entry point — routes to first topic
-topic <name>:     # One or more topics — where the work happens
+topic <n>:     # One or more topics — where the work happens
 ```
 
 That's it. Every recipe and every production agent is just a composition of these blocks.
+
+source: [blocks](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html) | [flow of control](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-flow.html)
 
 ---
 
@@ -35,26 +39,38 @@ This is **the single most important concept** and the docs bury it in 15 pages. 
 
 | Syntax | Name | What Happens | Deterministic? |
 |--------|------|-------------|----------------|
-| `->` | **Procedure** (logic) | Code runs top-to-bottom, every time | ✅ Yes |
-| `\|` | **Template** (prompt) | Text becomes part of the LLM prompt | ❌ No — LLM decides |
+| `->` | **Procedure** (logic) | Code runs top-to-bottom, every time | Yes |
+| `\|` | **Template** (prompt) | Text becomes part of the LLM prompt | No — LLM decides |
 
 They combine inside `instructions:->` blocks:
 
 ```agentscript
 reasoning:
    instructions:->                          # Start a procedure
-      run @actions.get_order                # ← deterministic: always runs
+      run @actions.get_order                # deterministic: always runs
          with order_id = @variables.order_id
          set @variables.status = @outputs.status
-      if @variables.status == "shipped":    # ← deterministic: always evaluates
+      if @variables.status == "shipped":    # deterministic: always evaluates
          | Your order has shipped! Tracking: {!@variables.tracking_number}
-           Ask if they need anything else.  # ← prompt: LLM uses this text
+           Ask if they need anything else.  # prompt: LLM uses this text
       else:
          | The order is still processing.
-           Reassure the customer.           # ← prompt: LLM uses this text
+           Reassure the customer.           # prompt: LLM uses this text
 ```
 
 **Rule of thumb:** After `->`, you write code. After `|`, you write English (which becomes the LLM prompt). You can nest `|` inside `->` to mix logic with prompts.
+
+source: [reasoning instructions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-instructions.html) | [conditional expressions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-expressions.html)
+
+---
+
+## Execution Model
+
+This is crucial to understand: **all `->` logic resolves first, then the resulting `|` text is sent to the LLM as a single prompt.** The LLM does not reason while the script is still parsing. Agentforce processes reasoning instructions line by line, top to bottom — running actions, evaluating conditionals, and collecting prompt text. Only after all logic has resolved does the assembled prompt go to the LLM.
+
+This means the LLM cannot influence earlier deterministic branching. By the time the LLM sees the prompt, all `if/else` decisions have already been made and all `run` actions have already executed.
+
+source: [flow of control](https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-flow.html)
 
 ---
 
@@ -98,14 +114,20 @@ variables:
 
 **Types:** `string`, `number`, `boolean`, `object`, `date`, `id`, `list[<type>]`
 
+**Boolean literals are case-sensitive:** `True` and `False` (capitalized). `true`/`false` will not work.
+
 **Access:**
 - In logic: `@variables.order_id`
 - In templates/prompts: `{!@variables.order_id}`
 - Setting: `set @variables.order_id = "12345"`
 
+source: [variables](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-variables.html)
+
 ### start_agent
 
-The entry point. Routes to the first topic.
+The entry point. **Runs on every customer utterance** — not just the first one. After any topic completes and the customer sends a new message, execution returns here. This means routing logic repeats unless you guard it (e.g., check a variable to skip re-routing if the user is already in a topic).
+
+There is a built-in global turn counter `num_turns` that Agentforce increments automatically on each pass through a topic. You can use it in conditions:
 
 ```agentscript
 start_agent topic_selector:
@@ -151,6 +173,8 @@ topic order_management:
             set @variables.order_status = @outputs.status
 ```
 
+source: [blocks — topic](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html#topic-blocks) | [multi-topic recipe](https://developer.salesforce.com/sample-apps/agent-script-recipes/architectural-patterns/multi-topic-navigation)
+
 ---
 
 ## Actions — Three Ways to Run Them
@@ -188,13 +212,15 @@ reasoning:
 
 **Summary:** `run` = always. `{!ref}` in `|` = maybe. `reasoning.actions` = LLM's choice.
 
+source: [actions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-actions.html) | [tools](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-tools.html)
+
 ---
 
 ## Action Definition
 
 ```agentscript
 actions:
-   <name>:
+   <n>:
       target: flow://Flow_Api_Name       # or apex://ClassName or prompt://TemplateName
       description: "What this does"       # Helps LLM pick the right action
       label: "Friendly Name"             # Optional UI label
@@ -210,6 +236,8 @@ actions:
 
 **Targets:** `flow://`, `apex://`, `prompt://`
 
+source: [actions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-actions.html)
+
 ---
 
 ## Input Binding — Three Flavors
@@ -220,14 +248,18 @@ with order_id = "FIXED_VALUE"          # Fixed — hardcoded
 with order_id = ...                    # Slot-fill — LLM asks user & fills it
 ```
 
+**Limitation:** You can use slot-filling (`...`) for top-level action inputs, but **not for chained action inputs**.
+
+source: [actions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-actions.html) | [variables — slot filling](https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables.html)
+
 ---
 
 ## Topic Navigation — Two Mechanisms
 
 | Mechanism | Syntax | Returns to caller? |
 |-----------|--------|-------------------|
-| **Transition** | `transition to @topic.name` or `@utils.transition to @topic.name` | ❌ No — one-way |
-| **Delegation** | `@topic.name` (direct reference in reasoning actions) | ✅ Yes — like a function call |
+| **Transition** | `transition to @topic.name` or `@utils.transition to @topic.name` | No — one-way |
+| **Delegation** | `@topic.name` (direct reference in reasoning actions) | Yes — like a function call |
 
 ```agentscript
 # One-way transition (in logic)
@@ -248,22 +280,91 @@ reasoning:
          description: "Ask the specialist, then come back"
 ```
 
+source: [utils](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-utils.html) | [tools](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-tools.html)
+
 ---
 
-## Conditionals
+## Conditionals and Filters
+
+### if / else
+
+Agent Script supports `if` and `else`, but **does not support `else if`**. To handle multiple conditions, use nested `if`/`else` blocks:
 
 ```agentscript
 instructions:->
    if @variables.is_member == True:
       | Welcome back, valued member! {!@variables.member_name}
-   else if @variables.visit_count > 5:
-      | Welcome back! You've visited {!@variables.visit_count} times.
    else:
-      | Welcome! Let me know how I can help.
+      if @variables.visit_count > 5:
+         | Welcome back! You've visited {!@variables.visit_count} times.
+      else:
+         | Welcome! Let me know how I can help.
 ```
 
-**Operators:** `==`, `!=`, `>`, `<`, `>=`, `<=`, `and`, `or`, `not`
-**Arithmetic:** `+`, `-`, `*`, `/`
+### Comparison and logical operators
+
+**Comparison:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+**Identity:** `is None`, `is not None`
+**Logical:** `and`, `or`, `not`
+**Arithmetic:** `+`, `-` (only addition and subtraction are documented; `*` and `/` are not listed in the official operator reference)
+
+### None checks
+
+Use `is None` and `is not None` to check for empty/unset values:
+
+```agentscript
+instructions:->
+   if @variables.customer_email is None:
+      | Please ask the customer for their email address.
+   else:
+      run @actions.lookup_customer
+         with email = @variables.customer_email
+         set @variables.customer_id = @outputs.id
+```
+
+### `available when` — Guard clauses on tools
+
+Control when tools are visible to the LLM. If the condition is false, the LLM doesn't even see the tool:
+
+```agentscript
+reasoning:
+   actions:
+      submit_order: @actions.place_order
+         description: "Submit the customer's order"
+         available when @variables.cart_total > 0 and @variables.address != ""
+
+      cancel_order: @actions.cancel_order
+         description: "Cancel the order"
+         available when @variables.order_status == "processing"
+
+      apply_discount: @actions.apply_discount
+         description: "Apply member discount"
+         available when @variables.is_member == True and @variables.discount_applied is not None
+```
+
+### `filter_from_agent` — Hiding outputs from the LLM
+
+By default, the agent remembers all action outputs for the entire session and can use them to reason and answer questions. Set `filter_from_agent: True` on an output to hide it from the LLM's context while still making it available for deterministic logic via `@variables`:
+
+```agentscript
+actions:
+   get_account:
+      target: flow://Get_Account_Details
+      inputs:
+         account_id: string
+      outputs:
+         account_name:
+            type: string
+            description: "The account display name"
+         internal_score:
+            type: number
+            description: "Internal risk score"
+            filter_from_agent: True     # LLM won't see this, but logic can use it
+```
+
+This is useful when you need a value for branching logic but don't want the LLM to mention or reason about it in conversation. **Use this for sensitive outputs** — internal scores, PII, pricing tiers, or any data the agent should act on but never surface to the user.
+
+source: [conditional expressions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-expressions.html) | [operators](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-operators.html) | [tools — available when](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-tools.html) | [actions — filter_from_agent](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-actions.html)
 
 ---
 
@@ -273,22 +374,37 @@ Inside `|` blocks, `{!...}` evaluates expressions:
 
 ```agentscript
 | Hello {!@variables.name}                              # Variable interpolation
-| Your total is {!@variables.price * @variables.qty}    # Arithmetic
+| Your total is {!@variables.subtotal + @variables.tax}  # Arithmetic
 | Use {!@actions.get_order} to look up orders           # Action reference (hint to LLM)
 ```
+
+source: [reasoning instructions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-instructions.html) | [template expressions recipe](https://developer.salesforce.com/sample-apps/agent-script-recipes/language-essentials/template-expressions)
 
 ---
 
 ## Utils
 
 ```agentscript
-@utils.transition to @topic.<name>       # One-way topic switch
+@utils.transition to @topic.<n>       # One-way topic switch
 @utils.set_variable                       # LLM sets a variable via slot-fill
-   with variable = @variables.<name>
+   with variable = @variables.<n>
    with value = ...                       # ... = LLM figures it out
    description: "Capture the customer's name"
 @utils.escalate                           # Hand off to human agent
 ```
+
+`@utils.escalate` requires an active Omni-Channel connection defined in a `connection` block:
+
+```agentscript
+connection:
+   messaging:
+      outbound_route_type: queue           # or skill
+      outbound_route_name: "Support_Queue"
+      escalation_message: "Transferring you to a human agent."
+      adaptive_response_allowed: True
+```
+
+source: [utils](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-utils.html)
 
 ---
 
@@ -308,6 +424,20 @@ topic my_topic:
       set @variables.turn_count = @variables.turn_count + 1
 ```
 
+**Restrictions:** `before_reasoning` and `after_reasoning` can contain logic, actions, transitions, and directives, but **cannot contain `|` (pipe/template) blocks**. They are purely deterministic.
+
+**Transitions from hooks:** When transitioning from `after_reasoning`, use `transition to` rather than `@utils.transition to`:
+
+```agentscript
+after_reasoning:->
+   if @variables.num_turns > 5:
+      transition to @topic.wrap_up
+```
+
+If a topic transitions to a new topic partway through execution, the original topic's `after_reasoning` block is not run.
+
+source: [before/after reasoning](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-before-after-reasoning.html) | [flow of control](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-flow.html)
+
 ---
 
 ## Guard Clauses (`available when`)
@@ -321,6 +451,8 @@ reasoning:
          description: "Submit the customer's order"
          available when @variables.cart_total > 0 and @variables.address != ""
 ```
+
+source: [tools](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-tools.html)
 
 ---
 
@@ -338,6 +470,8 @@ topic tech_support:
 
 This **overrides** the global `system.instructions` for this topic only.
 
+source: [blocks — topic](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html#topic-blocks)
+
 ---
 
 ## Language / Locale
@@ -348,120 +482,127 @@ language:
    additional_locales: [de_DE, fr_FR]
 ```
 
----
-
-## Complete Minimal Agent
-
-```agentscript
-config:
-   agent_name: "Hello_World"
-   agent_label: "Hello World"
-   description: "Simplest possible agent"
-
-system:
-   messages:
-      welcome: "Hello! How can I help?"
-      error: "Something went wrong."
-   instructions: "You are a friendly assistant."
-
-start_agent topic_selector:
-   description: "Route to greeting"
-   reasoning:
-      actions:
-         begin: @utils.transition to @topic.greeting
-            description: "Start greeting"
-
-topic greeting:
-   description: "Greets the user"
-   reasoning:
-      instructions:->
-         | Greet the user warmly and ask how you can help.
-```
+source: [blocks](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html)
 
 ---
 
-## Complete Real-World Pattern
+## Migrating from Old Agentforce to Agent Script
+
+If you're coming from the Agentforce Builder UI (Topics + Actions + Instructions configured via point-and-click), here's how each concept maps to Agent Script.
+
+### Topics -> `topic` blocks
+
+In the old builder, you created topics in the UI with a classification description, scope, and instructions as separate text fields. In Agent Script, all of that becomes a single `topic` block:
+
+| Builder UI field | Agent Script equivalent |
+|-----------------|----------------------|
+| Topic name | `topic my_topic_name:` |
+| Classification description | `description: "..."` on the topic |
+| Scope / "what this topic can do" | Covered by `reasoning.instructions` and available `actions` |
+| Instructions (numbered text boxes) | `reasoning: instructions:` — either `->` for logic or `\|` for prompts |
+
+The key difference: in the builder, instructions were flat text boxes the LLM interpreted entirely. In Agent Script, you can now make parts deterministic with `->`. You don't have to — `instructions:|` still works exactly like the old text-box instructions — but now you *can* enforce execution order and logic.
+
+### Standard Topics and Standard Actions
+
+The old builder provides standard (pre-built) topics and standard actions like "Query Records", "Summarize Records", and "Identify Record by Name." These come out of the box and can be assigned to agents in the builder UI.
+
+I don't have confirmed documentation on how standard topics and standard actions are referenced or integrated within Agent Script `.agent` files specifically. The official docs focus on custom actions with explicit `target:` definitions (`flow://`, `apex://`, `prompt://`). If you need to use standard actions alongside Agent Script, check the current Agentforce Builder documentation for the latest on how they interact — this may have changed since the beta.
+
+source: [customize agents without agent script](https://developer.salesforce.com/docs/einstein/genai/guide/agent-dx-modify.html)
+
+### Custom Actions (Flow / Apex / Prompt Template) -> `actions:` block
+
+In the old builder, you created a custom action by selecting a flow, Apex class, or prompt template, then mapping inputs and outputs in the UI. In Agent Script:
 
 ```agentscript
-config:
-   agent_name: "Order_Agent"
-   agent_label: "Order Support"
-   description: "Handles order inquiries with authentication"
-
-variables:
-   customer_email: mutable string = ""
-   is_verified: mutable boolean = False
-   order_status: mutable string = ""
-
-system:
-   messages:
-      welcome: "Hi! I can help with your orders."
-      error: "Sorry, something went wrong. Let me try again."
-   instructions: "Be helpful, concise, and professional."
-
-start_agent router:
-   description: "Route customer to the right topic"
-   reasoning:
-      actions:
-         go_verify: @utils.transition to @topic.verify_customer
-            description: "Customer needs to verify identity"
-         go_orders: @utils.transition to @topic.order_lookup
-            description: "Customer wants order info"
-            available when @variables.is_verified == True
-
-topic verify_customer:
-   description: "Verify customer identity"
-
+topic order_management:
    actions:
-      send_code:
-         target: flow://Send_Verification_Code
+      get_order:                               # Action name
+         target: flow://Get_Order_Details      # flow://, apex://, or prompt://
          inputs:
-            email: string
-         outputs:
-            success: boolean
-
-   reasoning:
-      instructions:->
-         if @variables.is_verified == True:
-            transition to @topic.order_lookup
-         | Ask the customer for their email to verify their identity.
-      actions:
-         capture_email: @utils.set_variable
-            with variable = @variables.customer_email
-            with value = ...
-            description: "Capture the customer's email address"
-         verify: @actions.send_code
-            description: "Send verification code"
-            with email = @variables.customer_email
-            set @variables.is_verified = @outputs.success
-
-topic order_lookup:
-   description: "Look up and report on order status"
-
-   actions:
-      get_order:
-         target: apex://OrderLookupAction
-         inputs:
-            email: string
+            order_id: string
          outputs:
             status: string
             tracking_number: string
-            delivery_date: date
-
-   reasoning:
-      instructions:->
-         run @actions.get_order
-            with email = @variables.customer_email
-            set @variables.order_status = @outputs.status
-         if @variables.order_status == "shipped":
-            | Great news! Your order has shipped.
-              Tracking number: {!@outputs.tracking_number}
-              Expected delivery: {!@outputs.delivery_date}
-         else if @variables.order_status == "processing":
-            | Your order is being processed. It should ship within 2 business days.
-         else:
-            | I couldn't find an active order. Let me help you figure this out.
 ```
+
+The target string replaces the point-and-click selection. Input/output mapping that was done via UI fields is now explicit YAML.
+
+### "Collect from user" -> Slot-fill (`...`)
+
+In the builder, you could mark an action input as "Collect from user" so the agent would ask for it. In Agent Script, this is the `...` (slot-fill) operator:
+
+```agentscript
+reasoning:
+   actions:
+      lookup: @actions.get_order
+         description: "Look up an order"
+         with order_id = ...              # Agent asks the user for this
+```
+
+For inputs you want to bind explicitly (what was "Use variable" or "Use constant" in the builder), use `with param = @variables.x` or `with param = "fixed_value"`.
+
+### "Show in conversation" / "Hide" -> `filter_from_agent`
+
+The builder let you toggle whether an action output was visible to the agent. In Agent Script, this becomes `filter_from_agent: True` on the output definition to hide it from the LLM's context while still making it available for deterministic logic.
+
+### Topic Instructions -> `reasoning: instructions:` (with new superpowers)
+
+The old builder gave you numbered instruction text boxes — all pure LLM prompt text. Agent Script gives you the same capability via `instructions:|`, but also lets you use `instructions:->` for deterministic logic. Here's the progression:
+
+**Old way (still works — pure prompt text):**
+```agentscript
+reasoning:
+   instructions:|
+      Help the customer find their order.
+      Ask for their order number if they haven't provided it.
+      Look up the order and share the status.
+```
+
+**New way (mix logic with prompts for guaranteed execution):**
+```agentscript
+reasoning:
+   instructions:->
+      if @variables.order_id is None:
+         | Ask the customer for their order number.
+      else:
+         run @actions.get_order
+            with order_id = @variables.order_id
+            set @variables.status = @outputs.status
+         | The order status is {!@variables.status}. Share this with the customer.
+```
+
+The `->` version guarantees the action runs and the conditional evaluates. The `|` version is a suggestion the LLM interprets. Mix them as needed.
+
+### Require Confirmation -> `require_user_confirmation: True`
+
+The builder had a checkbox for this. In Agent Script, it's a property on the action definition.
+
+### Guard Conditions -> `available when`
+
+In the builder, you could conditionally show/hide actions using filter criteria. In Agent Script, this becomes `available when` on a reasoning action:
+
+```agentscript
+reasoning:
+   actions:
+      cancel_order: @actions.cancel_order
+         description: "Cancel the order"
+         available when @variables.order_status == "processing"
+```
+
+### What's New (No Builder Equivalent)
+
+These capabilities didn't exist in the old Agentforce builder:
+
+- **`before_reasoning` / `after_reasoning` hooks** — Run logic before or after every LLM turn (refresh data, increment counters, audit logging)
+- **`linked` variables** — Variables whose value is always sourced from an action output, never set manually
+- **Per-topic `system.instructions`** — Override the agent's persona per topic
+- **Delegation (`@topic.x`)** — Call another topic like a function and return, instead of only transitioning one-way
+- **Conditional topic transitions in logic** — `if/else` branching to deterministically decide which topic to enter
+- **Template expressions with arithmetic** — `{!@variables.subtotal + @variables.tax}` computed at runtime
+
+source: [examples](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-example.html) | [recipes](https://developer.salesforce.com/sample-apps/agent-script-recipes/getting-started/overview) | [github](https://github.com/trailheadapps/agent-script-recipes)
 
 ---
 
@@ -486,17 +627,21 @@ topic order_lookup:
 | `@topic.x` | Reference a topic (delegation — returns) |
 | `@utils.transition to` | One-way topic switch (no return) |
 | `@utils.set_variable` | LLM slot-fills a variable |
-| `@utils.escalate` | Hand off to human |
+| `@utils.escalate` | Hand off to human agent |
 | `@outputs.x` | Reference action output (after `run` or in `set`) |
 | `run` | Execute an action deterministically |
 | `set` | Store a value in a variable |
 | `with` | Bind an input parameter |
 | `...` | LLM slot-fill (asks user and fills value) |
-| `if / else if / else` | Conditional branching |
+| `if / else` | Conditional branching (no `else if` — use nested `if`/`else`) |
+| `is None / is not None` | Check for empty/unset values |
+| `True / False` | Boolean literals (case-sensitive, must be capitalized) |
+| `num_turns` | Built-in global turn counter, auto-incremented by Agentforce |
 | `transition to` | One-way topic switch (in logic) |
 | `available when` | Guard clause for tools |
+| `filter_from_agent` | Hide output from LLM context |
 | `#` | Comment |
 
 ---
 
-*Sources: [Official Docs](https://developer.salesforce.com/docs/ai/agentforce/guide/agent-script.html) · [Recipe Site](https://developer.salesforce.com/sample-apps/agent-script-recipes/getting-started/overview) · [GitHub Recipes](https://github.com/trailheadapps/agent-script-recipes) · [Intro Blog Post](https://developer.salesforce.com/blogs/2025/10/introducing-hybrid-reasoning-with-agent-script)*
+*Sources: [official docs](https://developer.salesforce.com/docs/einstein/genai/guide/agent-script.html) | [reference index](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-reference.html) | [recipe site](https://developer.salesforce.com/sample-apps/agent-script-recipes/getting-started/overview) | [github recipes](https://github.com/trailheadapps/agent-script-recipes) | [intro blog](https://developer.salesforce.com/blogs/2025/10/introducing-hybrid-reasoning-with-agent-script) | [recipes blog](https://developer.salesforce.com/blogs/2025/12/master-hybrid-reasoning-with-the-new-agent-script-recipes-sample-app)*
