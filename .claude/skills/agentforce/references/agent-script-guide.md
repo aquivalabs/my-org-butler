@@ -27,15 +27,11 @@ start_agent:      # Entry point — routes to first topic
 topic <n>:     # One or more topics — where the work happens
 ```
 
-That's it. Every recipe and every production agent is just a composition of these blocks.
-
 source: [blocks](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html) | [flow of control](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-flow.html)
 
 ---
 
 ## The Two Modes: `->` vs `|`
-
-This is **the single most important concept** and the docs bury it in 15 pages. Here it is:
 
 | Syntax | Name | What Happens | Deterministic? |
 |--------|------|-------------|----------------|
@@ -66,7 +62,7 @@ source: [reasoning instructions](https://developer.salesforce.com/docs/einstein/
 
 ## Execution Model
 
-This is crucial to understand: **all `->` logic resolves first, then the resulting `|` text is sent to the LLM as a single prompt.** The LLM does not reason while the script is still parsing. Agentforce processes reasoning instructions line by line, top to bottom — running actions, evaluating conditionals, and collecting prompt text. Only after all logic has resolved does the assembled prompt go to the LLM.
+**All `->` logic resolves first, then the resulting `|` text is sent to the LLM as a single prompt.** Agentforce processes reasoning instructions line by line, top to bottom — running actions, evaluating conditionals, and collecting prompt text.
 
 This means the LLM cannot influence earlier deterministic branching. By the time the LLM sees the prompt, all `if/else` decisions have already been made and all `run` actions have already executed.
 
@@ -185,8 +181,6 @@ source: [blocks — topic](https://developer.salesforce.com/docs/einstein/genai/
 
 ## Actions — Three Ways to Run Them
 
-This is where the docs get really confusing. There are exactly **three** ways to invoke an action, each with a different level of determinism:
-
 ### 1. `run` in logic (100% deterministic — always executes)
 
 ```agentscript
@@ -215,8 +209,6 @@ reasoning:
          set @variables.status = @outputs.status
          available when @variables.order_id != ""
 ```
-
-**Summary:** `run` = always. `{!ref}` in `|` = maybe. `reasoning.actions` = LLM's choice.
 
 source: [actions](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-actions.html) | [tools](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-tools.html)
 
