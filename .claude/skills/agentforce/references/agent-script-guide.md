@@ -85,6 +85,8 @@ config:
    description: "Handles order inquiries"
 ```
 
+source: [blocks](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html)
+
 ### system
 
 ```agentscript
@@ -96,6 +98,8 @@ system:
 ```
 
 `instructions` here is global — applies to ALL topics. Topic-level instructions override/extend.
+
+source: [blocks](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html)
 
 ### variables
 
@@ -141,6 +145,8 @@ start_agent topic_selector:
          go_account: @utils.transition to @topic.account_help
             description: "User wants account help"
 ```
+
+source: [blocks — start_agent](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-blocks.html#start-agent-block) | [flow of control](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-flow.html)
 
 ### topic
 
@@ -614,6 +620,8 @@ source: [examples](https://developer.salesforce.com/docs/einstein/genai/guide/as
 - No consecutive underscores (`__`)
 - Max 80 characters
 - Convention: `snake_case`
+
+source: [variables](https://developer.salesforce.com/docs/einstein/genai/guide/ascript-ref-variables.html)
 
 ## Syntax Cheat Sheet
 
