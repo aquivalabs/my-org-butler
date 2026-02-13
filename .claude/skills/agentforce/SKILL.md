@@ -100,3 +100,30 @@ The goal: every session that hits an edge case makes the next session smarter.
 - Using `...` (slot-fill) in chained action inputs (only works for top-level inputs)
 - Missing `description` on reasoning actions (LLM needs this to choose tools)
 - Referencing actions across topics (actions are topic-scoped)
+
+## Repository Notes: My Org Butler
+
+Use these notes when working in this repository.
+
+### Coding and Structure
+
+- Primary Agent Script bundle: `force-app/main/default/aiAuthoringBundles/MyOrgButler/`
+- Apex actions: `force-app/main/default/classes/`
+- Prompt templates: `force-app/main/default/genAiPromptTemplates/`
+- Permissions: `force-app/main/default/permissionsets/`
+- Optional regression tests: `regressions/aiEvaluationDefinitions/`
+
+### Deployment and Publishing
+
+- Validate and publish use different backend checks. A successful validate does not guarantee publish success.
+- In namespaced scratch orgs for this project, `apex://` action targets must use namespace at publish-time (for example `apex://aquiva_os__LoadCustomInstructions`).
+- Deploy from repository paths only (`force-app/...`). Avoid temporary copy paths because local source tracking can become corrupted with unsafe filepaths.
+- For current known deployment/publish issues and proven workarounds, check `references/known-issues.md` first.
+
+### Safety Checks Before Retrying Publish
+
+- Confirm org alias and user:
+  - `sf org display --target-org my-org-butler_DEV`
+- Confirm bundle validates:
+  - `sf agent validate authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+- If source tracking looks corrupted (unsafe tmp filepath errors), apply the workaround documented in `references/known-issues.md`.

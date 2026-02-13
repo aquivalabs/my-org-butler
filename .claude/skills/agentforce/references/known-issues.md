@@ -16,61 +16,155 @@
 **Workaround:**
 - Move agent tests out of `force-app/` to a separate directory like `regressions/`
 - OR: Use separate deployments: `sf project deploy start --source-dir force-app/main/default` (excludes tests)
-- Follow CLAUDE.md workflow for agent test deployment
-
-**Related:** See CLAUDE.md "Deploying Agent Tests" section for the correct workflow.
+- Run agent-test deployment as a separate step from core metadata deployment.
 
 ---
 
-## OPEN: sf agent publish fails with "invocable action does not exist" despite classes deployed
+## OPEN: sf agent publish fails with "Internal Error, try again later" after successful validate
 
-**Discovered:** 2026-02-11
-**Status:** OPEN — needs resolution
+**Discovered:** 2026-02-13
+**Status:** OPEN — publish-stage failure
 **Project:** my-org-butler (namespace: aquiva_os)
 
 **Symptom:**
-After successfully deploying all Apex classes with @InvocableMethod annotations to scratch org, running `sf agent publish authoring-bundle --api-name MyOrgButler` fails with:
+`sf agent validate authoring-bundle --api-name MyOrgButler` succeeds, but `sf agent publish authoring-bundle --api-name MyOrgButler` fails with:
 ```
-Error (1): Failed to publish agent with the following errors:
-Validation failed for action(s) 'load_custom_instructions' due to invalid attribute value for 'target'.
-Invocable action 'LoadCustomInstructions' does not exist.
-To fix, please ensure the 'target' value points to a valid invocable action.
+Failed to publish agent with the following errors:
+Internal Error, try again later
 ```
 
-**Context:**
-- Project has namespace `aquiva_os` in sfdx-project.json
-- Scratch org created from this project inherits the namespace
-- Apex classes confirmed deployed to org via SOQL query (LoadCustomInstructions, QueryRecordsWithSoql, ExploreOrgSchema, StoreCustomInstruction all present)
-- All classes have proper `@InvocableMethod` annotations (label and description)
-- Agent file uses targets like `target: "apex://LoadCustomInstructions"`
-- Syntax matches working examples from agent-script-recipes repo (which uses no namespace)
-- Old system (genAiFunctions) used `<invocationTarget>LoadCustomInstructions</invocationTarget>` without namespace and worked
+**Confirmed context:**
+- Apex classes deploy successfully.
+- Namespaced `apex://` targets are used in the `.agent` file (for example `apex://aquiva_os__LoadCustomInstructions`).
+- Prompt action inputs use `Input:*` names.
+- Prompt-template SObject inputs are already configured in required publish format (`object` + `complex_data_type_name: lightning__recordInfoType`).
+- Failure occurs in publish stage (`POST /einstein/ai-agent/v1.1/authoring/agents`), not in compile/validate stage.
 
-**What we tried:**
-- Confirmed classes exist in org with SOQL queries
-- Confirmed @InvocableMethod annotations present and correct
-- Checked agent-script-recipes for working examples — they use `apex://ClassName` format
-- Confirmed VF page (sessionId) deployed successfully (was not the blocker)
-- Full force-app deployment succeeded (53/53 components)
-
-**Unresolved questions:**
-1. Does Agent Script require namespace prefix in apex:// targets when project has namespace? (e.g., `apex://aquiva_os__LoadCustomInstructions`)
-2. Is this a beta bug where namespace resolution fails in sf agent publish?
-3. Is there a required annotation parameter we're missing to make invocable methods discoverable?
-4. Does the scratch org namespace need special handling vs. recipes repo (which likely has no namespace)?
+**Likely causes to investigate:**
+- Backend Agent Script publish bug.
+- Residual action contract mismatch that passes compile but fails publish (similar to recipes issue #8).
 
 **Need to investigate:**
-- Search GitHub for Agent Script projects WITH namespaces that successfully use apex:// targets
-- Check if namespace prefix syntax differs (underscore vs. dot: `aquiva_os__` vs `aquiva_os.`)
-- Verify if there's a way to query registered invocable actions in the org
-- Check Salesforce DX setup for namespace-related configurations
+- Isolate publish by temporarily removing prompt actions and republishing.
+- Compare action input/output contracts one-by-one against invocable and prompt template metadata.
+- Raise Salesforce support case with org id, timestamp, and publish endpoint details from CLI logs.
 
-**For Slack/issue reporting:**
-Environment: Scratch org with namespace aquiva_os, Agent Script beta, SF CLI latest
-Deployment: All Apex classes successfully deployed and visible via SOQL
-Error: sf agent publish cannot find invocable actions that use apex:// targets
-Working: Old genAiFunction system found same classes with same invocation targets
-Question: How should apex:// targets reference invocable methods in namespaced scratch orgs?
+**Related:**
+- https://github.com/trailheadapps/agent-script-recipes/issues/8
+
+---
+
+## OPEN: `validate` accepts prompt-template input type `id`, but `publish` requires `object` + `complex_data_type_name`
+
+**Discovered:** 2026-02-13
+**Status:** OPEN — inconsistent validation behavior
+**Project:** my-org-butler (namespace: aquiva_os)
+
+**Why this matters:**
+For prompt-template actions with SObject inputs, `sf agent validate` can pass even when input types are invalid for publish. This makes pre-publish checks unreliable.
+
+**Repro steps (A/B):**
+1. In `MyOrgButler.agent`, change prompt input:
+   - `"Input:opportunity": id` (instead of `object` + `complex_data_type_name`)
+2. Run validate:
+   - `sf agent validate authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+   - Result: success (unexpected)
+3. Run publish:
+   - `sf agent publish authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+   - Result: fails with
+```
+Validation failed for action 'answer_with_related_files' due to invalid data type for the input parameter 'Input:opportunity'. To fix, update the data type to 'object' type and 'complex_data_type_name' to 'lightning__recordInfoType' for the input parameter 'Input:opportunity'.
+```
+4. Restore prompt inputs to:
+   - type `object`
+   - `complex_data_type_name: "lightning__recordInfoType"`
+5. Re-run validate:
+   - Result: success
+6. Re-run publish:
+   - Datatype error disappears; current blocker remains the separate internal publish error.
+
+**Expected:**
+- `validate` should reject `id` in step 2 with the same contract error seen in publish.
+
+**Actual:**
+- `validate` passes.
+- `publish` rejects input contract.
+
+**Workaround:**
+- For prompt-template inputs backed by `SOBJECT://...` in prompt template metadata, use:
+  - `object`
+  - `complex_data_type_name: "lightning__recordInfoType"`
+
+---
+
+## OPEN: `validate` accepts non-namespaced Apex target, but `publish` rejects it in namespaced scratch org
+
+**Discovered:** 2026-02-13
+**Status:** OPEN — inconsistent validation behavior
+**Project:** my-org-butler (namespace: aquiva_os)
+
+**Why this matters:**
+In a namespaced org, `sf agent validate` reports success for an action target that `sf agent publish` later rejects as invalid. This makes CI checks unreliable because validate can pass while publish is guaranteed to fail.
+
+**Repro steps (A/B):**
+1. Use namespaced target in Agent Script:
+   - `target: "apex://aquiva_os__LoadCustomInstructions"`
+2. Run:
+   - `sf agent validate authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+   - Result: success
+3. Change same target to non-namespaced:
+   - `target: "apex://LoadCustomInstructions"`
+4. Run validate again:
+   - `sf agent validate authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+   - Result: success (unexpected)
+5. Run publish:
+   - `sf agent publish authoring-bundle --api-name MyOrgButler --target-org my-org-butler_DEV`
+   - Result: fails with
+```
+Validation failed for action(s) 'load_custom_instructions' due to invalid attribute value for 'target'.
+Invocable action 'LoadCustomInstructions' does not exist.
+```
+
+**Expected:**
+- Either `validate` should fail in step 4 with the same namespace/action resolution error.
+- Or `publish` should resolve non-namespaced action names consistently in namespaced orgs.
+
+**Actual:**
+- `validate` passes.
+- `publish` fails due to missing invocable action.
+
+**Confirmed environment:**
+- Scratch org alias: `my-org-butler_DEV`
+- Scratch org id: `00DRt00000MiNh5MAF`
+- Scratch username: `test-bgvj5fomcbda@example.com`
+- Salesforce CLI: `2.122.6`
+- Agent plugin: `1.29.0`
+
+**Workaround:**
+- Always use namespaced `apex://` targets in `.agent` files for namespaced orgs (for example `apex://aquiva_os__ClassName`).
+
+---
+
+## WORKAROUND: Source tracking can be poisoned by deploys from temporary paths
+
+**Discovered:** 2026-02-13
+**Status:** WORKAROUND
+
+**Symptom:**
+Deploy and reset commands fail with:
+```
+UnsafeFilepathError: The filepath "../../../../../tmp/.../Wsdl.cls" contains unsafe character sequences
+```
+
+**Root cause:**
+Local source tracking index for the target org contains stale `../../../../../tmp/...` paths from a deploy run that used a temporary folder as source.
+
+**Workaround:**
+- Deploy only from repo paths (`force-app/...`), not temporary copied directories.
+- If already poisoned:
+  - Delete `.sf/orgs/<target-org-id>/localSourceTracking/`
+  - Run `sf project reset tracking --target-org <alias> --no-prompt`
+  - Retry deployment
 
 ---
 

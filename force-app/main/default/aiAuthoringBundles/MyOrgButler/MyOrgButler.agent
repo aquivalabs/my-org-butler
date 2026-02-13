@@ -1,5 +1,5 @@
 config:
-   agent_type: "AgentforceEmployeeAgent"    
+   agent_type: "AgentforceEmployeeAgent"
    agent_name: "MyOrgButler"
    agent_label: "My Org Butler"
    description: "Your personal Salesforce butler."
@@ -27,17 +27,14 @@ system:
    instructions: "You are My Org Butler, a helpful Salesforce assistant. Be concise and direct."
 
 start_agent topic_selector:
-   description: "Route user requests to the appropriate topic"
+   description: "Route every request to the general topic"
 
    reasoning:
-      instructions:|
-         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-      actions:
-         go_to_general: @utils.transition to @topic.general
-            description: "Help with any Salesforce question"
+      instructions:->
+         transition to @topic.general
 
 topic general:
-   description: "Help users with general Salesforce questions"
+   description: "Help users with Salesforce data, metadata, files, and integrations"
 
    actions:
       load_custom_instructions:
@@ -45,7 +42,7 @@ topic general:
          outputs:
             customInstructions: string
                description: "Formatted string with user details, org info, and stored memories"
-         target: "apex://LoadCustomInstructions"
+         target: "apex://aquiva_os__LoadCustomInstructions"
 
       store_custom_instruction:
          description: "Store a learned preference or behavior for future conversations"
@@ -59,7 +56,7 @@ topic general:
          outputs:
             customInstructions: string
                description: "Updated user context including the newly stored memory"
-         target: "apex://StoreCustomInstruction"
+         target: "apex://aquiva_os__StoreCustomInstruction"
 
       query_records:
          description: "Run a SOQL query and return records as JSON"
@@ -69,10 +66,10 @@ topic general:
          outputs:
             resultOrException: string
                description: "JSON array of records on success, or exception object on error"
-         target: "apex://QueryRecordsWithSoql"
+         target: "apex://aquiva_os__QueryRecordsWithSoql"
 
       explore_org_schema:
-         description: "Explore Custom Objects, Fields, and Relationships. Use 'summary' to discover objects, 'relationships' for connections, 'details' for full field list."
+         description: "Explore Custom Objects, Fields, and Relationships"
          inputs:
             scope: string
                description: "Exploration scope: 'summary', 'details', or 'relationships'"
@@ -83,7 +80,125 @@ topic general:
          outputs:
             response: string
                description: "Serialized JSON output of schema exploration"
-         target: "apex://ExploreOrgSchema"
+         target: "apex://aquiva_os__ExploreOrgSchema"
+
+      search_web:
+         description: "Search the web for current external information"
+         inputs:
+            content: string
+               description: "Natural language query"
+         outputs:
+            answer: string
+               description: "Natural language answer from web search"
+         target: "apex://aquiva_os__SearchWeb"
+
+      search_vector_database:
+         description: "Search company knowledge from external vectorized documents"
+         inputs:
+            content: string
+               description: "Natural language question"
+         outputs:
+            content: string
+               description: "Grounded answer from company knowledge"
+         target: "apex://aquiva_os__RetrieveVectorizeChunks"
+
+      call_github_api:
+         description: "Call GitHub REST API using configured named credential"
+         inputs:
+            urlIncludingParams: string
+               description: "Endpoint starting with / and optional query string"
+            httpMethod: string
+               description: "HTTP method: GET, POST, PATCH, DELETE"
+            requestBody: string
+               description: "Optional JSON payload"
+         outputs:
+            responseBody: string
+               description: "Raw API response body"
+         target: "apex://aquiva_os__CallGitHubApi"
+
+      call_rest_api:
+         description: "Call Salesforce REST API endpoints in the current org"
+         inputs:
+            urlIncludingParams: string
+               description: "Endpoint starting with /services"
+            httpMethod: string
+               description: "HTTP method"
+            requestBody: string
+               description: "Optional JSON payload"
+         outputs:
+            responseBody: string
+               description: "Raw API response body"
+         target: "apex://aquiva_os__CallRestApi"
+
+      call_tooling_api:
+         description: "Use Tooling API for metadata records like ApexClass and CustomField"
+         inputs:
+            action: string
+               description: "query, create, update, or delete"
+            objectType: string
+               description: "Tooling object type for create/update/delete"
+            soql: string
+               description: "SOQL query for action=query"
+            recordJson: string
+               description: "JSON record payload for create/update"
+            recordId: string
+               description: "Record Id for update/delete"
+         outputs:
+            responseBody: string
+               description: "Raw API response body"
+         target: "apex://aquiva_os__CallToolingApi"
+
+      call_metadata_api:
+         description: "Use Metadata API operations like describe, list, read, create, update, and delete"
+         inputs:
+            soapAction: string
+               description: "describeMetadata, listMetadata, readMetadata, createMetadata, updateMetadata, upsertMetadata, deleteMetadata"
+            typeName: string
+               description: "Metadata type name"
+            attributesJson: string
+               description: "JSON attributes for create/update/upsert"
+            fullName: string
+               description: "Metadata full name for read/delete"
+         outputs:
+            responseBody: string
+               description: "Raw API response body"
+         target: "apex://aquiva_os__CallMetadataApi"
+
+      create_plantuml_url:
+         description: "Render PlantUML text into a diagram URL"
+         inputs:
+            plantUmlText: string
+               description: "PlantUML source text"
+         outputs:
+            encodedImageUrl: string
+               description: "Rendered PlantUML image URL"
+         target: "apex://aquiva_os__CreatePlantUmlUrl"
+
+      answer_with_current_file:
+         description: "Answer question using current file content"
+         inputs:
+            "Input:file": object
+               complex_data_type_name: "lightning__recordInfoType"
+               description: "Current ContentDocument Id"
+            "Input:userQuestion": string
+               description: "Question to answer"
+         outputs:
+            promptResponse: string
+               description: "Generated answer"
+         target: "prompt://AnswerFromFile"
+
+      answer_with_related_files:
+         description: "Answer question using files from current opportunity and account"
+         inputs:
+            "Input:opportunity": object
+               complex_data_type_name: "lightning__recordInfoType"
+               description: "Current Opportunity Id"
+            "Input:userQuestion": string
+               description: "Question to answer"
+         outputs:
+            promptResponse: string
+               description: "Generated answer"
+         target: "prompt://AnswerFromRelatedFiles"
 
    reasoning:
       instructions:->
@@ -95,8 +210,11 @@ topic general:
          | Be concise. Never start with "Let me...", "I found...", or "Here is...". Just answer.
          | Never dump raw data. Synthesize into insights with links.
          |
-         | Never guess custom object names. Use explore_org_schema with 'summary' scope first.
-         | Use 'details' scope to check fields and picklist values before querying.
+         | Use query_records for Salesforce data retrieval.
+         | Use call_rest_api for record create/update operations.
+         | Use explore_org_schema before querying unknown custom objects/fields.
+         | Use call_tooling_api and call_metadata_api for metadata and code operations.
+         | Use search_vector_database for company internal knowledge, search_web for public web.
          |
          | Store a memory when user corrects you, refines output, states a preference, or shows dissatisfaction.
          | Format memories as observations: "When [situation], user prefers [preference]"
@@ -107,10 +225,61 @@ topic general:
             with dynamicSoqlQuery = ...
 
          explore_org_schema: @actions.explore_org_schema
-            description: "Explore custom objects, fields, and relationships"
+            description: "Discover custom objects, fields, and relationships"
             with scope = ...
             with objectFilter = ...
             with namespaceFilter = ...
+
+         call_rest_api: @actions.call_rest_api
+            description: "Create or update Salesforce records via REST API"
+            with urlIncludingParams = ...
+            with httpMethod = ...
+            with requestBody = ...
+
+         call_tooling_api: @actions.call_tooling_api
+            description: "Read or mutate Tooling API records"
+            with action = ...
+            with objectType = ...
+            with soql = ...
+            with recordJson = ...
+            with recordId = ...
+
+         call_metadata_api: @actions.call_metadata_api
+            description: "Read or modify Salesforce metadata"
+            with soapAction = ...
+            with typeName = ...
+            with attributesJson = ...
+            with fullName = ...
+
+         create_plantuml_url: @actions.create_plantuml_url
+            description: "Convert PlantUML text into renderable image URL"
+            with plantUmlText = ...
+
+         call_github_api: @actions.call_github_api
+            description: "Query GitHub repositories, issues, and pull requests"
+            with urlIncludingParams = ...
+            with httpMethod = ...
+            with requestBody = ...
+
+         search_web: @actions.search_web
+            description: "Search public web for external information"
+            with content = ...
+
+         search_vector_database: @actions.search_vector_database
+            description: "Search company internal knowledge base"
+            with content = ...
+
+         answer_with_current_file: @actions.answer_with_current_file
+            description: "Answer questions about the current file"
+            with "Input:file" = @variables.currentRecordId
+            with "Input:userQuestion" = ...
+            available when @variables.currentObjectApiName == "ContentDocument" and @variables.currentRecordId != ""
+
+         answer_with_related_files: @actions.answer_with_related_files
+            description: "Answer questions using files related to the current opportunity"
+            with "Input:opportunity" = @variables.currentRecordId
+            with "Input:userQuestion" = ...
+            available when @variables.currentObjectApiName == "Opportunity" and @variables.currentRecordId != ""
 
          store_custom_instruction: @actions.store_custom_instruction
             description: "Store a learned preference for future conversations"

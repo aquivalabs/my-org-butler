@@ -1,92 +1,48 @@
-# My Org Butler
+# My Org Butler Branch Memory
 
-## Coding Standards
+Last updated: 2026-02-13
 
-Follow [AGENTS.md](AGENTS.md) strictly for all coding patterns, naming conventions, and test structures.
+## Goal
 
-## Project Context
+Migrate My Org Butler from old Agentforce configuration patterns to Agent Script (`.agent`) with a single topic and multiple actions.
 
-Open-source Salesforce Agentforce assistant. General-purpose AI butler for any Salesforce org - queries data, searches the web, manages files, edits metadata, and integrates with GitHub.
+## Required Reading
 
-**Reference Implementation**: Atamis Agentforce at `/Users/rsoesemann/dev/aquivalabs/atamis-agentforce`
+- Coding conventions and implementation standards live in:
+  - `AGENTS.md`
+- Treat `AGENTS.md` as authoritative for Apex style, test structure, naming, and PMD expectations.
 
-## Domain Model
+## Migration Context
 
-| Object | Purpose |
-| ------ | ------- |
-| `Memory__c` | Agent memory storage for learning and recall |
-| `CustomSetting__c` | User-specific custom instructions |
+- We are actively refactoring and validating Agent Script behavior in a namespaced scratch-org setup.
+- Current source of truth for blockers and quirks is:
+  - `.claude/skills/agentforce/references/known-issues.md`
 
-## Key Locations
+## What We Tried
 
-| Component | Location |
-| --------- | -------- |
-| Apex classes | `force-app/main/default/classes/` |
-| Prompt Templates | `force-app/main/default/genAiPromptTemplates/` |
-| GenAI Functions | `force-app/main/default/genAiFunctions/` |
-| GenAI Plugins | `force-app/main/default/genAiPlugins/` |
-| Agent Tests | `regressions/aiEvaluationDefinitions/` |
-| Learnings | `docs/claude-code-learnings.md` |
+1. Reworked `MyOrgButler.agent` toward single-topic orchestration with multiple actions.
+2. Updated action targets to namespaced Apex targets (`apex://aquiva_os__...`).
+3. Fixed prompt action input naming/typing to match Agent Script expectations.
+4. Ran phased deployment of core metadata (excluding known problematic paths/metadata types when needed).
+5. Upgraded Salesforce CLI and agent plugin.
+6. Investigated failures via CLI debug logs and Salesforce Agent Script recipes issues.
 
-## Workflow
+## What Is Proven
 
-**Every code change must be deployed and tested.** Local changes mean nothing in Salesforce.
+1. Deploying core metadata from repository paths works.
+2. In this namespaced scratch org, non-namespaced Apex targets can pass `validate` but fail `publish`.
+3. The current main blocker is publish-stage internal failure after successful validation in some configurations.
+4. Local source tracking can be corrupted by deploys from temporary copied paths, producing `UnsafeFilepathError`.
 
-## Deploying Agent Tests
+## Current Blockers
 
-Agent tests (AiEvaluationDefinitions) require the agent to be deactivated before deployment:
+- `sf agent publish authoring-bundle --api-name MyOrgButler` can fail with:
+  - `Internal Error, try again later`
+- This is tracked in known issues with reproducible details and links.
 
-```bash
-# 1. Deactivate agent
-sf agent deactivate --api-name MyOrgButler
+## Practical Guidance for This Branch
 
-# 2. Deploy test definitions
-sf project deploy start --source-dir regressions --concise --ignore-conflicts
-
-# 3. Reactivate agent
-sf agent activate --api-name MyOrgButler
-
-# 4. Reset sample data
-sf apex run --file scripts/create-sample-data.apex
-
-# 5. Run tests
-sf agent test run --api-name Research_Test --wait 10
-sf agent test run --api-name Act_Test --wait 10
-sf agent test run --api-name Configure_Test --wait 10
-```
-
-## Agentforce Patterns
-
-**Architecture**: `User → genAiPlugin → genAiFunction → Apex Action → [optional] genAiPromptTemplate`
-
-**When to use what**:
-
-- Apex Only: CRUD, calculations, API calls
-- Prompt Template: AI analysis/generation
-- Both: Query data + AI analysis
-
-**Prompt Template Activation**: Deploy AND activate in Prompt Builder UI. "Published" status is NOT enough.
-
-**Plugin Instructions**: Keep short. No ALWAYS/NEVER/CRITICAL. Trust the model. See existing plugins.
-
-**Agent Tests**: Non-deterministic. Run 3x to establish baseline. Topic should be 100%, actions may vary.
-
-## Plugin Architecture (4 plugins)
-
-| Plugin | Purpose | Functions |
-| ------ | ------- | --------- |
-| Research | Find information from any source | QueryRecordsWithSoql, RetrieveVectorizeChunks, SearchWeb |
-| Act | Create, update, delete records | CallRestApi |
-| Configure | Understand and modify metadata | ExploreOrgSchema, CallMetadataApi, CallToolingApi |
-| Integrate | External system integrations | CallGitHubApi |
-
-## Code Scanner
-
-```bash
-sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file security-review/scans/code-analyzer-security.csv --target force-app/main/default
-sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" --output-file security-review/scans/code-analyzer-cleancode.csv --target force-app/main/default
-```
-
-## Skills
-
-`/apex-test-cycle`, `/agent-test-cycle`, `/deploy-and-troubleshoot`
+- Treat `validate` and `publish` as different gates; validate success is not enough.
+- For namespaced orgs here, use namespaced `apex://` targets.
+- Avoid deploy workflows that copy source into temp directories.
+- Keep the known-issues file updated with reproducible steps for Salesforce reporting.
