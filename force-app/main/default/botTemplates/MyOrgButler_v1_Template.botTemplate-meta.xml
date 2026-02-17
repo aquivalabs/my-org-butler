@@ -5,7 +5,7 @@
     <botDialogs>
         <botSteps>
             <botMessages>
-                <message>Hi, I'm My Org Butler, your personal Salesforce assistant by Aquiva Labs! I can search your data, explore metadata, create records, and even search the web. How can I help?</message>
+                <message>Hi, I'm your Org Butler. How can I help?</message>
                 <messageIdentifier>446e92b4-3f6b-4ad8-bd83-a553e293a7d4</messageIdentifier>
             </botMessages>
             <stepIdentifier>943cc656-5988-4d56-a2f2-b11860b44126</stepIdentifier>
