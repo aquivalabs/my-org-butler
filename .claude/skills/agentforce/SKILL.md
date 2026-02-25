@@ -7,6 +7,16 @@ description: Write and edit Salesforce Agentforce Agent Script (.agent files). U
 
 Write and troubleshoot Salesforce Agentforce agents using Agent Script — a YAML-like DSL for hybrid reasoning.
 
+## How This Skill Works
+
+This skill combines a **condensed local guide** with **live official documentation**.
+
+- **`references/agent-script-guide.md`** — A slim reference covering the mental model, syntax cheat sheet, common gotchas, and migration guide. Read this first for quick answers.
+- **`references/official-sources.md`** — The complete URL index for Salesforce's official Agent Script documentation (~28 pages). **Fetch these pages whenever you need full syntax details, block definitions, or pattern examples.**
+- **`references/known-issues.md`** — Tracked bugs, deployment quirks, and workarounds discovered in this project. Check here first when something fails unexpectedly.
+
+**Default behavior:** When writing or modifying Agent Script, always consult the local guide first. If the guide doesn't cover what you need, or if something fails, **fetch the relevant official doc page** before guessing. The official docs are the source of truth.
+
 ## Core Mental Model
 
 Agent Script has exactly **two execution modes** inside `instructions:`:
@@ -29,15 +39,16 @@ Everything in the language is plumbing around this duality.
 | `@actions.x` | Reference an action |
 | `@topic.x` | Delegate to topic (returns) |
 | `@utils.transition to` | One-way topic switch (no return) |
-| `@utils.set_variable` | LLM slot-fills a variable |
+| `@utils.setVariables` | LLM slot-fills a variable |
 | `@utils.escalate` | Hand off to human |
 | `@outputs.x` | Action output (after `run` / in `set`) |
 | `run` | Execute action deterministically |
 | `set` | Store value in variable |
 | `with` | Bind input parameter |
 | `...` | LLM slot-fill (asks user, fills value) |
-| `if / else if / else` | Conditional branching |
+| `if / else` | Conditional branching (no `else if` — nest instead) |
 | `available when` | Guard clause for tools |
+| `filter_from_agent` | Hide action output from LLM context |
 | `#` | Comment |
 
 ## Three Ways to Run Actions
@@ -53,29 +64,23 @@ Everything in the language is plumbing around this duality.
 
 ## File Conventions
 
-- Indentation: 3 spaces (mandatory)
+- Indentation: at least 2 spaces or 1 tab — pick one, don't mix
 - Names: `snake_case`, letters/numbers/underscores, start with letter, max 80 chars
 - Block order: `config → system → language → connection → variables → start_agent → topic(s)`
 
-## Detailed Reference
+## When to Fetch Official Docs
 
-Read `references/agent-script-guide.md` for the full condensed language reference covering all blocks, variable types, action definitions, input bindings, lifecycle hooks, guard clauses, and complete working examples.
+**Always fetch** the relevant official doc page (via `references/official-sources.md`) in these situations:
 
-## Known Issues & Quirks
-
-When you encounter unexpected behavior, deployment failures, or runtime errors — check `references/known-issues.md` first. It tracks bugs and quirks in Agent Script beta. If you discover a new issue, add it to that file.
-
-## Verification Protocol
-
-When something fails, is ambiguous, or the user questions output — **do not guess**. Fetch the relevant canonical URL from `references/official-sources.md` and verify before retrying.
-
-Specific triggers to fetch official docs:
+- **Writing a block type for the first time in a session** — Fetch its reference page to confirm current syntax
 - **Compilation/deployment error** → Fetch Blocks reference + specific element reference
-- **Action not executing** → Fetch Actions reference AND Tools reference (different invocation methods)
+- **Action not executing** → Fetch Actions reference AND Tools reference
 - **Variable not updating** → Fetch Variables reference (mutable vs immutable, linked vs regular)
-- **Topic transition wrong** → Fetch Utils + Tools reference (transition vs delegation)
-- **New/unfamiliar syntax** → Fetch main Agent Script overview page first
+- **Topic transition wrong** → Fetch Utils + Transitions pattern page
+- **Conditional not evaluating** → Fetch Expressions + Operators reference
+- **Implementing a pattern** → Fetch the specific pattern page (action chaining, filtering, fetch data, etc.)
 - **User contradicts the local guide** → Trust official docs; update local guide if needed
+- **New/unfamiliar syntax** → Fetch the Language Characteristics page first
 
 If a doc URL 404s, web-search `site:developer.salesforce.com agent script <topic>` as fallback.
 
@@ -83,23 +88,22 @@ If a doc URL 404s, web-search `site:developer.salesforce.com agent script <topic
 
 This skill's reference files are editable. When you discover something during a session that improves your understanding, **update the references directly**:
 
-- **Found an error in `references/agent-script-guide.md`?** Fix it in place. Add a comment noting the correction and source (e.g. `<!-- Corrected 2025-02: official docs say mutable is required for set -->`).
-- **Official doc URL changed or 404'd?** Update the URL in `references/official-sources.md`.
-- **Discovered a new pattern, gotcha, or undocumented behavior?** Append it to the relevant section in the guide. If it doesn't fit anywhere, add a `## Discovered Patterns` section at the bottom.
-- **A recipe or example solved something tricky?** Add a minimal version to the guide's examples section.
-
-Also use `/memory` or tell the user: "I learned something about Agent Script — want me to save it to memory?" so learnings persist across sessions even if the skill files aren't writable.
-
-The goal: every session that hits an edge case makes the next session smarter.
+- **Found an error in the guide?** Fix it in place.
+- **Official doc URL changed or 404'd?** Update `references/official-sources.md`.
+- **Discovered a new gotcha or undocumented behavior?** Add it to the guide's gotchas section.
+- **A recipe or example solved something tricky?** Add a note to the guide.
 
 ## Common Mistakes to Catch
 
 - Forgetting `mutable` on variables the agent needs to change
+- Using `else if` (doesn't exist — must nest `if`/`else`)
 - Using `transition to` when they want delegation (one-way vs returns)
-- Putting `run` statements inside `|` blocks (logic must follow `->`, not inside prompts)
-- Using `...` (slot-fill) in chained action inputs (only works for top-level inputs)
+- Putting `run` statements inside `|` blocks (logic must follow `->`)
+- Using `...` (slot-fill) in chained action inputs (only works for top-level)
 - Missing `description` on reasoning actions (LLM needs this to choose tools)
 - Referencing actions across topics (actions are topic-scoped)
+- Using `true`/`false` instead of `True`/`False` (case-sensitive)
+- Putting `|` blocks inside `after_reasoning` (hooks are purely deterministic)
 
 ## Repository Notes: My Org Butler
 
