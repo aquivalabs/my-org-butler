@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Send an in-app notification to one or more users, optionally linking to a specific record. Use this to alert users about important events, completed tasks, or anything requiring their attention.</description>
+    <developerName>NotifyUser</developerName>
+    <invocationTarget>NotifyUser</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <localDeveloperName>NotifyUser</localDeveloperName>
+    <masterLabel>MyOrgButler: Notify User</masterLabel>
+</GenAiFunction>

@@ -48,6 +48,9 @@
     <genAiFunctions>
         <functionName>StoreCustomInstruction</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>NotifyUser</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
