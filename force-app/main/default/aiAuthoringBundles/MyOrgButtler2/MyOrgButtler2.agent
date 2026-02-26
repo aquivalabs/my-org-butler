@@ -1,16 +1,24 @@
 system:
-  instructions: "You are an AI Agent."
+  instructions: "You are My Org Butler, your personal Salesforce assistant by Aquiva Labs. Be concise. Match your response style to the task. Never start with 'Let me...', 'I found...', or 'Here is...'. Just answer. Never dump raw data. Synthesize into insights with links."
   messages:
-      welcome: "Hi, I'm an AI assistant. How can I help you?"
+      welcome: "Hi, I'm My Org Butler, your personal Salesforce assistant by Aquiva Labs! I can search your data, explore metadata, create records, and even search the web. How can I help?"
       error: "Sorry, it looks like something has gone wrong."
 
 config:
-  developer_name: "MyOrgButler2"
-  default_agent_user: "service.agent@example.com"
+  developer_name: "MyOrgButtler2"
   agent_label: "My Org Butler"
+  agent_type: "AgentforceEmployeeAgent"
   description: "Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes."
 
 variables:
+  currentAppName: mutable string
+      description: "Salesforce Application Name the user is currently in."
+  currentObjectApiName: mutable string
+      description: "The API name of the Salesforce object (such as Account or Opportunity) associated with the record the user wants to interact with. Do not use this if the user is already talking about another object in the conversation."
+  currentPageType: mutable string
+      description: "Type of Salesforce Page the user is viewing."
+  currentRecordId: mutable string
+      description: "The ID of the record on the user's screen. It may not relate to the user's input. Only use this if the user input mentions 'this', 'current', 'the record', etc. If in doubt, don't use it."
   EndUserId: linked string
       source: @MessagingSession.MessagingEndUserId
       description: "This variable may also be referred to as MessagingEndUser Id"
@@ -24,7 +32,7 @@ variables:
       source: @MessagingSession.EndUserLanguage
       description: "This variable may also be referred to as MessagingSession EndUserLanguage"
   VerifiedCustomerId: mutable string
-        description: "This variable may also be referred to as VerifiedCustomerId"
+      description: "This variable may also be referred to as VerifiedCustomerId"
   customInstructions: mutable string
       description: "Stores custom user instructions for personalization."
   customInstructionsOutOfSync: mutable boolean = True
@@ -443,38 +451,43 @@ topic MOB_AnswerWithData:
                   set @variables.customInstructionsOutOfSync = False
           | 
           | ## STEP 2: GENERAL INSTRUCTIONS
-          | 
+          |
           | Follow this methodical approach for data analysis:
-          | 
-          | 1. **Explore Smart**: Use ExploreOrgSchema with "summary" scope to find matching objects:
+          |
+          | 1. **Use Context Variables**: Check if user refers to "this record", "current record", or similar:
+          |    - If @variables.currentRecordId is available and user mentions "this" or "current", use GetRecordDetails action
+          |    - If @variables.currentObjectApiName is available, use it to understand the record type
+          |    - Use IdentifyRecordByName when user mentions a record by name (e.g., "the Acme account")
+          |
+          | 2. **Explore Smart**: Use ExploreOrgSchema with "summary" scope to find matching objects:
           |    - If user mentions "Project", look for all objects containing "Project" in name or label
           |    - If multiple objects match, try the most likely candidate first based on context
           |    - Only ask for clarification if initial attempts fail
-          | 
-          | 2. **Verify Fields**: Use ExploreOrgSchema with "details" scope to understand:
+          |
+          | 3. **Verify Fields**: Use ExploreOrgSchema with "details" scope to understand:
           |    - Available fields and their types
           |    - Picklist values for status fields
           |    - Relationship fields for lookups
-          | 
-          | 3. **Query Data**: Use QueryRecords function with appropriate mode:
+          |
+          | 4. **Query Data**: Use QueryRecords function with appropriate mode:
           |    - For Standard objects: Use direct SOQL mode when schema is well-known
           |    - For Custom objects/apps: Use prompt mode with templates for schema-aware queries
           |    - Include user intent and conversation context in prompt mode
           |    - Parse error responses and retry with corrected queries
-          | 
-          | 5. **Handle No Results**: 
+          |
+          | 5. **Handle No Results**:
           |    - Try alternative field names automatically
           |    - Explore related objects if primary object has no matches
           |    - Use prompt mode for complex custom object queries
           |    - Only ask for help when all reasonable attempts are exhausted
-          | 
+          |
           | 6. **Present Results**: Provide clear summaries with record links when data is found.
-          | 
+          |
           | **Extensibility**: Admins can enhance this topic by:
           | - Creating custom prompt templates for specific apps (PSA, etc.)
           | - Adding app-specific keywords to trigger prompt mode
           | - Including domain knowledge in prompt templates for better SOQL generation
-          | 
+          |
           | **Key Principle**: Work intelligently in the background - use prompt templates for custom schemas.
           | 
           | ## STEP 3: APPLYING LEARNED PREFERENCES
@@ -522,6 +535,13 @@ topic MOB_AnswerWithData:
           QueryRecordsWithSoql: @actions.QueryRecordsWithSoql
               with dynamicSoqlQuery = ...
 
+          GetRecordDetails: @actions.GetRecordDetails
+              with recordId = ...
+
+          IdentifyRecordByName: @actions.IdentifyRecordByName
+              with sObjectType = ...
+              with recordName = ...
+
           StoreCustomInstruction: @actions.StoreCustomInstruction
               with summary = ...
               with instruction = ...
@@ -531,6 +551,56 @@ topic MOB_AnswerWithData:
               set @variables.customInstructionsOutOfSync = False
 
   actions:
+      GetRecordDetails:
+        description: "Use this action to get detailed information about a specific Salesforce record when you have the record ID. This is particularly useful when the user refers to 'this record' or 'the current record' and you have the currentRecordId context variable available."
+        inputs:
+          recordId: string
+            description: "The Salesforce record ID to retrieve details for"
+            label: "Record ID"
+            is_required: True
+            is_user_input: False
+            complex_data_type_name: "lightning__textType"
+        outputs:
+          recordDetails: string
+            description: "JSON containing the record details"
+            label: "Record Details"
+            filter_from_agent: False
+            is_used_by_planner: True
+            is_displayable: False
+        target: "standardInvocableAction://EmployeeCopilot__GetRecordDetails"
+        label: "Get Record Details"
+        require_user_confirmation: False
+        include_in_progress_indicator: True
+        progress_indicator_message: "Fetching record details..."
+
+      IdentifyRecordByName:
+        description: "Use this action to find a Salesforce record when you know the object type and record name but don't have the record ID. Useful when users mention a record by name (e.g., 'the Acme account' or 'John Smith contact')."
+        inputs:
+          sObjectType: string
+            description: "The API name of the Salesforce object (e.g., Account, Contact, Opportunity)"
+            label: "Object Type"
+            is_required: True
+            is_user_input: False
+            complex_data_type_name: "lightning__textType"
+          recordName: string
+            description: "The name of the record to find"
+            label: "Record Name"
+            is_required: True
+            is_user_input: False
+            complex_data_type_name: "lightning__textType"
+        outputs:
+          recordId: string
+            description: "The ID of the matching record"
+            label: "Record ID"
+            filter_from_agent: False
+            is_used_by_planner: True
+            is_displayable: False
+        target: "standardInvocableAction://EmployeeCopilot__IdentifyRecordByName"
+        label: "Identify Record By Name"
+        require_user_confirmation: False
+        include_in_progress_indicator: True
+        progress_indicator_message: "Searching for record..."
+
       ExploreOrgSchema:
         description: "This action helps you explore Custom Objects, Fields, and Relationships in your org. Use the \"summary\" scope to discover available objects, \"relationships\" to see how an object connects to others, and \"details\" for a full list of fields and picklist values on a specific object. Only use \"details\" or \"relationships\" when you are sure the object exists."
         inputs:

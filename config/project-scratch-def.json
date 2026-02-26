@@ -24,9 +24,6 @@
     },
     "agentPlatformSettings": {
         "enableAgentPlatform": true
-    },
-    "customerDataPlatformSettings": {
-      "enableCustomerDataPlatform":true
     }
   }
 }
