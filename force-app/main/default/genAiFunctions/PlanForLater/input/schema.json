@@ -1,9 +1,9 @@
 {
-  "required" : [ "instructions", "cronExpression" ],
+  "required" : [ "prompt", "cronExpression" ],
   "unevaluatedProperties" : false,
   "properties" : {
-    "instructions" : {
-      "title" : "Instructions",
+    "prompt" : {
+      "title" : "Prompt",
       "description" : "What the agent should do when this plan executes. Be specific and actionable so a headless agent can execute independently.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
@@ -11,22 +11,16 @@
     },
     "context" : {
       "title" : "Context",
-      "description" : "JSON object with context variables like record IDs or parameters. e.g. {\"AccountId\":\"001xx\",\"Priority\":\"High\"}",
+      "description" : "JSON object with context variables like record IDs. e.g. {\"AccountId\":\"001xx\"}",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
     },
     "cronExpression" : {
       "title" : "Cron Expression",
-      "description" : "Salesforce cron expression for when to execute. Format: seconds minutes hours dayOfMonth month dayOfWeek optionalYear. e.g. 0 0 9 ? * MON-FRI for weekdays at 9am.",
+      "description" : "Salesforce cron expression. Format: seconds minutes hours dayOfMonth month dayOfWeek optionalYear. e.g. 0 0 9 ? * MON-FRI for weekdays at 9am.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
-      "copilotAction:isUserInput" : false
-    },
-    "isRecurring" : {
-      "title" : "Is Recurring",
-      "description" : "Set to true for repeating schedules (daily, weekly, monthly). Set to false for one-time execution.",
-      "lightning:type" : "lightning__booleanType",
       "copilotAction:isUserInput" : false
     }
   },

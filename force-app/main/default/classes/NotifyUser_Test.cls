@@ -9,7 +9,7 @@ private class NotifyUser_Test {
         NotifyUser.Input input = new NotifyUser.Input();
         input.title = 'Test Alert';
         input.body = 'Something happened in your org.';
-        input.targetId = '000000000000000AAA';
+        input.targetId = 'some-target';
         input.recipientIds = new List<String>{ UserInfo.getUserId() };
 
         // Exercise

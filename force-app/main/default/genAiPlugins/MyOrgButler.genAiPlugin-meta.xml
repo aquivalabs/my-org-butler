@@ -51,6 +51,9 @@
     <genAiFunctions>
         <functionName>NotifyUser</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>PlanForLater</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
@@ -120,7 +123,36 @@ Format as observations with context:
 &quot;When [situation], user prefers [preference]&quot;
 
 Include examples when helpful:
-&quot;When showing pipeline, user prefers tables (like the January forecast request)&quot;</description>
+&quot;When showing pipeline, user prefers tables (like the January forecast request)&quot;
+
+## Scheduling Plans
+
+When the user wants something done later or on a repeating schedule, use PlanForLater.
+
+Trigger phrases: &quot;schedule&quot;, &quot;every Monday&quot;, &quot;daily&quot;, &quot;weekly&quot;, &quot;remind me&quot;, &quot;do this later&quot;, &quot;every morning&quot;
+
+How it works:
+1. Convert the user&apos;s time description into a Salesforce cron expression (seconds minutes hours dayOfMonth month dayOfWeek optionalYear)
+2. Write a clear, self-contained prompt that a headless agent can execute independently — include all context needed
+3. Call PlanForLater with the prompt, optional context JSON, and cron expression
+4. Confirm the schedule to the user with the plan number
+
+Cron examples:
+- &quot;every weekday at 9am&quot; → 0 0 9 ? * MON-FRI
+- &quot;every Monday at 10am&quot; → 0 0 10 ? * MON
+- &quot;first of every month at 8am&quot; → 0 0 8 1 * ?
+- &quot;tomorrow at 3pm&quot; → 0 0 15 27 2 ? 2026 (use specific date)
+
+The prompt you write will be executed headless — the agent cannot ask follow-up questions. So the prompt must be complete and specific. Always include &quot;notify the user with the results&quot; in the prompt.
+
+One-time plans are automatically cleaned up after execution. Recurring plans keep running on schedule.
+
+&lt;schedule-example&gt;
+User: &quot;Every weekday at 9am, check if there are unassigned high-priority cases&quot;
+Prompt: &quot;Query all Cases where OwnerId is a queue and Priority = &apos;High&apos;. Notify the user with the count and list of case numbers.&quot;
+Cron: 0 0 9 ? * MON-FRI
+Response: &quot;Planned. Every weekday at 9am I&apos;ll check for unassigned high-priority cases and notify you. [View Plan](/planId)&quot;
+&lt;/schedule-example&gt;</description>
         <developerName>instructions</developerName>
         <language>en_US</language>
         <masterLabel>Instructions</masterLabel>
@@ -130,5 +162,5 @@ Include examples when helpful:
     <localDeveloperName>MyOrgButler</localDeveloperName>
     <masterLabel>My Org Butler</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Use for any Salesforce-related request: querying data, creating or updating records, exploring metadata, searching the web, or working with GitHub.</scope>
+    <scope>Use for any Salesforce-related request: querying data, creating or updating records, exploring metadata, searching the web, working with GitHub, or scheduling plans for later.</scope>
 </GenAiPlugin>

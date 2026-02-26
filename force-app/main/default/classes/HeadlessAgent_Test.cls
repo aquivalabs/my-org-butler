@@ -7,7 +7,7 @@ private class HeadlessAgent_Test {
 
         // Exercise
         HeadlessAgent agent = new HeadlessAgent('MyOrgButler');
-        HeadlessAgent.Response response = agent.prompt('What accounts do I have?');
+        HeadlessAgent.Response response = agent.send('What accounts do I have?');
 
 
         // Verify
@@ -22,13 +22,13 @@ private class HeadlessAgent_Test {
 
         // Setup
         Map<String, String> context = new Map<String, String>{
-            'CaseId' => '500000000000001',
-            'AccountId' => '001000000000001'
+            'CaseId' => 'some-case',
+            'AccountId' => 'some-account'
         };
 
         // Exercise
         HeadlessAgent agent = new HeadlessAgent('MyOrgButler');
-        HeadlessAgent.Response response = agent.prompt('Summarize this case', context);
+        HeadlessAgent.Response response = agent.send('Summarize this case', context);
 
 
         // Verify
@@ -42,8 +42,8 @@ private class HeadlessAgent_Test {
 
         // Exercise
         HeadlessAgent agent = new HeadlessAgent('MyOrgButler');
-        HeadlessAgent.Response first = agent.prompt('Hello');
-        HeadlessAgent.Response second = agent.prompt('Follow up');
+        HeadlessAgent.Response first = agent.send('Hello');
+        HeadlessAgent.Response second = agent.send('Follow up');
 
 
         // Verify

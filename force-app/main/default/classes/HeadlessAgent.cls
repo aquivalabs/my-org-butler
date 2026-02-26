@@ -13,14 +13,14 @@ public with sharing class HeadlessAgent {
 
     // PUBLIC
 
-    public Response prompt(String userMessage) {
-        Response result = prompt(userMessage, new Map<String, String>());
+    public Response send(String userMessage) {
+        Response result = send(userMessage, new Map<String, String>());
 
         return result;
     }
 
 
-    public Response prompt(String userMessage, Map<String, String> contextVariables) {
+    public Response send(String userMessage, Map<String, String> contextVariables) {
         Response result = invokeAgent(userMessage, contextVariables);
 
         if(result.success) {

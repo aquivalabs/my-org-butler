@@ -143,7 +143,7 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Stores scheduled tasks that the AI agent will execute at specified times. Each plan contains instructions, context, and a cron schedule for headless agent execution.</description>
+    <description>Stores plans the My Org Butler agent will execute on schedule. Each plan contains a prompt, optional context, and is linked to a scheduled Apex job.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -154,14 +154,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <label>Plan</label>
+    <label>My Org Butler Plan</label>
     <nameField>
         <displayFormat>PLN-{0000}</displayFormat>
         <label>Plan Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Plans</pluralLabel>
+    <pluralLabel>My Org Butler Plans</pluralLabel>
     <searchLayouts></searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>

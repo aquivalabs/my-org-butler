@@ -262,7 +262,25 @@
     <testCase>
         <number>14</number>
         <inputs>
-            <utterance>send me an in-org notification saying the deployment is complete</utterance>
+            <utterance>every weekday at 9am, check for opportunities closing this week and notify me</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['PlanForLater']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms a plan was scheduled for weekdays at 9am with a cron expression</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs>
+            <utterance>notify me that the quarterly report is ready for review</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -274,7 +292,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms the in-org notification was sent to the current user</expectedValue>
+            <expectedValue>Confirms the notification was sent to the current user</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>

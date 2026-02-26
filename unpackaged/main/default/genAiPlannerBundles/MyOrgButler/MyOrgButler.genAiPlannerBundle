@@ -91,6 +91,11 @@
         <targetName>aquiva_os__MyOrgButler.EmployeeCopilot__IdentifyRecordByName</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>
+    <ruleExpressionAssignments>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>aquiva_os__MyOrgButler.PlanForLater</targetName>
+        <targetType>PluginFunction</targetType>
+    </ruleExpressionAssignments>
     <ruleExpressions>
         <conditions>
             <leftOperand>customInstructions</leftOperand>

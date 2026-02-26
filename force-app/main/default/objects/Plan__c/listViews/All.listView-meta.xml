@@ -2,10 +2,9 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
-    <columns>Status__c</columns>
-    <columns>IsRecurring__c</columns>
-    <columns>CronExpression__c</columns>
-    <columns>Instructions__c</columns>
+    <columns>Prompt__c</columns>
+    <columns>Context__c</columns>
+    <columns>JobId__c</columns>
     <filterScope>Mine</filterScope>
     <label>All</label>
 </ListView>

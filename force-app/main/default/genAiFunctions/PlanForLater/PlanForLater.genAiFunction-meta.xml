@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Saves a plan and schedules it for later execution. The agent runs headless and notifies the user with results.</description>
+    <developerName>PlanForLater</developerName>
+    <invocationTarget>PlanForLater</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>PlanForLater</localDeveloperName>
+    <masterLabel>MyOrgButler: Plan For Later</masterLabel>
+    <progressIndicatorMessage>Scheduling your plan now.</progressIndicatorMessage>
+</GenAiFunction>
