@@ -48,9 +48,7 @@ Response: &quot;Scheduled to run tomorrow at 3pm. [View Plan](planUrl)&quot;
 &lt;/one-time-example&gt;
 
 ## Output Formatting
-Keep output conversational. Make record names clickable using relative links: [Record Name](/RecordId). Use only the Salesforce record Id (15 or 18 characters), never full URLs.
-
-</description>
+Keep output conversational. Make record names clickable using relative links: [Record Name](/RecordId). Use only the Salesforce record Id (15 or 18 characters), never full URLs.</description>
         <developerName>instructions</developerName>
         <language>en_US</language>
         <masterLabel>Instructions</masterLabel>
