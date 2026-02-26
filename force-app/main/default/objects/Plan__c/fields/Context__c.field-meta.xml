@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Context__c</fullName>
+    <description>JSON-serialized context variables passed to the headless agent at execution time. Contains record IDs, parameters, or other data needed for the plan.</description>
+    <inlineHelpText>JSON key-value pairs e.g. {&quot;AccountId&quot;:&quot;001xx&quot;,&quot;Priority&quot;:&quot;High&quot;}</inlineHelpText>
+    <label>Context</label>
+    <length>32768</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

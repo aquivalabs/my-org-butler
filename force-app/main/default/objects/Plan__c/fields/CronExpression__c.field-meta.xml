@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CronExpression__c</fullName>
+    <description>Salesforce cron expression that determines when this plan executes. Format: seconds minutes hours dayOfMonth month dayOfWeek optionalYear.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Cron schedule e.g. 0 0 9 ? * MON-FRI (weekdays at 9am)</inlineHelpText>
+    <label>Cron Expression</label>
+    <length>120</length>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
