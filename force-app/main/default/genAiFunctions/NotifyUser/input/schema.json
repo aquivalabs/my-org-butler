@@ -1,0 +1,39 @@
+{
+  "required" : [ "body", "recipientIds", "targetId", "title" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "title" : {
+      "title" : "Title",
+      "description" : "Short title of the notification",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "body" : {
+      "title" : "Body",
+      "description" : "Notification text",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "targetId" : {
+      "title" : "Target Record Id",
+      "description" : "Salesforce Id of the record to link to. Use 000000000000000AAA if none",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "recipientIds" : {
+      "title" : "Recipient User Ids",
+      "description" : "List of Salesforce User Ids to send the notification to",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "lightning__textType"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

@@ -78,6 +78,11 @@
     </ruleExpressionAssignments>
     <ruleExpressionAssignments>
         <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
+        <targetName>aquiva_os__MyOrgButler.NotifyUser</targetName>
+        <targetType>PluginFunction</targetType>
+    </ruleExpressionAssignments>
+    <ruleExpressionAssignments>
+        <ruleExpressionName>customInstructionsLoaded</ruleExpressionName>
         <targetName>aquiva_os__MyOrgButler.EmployeeCopilot__GetRecordDetails</targetName>
         <targetType>PluginFunction</targetType>
     </ruleExpressionAssignments>

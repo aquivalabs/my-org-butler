@@ -259,4 +259,22 @@
             <expectedValue>Summarizes the NDA document content</expectedValue>
         </expectation>
     </testCase>
+    <testCase>
+        <number>14</number>
+        <inputs>
+            <utterance>send me an in-org notification saying the deployment is complete</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['NotifyUser']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Confirms the in-org notification was sent to the current user</expectedValue>
+        </expectation>
+    </testCase>
 </AiEvaluationDefinition>
