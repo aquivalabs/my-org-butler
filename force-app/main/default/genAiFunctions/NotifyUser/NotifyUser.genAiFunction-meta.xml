@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Send an in-app notification to users. Write the body as a friendly, conversational message. When referencing a record, pass its Id as targetId so the notification links to it. Query User Ids with QueryRecordsWithSoql before calling this. If no recipient is specified, the current user is notified.</description>
+    <description>Send an in-app notification to users. The body is plain text only (max 750 chars) — no markdown, no HTML, no links. Use numbered lists with record names but never link syntax. Only one record can be linked via targetId (the notification itself becomes clickable). If the user asks for a list with links, explain that notifications only support plain text with a single clickable link. Query User Ids with QueryRecordsWithSoql before calling this. If no recipient is specified, the current user is notified.</description>
     <developerName>NotifyUser</developerName>
     <invocationTarget>NotifyUser</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

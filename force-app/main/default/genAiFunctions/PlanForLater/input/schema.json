@@ -4,7 +4,7 @@
   "properties" : {
     "prompt" : {
       "title" : "Prompt",
-      "description" : "Step-by-step plan for the headless agent. Start with: You are running headlessly. There is no conversation — do not ask questions. Then list numbered steps. The last step must use NotifyUser to deliver results with a targetId linking the relevant record.",
+      "description" : "Step-by-step plan for the headless agent. Start with: You are running headlessly. There is no conversation — do not ask questions. Then list numbered steps. The last step must use NotifyUser to deliver results with a targetId linking the relevant record. Important: NotifyUser body is plain text only (max 750 chars), no markdown, no HTML, no links. Use numbered lists with record names only. Only one record can be linked via targetId.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

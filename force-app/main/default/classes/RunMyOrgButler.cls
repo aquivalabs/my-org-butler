@@ -12,7 +12,7 @@ public with sharing class RunMyOrgButler implements Schedulable {
         for(Plan__c plan : plans) {
             Map<String, String> contextMap = deserializeContext(plan.Context__c);
             HeadlessAgent.Response response = new HeadlessAgent('MyOrgButler').send(plan.Prompt__c, contextMap);
-
+System.debug(response);
             if(!response.success) {
                 new HeadlessAgent('MyOrgButler')
                         .send('Notify the user that a scheduled plan failed with error: ' + response.error);

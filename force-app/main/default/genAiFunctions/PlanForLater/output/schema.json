@@ -3,7 +3,7 @@
   "properties" : {
     "planId" : {
       "title" : "Plan Id",
-      "description" : "The ID of the created Plan record.",
+      "description" : "The ID of the created Plan record. Always present a clickable link to the plan as /planId (relative URL with just a slash and the ID).",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,

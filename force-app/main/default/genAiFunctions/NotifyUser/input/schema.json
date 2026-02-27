@@ -4,7 +4,7 @@
   "properties" : {
     "body" : {
       "title" : "Body",
-      "description" : "Conversational message from the agent. Write like a friendly assistant.",
+      "description" : "Plain text only (max 750 chars). No markdown, no HTML, no links. Write like a friendly assistant. Use numbered lists with record names if needed.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

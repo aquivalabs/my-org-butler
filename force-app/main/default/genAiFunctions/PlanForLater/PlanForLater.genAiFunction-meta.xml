@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Saves a step-by-step plan and schedules it for later execution. The prompt must be a numbered plan starting with the headless preamble. Requires: prompt and schedule (local time pattern like "0 9 ? * MON-FRI" for weekdays at 9am).</description>
+    <description>Saves a step-by-step plan and schedules it for later execution. The prompt must be a numbered plan starting with the headless preamble. Requires: prompt and schedule (local time pattern like "0 9 ? * MON-FRI" for weekdays at 9am). Results are delivered via in-app notification which is plain text only (max 750 chars), no links, no formatting, one clickable record only. If the user asks for something that exceeds these limits (e.g. linked lists, large reports), explain the constraint before scheduling.</description>
     <developerName>PlanForLater</developerName>
     <invocationTarget>PlanForLater</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
