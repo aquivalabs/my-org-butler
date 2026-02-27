@@ -1,17 +1,10 @@
 {
-  "required" : [ "body", "recipientIds", "targetId", "title" ],
+  "required" : [ "body", "recipientIds", "targetId" ],
   "unevaluatedProperties" : false,
   "properties" : {
-    "title" : {
-      "title" : "Title",
-      "description" : "Short title of the notification",
-      "lightning:type" : "lightning__textType",
-      "lightning:isPII" : false,
-      "copilotAction:isUserInput" : false
-    },
     "body" : {
       "title" : "Body",
-      "description" : "Notification text",
+      "description" : "Conversational message from the agent. Write like a friendly assistant.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

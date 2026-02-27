@@ -1,11 +1,6 @@
 
 public with sharing class RunMyOrgButler implements Schedulable {
 
-    private static final String HEADLESS_INSTRUCTION =
-        'You are running headlessly from a scheduled plan. There is no conversation — the user cannot see replies or answer questions. '
-        + 'Do your best with the information provided. Never ask clarifying questions. '
-        + 'ALWAYS deliver all results by notifying the user. If anything fails, notify the user about the error.\n\n';
-
 
     // PUBLIC
 
@@ -16,8 +11,8 @@ public with sharing class RunMyOrgButler implements Schedulable {
 
         for(Plan__c plan : plans) {
             Map<String, String> contextMap = deserializeContext(plan.Context__c);
-            HeadlessAgent.Response response = new HeadlessAgent('MyOrgButler')
-                                                        .send(HEADLESS_INSTRUCTION + plan.Prompt__c, contextMap);
+            HeadlessAgent.Response response = new HeadlessAgent('MyOrgButler').send(plan.Prompt__c, contextMap);
+
             if(!response.success) {
                 new HeadlessAgent('MyOrgButler')
                         .send('Notify the user that a scheduled plan failed with error: ' + response.error);

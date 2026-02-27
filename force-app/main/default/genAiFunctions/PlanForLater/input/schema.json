@@ -4,7 +4,7 @@
   "properties" : {
     "prompt" : {
       "title" : "Prompt",
-      "description" : "What the agent should do when this plan executes. Be specific and actionable so a headless agent can execute independently.",
+      "description" : "Step-by-step plan for the headless agent. Start with: You are running headlessly. There is no conversation — do not ask questions. Then list numbered steps. The last step must use NotifyUser to deliver results with a targetId linking the relevant record.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

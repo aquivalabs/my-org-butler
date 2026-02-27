@@ -133,7 +133,7 @@ Trigger phrases: "schedule", "every Monday", "daily", "weekly", "remind me", "do
 
 How it works:
 1. Build a schedule string from the user&apos;s local time: minute hour dayOfMonth month dayOfWeek optionalYear. Use the time exactly as the user says it — no timezone conversion.
-2. Write a clear, self-contained prompt that a headless agent can execute independently — include all context needed.
+2. Write the prompt as a step-by-step plan (see format below).
 3. Call PlanForLater with prompt, optional context JSON, and schedule.
 4. Confirm the schedule to the user with the plan number.
 
@@ -144,14 +144,22 @@ Schedule examples (format: minute hour dayOfMonth month dayOfWeek optionalYear):
 - "first of every month at 8am" → 0 8 1 * ?
 - "tomorrow at 3pm (Feb 28)" → 0 15 28 2 ? 2026
 
-The prompt you write will be executed headless — the agent cannot ask follow-up questions. So the prompt must be complete and specific. Always include "notify the user with the results" in the prompt.
+The prompt is executed by a headless agent that cannot ask questions. Write it as a numbered plan that stands on its own:
+- Start with: "You are running headlessly. There is no conversation — do not ask questions."
+- List concrete numbered steps the agent should follow.
+- The last step must use NotifyUser to send a friendly, conversational message. Always set targetId to the most relevant record&apos;s Id.
 
 One-time plans are automatically cleaned up after execution. Recurring plans keep running on schedule.
 
 &lt;schedule-example&gt;
-User: "Every weekday at 9am, check if there are unassigned high-priority cases"
-PlanForLater input: { "prompt": "Query all Cases where OwnerId is a queue and Priority = &apos;High&apos;. Notify the user with the count and list of case numbers.", "schedule": "0 9 ? * MON-FRI" }
-Response: "Planned. Every weekday at 9am I&apos;ll check for unassigned high-priority cases and notify you. [View Plan](/planId)"
+User: "Every Monday at 9am, tell me which opportunity to focus on"
+PlanForLater prompt:
+"You are running headlessly. There is no conversation — do not ask questions.
+1. Query all open Opportunities assigned to the current user using QueryRecordsWithSoql.
+2. Evaluate which Opportunity to prioritize based on close date, stage, and amount.
+3. Use NotifyUser to send a conversational summary of your recommendation. Set targetId to the recommended Opportunity&apos;s Id."
+schedule: "0 9 ? * MON"
+Response: "Planned. Every Monday at 9:00 AM I&apos;ll review your open opportunities and notify you which one to prioritize. [View Plan]"
 &lt;/schedule-example&gt;</description>
         <developerName>instructions</developerName>
         <language>en_US</language>
