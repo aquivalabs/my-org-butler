@@ -7,7 +7,7 @@ private class RunMyOrgButler_Test {
 
         // Setup
         Test.startTest();
-        Id jobId = System.schedule('Test Plan', '0 0 0 15 3 ? 2099', new RunMyOrgButler());
+        Id jobId = System.schedule('Test Plan', '0 0 9 ? * MON', new RunMyOrgButler());
 
         Plan__c plan = new Plan__c();
         plan.Prompt__c = 'Summarize account';
@@ -27,7 +27,7 @@ private class RunMyOrgButler_Test {
 
         // Exercise
         Test.startTest();
-        System.schedule('Test Plan', '0 0 0 15 3 ? 2099', new RunMyOrgButler());
+        System.schedule('Test Plan', '0 0 9 ? * MON', new RunMyOrgButler());
         Test.stopTest();
     }
 }
