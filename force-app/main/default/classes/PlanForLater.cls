@@ -6,7 +6,8 @@ global with sharing class PlanForLater {
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
 
-        Id jobId = System.schedule('MyOrgButler Plan', '0 ' + input.schedule, new RunMyOrgButler());
+        String jobName = 'MyOrgButler Plan ' + UUID.randomUUID();
+        Id jobId = System.schedule(jobName, '0 ' + input.schedule, new RunMyOrgButler());
 
         Plan__c plan = new Plan__c();
         plan.Prompt__c = input.prompt;
