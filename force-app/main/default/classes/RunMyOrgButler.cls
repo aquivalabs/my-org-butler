@@ -3,7 +3,10 @@
 public with sharing class RunMyOrgButler implements Schedulable {
 
     private static final String AGENT_NAME = 'MyOrgButler';
-    private static final String NOTIFICATION_INSTRUCTION = '\n\nIMPORTANT: Deliver results by notifying the user. If anything fails, notify the user about the error.';
+    private static final String HEADLESS_INSTRUCTION = '\n\n'
+        + 'You are running headlessly from a scheduled plan. There is no conversation — the user cannot see replies or answer questions. '
+        + 'Do your best with the information provided. Never ask clarifying questions. '
+        + 'Deliver all results by notifying the user. If anything fails, notify the user about the error.';
 
 
     // PUBLIC
@@ -14,7 +17,7 @@ public with sharing class RunMyOrgButler implements Schedulable {
         for(Plan__c plan : [SELECT Prompt__c, Context__c FROM Plan__c WHERE JobId__c = :jobId WITH USER_MODE LIMIT 1]) {
             Map<String, String> contextMap = deserializeContext(plan.Context__c);
 
-            HeadlessAgent.Response response = new HeadlessAgent(AGENT_NAME).send(plan.Prompt__c + NOTIFICATION_INSTRUCTION, contextMap);
+            HeadlessAgent.Response response = new HeadlessAgent(AGENT_NAME).send(plan.Prompt__c + HEADLESS_INSTRUCTION, contextMap);
 
             if(!response.success) {
                 new HeadlessAgent(AGENT_NAME).send(
