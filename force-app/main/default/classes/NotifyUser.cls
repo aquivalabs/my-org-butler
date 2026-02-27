@@ -5,7 +5,7 @@ global with sharing class NotifyUser {
     @InvocableMethod(label='MyOrgButler: Notify User' description='Sends an in-org notification to specific users, optionally linking to a record')
     global static List<Output> execute(List<Input> inputs) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(inputs[0].title);
+        notification.setTitle('My Org Butler says:');
         notification.setBody(inputs[0].body);
         notification.setNotificationTypeId([SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'InOrgNotifications'].Id);
         notification.setTargetId(inputs[0].targetId);
@@ -23,10 +23,7 @@ global with sharing class NotifyUser {
     // INNER
 
     global class Input {
-        @InvocableVariable(label='Title' description='Short title of the notification' required=true)
-        global String title;
-
-        @InvocableVariable(label='Body' description='Notification text' required=true)
+        @InvocableVariable(label='Body' description='Conversational message from the agent. Write like a friendly assistant.' required=true)
         global String body;
 
         @InvocableVariable(label='Target Record Id' description='Salesforce Id of the record to link to. Use 000000000000000AAA if none' required=true)

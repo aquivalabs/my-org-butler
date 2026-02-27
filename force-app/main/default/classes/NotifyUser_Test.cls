@@ -7,7 +7,6 @@ private class NotifyUser_Test {
 
         // Setup
         NotifyUser.Input input = new NotifyUser.Input();
-        input.title = 'Test Alert';
         input.body = 'Something happened in your org.';
         input.targetId = 'some-target';
         input.recipientIds = new List<String>{ UserInfo.getUserId() };
