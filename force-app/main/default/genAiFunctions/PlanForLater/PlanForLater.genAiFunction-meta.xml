@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Saves a plan and schedules it for later execution. The agent runs headless and notifies the user with results.</description>
+    <description>Saves a plan and schedules it for later execution. Requires: prompt and schedule (local time pattern like "0 9 ? * MON-FRI" for weekdays at 9am). The agent runs headless and notifies the user with results.</description>
     <developerName>PlanForLater</developerName>
     <invocationTarget>PlanForLater</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

@@ -1,5 +1,5 @@
 {
-  "required" : [ "prompt", "cronExpression" ],
+  "required" : [ "prompt", "schedule" ],
   "unevaluatedProperties" : false,
   "properties" : {
     "prompt" : {
@@ -16,9 +16,9 @@
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
     },
-    "cronExpression" : {
-      "title" : "Cron Expression",
-      "description" : "Salesforce cron expression. Format: seconds minutes hours dayOfMonth month dayOfWeek optionalYear. e.g. 0 0 9 ? * MON-FRI for weekdays at 9am.",
+    "schedule" : {
+      "title" : "Schedule",
+      "description" : "When to run in the users local time: minute hour dayOfMonth month dayOfWeek optionalYear. e.g. 0 9 ? * MON-FRI for weekdays at 9am, 30 14 ? * MON for Mondays at 2:30pm.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

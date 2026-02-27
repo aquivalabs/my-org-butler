@@ -9,7 +9,10 @@ global with sharing class NotifyUser {
         notification.setBody(inputs[0].body);
         notification.setNotificationTypeId([SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'InOrgNotifications'].Id);
         notification.setTargetId(inputs[0].targetId);
-        notification.send(new Set<String>(inputs[0].recipientIds));
+        Set<String> userIds = (inputs[0].recipientIds == null || inputs[0].recipientIds.isEmpty())
+            ? new Set<String>{ UserInfo.getUserId() }
+            : new Set<String>(inputs[0].recipientIds);
+        notification.send(userIds);
 
         List<Output> result = new List<Output>{ new Output() };
 

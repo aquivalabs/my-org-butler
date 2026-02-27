@@ -6,7 +6,7 @@ global with sharing class PlanForLater {
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
 
-        Id jobId = System.schedule('MyOrgButler Plan', input.cronExpression, new RunMyOrgButler());
+        Id jobId = System.schedule('MyOrgButler Plan', '0 ' + input.schedule, new RunMyOrgButler());
 
         Plan__c plan = new Plan__c();
         plan.Prompt__c = input.prompt;
@@ -31,8 +31,8 @@ global with sharing class PlanForLater {
         @InvocableVariable(label='Context' description='JSON object with context variables like record IDs. e.g. {"AccountId":"001xx"}' required=false)
         global String context;
 
-        @InvocableVariable(label='Cron Expression' description='Salesforce cron expression. e.g. 0 0 9 ? * MON-FRI for weekdays at 9am.' required=true)
-        global String cronExpression;
+        @InvocableVariable(label='Schedule' description='When to run in the users local time: minute hour dayOfMonth month dayOfWeek optionalYear. e.g. 0 9 ? * MON-FRI for weekdays at 9am.' required=true)
+        global String schedule;
     }
 
 
