@@ -1,5 +1,5 @@
 {
-  "required" : [ "body", "recipientIds", "targetId" ],
+  "required" : [ "body", "targetId" ],
   "unevaluatedProperties" : false,
   "properties" : {
     "body" : {
@@ -18,12 +18,8 @@
     },
     "recipientIds" : {
       "title" : "Recipient User Ids",
-      "description" : "List of Salesforce User Ids to send the notification to",
-      "maxItems" : 2000,
-      "items" : {
-        "lightning:type" : "lightning__textType"
-      },
-      "lightning:type" : "lightning__listType",
+      "description" : "Comma-separated Salesforce User Ids to send the notification to",
+      "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
     }

@@ -9,9 +9,9 @@ global with sharing class NotifyUser {
         notification.setBody(inputs[0].body);
         notification.setNotificationTypeId([SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'InOrgNotifications'].Id);
         notification.setTargetId(inputs[0].targetId);
-        Set<String> userIds = (inputs[0].recipientIds == null || inputs[0].recipientIds.isEmpty())
+        Set<String> userIds = String.isBlank(inputs[0].recipientIds)
             ? new Set<String>{ UserInfo.getUserId() }
-            : new Set<String>(inputs[0].recipientIds);
+            : new Set<String>(inputs[0].recipientIds.split(','));
         notification.send(userIds);
 
         List<Output> result = new List<Output>{ new Output() };
@@ -29,8 +29,8 @@ global with sharing class NotifyUser {
         @InvocableVariable(label='Target Record Id' description='Salesforce Id of the record to link to. Use 000000000000000AAA if none' required=true)
         global String targetId;
 
-        @InvocableVariable(label='Recipient User Ids' description='List of Salesforce User Ids to send the notification to' required=true)
-        global List<String> recipientIds;
+        @InvocableVariable(label='Recipient User Ids' description='Comma-separated Salesforce User Ids to send the notification to' required=false)
+        global String recipientIds;
     }
 
 
