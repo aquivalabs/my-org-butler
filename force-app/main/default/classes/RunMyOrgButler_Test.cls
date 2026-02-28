@@ -3,31 +3,57 @@ private class RunMyOrgButler_Test {
 
 
     @IsTest
-    private static void executesPlanViaHeadlessAgent() {
+    private static void executesWithPlanId() {
 
         // Setup
-        Test.startTest();
-        Id jobId = System.schedule('Test Plan', '0 0 9 ? * MON', new RunMyOrgButler());
-
         Plan__c plan = new Plan__c();
         plan.Prompt__c = 'Summarize account';
-        plan.Context__c = '{"AccountId":"some-account","Priority":"High"}';
-        plan.JobId__c = String.valueOf(jobId);
+        plan.JobId__c = 'placeholder';
         insert plan;
 
-        Test.stopTest();
+
+        // Exercise
+        RunMyOrgButler butler = new RunMyOrgButler();
+        butler.execute(plan.Id);
+
 
         // Verify
-        Assert.areEqual(1, [SELECT COUNT() FROM Plan__c WHERE Id = :plan.Id]);
+        Assert.isTrue(butler.response.success);
+        Assert.areEqual(0, [SELECT COUNT() FROM Plan__c]);
     }
 
 
     @IsTest
-    private static void doesNothingWhenNoPlanMatchesJob() {
+    private static void executeFromSchedulable() {
+
+        // Setup
+        Id jobId = jobId();
+
+        Plan__c plan = new Plan__c();
+        plan.Prompt__c = 'Summarize account';
+        plan.JobId__c = jobId;
+        insert plan;
+
 
         // Exercise
-        Test.startTest();
-        System.schedule('Test Plan', '0 0 9 ? * MON', new RunMyOrgButler());
-        Test.stopTest();
+        RunMyOrgButler butler = new RunMyOrgButler();
+        butler.execute(jobId);
+
+
+        // Verify
+        Assert.isTrue(butler.response.success);
+        Assert.areEqual(0, [SELECT COUNT() FROM Plan__c]);
+    }
+
+
+    // HELPER
+
+    private static Id jobId() {
+        Id result = System.schedule('Test Plan', '0 0 9 ? * MON', new RunMyOrgButler());
+        
+        // Note: Abort needed so cleanUp sees no NextFireTime and deletes the plan
+        System.abortJob(result);
+
+        return result;
     }
 }
