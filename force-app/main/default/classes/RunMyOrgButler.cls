@@ -1,5 +1,6 @@
-
-public with sharing class RunMyOrgButler implements Schedulable {
+// Note: Agentforce @InvocableMethod requires global access modifier
+@SuppressWarnings('PMD.AvoidGlobalModifier')
+global with sharing class RunMyOrgButler implements Schedulable {
 
     @TestVisible
     private HeadlessAgent.Response response;
@@ -7,10 +8,21 @@ public with sharing class RunMyOrgButler implements Schedulable {
 
     // PUBLIC
 
+    @InvocableMethod(label='MyOrgButler: Run My Org Butler' description='Delegates a task to a headless sub-butler that works in the background and notifies the user when done.')
+    global static List<Output> execute(List<Input> inputs) {
+        RunMyOrgButler runner = new RunMyOrgButler();
+        runner.execute(inputs[0].planOrJobId);
+
+        Output result = new Output();
+        result.success = runner.response.success;
+        result.error = runner.response.error;
+        return new List<Output>{ result };
+    }
+
+
     public void execute(SchedulableContext ctx) {
         execute(ctx.getTriggerId());
     }
-
 
     public void execute(Id planOrJobId) {
         Plan__c plan = [SELECT Prompt__c, Context__c, JobId__c
@@ -26,6 +38,23 @@ public with sharing class RunMyOrgButler implements Schedulable {
         }
 
         cleanUp(plan);
+    }
+
+
+    // INNER
+
+    global class Input {
+        @InvocableVariable(label='Plan Or Job Id' description='The ID of the Plan record or the scheduled Job ID to delegate to the sub-butler.' required=true)
+        global String planOrJobId;
+    }
+
+
+    global class Output {
+        @InvocableVariable(label='Success' description='Whether the delegation to the headless sub-butler succeeded.')
+        global Boolean success;
+
+        @InvocableVariable(label='Error' description='Error message if the delegation failed.')
+        global String error;
     }
 
 

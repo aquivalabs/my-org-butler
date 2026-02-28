@@ -1,0 +1,14 @@
+{
+  "required" : [ "planOrJobId" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "planOrJobId" : {
+      "title" : "Plan Or Job Id",
+      "description" : "The ID of the Plan record or the scheduled Job ID to delegate to the sub-butler.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

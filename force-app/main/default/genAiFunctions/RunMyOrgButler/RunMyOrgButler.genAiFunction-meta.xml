@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Delegates a task to a headless sub-butler that works in the background and notifies the user when done. Use this when a task is complex, long-running, or can be handled asynchronously without the user waiting.</description>
+    <developerName>RunMyOrgButler</developerName>
+    <invocationTarget>RunMyOrgButler</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>RunMyOrgButler</localDeveloperName>
+    <masterLabel>MyOrgButler: Run My Org Butler</masterLabel>
+    <progressIndicatorMessage>Delegating to a sub-butler.</progressIndicatorMessage>
+</GenAiFunction>

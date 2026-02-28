@@ -54,6 +54,9 @@
     <genAiFunctions>
         <functionName>PlanForLater</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>RunMyOrgButler</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
