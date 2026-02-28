@@ -8,6 +8,14 @@
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
       "copilotAction:isUsedByPlanner" : true
+    },
+    "error" : {
+      "title" : "Error",
+      "description" : "Error message if scheduling failed. The schedule expression was invalid or the date is in the past. Fix the schedule and retry.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
     }
   },
   "lightning:type" : "lightning__objectType"

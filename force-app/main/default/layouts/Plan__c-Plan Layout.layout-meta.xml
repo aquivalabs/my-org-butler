@@ -15,10 +15,6 @@
                 <behavior>Edit</behavior>
                 <field>Prompt__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Context__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -3,12 +3,11 @@ private class PlanForLater_Test {
 
 
     @IsTest
-    private static void createsPlanWithPromptAndContext() {
+    private static void createsPlanWithPrompt() {
 
         // Setup
         PlanForLater.Input input = new PlanForLater.Input();
         input.prompt = 'Check for unassigned high-priority cases and notify me';
-        input.context = '{"AccountId":"some-account"}';
         input.schedule = '0 9 ? * MON-FRI';
 
 
@@ -17,10 +16,9 @@ private class PlanForLater_Test {
 
 
         // Verify
-        Plan__c plan = [SELECT Prompt__c, Context__c, JobId__c FROM Plan__c WHERE Id = :outputs[0].planId];
+        Plan__c plan = [SELECT Prompt__c, JobId__c FROM Plan__c WHERE Id = :outputs[0].planId];
 
         Assert.areEqual('Check for unassigned high-priority cases and notify me', plan.Prompt__c);
-        Assert.areEqual('{"AccountId":"some-account"}', plan.Context__c);
         Assert.isNotNull(plan.JobId__c);
     }
 

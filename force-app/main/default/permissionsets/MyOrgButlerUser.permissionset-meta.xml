@@ -88,11 +88,6 @@
         <field>Plan__c.Prompt__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Plan__c.Context__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>MyOrgButler User</label>
     <objectPermissions>

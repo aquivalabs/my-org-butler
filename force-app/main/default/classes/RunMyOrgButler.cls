@@ -25,13 +25,14 @@ global with sharing class RunMyOrgButler implements Schedulable {
     }
 
     public void execute(Id planOrJobId) {
-        Plan__c plan = [SELECT Prompt__c, Context__c, JobId__c
+        Plan__c plan = [SELECT Prompt__c, JobId__c
                         FROM Plan__c
                         WHERE Id = :planOrJobId OR JobId__c = :planOrJobId
                         WITH USER_MODE
                         LIMIT 1];
 
-        response = new HeadlessAgent('MyOrgButler').send(plan.Prompt__c, context(plan));
+        response = new HeadlessAgent('MyOrgButler').send(plan.Prompt__c);
+
         if(!response.success) {
             new HeadlessAgent('MyOrgButler')
                     .send('Notify the user that a scheduled plan failed with error: ' + response.error);
@@ -59,17 +60,6 @@ global with sharing class RunMyOrgButler implements Schedulable {
 
 
     // PRIVATE
-
-    private Map<String, String> context(Plan__c plan) {
-        Map<String, String> result = new Map<String, String>();
-
-        if(String.isNotBlank(plan.Context__c)) {
-            result = (Map<String, String>) JSON.deserialize(plan.Context__c, Map<String, String>.class);
-        }
-
-        return result;
-    }
-
 
     // Note: CronTrigger is a system object — no CRUD check needed
     @SuppressWarnings('PMD.ApexCRUDViolation')

@@ -3,7 +3,6 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Prompt__c</columns>
-    <columns>Context__c</columns>
     <columns>JobId__c</columns>
     <filterScope>Mine</filterScope>
     <label>All</label>
