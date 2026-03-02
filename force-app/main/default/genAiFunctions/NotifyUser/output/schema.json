@@ -3,7 +3,7 @@
   "properties" : {
     "status" : {
       "title" : "Status",
-      "description" : "Confirmation that the notification was sent",
+      "description" : "Says 'sent' on success or 'Error: ...' on failure. If it starts with Error, tell the user what went wrong.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,

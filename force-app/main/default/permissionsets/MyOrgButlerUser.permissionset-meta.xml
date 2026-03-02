@@ -6,6 +6,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>NotifyUser</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>PlanForLater</apexClass>
         <enabled>true</enabled>
     </classAccesses>

@@ -4,19 +4,24 @@ global with sharing class NotifyUser {
 
     @InvocableMethod(label='MyOrgButler: Notify User' description='Sends an in-org notification to specific users, optionally linking to a record')
     global static List<Output> execute(List<Input> inputs) {
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('My Org Butler says:');
-        notification.setBody(inputs[0].body);
-        notification.setNotificationTypeId([SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'InOrgNotifications'].Id);
-        notification.setTargetId(inputs[0].targetId);
-        Set<String> userIds = String.isBlank(inputs[0].recipientIds)
-            ? new Set<String>{ UserInfo.getUserId() }
-            : new Set<String>(inputs[0].recipientIds.split(','));
-        notification.send(userIds);
+        Output result = new Output();
 
-        List<Output> result = new List<Output>{ new Output() };
+        try {
+            Messaging.CustomNotification notification = new Messaging.CustomNotification();
+            notification.setTitle('My Org Butler says:');
+            notification.setBody(inputs[0].body);
+            notification.setNotificationTypeId([SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'InOrgNotifications'].Id);
+            notification.setTargetId(inputs[0].targetId);
+            Set<String> userIds = String.isBlank(inputs[0].recipientIds)
+                ? new Set<String>{ UserInfo.getUserId() }
+                : new Set<String>(inputs[0].recipientIds.split(','));
+            notification.send(userIds);
+        }
+        catch(Exception e) {
+            result.status = 'Error: ' + e.getMessage();
+        }
 
-        return result;
+        return new List<Output>{ result };
     }
 
 
@@ -35,7 +40,7 @@ global with sharing class NotifyUser {
 
 
     global class Output {
-        @InvocableVariable(label='Status' description='Confirmation that the notification was sent')
+        @InvocableVariable(label='Status' description='Says "sent" on success or "Error: ..." on failure')
         global String status = 'sent';
     }
 }
