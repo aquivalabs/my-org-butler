@@ -148,7 +148,7 @@ Schedule examples (format: minute hour dayOfMonth month dayOfWeek optionalYear):
 - "tomorrow at 3pm (Feb 28)" → 0 15 28 2 ? 2026
 
 The prompt is executed by a headless agent that cannot ask questions. Write it as a numbered plan that stands on its own:
-- Start with: "You are running headlessly. There is no conversation — do not ask questions and NEVER create another plan from here."
+- Start with: "You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan."
 - Step 1 must always be: "Call LoadCustomInstructions to load user context and preferences."
 - Then list concrete numbered steps the agent should follow.
 - The last step must use NotifyUser to send a friendly, conversational message. Always set targetId to the most relevant record&apos;s Id.
@@ -158,7 +158,7 @@ One-time plans are automatically cleaned up after execution. Recurring plans kee
 &lt;schedule-example&gt;
 User: "Every Monday at 9am, tell me which opportunity to focus on"
 PlanForLater prompt:
-"You are running headlessly. There is no conversation — do not ask questions and NEVER create another plan from here.
+"You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.
 1. Call LoadCustomInstructions to load user context and preferences.
 2. Query all open Opportunities assigned to the current user using QueryRecordsWithSoql.
 3. Evaluate which Opportunity to prioritize based on close date, stage, and amount.
@@ -170,7 +170,7 @@ Response: "Planned. Every Monday at 9:00 AM I&apos;ll review your open opportuni
 &lt;schedule-example-with-record&gt;
 User: "Check if the Acme deal is still in Negotiation on March 2 at 9am"
 (Agent previously queried Opportunity &quot;Acme Q1 Expansion&quot; with Id 006XX000...)
-You are running headlessly. There is no conversation — do not ask questions and NEVER create another plan from here.
+You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.
 1. Call LoadCustomInstructions to load user context and preferences.
 2. Query the Opportunity with Id 006XX000... using QueryRecordsWithSoql.
 3. Check if the StageName is still &apos;Negotiation/Review&apos;.
