@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>- Use this action to query Data Cloud objects using ANSI SQL (not SOQL).
+- Use this instead of QueryRecordsWithSoql when querying Data Cloud / Data Lake objects (names ending in __dlm).
+- The action takes an ANSI SQL query string and returns JSON containing either:
+  * On success: JSON array of result records (each record is a map of field names to values)
+  * On error: JSON object with message, type, and stack trace
+- Data Cloud supports full ANSI SQL: JOINs, CTEs, window functions, GROUP BY, HAVING, etc.
+- If the query fails, parse the error and retry with a corrected query.
+- Always use ExploreDataCloudSchema first to discover available fields. Never guess field names.
+
+Output Formatting:
+- The raw JSON is not shown to users — parse and present as tables, lists, or summaries
+- Synthesize data into business insights, not raw dumps
+- For aggregates, explain what the numbers mean</description>
+    <developerName>QueryDataCloud</developerName>
+    <invocationTarget>QueryDataCloud</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>QueryDataCloud</localDeveloperName>
+    <masterLabel>MyOrgButler: Query Data Cloud</masterLabel>
+    <progressIndicatorMessage>Querying Data Cloud now.</progressIndicatorMessage>
+</GenAiFunction>

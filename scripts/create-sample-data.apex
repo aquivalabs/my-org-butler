@@ -60,85 +60,179 @@ Account burlington = new Account(
 insert burlington;
 
 
-// OPPORTUNITIES FOR ACME (Primary demo account)
+// OPPORTUNITIES
+// Designed with variance for Data Cloud pipeline insights demos:
+// - Diverse LeadSource values for source analysis
+// - Spread of close dates (past, this month, future) for pipeline timing
+// - Varied stages across the funnel
+// - Range of amounts for value analysis
+// Note: LastStageChangeDate is auto-set by Salesforce. For stale deal demos,
+// records need to age in the org (or adjust the threshold in the query).
+
+List<Opportunity> opps = new List<Opportunity>();
+
+// --- ACME CORPORATION (4 opportunities) ---
 
 // HIGH PRIORITY: Closes in 3 days, $500k - Agent SHOULD prioritize this
-Opportunity acmeUrgent = new Opportunity(
+opps.add(new Opportunity(
     Name = 'Acme Q1 Expansion Deal',
     AccountId = acme.Id,
     Amount = 500000,
     StageName = 'Negotiation',
     CloseDate = Date.today().addDays(3),
+    LeadSource = 'Partner Referral',
     Description = 'Critical deal for Q1 targets, requires executive follow-up. Customer ready to sign.'
-);
-insert acmeUrgent;
+));
 
 // MEDIUM: Closes in 2 weeks, $150k
-Opportunity acmeRenewal = new Opportunity(
+opps.add(new Opportunity(
     Name = 'Acme Annual License Renewal',
     AccountId = acme.Id,
     Amount = 150000,
     StageName = 'Proposal',
     CloseDate = Date.today().addDays(14),
+    LeadSource = 'Web',
     Description = 'Standard annual renewal. Good relationship with champion.'
-);
-insert acmeRenewal;
+));
 
 // LOW: Closes in 3 months, exploratory
-Opportunity acmeFuture = new Opportunity(
+opps.add(new Opportunity(
     Name = 'Acme Cloud Migration Project',
     AccountId = acme.Id,
     Amount = 800000,
     StageName = 'Discovery',
     CloseDate = Date.today().addDays(90),
+    LeadSource = 'Trade Show',
     Description = 'Long-term strategic initiative. Still in early discovery phase.'
-);
-insert acmeFuture;
+));
 
+// CLOSED WON: Past deal for historical analysis
+opps.add(new Opportunity(
+    Name = 'Acme Security Audit Package',
+    AccountId = acme.Id,
+    Amount = 120000,
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-45),
+    LeadSource = 'Web',
+    Description = 'Completed security audit engagement. Customer very satisfied.'
+));
 
-// OPPORTUNITIES FOR TECHSTART
+// --- TECHSTART INDUSTRIES (3 opportunities) ---
 
-Opportunity techStartDeal = new Opportunity(
+opps.add(new Opportunity(
     Name = 'TechStart Platform Implementation',
     AccountId = techStart.Id,
     Amount = 75000,
     StageName = 'Qualification',
     CloseDate = Date.today().addDays(30),
+    LeadSource = 'Phone Inquiry',
     Description = 'New customer interested in full platform deployment.'
-);
-insert techStartDeal;
+));
 
+opps.add(new Opportunity(
+    Name = 'TechStart Analytics Add-On',
+    AccountId = techStart.Id,
+    Amount = 35000,
+    StageName = 'Proposal',
+    CloseDate = Date.today().addDays(10),
+    LeadSource = 'Web',
+    Description = 'Upsell analytics module to existing TechStart engagement.'
+));
 
-// OPPORTUNITIES FOR GLOBAL MANUFACTURING
+opps.add(new Opportunity(
+    Name = 'TechStart Data Integration',
+    AccountId = techStart.Id,
+    Amount = 180000,
+    StageName = 'Discovery',
+    CloseDate = Date.today().addDays(120),
+    LeadSource = 'Partner Referral',
+    Description = 'Integration project connecting TechStart systems with Salesforce.'
+));
 
-Opportunity globalMfgPilot = new Opportunity(
+// --- GLOBAL MANUFACTURING CORP (4 opportunities) ---
+
+opps.add(new Opportunity(
     Name = 'Global Mfg Pilot Program',
     AccountId = globalMfg.Id,
     Amount = 50000,
     StageName = 'Proposal',
     CloseDate = Date.today().addDays(21),
+    LeadSource = 'Trade Show',
     Description = 'Pilot program for one manufacturing plant. Success leads to enterprise rollout.'
-);
-insert globalMfgPilot;
+));
 
-Opportunity globalMfgEnterprise = new Opportunity(
+opps.add(new Opportunity(
     Name = 'Global Mfg Enterprise Rollout',
     AccountId = globalMfg.Id,
     Amount = 2500000,
     StageName = 'Discovery',
     CloseDate = Date.today().addDays(180),
+    LeadSource = 'Trade Show',
     Description = 'Full enterprise deployment across all 15 plants. Dependent on pilot success.'
-);
-insert globalMfgEnterprise;
+));
 
+opps.add(new Opportunity(
+    Name = 'Global Mfg IoT Sensor Platform',
+    AccountId = globalMfg.Id,
+    Amount = 340000,
+    StageName = 'Negotiation',
+    CloseDate = Date.today().addDays(7),
+    LeadSource = 'Phone Inquiry',
+    Description = 'IoT sensor monitoring for Chicago plant floor. Procurement approved.'
+));
 
-// OPPORTUNITY FOR BURLINGTON TEXTILES
-Opportunity burlingtonDeal = new Opportunity(
+// CLOSED LOST: Demonstrates pipeline attrition
+opps.add(new Opportunity(
+    Name = 'Global Mfg Supply Chain Optimization',
+    AccountId = globalMfg.Id,
+    Amount = 600000,
+    StageName = 'Closed Lost',
+    CloseDate = Date.today().addDays(-30),
+    LeadSource = 'Email',
+    Description = 'Lost to competitor. Budget was reallocated to internal project.'
+));
+
+// --- BURLINGTON TEXTILES (4 opportunities) ---
+
+opps.add(new Opportunity(
     Name = 'Burlington Textiles Weaving Plant Generator',
     AccountId = burlington.Id,
     Amount = 235000,
     StageName = 'Id. Decision Makers',
     CloseDate = Date.today().addDays(60),
+    LeadSource = 'Partner Referral',
     Description = 'Generator installation for new weaving plant expansion.'
-);
-insert burlingtonDeal;
+));
+
+opps.add(new Opportunity(
+    Name = 'Burlington ERP Modernization',
+    AccountId = burlington.Id,
+    Amount = 950000,
+    StageName = 'Qualification',
+    CloseDate = Date.today().addDays(45),
+    LeadSource = 'Email',
+    Description = 'Legacy ERP replacement. CIO is executive sponsor.'
+));
+
+opps.add(new Opportunity(
+    Name = 'Burlington Warehouse Automation',
+    AccountId = burlington.Id,
+    Amount = 425000,
+    StageName = 'Proposal',
+    CloseDate = Date.today().addDays(28),
+    LeadSource = 'Trade Show',
+    Description = 'Automating warehouse operations for Burlington distribution center.'
+));
+
+// CLOSED WON: Past deal
+opps.add(new Opportunity(
+    Name = 'Burlington Quality Control System',
+    AccountId = burlington.Id,
+    Amount = 88000,
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-15),
+    LeadSource = 'Phone Inquiry',
+    Description = 'Quality control monitoring system for textile production lines.'
+));
+
+insert opps;

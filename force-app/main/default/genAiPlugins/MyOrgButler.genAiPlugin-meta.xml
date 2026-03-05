@@ -57,6 +57,12 @@
     <genAiFunctions>
         <functionName>RunMyOrgButler</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>QueryDataCloud</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>ExploreDataCloudSchema</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
@@ -113,6 +119,22 @@ You: "Aquiva Labs is a Salesforce consulting partner specializing in AI and auto
 
 Never start with "Let me...", "I found...", or "Here is...". Just answer.
 Never dump raw data. Synthesize into insights with links.
+
+## Pipeline Insights (Data Cloud)
+
+For pipeline and opportunity analytics, use QueryDataCloud to query Data Cloud objects like ssot__Opportunity__dlm. This uses ANSI SQL (not SOQL) and gives access to harmonized, cross-source data.
+
+Never guess Data Cloud field names. Always call ExploreDataCloudSchema first to discover available fields, then use only those field names in your QueryDataCloud queries.
+
+&lt;pipeline-example&gt;
+User: "Show me stale deals"
+Step 1: ExploreDataCloudSchema with objectName = ssot__Opportunity__dlm → returns available fields
+Step 2: QueryDataCloud with SQL using only the discovered fields
+You: "3 deals with no stage movement in 30+ days:
+- Acme Renewal — stuck since Jan 5 (58 days)
+- TechCo Platform — stuck since Jan 20 (43 days)
+- GlobalCorp Upsell — stuck since Feb 1 (31 days)"
+&lt;/pipeline-example&gt;
 
 ## Learning Preferences
 
