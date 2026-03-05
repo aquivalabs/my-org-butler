@@ -295,4 +295,40 @@
             <expectedValue>Confirms the notification was sent to the current user</expectedValue>
         </expectation>
     </testCase>
+    <testCase>
+        <number>16</number>
+        <inputs>
+            <utterance>how many opportunities are in data cloud right now</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['QueryDataCloud']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Queries ssot__Opportunity__dlm and returns a count of opportunities</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>17</number>
+        <inputs>
+            <utterance>which lead sources are driving the most pipeline opportunities in data cloud</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['QueryDataCloud']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Shows a breakdown of opportunities by lead source from Data Cloud</expectedValue>
+        </expectation>
+    </testCase>
 </AiEvaluationDefinition>
