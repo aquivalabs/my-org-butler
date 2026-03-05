@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>- Use this action to discover available fields on a Data Cloud object before querying it with QueryDataCloud.
+- Always call this first when you are unsure which fields exist on a Data Cloud object. Never guess field names.
+- Takes a Data Cloud object API name (e.g. ssot__Opportunity__dlm) and returns a JSON map of field names to their SQL type and position.
+- Use the returned field names exactly as-is when constructing queries with QueryDataCloud.
+- If the object does not exist, an error is returned with details.</description>
+    <developerName>ExploreDataCloudSchema</developerName>
+    <invocationTarget>ExploreDataCloudSchema</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>ExploreDataCloudSchema</localDeveloperName>
+    <masterLabel>MyOrgButler: Explore Data Cloud Schema</masterLabel>
+    <progressIndicatorMessage>Checking Data Cloud schema.</progressIndicatorMessage>
+</GenAiFunction>

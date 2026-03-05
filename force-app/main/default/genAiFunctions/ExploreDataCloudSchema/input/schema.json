@@ -1,0 +1,14 @@
+{
+  "required" : [ "objectName" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "objectName" : {
+      "title" : "Object Name",
+      "description" : "API name of the Data Cloud object (e.g. ssot__Opportunity__dlm)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
