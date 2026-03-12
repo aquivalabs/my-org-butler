@@ -1,13 +1,15 @@
 ---
 name: agent-eval
-description: Evaluate Agentforce agents externally using Promptfoo — run evals, port Testing Center tests, red-team, compare results
-argument-hint: [run|port|redteam|compare]
+description: Evaluate Agentforce agents externally using Promptfoo — better LLM judge for agent response quality
+argument-hint: "run|port|compare"
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
 # External Agent Evaluation
 
 You are an expert at evaluating Salesforce Agentforce agents using external tools. Currently uses [Promptfoo](https://promptfoo.dev) as the evaluation engine.
+
+The core idea: agent testing is an LLM-as-judge problem. Promptfoo lets you pick the judge.
 
 ## Architecture
 
@@ -25,7 +27,7 @@ The provider is **generic** — agent name and API version come from environment
 
 Test configuration lives in `agent-eval/` at the project root:
 
-- `agent-eval/*.yaml` — test suite files (e.g. `regression-test.yaml`, `smoke.yaml`)
+- `agent-eval/*.yaml` — test suite files (e.g. `regression-test.yaml`, `security.yaml`)
 - `agent-eval/.env` — `AGENT_NAME`, `API_VERSION`, `OPENAI_API_KEY`
 - `agent-eval/package.json` — ESM support (`"type": "module"`)
 
@@ -82,33 +84,6 @@ Read the Testing Center XML at `regressions/aiEvaluationDefinitions/*.aiEvaluati
         value: "{bot_response_rating expectedValue}"
 ```
 
-### `/agent-eval redteam` — Red-team the agent
-
-Create a `redteam.yaml` in `agent-eval/` with adversarial test config:
-
-```yaml
-redteam:
-  purpose: "Salesforce AI assistant that queries data, creates records, calls APIs, and manages user preferences"
-  numTests: 5
-  injectVar: utterance
-  plugins:
-    - harmful:privacy
-    - harmful:misinformation
-    - excessive-agency
-    - hijacking
-    - overreliance
-    - politics
-    - contracts
-  strategies:
-    - jailbreak
-    - prompt-injection
-    - crescendo
-  provider: "file://../.claude/skills/agent-eval/providers/salesforce-agent.mjs"
-```
-
-Run with: `cd agent-eval && npx promptfoo@latest redteam run --env-file .env`
-View report: `npx promptfoo@latest redteam report`
-
 ### `/agent-eval compare` — Compare with Testing Center
 
 Run both tools and compare:
@@ -124,17 +99,14 @@ See `agent-eval/COMPARISON.md` for benchmark results and rationale.
 
 ## Key Differences from Testing Center
 
-| Capability | Testing Center | Promptfoo |
-|---|---|---|
-| Topic routing assertions | Yes | No (runtime internal) |
-| Action invocation assertions | Yes | No (runtime internal) |
-| Response quality (LLM judge) | SF built-in judge | Your choice (o3-mini, Claude, etc.) |
-| Red teaming / adversarial | None | 50+ vulnerability types |
-| Auto-generated tests | None | Yes (red team plugins) |
-| Test format | Verbose XML | Clean YAML |
-| CI/CD integration | `sf agent test run` parsing | Native JSON/CSV output |
-| Multi-turn | Injects fake history | Replays real conversations |
-| Results UI | SF Testing Center | `promptfoo view` web dashboard |
+| Capability                 | Testing Center     | Promptfoo                            |
+|----------------------------|--------------------|--------------------------------------|
+| Topic routing assertions   | Yes                | No (runtime internal)                |
+| Action invocation order    | Yes                | No (runtime internal)                |
+| Response quality judge     | SF built-in, fixed | Your choice (o3-mini, Claude, etc.)  |
+| Test format                | Verbose XML        | Clean YAML                           |
+| Multi-turn                 | Injects fake history | Replays real conversations         |
+| CI/CD integration          | Parse CLI output   | Native JSON/CSV output               |
 
 ## Provider Response Format
 

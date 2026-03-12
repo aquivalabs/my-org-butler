@@ -67,7 +67,7 @@ npx promptfoo@latest view
 
 ## Files
 
-- `regression-test.yaml` — 15 test cases ported from Testing Center, against real org data
-- `security.yaml` — tests Agentforce platform guardrails (prompt reveal, code exposure)
+- `regression-test.yaml` — 15 regression tests ported from Testing Center, against real org data
+- `security.yaml` — 3 Agentforce platform guardrail tests (prompt reveal, code exposure, action names)
 - `.env` — agent name, API version, judge API key
-- `COMPARISON.md` — benchmark results and analysis
+- `CLAUDE.md` — current status and findings
