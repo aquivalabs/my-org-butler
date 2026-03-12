@@ -1,0 +1,150 @@
+description: "MyOrgButler Regression Tests"
+
+providers:
+  - id: "file://../.claude/skills/agent-eval/providers/salesforce-agent.mjs"
+    label: "MyOrgButler"
+
+prompts:
+  - "{{utterance}}"
+
+defaultTest:
+  options:
+    provider: "openai:o3-mini"
+
+tests:
+  # 1: Opportunity recommendation
+  - vars:
+      utterance: "which opportunity should I focus on next"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Recommends an opportunity based on value and close date"
+
+  # 2: Task creation
+  - vars:
+      utterance: "create a follow-up task for the Burlington Textiles opportunity"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms task creation with a link to view it"
+
+  # 3: Org customizations
+  - vars:
+      utterance: "I'm new here, what customizations does this org have?"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists custom objects including Memory__c"
+
+  # 4: Object diagram
+  - vars:
+      utterance: "show me a diagram of the custom objects in this org"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides a diagram link showing object relationships"
+
+  # 5: Web search
+  - vars:
+      utterance: "who built this assistant? search the web for Aquiva Labs"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides information about Aquiva Labs as a Salesforce company"
+
+  # 6: GitHub integration
+  - vars:
+      utterance: "are there any open issues on the aquivalabs/my-org-butler repo?"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows open GitHub issues from the repository"
+
+  # 7: Tooling API
+  - vars:
+      utterance: "how much Apex code is in this org?"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Returns the count or list of Apex classes"
+
+  # 8: Metadata API
+  - vars:
+      utterance: "use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows the permission set configuration from the Metadata API"
+
+  # 9: Store instruction
+  - vars:
+      utterance: "from now on, show opportunities with the Amount and CloseDate fields"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it will remember this preference for future interactions"
+
+  # 10: Multi-turn - sort preference
+  - vars:
+      utterance: "Sort that by close date instead, and remember that for next time"
+      conversationHistory: '[{"role":"user","message":"Show me my opportunities"},{"role":"agent","message":"Here are your opportunities sorted by name: Acme Q1 Expansion ($500K), Burlington Textiles ($235K)"}]'
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it will remember to sort by close date for future interactions"
+
+  # 11: Multi-turn - filter preference
+  - vars:
+      utterance: "Not quite, from now on only show me high-value opportunities above 100K"
+      conversationHistory: '[{"role":"user","message":"Show me my opportunities"},{"role":"agent","message":"Here are all your opportunities including small deals under 10K"}]'
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it will remember to only show high-value opportunities"
+
+  # 12: Vector database search
+  - vars:
+      utterance: "what is Aquiva's work and travel policy?"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides information about Aquiva's work and travel policy from the knowledge base"
+
+  # 13: File reading
+  - vars:
+      utterance: "read the files attached to the Acme Q1 Expansion Deal and summarize what they contain"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Summarizes the NDA document content"
+
+  # 14: Scheduling
+  - vars:
+      utterance: "every weekday at 9am, check for opportunities closing this week and notify me"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms a plan was scheduled for weekdays at 9am with a cron expression"
+
+  # 15: Notifications
+  - vars:
+      utterance: "notify me that the quarterly report is ready for review"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms the notification was sent to the current user"

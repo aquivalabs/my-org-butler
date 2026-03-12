@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Read(//Users/rsoesemann/dev/aquivalabs/atamis-agentforce/**)"
+      "Bash(sf agent test run:*)",
+      "Bash(sf project deploy start:*)",
+      "Bash(npx promptfoo@latest eval:*)",
+      "Bash(npx promptfoo@latest view:*)",
+      "Bash(npx promptfoo@latest redteam:*)",
+      "WebFetch(domain:agentforce.guide)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }
