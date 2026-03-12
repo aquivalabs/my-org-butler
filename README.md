@@ -1,16 +1,12 @@
 ## <img src="resources/logo.png" width="50"/> My Org Butler
 
-My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
+My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. It started in early 2024 on the [OpenAI Assistants API with a custom LWC frontend](../../tree/openai-agentforce-hybrid), then moved to pure Agentforce when it became powerful enough. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
 > **🟡 New & Noteworthy**
 >
-> **Real multi-turn testing with Promptfoo** — Testing Center fakes multi-turn by injecting hardcoded history. We built a [Promptfoo-based eval setup](agent-eval/) that replays real API calls with real session state. Each turn gets its own assertion. Already found a real agent bug that Testing Center hides. Includes a [Claude Code skill](.claude/skills/agent-eval/) that can write tests and convert Testing Center XML. → [`a52e9df`](../../commit/a52e9df)
+> **Real multi-turn testing with Promptfoo** — Testing Center fakes multi-turn by injecting hardcoded history. We built a Promptfoo-based eval setup that replays real API calls with real session state. Each turn gets its own assertion. Already found a real agent bug that Testing Center hides. Includes a [Claude Code skill](.claude/skills/agent-eval/) for writing tests and converting Testing Center XML. See [regression.yaml](agent-eval/regression.yaml) for the test conversations.
 >
-> **Headless sub-agent delegation** — The Butler can now delegate tasks to a headless copy of itself running in the background, enabling scheduled plans and async workflows. → [`d50ec12`](../../commit/d50ec12)
-
-> ⚠️ **Looking for the custom OpenAI version?**
-> 
-> This is the **Agentforce-only version** that's simple to set up and use. If you're looking for the version that uses OpenAI with custom UI components, please check out the [`openai-agentforce-hybrid`](../../tree/openai-agentforce-hybrid) branch.
+> **Headless sub-agent delegation** — The Butler can delegate tasks to a headless copy of itself running in the background, enabling scheduled plans and async workflows. See [HeadlessAgent.cls](force-app/main/default/classes/HeadlessAgent.cls).
 
 
 ### Show me a demo
@@ -22,18 +18,12 @@ Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist
 
 ---
 
-### Getting started
-
-Follow these steps to get My Org Butler running in your org:
+### How to install
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
-
 2. **Install My Org Butler 2.20** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000S8NdYAK) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000S8NdYAK)
-
 3. **Enable Agentforce** in your org (if not already enabled)
-
 4. **Create an Agent from Template** - After installing the package, create a new agent from the `My Org Butler` template. See [Salesforce Help](https://help.salesforce.com/s/articleView?id=ai.agent_employee_agent_setup.htm&type=5) for instructions.
-
 5. **Turn on Optional Features** (choose which capabilities you want to enable):
 
    **Turn on GitHub Integration:**
@@ -65,31 +55,17 @@ Follow these steps to get My Org Butler running in your org:
 
 That's it! The Butler will be available in your Agentforce sidebar and can now search your external knowledge sources.
 
-### What it does
+### What can the Butler do?
 
-Built entirely on Agentforce with 9 functions and 5 plugins. The functions handle Salesforce-specific tasks like querying data, calling APIs, and managing metadata. Agentforce provides the AI reasoning and conversation management.
+Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlugins/) and [**16 actions**](force-app/main/default/genAiFunctions/). Agentforce handles AI reasoning and conversation management. The actions handle the Salesforce-specific work:
 
-**Data & Records:**
-- Answer questions about your org's data, metadata and settings
-- Create and update records (delete not supported)
-- Query complex data relationships and generate reports
-
-**Metadata & Configuration:**
-- Explain Salesforce metadata components and configurations
-- Create and modify Apex classes, Flows, and custom objects
-- Analyze validation rules, custom fields, and object relationships
-- Generate PlantUML diagrams for data models and processes
-
-**GitHub Integration:**
-- Manage GitHub repositories, issues, and pull requests
-- View commit history and compare code changes
-- Search repositories and track development progress
-
-**Advanced Capabilities:**
-- Search the web for additional information using Tavily API
-- Search your company's external knowledge base using Vectorize (wikis, docs, etc.)
-- Create visual diagrams and documentation
-
+- Query data, metadata, and settings using [natural language SOQL](force-app/main/default/genAiFunctions/QueryRecordsWithSoql/)
+- Create and update records via the [REST API](force-app/main/default/genAiFunctions/CallRestApi/)
+- Read and modify code and configuration via the [Tooling API](force-app/main/default/genAiFunctions/CallToolingApi/) and [Metadata API](force-app/main/default/genAiFunctions/CallMetadataApi/)
+- Generate [PlantUML diagrams](force-app/main/default/genAiFunctions/CreatePlantUmlUrl/) for data models and processes
+- Manage GitHub repos, issues, and PRs via the [GitHub API](force-app/main/default/genAiFunctions/CallGitHubApi/)
+- [Search the web](force-app/main/default/genAiFunctions/SearchWeb/) and your [external knowledge base](force-app/main/default/genAiFunctions/SearchVectorDatabase/)
+- [Notify](force-app/main/default/genAiFunctions/NotifyUser/) people and [delegate tasks](force-app/main/default/genAiFunctions/RunMyOrgButler/) to a headless sub-agent
 
 ### Is it safe?
 
@@ -101,9 +77,7 @@ Built entirely on Agentforce with 9 functions and 5 plugins. The functions handl
 
 **External Knowledge (Vectorize): ⚠️ No Permission Filtering** - Vectorize does not automatically sync or enforce Google Drive permissions - all users see identical search results. This is a [known hard problem](https://www.pinecone.io/learn/rag-access-control/) in RAG systems that most vector databases face (see [AWS guidance](https://aws.amazon.com/blogs/security/authorizing-access-to-data-with-rag-implementations/), [Paragon's analysis](https://www.useparagon.com/learn/what-to-know-about-ingesting-google-drive-data-for-rag/)). Solutions require dedicated authorization services with post-filtering. For now: only index documents that all agent users should access.
 
-### Development
-
-Want to customize or extend the Butler?
+### How can I make this my own?
 
 1. Clone this repo
 2. Replace `aquiva_os` namespace with your own (or remove it)
