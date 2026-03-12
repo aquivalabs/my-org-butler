@@ -1,0 +1,155 @@
+description: "Multi-Turn Regression Tests"
+
+providers:
+  - id: "file://../.claude/skills/agent-eval/providers/salesforce-agent.mjs"
+    label: "MyOrgButler"
+
+prompts:
+  - "{{utterance}}"
+
+evaluateOptions:
+  maxConcurrency: 1
+
+defaultTest:
+  options:
+    provider: "openai:o3-mini"
+
+tests:
+
+  # --- Conversation 1: Drill into query results ---
+
+  - description: "User asks for opportunities"
+    vars:
+      utterance: "Show me my open opportunities"
+      conversationId: drill-down
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists multiple opportunities with names and amounts"
+
+  - description: "User drills into the first one"
+    vars:
+      utterance: "Tell me more about the first one you listed"
+      conversationId: drill-down
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides details about a specific opportunity from the previous list"
+
+  # --- Conversation 2: Preference storage ---
+
+  - description: "User sets a display preference"
+    vars:
+      utterance: "From now on, always sort my opportunities by close date"
+      conversationId: preference
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it will remember the sorting preference"
+
+  - description: "User checks if preference was applied"
+    vars:
+      utterance: "Show me my opportunities"
+      conversationId: preference
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows opportunities sorted by close date, soonest first"
+
+  # --- Conversation 3: Three-turn chain ---
+
+  - description: "User asks for opportunities closing soon"
+    vars:
+      utterance: "Show me opportunities closing this month"
+      conversationId: chain
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists opportunities with close dates in the current month"
+
+  - description: "User narrows down to the largest"
+    vars:
+      utterance: "Which of those is the largest deal?"
+      conversationId: chain
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Identifies one opportunity as the largest from the previous list"
+
+  - description: "User acts on the result"
+    vars:
+      utterance: "Create a follow-up task for it"
+      conversationId: chain
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms task creation for the opportunity discussed in the conversation"
+
+  # --- Conversation 4: Correction ---
+
+  - description: "User asks about Acme opportunities"
+    vars:
+      utterance: "How many opportunities does Acme have?"
+      conversationId: correction
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Returns a count of Acme opportunities"
+
+  - description: "User corrects the scope"
+    vars:
+      utterance: "I meant only Acme Corporation, not any other account with Acme in the name"
+      conversationId: correction
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Acknowledges the correction and narrows scope to Acme Corporation"
+
+  - description: "User asks for the largest deal after correction"
+    vars:
+      utterance: "Now show me their largest deal"
+      conversationId: correction
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows details about a large Acme Corporation opportunity"
+
+  # --- Conversation 5: Cross-capability ---
+
+  - description: "User asks for the most urgent opportunity"
+    vars:
+      utterance: "What is the most urgent opportunity closing soon?"
+      conversationId: cross-capability
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Identifies the opportunity with the nearest close date"
+
+  - description: "User asks about attached files"
+    vars:
+      utterance: "Are there any files attached to that deal?"
+      conversationId: cross-capability
+    assert:
+      - type: javascript
+        value: "output.success === true"
+
+  - description: "User creates a task based on the file"
+    vars:
+      utterance: "Create a task to review those documents before the close date"
+      conversationId: cross-capability
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms task creation for the opportunity discussed in the conversation"

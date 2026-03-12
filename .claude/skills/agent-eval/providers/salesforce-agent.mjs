@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 
 let cachedAuth = null;
+const sessionCache = new Map();
 
 function getAuth() {
   if (cachedAuth) return cachedAuth;
@@ -44,7 +45,6 @@ async function sendMessage(instanceUrl, accessToken, agentName, apiVersion, user
     return { success: false, error: JSON.stringify(actionResult.errors) };
   }
 
-  // agentResponse is a JSON string with { type, value }
   let text = actionResult.outputValues?.agentResponse;
   try {
     const parsed = JSON.parse(text);
@@ -76,25 +76,17 @@ export default class SalesforceAgentProvider {
       throw new Error('AGENT_NAME must be set via environment variable or test var');
     }
 
+    // Multi-turn: reuse sessionId from previous turns in the same conversation
+    const conversationId = vars.conversationId || context.metadata?.conversationId;
+    const sessionId = conversationId ? sessionCache.get(conversationId) : null;
+
     const userMessage = prompt || vars.utterance;
-
-    // Replay conversation history for multi-turn tests
-    let sessionId = null;
-    if (vars.conversationHistory) {
-      const history = JSON.parse(vars.conversationHistory);
-      for (const turn of history) {
-        if (turn.role === 'user') {
-          const response = await sendMessage(instanceUrl, accessToken, agentName, apiVersion, turn.message, sessionId);
-          if (!response.success) {
-            return { output: response, error: response.error };
-          }
-          sessionId = response.sessionId;
-        }
-      }
-    }
-
-    // Send the actual test utterance
     const response = await sendMessage(instanceUrl, accessToken, agentName, apiVersion, userMessage, sessionId);
+
+    // Cache sessionId for the next turn in this conversation
+    if (conversationId && response.sessionId) {
+      sessionCache.set(conversationId, response.sessionId);
+    }
 
     return { output: response };
   }

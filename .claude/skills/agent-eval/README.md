@@ -1,73 +1,68 @@
 # Agent Eval
 
-External evaluation for Agentforce agents using [Promptfoo](https://promptfoo.dev).
+Test Agentforce agents with real multi-turn conversations using [Promptfoo](https://promptfoo.dev).
 
-## The problem with Testing Center
+## The problem
 
-Testing Center's biggest problem is its LLM judge. It's unreliable. We've seen it grade correct responses as failures — the agent returns exactly the right data, and the judge says "no match." We've also seen it pass responses that were clearly wrong. You can't see what model it uses, you can't see its reasoning, and you can't fix the grading criteria when it's wrong.
+Agentforce Testing Center fakes multi-turn. It injects hardcoded conversation history — "pretend the agent said this." The agent never actually responded. There's no real session state.
 
-On top of that, Testing Center checks topic routing and action invocation order. For a single-topic agent, topic routing is trivially 100% — it means nothing. Action order is also misleading: a good agent can take different paths to the same correct answer. Testing Center would fail that test even though the response is perfect.
+This matters because real conversations build on real context. When a user says "tell me more about the first one," that only works if the agent actually listed something. When a user stores a preference, it only works if the agent actually saved it. Testing Center hides these bugs.
 
-## What this solves
+## The fix
 
-Promptfoo lets you pick the LLM judge. We use OpenAI's o3-mini, but you could use Claude, GPT-4.1, or anything else. You write the grading criteria yourself. If a test is wrong, you fix the rubric — not file a case with Salesforce.
-
-The test is just YAML:
+Describe conversations naturally. Each turn is a real API call with its own assertion. The provider maintains session state automatically via `conversationId`:
 
 ```yaml
-- vars:
-    utterance: "which opportunity should I focus on next"
-  assert:
-    - type: llm-rubric
-      value: "Recommends an opportunity based on value and close date"
+tests:
+  # --- Store a preference, then verify it sticks ---
+
+  - description: "User sets a display preference"
+    vars:
+      utterance: "From now on, always sort my opportunities by close date"
+      conversationId: preference
+    assert:
+      - type: llm-rubric
+        value: "Confirms it will remember the sorting preference"
+
+  - description: "User checks if preference was applied"
+    vars:
+      utterance: "Show me my opportunities"
+      conversationId: preference
+    assert:
+      - type: llm-rubric
+        value: "Shows opportunities sorted by close date, soonest first"
 ```
 
-The agent talks to the real org, queries real data, and the judge you chose evaluates the response.
+No fake agent responses. No JSON blobs. Just what the user says and what you expect back. Turns sharing a `conversationId` are part of the same real conversation.
 
-## The downside
+## What it found
 
-Promptfoo only sees the final text response. It can't see which topic handled the request or which actions were called. For most agents, this doesn't matter — the output is what counts. But if you need to verify internal routing, Testing Center is the only option.
-
-## How it works
-
-Salesforce's `generateAiAgentResponse` invocable action is accessible via the standard REST API:
-
-```http
-POST /services/data/v65.0/actions/custom/generateAiAgentResponse/{AgentName}
-```
-
-A small JavaScript provider calls this API, gets the response, and feeds it to Promptfoo for judging. No custom Apex needed.
+The multi-turn tests exposed a real agent bug: the agent loses conversational context for pronoun resolution. "Which of those is the largest?" gets "Could you clarify which deals?" — the agent forgot what it just listed. Testing Center hides this by injecting the list as fake history.
 
 ## Setup
 
-Configure `agent-eval/.env`:
+Create `agent-eval/.env` (gitignored):
 
 ```env
-AGENT_NAME=MyOrgButler
+AGENT_NAME=YourAgentName
 API_VERSION=v65.0
 OPENAI_API_KEY=sk-...
 ```
 
-Make sure `sf org display` returns a valid auth token.
-
-## Usage
+Run:
 
 ```bash
 cd agent-eval
-
-# Regression tests (mirrors Testing Center's Regression_Test)
-npx promptfoo@latest eval -c regression-test.yaml --env-file .env
-
-# Platform guardrail tests (prompt leaks, code exposure)
-npx promptfoo@latest eval -c security.yaml --env-file .env
-
-# View results
+npx promptfoo@latest eval -c regression.yaml --env-file .env
 npx promptfoo@latest view
 ```
 
-## Files
+## Claude skill
 
-- `regression-test.yaml` — 15 regression tests ported from Testing Center, against real org data
-- `security.yaml` — 3 Agentforce platform guardrail tests (prompt reveal, code exposure, action names)
-- `.env` — agent name, API version, judge API key
-- `CLAUDE.md` — current status and findings
+This repo includes a Claude Code skill at `.claude/skills/agent-eval/` that can:
+
+- Write multi-turn and single-turn tests
+- Convert Testing Center XML to Promptfoo YAML
+- Run evaluations
+
+Use it with `/agent-eval run` or `/agent-eval port`.
