@@ -21,7 +21,7 @@ Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist
 ### How to install
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
-2. **Install My Org Butler 2.20** - [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000S8NdYAK) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000S8NdYAK)
+2. **Install My Org Butler** - Grab the latest package version ID from [sfdx-project.json](sfdx-project.json) and install via [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=)
 3. **Enable Agentforce** in your org (if not already enabled)
 4. **Create an Agent from Template** - Create a new agent from the My Org Butler template. The API name must be **MyOrgButler** (headless delegation depends on it). See [Salesforce Help](https://help.salesforce.com/s/articleView?id=ai.agent_employee_agent_setup.htm&type=5) for instructions.
 5. **Turn on Optional Features** (choose which capabilities you want to enable):
