@@ -17,10 +17,9 @@ function getAuth() {
   return cachedAuth;
 }
 
-async function sendMessage(instanceUrl, accessToken, agentName, apiVersion, userMessage, sessionId, contextVariables) {
+async function sendMessage(instanceUrl, accessToken, agentName, apiVersion, userMessage, sessionId) {
   const input = { userMessage };
   if (sessionId) input.sessionId = sessionId;
-  if (contextVariables) input.variables = contextVariables;
 
   const res = await fetch(
     `${instanceUrl}/services/data/${apiVersion}/actions/custom/generateAiAgentResponse/${agentName}`,
@@ -82,8 +81,7 @@ export default class SfAgentApiProvider {
     const sessionId = conversationId ? sessionCache.get(conversationId) : null;
 
     const userMessage = prompt || vars.utterance;
-    const contextVariables = vars.contextVariables;
-    const response = await sendMessage(instanceUrl, accessToken, agentName, apiVersion, userMessage, sessionId, contextVariables);
+    const response = await sendMessage(instanceUrl, accessToken, agentName, apiVersion, userMessage, sessionId);
 
     // Cache sessionId for the next turn in this conversation
     if (conversationId && response.sessionId) {
