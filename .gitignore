@@ -59,3 +59,6 @@ retrieval-staging/
 
 # Blog drafts
 blog/
+
+# Security review scans (regenerated per scratch org)
+security-review/scans/
