@@ -50,7 +50,7 @@ tests:
 
   # ── AnswerFromFile ────────────────────────────────────────────────
 
-  - description: "Summarize attached document"
+  - description: "Summarize the Acme NDA"
     vars:
       promptTemplateName: AnswerFromFile
       userQuestion: "Give me a TL;DR of this document"
@@ -61,4 +61,4 @@ tests:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Provides a concise summary of the document content"
+        value: "Mentions this is an NDA between Acme Corporation and another party, covering confidentiality obligations, permitted disclosures, and a term/expiration"

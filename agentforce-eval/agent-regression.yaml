@@ -126,6 +126,19 @@ tests:
       - type: llm-rubric
         value: "Confirms the notification was sent to the current user"
 
+  # ── Context variables ───────────────────────────────────────────────
+
+  # 13: Current record context — pass an Opportunity ID as if opened from a record page
+  - vars:
+      utterance: "summarize the current opportunity"
+      contextVariables:
+        currentRecordId: "006O200000Wp39vIAB"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Summarizes an opportunity including amount, stage, and close date without asking which one"
+
   # ── Multi-turn conversations ────────────────────────────────────────
 
   # Conversation A: Drill into query results
