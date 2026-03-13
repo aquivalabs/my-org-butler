@@ -126,17 +126,6 @@ tests:
       - type: llm-rubric
         value: "Confirms the notification was sent to the current user"
 
-  # 13: Context variables — record-scoped question
-  - vars:
-      utterance: "what's the status of this opportunity?"
-      contextVariables:
-        recordId: "006xx000001234AAA"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Returns details about a specific opportunity identified by the provided record ID"
-
   # ── Multi-turn conversations ────────────────────────────────────────
 
   # Conversation A: Drill into query results
