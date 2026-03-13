@@ -55,3 +55,7 @@ retrieval-staging/
 # Environment variables
 .env
 .claude/settings.local.json
+.vercel
+
+# Blog drafts
+blog/
