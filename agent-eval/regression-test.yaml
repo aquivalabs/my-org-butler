@@ -7,11 +7,17 @@ providers:
 prompts:
   - "{{utterance}}"
 
+evaluateOptions:
+  maxConcurrency: 1
+
 defaultTest:
   options:
     provider: "openai:o3-mini"
 
 tests:
+
+  # ── Single-turn tests ──────────────────────────────────────────────
+
   # 1: Opportunity recommendation
   - vars:
       utterance: "which opportunity should I focus on next"
@@ -66,7 +72,7 @@ tests:
       - type: llm-rubric
         value: "Shows open GitHub issues from the repository"
 
-  # 7: Tooling API
+  # 7: Apex code via Tooling API
   - vars:
       utterance: "how much Apex code is in this org?"
     assert:
@@ -84,36 +90,7 @@ tests:
       - type: llm-rubric
         value: "Shows the permission set configuration from the Metadata API"
 
-  # 9: Store instruction
-  - vars:
-      utterance: "from now on, show opportunities with the Amount and CloseDate fields"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms it will remember this preference for future interactions"
-
-  # 10: Multi-turn - sort preference
-  - vars:
-      utterance: "Sort that by close date instead, and remember that for next time"
-      conversationHistory: '[{"role":"user","message":"Show me my opportunities"},{"role":"agent","message":"Here are your opportunities sorted by name: Acme Q1 Expansion ($500K), Burlington Textiles ($235K)"}]'
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms it will remember to sort by close date for future interactions"
-
-  # 11: Multi-turn - filter preference
-  - vars:
-      utterance: "Not quite, from now on only show me high-value opportunities above 100K"
-      conversationHistory: '[{"role":"user","message":"Show me my opportunities"},{"role":"agent","message":"Here are all your opportunities including small deals under 10K"}]'
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms it will remember to only show high-value opportunities"
-
-  # 12: Vector database search
+  # 9: Vector database search
   - vars:
       utterance: "what is Aquiva's work and travel policy?"
     assert:
@@ -122,7 +99,7 @@ tests:
       - type: llm-rubric
         value: "Provides information about Aquiva's work and travel policy from the knowledge base"
 
-  # 13: File reading
+  # 10: File reading
   - vars:
       utterance: "read the files attached to the Acme Q1 Expansion Deal and summarize what they contain"
     assert:
@@ -131,7 +108,7 @@ tests:
       - type: llm-rubric
         value: "Summarizes the NDA document content"
 
-  # 14: Scheduling
+  # 11: Scheduling
   - vars:
       utterance: "every weekday at 9am, check for opportunities closing this week and notify me"
     assert:
@@ -140,7 +117,7 @@ tests:
       - type: llm-rubric
         value: "Confirms a plan was scheduled for weekdays at 9am with a cron expression"
 
-  # 15: Notifications
+  # 12: Notifications
   - vars:
       utterance: "notify me that the quarterly report is ready for review"
     assert:
@@ -148,3 +125,98 @@ tests:
         value: "output.success === true"
       - type: llm-rubric
         value: "Confirms the notification was sent to the current user"
+
+  # 13: Context variables — record-scoped question
+  - vars:
+      utterance: "what's the status of this opportunity?"
+      contextVariables:
+        recordId: "006xx000001234AAA"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Returns details about a specific opportunity identified by the provided record ID"
+
+  # ── Multi-turn conversations ────────────────────────────────────────
+
+  # Conversation A: Drill into query results
+  - description: "Ask for opportunities"
+    vars:
+      utterance: "Show me my open opportunities"
+      conversationId: drill-down
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists multiple opportunities with names and amounts"
+
+  - description: "Drill into the first one"
+    vars:
+      utterance: "Tell me more about the first one you listed"
+      conversationId: drill-down
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides details about a specific opportunity from the previous list"
+
+  # Conversation B: Preference storage + verification
+  - description: "Set a display preference"
+    vars:
+      utterance: "From now on, always sort my opportunities by close date"
+      conversationId: preference
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it will remember the sorting preference"
+
+  - description: "Check if preference was applied"
+    vars:
+      utterance: "Show me my opportunities"
+      conversationId: preference
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows opportunities sorted by close date, soonest first"
+
+  # Conversation C: Correction flow
+  - description: "Ask about Acme opportunities"
+    vars:
+      utterance: "How many opportunities does Acme have?"
+      conversationId: correction
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Returns a count of Acme opportunities"
+
+  - description: "Correct the scope"
+    vars:
+      utterance: "I meant only Acme Corporation, not any other account with Acme in the name"
+      conversationId: correction
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Acknowledges the correction and narrows scope to Acme Corporation"
+
+  # Conversation D: Memory — agent gets it wrong, user corrects and stores preference
+  - description: "Ask for opportunities in wrong format"
+    vars:
+      utterance: "Show me my opportunities"
+      conversationId: memory
+    assert:
+      - type: javascript
+        value: "output.success === true"
+
+  - description: "Correct and ask to remember"
+    vars:
+      utterance: "No, I want to see Amount and CloseDate fields too. Store that in memory so you always show them."
+      conversationId: memory
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it stored the preference in memory to always include Amount and CloseDate fields"
