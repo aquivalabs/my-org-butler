@@ -1,0 +1,64 @@
+description: "Prompt Template Regression Tests"
+
+providers:
+  - id: "file://../.claude/skills/agentforce-eval/providers/sf-generations-api.mjs"
+    label: "Einstein Generations API"
+
+prompts:
+  - "{{promptTemplateName}}"
+
+defaultTest:
+  options:
+    provider: "openai:o3-mini"
+
+tests:
+
+  # ── ConsolidateMemory ─────────────────────────────────────────────
+
+  - description: "Merge memories preserving specificity"
+    vars:
+      promptTemplateName: ConsolidateMemory
+      consolidatedMemory: "When showing opportunities, user prefers tables with Amount, Stage, CloseDate"
+      newMemory: "User also wants Industry field when showing accounts"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Preserves the specific field names (Amount, Stage, CloseDate, Industry) and object contexts (opportunities, accounts) — does NOT generalize to vague statements"
+
+  - description: "Newer memory wins on conflict"
+    vars:
+      promptTemplateName: ConsolidateMemory
+      consolidatedMemory: "User prefers opportunities sorted by Amount descending"
+      newMemory: "User now wants opportunities sorted by CloseDate ascending"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "The consolidated result sorts opportunities by CloseDate, not Amount — newer preference wins"
+
+  - description: "Deduplication of identical memories"
+    vars:
+      promptTemplateName: ConsolidateMemory
+      consolidatedMemory: "User wants Amount and CloseDate when viewing opportunities"
+      newMemory: "Show Amount and CloseDate for opportunities"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Contains only one entry about Amount and CloseDate for opportunities, not two duplicates"
+
+  # ── AnswerFromFile ────────────────────────────────────────────────
+
+  - description: "Summarize attached document"
+    vars:
+      promptTemplateName: AnswerFromFile
+      userQuestion: "Give me a TL;DR of this document"
+      file: "${CONTENT_DOCUMENT_ID}"
+      sobjectInputs:
+        file: "SOBJECT://ContentDocument"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Provides a concise summary of the document content"

@@ -1,7 +1,7 @@
 description: "MyOrgButler Regression Tests"
 
 providers:
-  - id: "file://../.claude/skills/agent-eval/providers/salesforce-agent.mjs"
+  - id: "file://../.claude/skills/agentforce-eval/providers/sf-agent-api.mjs"
     label: "MyOrgButler"
 
 prompts:

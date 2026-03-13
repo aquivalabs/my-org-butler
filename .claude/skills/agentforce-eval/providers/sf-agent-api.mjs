@@ -61,9 +61,9 @@ async function sendMessage(instanceUrl, accessToken, agentName, apiVersion, user
   };
 }
 
-export default class SalesforceAgentProvider {
+export default class SfAgentApiProvider {
   id() {
-    return 'salesforce-agent';
+    return 'sf-agent-api';
   }
 
   async callApi(prompt, context) {

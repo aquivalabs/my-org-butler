@@ -4,7 +4,7 @@ My Org Butler is a showcase for building Agentforce solutions that help Salesfor
 
 > **🟡 New & Noteworthy**
 >
-> **Real multi-turn testing with Promptfoo** — Testing Center fakes multi-turn by injecting hardcoded history. We built a Promptfoo-based eval setup that replays real API calls with real session state. Each turn gets its own assertion. Already found a real agent bug that Testing Center hides. Includes a [Claude Code skill](.claude/skills/agent-eval/) for writing tests and converting Testing Center XML. See [regression.yaml](agent-eval/regression.yaml) for the test conversations.
+> **Real multi-turn testing with Promptfoo** — Testing Center fakes multi-turn by injecting hardcoded history. We built a Promptfoo-based eval setup that replays real API calls with real session state. Each turn gets its own assertion. Already found a real agent bug that Testing Center hides. Includes a [Claude Code skill](.claude/skills/agentforce-eval/) for writing tests and converting Testing Center XML. See [agent-regression.yaml](agentforce-eval/agent-regression.yaml) for the test conversations.
 >
 > **Headless sub-agent delegation** — The Butler can delegate tasks to a headless copy of itself running in the background, enabling scheduled plans and async workflows. See [HeadlessAgent.cls](force-app/main/default/classes/HeadlessAgent.cls).
 
