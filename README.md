@@ -1,12 +1,6 @@
-## <img src="resources/logo.png" width="50"/> My Org Butler
+## <img src="resources/logo.png" width="50"/> My Org Butler [`v2.32.0`](https://github.com/aquivalabs/my-org-butler/releases/tag/v2.32.0)
 
 My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. It started in early 2024 on the [OpenAI Assistants API with a custom LWC frontend](../../tree/openai-agentforce-hybrid), then moved to pure Agentforce when it became powerful enough. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
-
-> **New & Noteworthy**
->
-> **Agentforce eval with Promptfoo** — Testing Center fakes multi-turn by injecting hardcoded history. We built a Promptfoo-based eval that replays real API calls with real session state — for both **agents** and **prompt templates**. Each turn gets its own assertion. Already found a real agent bug that Testing Center hides. Includes a [Claude Code skill](.claude/skills/agentforce-eval/) for writing and running tests. See [agent-regression.yaml](agentforce-eval/agent-regression.yaml) and [prompt-regression.yaml](agentforce-eval/prompt-regression.yaml).
->
-> **Headless sub-agent delegation** — The Butler can delegate tasks to a headless copy of itself running in the background, enabling scheduled plans and async workflows. See [HeadlessAgent.cls](force-app/main/default/classes/HeadlessAgent.cls).
 
 
 ### Show me a demo

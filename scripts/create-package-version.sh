@@ -31,6 +31,17 @@ execute sf package version promote -p "$PACKAGE_VERSION" -n
 
 echo "Install from: /packaging/installPackage.apexp?p0=$PACKAGE_VERSION"
 
+VERSION_NUMBER=$(echo "$PACKAGE_VERSION_OUTPUT" | jq -r '.result.VersionNumber // empty' | sed 's/\.[0-9]*$//')
+if [ -n "$VERSION_NUMBER" ]; then
+  TAG="v$VERSION_NUMBER"
+  echo "Create git tag $TAG"
+  git tag "$TAG"
+  git push origin "$TAG"
+
+  echo "Create GitHub release $TAG"
+  gh release create "$TAG" --title "$TAG" --generate-notes
+fi
+
 if [ -n "$QA_ORG_ALIAS" ]; then
   if [ -n "$QA_ORG_URL" ]; then
     echo "Authenticate QA Org"
