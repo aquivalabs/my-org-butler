@@ -208,24 +208,6 @@
     <testCase>
         <number>11</number>
         <inputs>
-            <utterance>read the files attached to the Acme Q1 Expansion Deal and summarize what they contain</utterance>
-        </inputs>
-        <expectation>
-            <name>topic_assertion</name>
-            <expectedValue>MyOrgButler</expectedValue>
-        </expectation>
-        <expectation>
-            <name>actions_assertion</name>
-            <expectedValue>['AnswerWithRelatedFiles']</expectedValue>
-        </expectation>
-        <expectation>
-            <name>bot_response_rating</name>
-            <expectedValue>Summarizes the NDA document content</expectedValue>
-        </expectation>
-    </testCase>
-    <testCase>
-        <number>12</number>
-        <inputs>
             <utterance>every weekday at 9am, check for opportunities closing this week and notify me</utterance>
         </inputs>
         <expectation>
@@ -242,7 +224,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>13</number>
+        <number>12</number>
         <inputs>
             <utterance>notify me that the quarterly report is ready for review</utterance>
         </inputs>

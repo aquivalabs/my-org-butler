@@ -50,10 +50,10 @@ tests:
 
   # ── AnswerFromFile ────────────────────────────────────────────────
 
-  - description: "Summarize the Acme NDA"
+  - description: "Answer a cross-section question about the sample document"
     vars:
       promptTemplateName: AnswerFromFile
-      userQuestion: "Give me a TL;DR of this document"
+      userQuestion: "What are the total contract value and the key performance indicators for the deal? Also, what happens if the agreement is breached — what remedies are available?"
       file: "${CONTENT_DOCUMENT_ID}"
       sobjectInputs:
         file: "SOBJECT://ContentDocument"
@@ -61,4 +61,4 @@ tests:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Mentions this is an NDA between Acme Corporation and another party, covering confidentiality obligations, permitted disclosures, and a term/expiration"
+        value: "Mentions the total contract value of $500,000, at least two KPIs (e.g. 99.9% uptime, response time, user adoption), and references equitable relief or injunction as a remedy for breach"
