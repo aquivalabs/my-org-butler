@@ -241,4 +241,30 @@
             <expectedValue>Confirms the notification was sent to the current user</expectedValue>
         </expectation>
     </testCase>
+    <testCase>
+        <number>13</number>
+        <inputs>
+            <utterance>what are the deliverable milestones and their budgets in this document</utterance>
+            <contextVariable>
+                <variableName>currentRecordId</variableName>
+                <variableValue>069O800000DGA8pIAH</variableValue>
+            </contextVariable>
+            <contextVariable>
+                <variableName>currentObjectApiName</variableName>
+                <variableValue>ContentDocument</variableValue>
+            </contextVariable>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['AnswerWithCurrentFile']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Mentions at least two of: Phase 1 Discovery ($75,000), Phase 2 Implementation ($250,000), Phase 3 Rollout ($175,000), total $500,000</expectedValue>
+        </expectation>
+    </testCase>
 </AiEvaluationDefinition>

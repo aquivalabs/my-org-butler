@@ -11,6 +11,9 @@ evaluateOptions:
   maxConcurrency: 1
 
 defaultTest:
+  vars:
+    agentName: MyOrgButler
+    apiVersion: v65.0
   options:
     provider: "openai:o3-mini"
 
