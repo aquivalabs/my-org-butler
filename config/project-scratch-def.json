@@ -1,6 +1,5 @@
 {
   "orgName": "my-org-butler_DEV",
-  "edition": "Partner Developer",
   "hasSampleData": false,
     "features": ["EnableSetPasswordInApi","Einstein1AIPlatform", "Chatbot"],
   "settings": {

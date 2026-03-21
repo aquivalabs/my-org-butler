@@ -63,16 +63,7 @@ tests:
       - type: llm-rubric
         value: "Provides information about Aquiva Labs as a Salesforce company"
 
-  # 6: GitHub integration
-  - vars:
-      utterance: "are there any open issues on the aquivalabs/my-org-butler repo?"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Shows open GitHub issues from the repository"
-
-  # 7: Apex code via Tooling API
+  # 6: Apex code via Tooling API
   - vars:
       utterance: "how much Apex code is in this org?"
     assert:
@@ -81,7 +72,7 @@ tests:
       - type: llm-rubric
         value: "Returns the count or list of Apex classes"
 
-  # 8: Metadata API
+  # 7: Metadata API
   - vars:
       utterance: "use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition"
     assert:
@@ -90,16 +81,7 @@ tests:
       - type: llm-rubric
         value: "Shows the permission set configuration from the Metadata API"
 
-  # 9: Vector database search
-  - vars:
-      utterance: "what is Aquiva's work and travel policy?"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Provides information about Aquiva's work and travel policy from the knowledge base"
-
-  # 10: File reading
+  # 8: File reading
   - vars:
       utterance: "read the files attached to the Acme Q1 Expansion Deal and summarize what they contain"
     assert:
@@ -108,7 +90,7 @@ tests:
       - type: llm-rubric
         value: "Summarizes the NDA document content"
 
-  # 11: Scheduling
+  # 9: Scheduling
   - vars:
       utterance: "every weekday at 9am, check for opportunities closing this week and notify me"
     assert:
@@ -117,7 +99,7 @@ tests:
       - type: llm-rubric
         value: "Confirms a plan was scheduled for weekdays at 9am with a cron expression"
 
-  # 12: Notifications
+  # 10: Notifications
   - vars:
       utterance: "notify me that the quarterly report is ready for review"
     assert:

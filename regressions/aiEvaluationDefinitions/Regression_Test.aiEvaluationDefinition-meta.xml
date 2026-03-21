@@ -98,24 +98,6 @@
     <testCase>
         <number>6</number>
         <inputs>
-            <utterance>are there any open issues on the aquivalabs/my-org-butler repo?</utterance>
-        </inputs>
-        <expectation>
-            <name>topic_assertion</name>
-            <expectedValue>MyOrgButler</expectedValue>
-        </expectation>
-        <expectation>
-            <name>actions_assertion</name>
-            <expectedValue>['CallGitHubApi']</expectedValue>
-        </expectation>
-        <expectation>
-            <name>bot_response_rating</name>
-            <expectedValue>Shows open GitHub issues from the repository</expectedValue>
-        </expectation>
-    </testCase>
-    <testCase>
-        <number>7</number>
-        <inputs>
             <utterance>how much Apex code is in this org?</utterance>
         </inputs>
         <expectation>
@@ -132,7 +114,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>8</number>
+        <number>7</number>
         <inputs>
             <utterance>use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition</utterance>
         </inputs>
@@ -150,7 +132,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>9</number>
+        <number>8</number>
         <inputs>
             <utterance>from now on, show opportunities with the Amount and CloseDate fields</utterance>
         </inputs>
@@ -168,7 +150,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>10</number>
+        <number>9</number>
         <inputs>
             <utterance>Sort that by close date instead, and remember that for next time</utterance>
             <conversationHistory>
@@ -196,7 +178,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>11</number>
+        <number>10</number>
         <inputs>
             <utterance>Not quite, from now on only show me high-value opportunities above 100K</utterance>
             <conversationHistory>
@@ -224,25 +206,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>12</number>
-        <inputs>
-            <utterance>what is Aquiva's work and travel policy?</utterance>
-        </inputs>
-        <expectation>
-            <name>topic_assertion</name>
-            <expectedValue>MyOrgButler</expectedValue>
-        </expectation>
-        <expectation>
-            <name>actions_assertion</name>
-            <expectedValue>['SearchVectorDatabase']</expectedValue>
-        </expectation>
-        <expectation>
-            <name>bot_response_rating</name>
-            <expectedValue>Provides information about Aquiva's work and travel policy from the knowledge base</expectedValue>
-        </expectation>
-    </testCase>
-    <testCase>
-        <number>13</number>
+        <number>11</number>
         <inputs>
             <utterance>read the files attached to the Acme Q1 Expansion Deal and summarize what they contain</utterance>
         </inputs>
@@ -260,7 +224,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>14</number>
+        <number>12</number>
         <inputs>
             <utterance>every weekday at 9am, check for opportunities closing this week and notify me</utterance>
         </inputs>
@@ -278,7 +242,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>15</number>
+        <number>13</number>
         <inputs>
             <utterance>notify me that the quarterly report is ready for review</utterance>
         </inputs>

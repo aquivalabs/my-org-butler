@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata">
     <canEscalate>false</canEscalate>
-    <description>Your personal Salesforce assistant. Answers questions about data and metadata, creates and updates records, explores org configuration, and integrates with external services like GitHub and web search.</description>
+    <description>Your personal Salesforce assistant. Answers questions about data and metadata, creates and updates records, explores org configuration, and integrates with external services like web search.</description>
     <developerName>MyOrgButler</developerName>
     <genAiFunctions>
         <functionName>QueryRecordsWithSoql</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>ExploreOrgSchema</functionName>
-    </genAiFunctions>
-    <genAiFunctions>
-        <functionName>SearchVectorDatabase</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>AnswerWithCurrentFile</functionName>
@@ -20,9 +17,6 @@
     </genAiFunctions>
     <genAiFunctions>
         <functionName>SearchWeb</functionName>
-    </genAiFunctions>
-    <genAiFunctions>
-        <functionName>CallGitHubApi</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>CallRestApi</functionName>
@@ -187,5 +181,5 @@ Response: "Planned. On March 2 at 9:00 AM I&apos;ll check the Acme Q1 Expansion 
     <localDeveloperName>MyOrgButler</localDeveloperName>
     <masterLabel>My Org Butler</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Use for any Salesforce-related request: querying data, creating or updating records, exploring metadata, searching the web, working with GitHub, or scheduling plans for later.</scope>
+    <scope>Use for any Salesforce-related request: querying data, creating or updating records, exploring metadata, searching the web, or scheduling plans for later.</scope>
 </GenAiPlugin>

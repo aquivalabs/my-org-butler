@@ -20,13 +20,6 @@ Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist
 4. **Create an Agent from Template** - Create a new agent from the My Org Butler template with API name `MyOrgButler`. See [Salesforce Help](https://help.salesforce.com/s/articleView?id=ai.agent_employee_agent_setup.htm&type=5) for instructions.
 5. **Turn on Optional Features** (choose which capabilities you want to enable):
 
-   **Turn on GitHub Integration:**
-   1. Get a [GitHub Personal Access Token](https://github.com/settings/tokens)
-   2. Go to **Setup → Named Credentials → `GitHubApi`**
-   3. Click on the linked External Credential `GitHubApi`
-   4. Create a New Named Principal with parameter name `ApiKey` 
-   5. Enter your GitHub token as the value
-
    **Turn on Web Search:**
    1. Get a [free Tavily API key](https://tavily.com/)
    2. Go to **Setup → Named Credentials → `TavilyApi`**
@@ -34,31 +27,17 @@ Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist
    4. Create a New Named Principal with parameter name `ApiKey`
    5. Enter your Tavily API key as the value
 
-   **Turn on External Knowledge Search:**
-   1. Create a free account at [Vectorize.io](https://platform.vectorize.io/)
-   2. Build a RAG pipeline with your company documents (wikis, documentation, etc.)
-   3. Note your **Organization ID** and **Pipeline ID** from the Vectorize dashboard
-   4. Get your **API token** from the Vectorize backend
-   5. Go to **Setup → Named Credentials → `VectorizeApi`**
-   6. Click on the linked External Credential `VectorizeApi`
-   7. Create a New Named Principal with parameter name `Token`
-   8. Enter your Vectorize API token as the value
-   9. Go to **Setup → Custom Settings → Custom Setting → Manage**
-   10. Create a new record with Name: `VectorizeOrgId`, Value: your Organization ID
-   11. Create another record with Name: `VectorizePipelineId`, Value: your Pipeline ID
-
-That's it! The Butler will be available in your Agentforce sidebar and can now search your external knowledge sources.
+That's it! The Butler will be available in your Agentforce sidebar.
 
 ### What can the Butler do?
 
-Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlugins/) and [**16 actions**](force-app/main/default/genAiFunctions/). Agentforce handles AI reasoning and conversation management. The actions handle the Salesforce-specific work:
+Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlugins/) and [**14 actions**](force-app/main/default/genAiFunctions/). Agentforce handles AI reasoning and conversation management. The actions handle the Salesforce-specific work:
 
 - Query data, metadata, and settings using [natural language SOQL](force-app/main/default/genAiFunctions/QueryRecordsWithSoql/)
 - Create and update records via the [REST API](force-app/main/default/genAiFunctions/CallRestApi/)
 - Read and modify code and configuration via the [Tooling API](force-app/main/default/genAiFunctions/CallToolingApi/) and [Metadata API](force-app/main/default/genAiFunctions/CallMetadataApi/)
 - Generate [PlantUML diagrams](force-app/main/default/genAiFunctions/CreatePlantUmlUrl/) for data models and processes
-- Manage GitHub repos, issues, and PRs via the [GitHub API](force-app/main/default/genAiFunctions/CallGitHubApi/)
-- [Search the web](force-app/main/default/genAiFunctions/SearchWeb/) and your [external knowledge base](force-app/main/default/genAiFunctions/SearchVectorDatabase/)
+- [Search the web](force-app/main/default/genAiFunctions/SearchWeb/)
 - [Notify](force-app/main/default/genAiFunctions/NotifyUser/) people and [delegate tasks](force-app/main/default/genAiFunctions/RunMyOrgButler/) to a headless sub-agent
 
 ### Is it safe?
@@ -69,12 +48,11 @@ Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlug
 
 **Slack Integration: ✅ Secure** - When used in Slack channels, Agentforce shows you a private draft response first. You review it, then decide whether to share it publicly. This prevents accidental exposure of sensitive data.
 
-**External Knowledge (Vectorize): ⚠️ No Permission Filtering** - Vectorize does not automatically sync or enforce Google Drive permissions - all users see identical search results. This is a [known hard problem](https://www.pinecone.io/learn/rag-access-control/) in RAG systems that most vector databases face (see [AWS guidance](https://aws.amazon.com/blogs/security/authorizing-access-to-data-with-rag-implementations/), [Paragon's analysis](https://www.useparagon.com/learn/what-to-know-about-ingesting-google-drive-data-for-rag/)). Solutions require dedicated authorization services with post-filtering. For now: only index documents that all agent users should access.
-
 ### How can I make this my own?
 
 1. Clone this repo
 2. Replace `aquiva_os` namespace with your own (or remove it)
 3. Create a scratch org: `./scripts/create-scratch-org.sh`
 4. Make your changes
-5. Create a package and versions: `./scripts/create-package.sh`
+5. Create a 2GP package in your dev hub (one-time setup)
+6. Create package versions: `./scripts/create-package-version.sh`

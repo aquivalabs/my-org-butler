@@ -24,6 +24,11 @@
           "EinsteinGPTPromptTemplateManager"
         ]
       },
+      "apexTestAccess": {
+        "permissionSets": [
+          "MyOrgButlerUser"
+        ]
+      },
       "dependencies": [
         {
           "package": "app-foundations@LATEST"
@@ -111,6 +116,7 @@
     "my-org-butler@2.20.0-1": "04tVI000000S8NdYAK",
     "my-org-butler@2.30.0-1": "04tVI000000VONpYAO",
     "my-org-butler@2.31.0-1": "04tVI000000VSODYA4",
-    "my-org-butler@2.32.0-1": "04tVI000000VUBVYA4"
+    "my-org-butler@2.32.0-1": "04tVI000000VUBVYA4",
+    "my-org-butler@2026.3.0-1": "04tVI000000Xl1lYAC"
   }
 }
