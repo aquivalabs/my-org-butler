@@ -25,10 +25,11 @@ function buildInputParams(vars) {
   for (const [key, value] of Object.entries(vars)) {
     if (RESERVED_VARS.has(key)) continue;
 
+    const inputKey = `Input:${key}`;
     if (sobjectInputs[key]) {
-      valueMap[key] = { value: { id: value } };
+      valueMap[inputKey] = { value: { id: value } };
     } else {
-      valueMap[key] = { value: String(value) };
+      valueMap[inputKey] = { value: String(value) };
     }
   }
   return { valueMap };
@@ -60,7 +61,11 @@ export default class SfGenerationsApiProvider {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ inputParams, isPreview: false }),
+        body: JSON.stringify({
+          inputParams,
+          isPreview: false,
+          additionalConfig: { applicationName: 'PromptTemplateGenerationsInvocable' },
+        }),
       }
     );
 
