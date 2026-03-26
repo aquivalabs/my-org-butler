@@ -1,7 +1,7 @@
 description: "Prompt Template Regression Tests"
 
 providers:
-  - id: "file://../.claude/skills/agentforce-eval/providers/sf-generations-api.mjs"
+  - id: "file://../.claude/skills/agentforce/providers/sf-generations-api.mjs"
     label: "Einstein Generations API"
 
 prompts:

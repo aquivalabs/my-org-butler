@@ -20,18 +20,24 @@ const RESERVED_VARS = new Set(['promptTemplateName', 'sobjectInputs', 'apiVersio
 
 function buildInputParams(vars) {
   const sobjectInputs = vars.sobjectInputs || {};
-  const valueMap = {};
+  const inputParams = {};
 
   for (const [key, value] of Object.entries(vars)) {
     if (RESERVED_VARS.has(key)) continue;
 
     if (sobjectInputs[key]) {
-      valueMap[key] = { value: { id: value } };
+      inputParams[key] = {
+        value: { id: value },
+        valueType: sobjectInputs[key],
+      };
     } else {
-      valueMap[key] = { value: String(value) };
+      inputParams[key] = {
+        value: String(value),
+        valueType: 'STRING',
+      };
     }
   }
-  return { valueMap };
+  return inputParams;
 }
 
 export default class SfGenerationsApiProvider {
@@ -52,8 +58,6 @@ export default class SfGenerationsApiProvider {
 
     const inputParams = buildInputParams(vars);
 
-    const startTime = Date.now();
-
     const res = await fetch(
       `${instanceUrl}/services/data/${apiVersion}/einstein/prompt-templates/${templateName}/generations`,
       {
@@ -66,11 +70,9 @@ export default class SfGenerationsApiProvider {
       }
     );
 
-    const latencyMs = Date.now() - startTime;
-
     if (!res.ok) {
       const text = await res.text();
-      return { output: { success: false, latencyMs, error: `HTTP ${res.status}: ${text}` } };
+      return { output: { success: false, error: `HTTP ${res.status}: ${text}` } };
     }
 
     const data = await res.json();
@@ -79,7 +81,6 @@ export default class SfGenerationsApiProvider {
       return {
         output: {
           success: false,
-          latencyMs,
           error: JSON.stringify(data.generationErrors),
           promptTemplateName: data.promptTemplateDevName,
         },
@@ -91,7 +92,6 @@ export default class SfGenerationsApiProvider {
     return {
       output: {
         success: true,
-        latencyMs,
         text: generation?.text || '',
         promptTemplateName: data.promptTemplateDevName,
         safetyScores: generation?.safetyScoreRepresentation || null,

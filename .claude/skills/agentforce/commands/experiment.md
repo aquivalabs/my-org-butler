@@ -1,51 +1,49 @@
----
-name: agentforce-experiment
-description: Optimize Agentforce prompt templates by testing model and prompt variants — conversational experiment design, no config files needed
-argument-hint: "template name"
----
+# /agentforce experiment — Optimize Prompt Templates
 
-# Agentforce Prompt Experiment
-
-You help users optimize Salesforce Agentforce prompt templates by systematically testing different models and prompt rewrites. You drive the entire process through conversation — no experiment spec files needed.
-
-This skill builds on `agentforce-eval` for running tests via Promptfoo. You own the experiment workflow: proposing variants, creating template files, running comparisons, and reporting results.
+Optimize Agentforce prompt templates by testing model and prompt variants. The conversation is the experiment design — no config files needed.
 
 ## How it works
 
 1. User names a template and what to optimize (e.g. "optimize ConsolidateMemory for latency")
-2. You read the template, propose a matrix of variants
+2. You read the template and the learnings file, then propose a matrix of variants
 3. User confirms or adjusts
 4. You create variant templates, deploy, test, report
-5. User picks a winner — you apply it
+5. You store learnings from the results
+6. User picks a winner — you apply it
 
-No intermediate config. The conversation is the experiment design.
+## Learnings
 
-## Folder structure
+Before proposing any experiment, read `learnings.md` in this skill folder. It contains accumulated knowledge about what works and what doesn't — seeded with general optimization ideas and updated after every experiment.
 
-All experiment artifacts live in `experiments/` at the project root:
+After presenting results, **always append new learnings** to `learnings.md`. What surprised you? What pattern held? What failed? This is how the skill gets smarter over time.
+
+## Experiment folder
+
+Variant templates and results are stored in an `experiments/` subfolder:
+
+- If `unpackaged/` exists at the project root, store experiments in `unpackaged/experiments/`
+- Otherwise, ask the user where to put them
+
+The folder uses proper Salesforce metadata structure so it can be deployed directly:
 
 ```
-experiments/
+unpackaged/experiments/
   {TemplateName}/
-    experiment.yaml          # housekeeping manifest (what's here, status)
-    run.yaml                 # promptfoo config to test all variants
+    experiment.yaml          # housekeeping manifest
+    run.yaml                 # promptfoo config
     results.json             # promptfoo output
   main/default/genAiPromptTemplates/
     {Template}_{Variant}.genAiPromptTemplate-meta.xml
     ...
 ```
 
-The `experiments/` folder is a Salesforce source directory listed in `sfdx-project.json`. Variant templates go in the standard metadata path so they can be deployed with:
+Deploy with: `sf project deploy start --source-dir unpackaged/experiments --concise`
 
-```bash
-sf project deploy start --source-dir experiments --concise
-```
-
-The `{TemplateName}/` subfolder holds experiment tracking — the deploy command ignores it.
+The `{TemplateName}/` subfolder holds experiment tracking — the deploy command ignores non-metadata files.
 
 ## Step 0: Analyze and propose (REQUIRED)
 
-Read the template XML from `force-app/main/default/genAiPromptTemplates/` and present:
+Read the template XML from `force-app/main/default/genAiPromptTemplates/`. Read `learnings.md` from this skill folder. Then present:
 
 ```
 ## Experiment: {TemplateName}
@@ -54,6 +52,9 @@ Read the template XML from `force-app/main/default/genAiPromptTemplates/` and pr
 - Model: {current model}
 - Content: {brief analysis — e.g. "5 rules, 2 examples, ~180 tokens"}
 - Inputs: {list of {!$Input:...} vars}
+
+**Learnings that apply:**
+- {relevant insights from learnings.md}
 
 **Proposed models:**
 - {model 1} — {why}
@@ -74,9 +75,11 @@ Wait for confirmation before continuing.
 
 Fetch the current list from: https://developer.salesforce.com/docs/einstein/genai/guide/supported-models.html
 
+When proposing models, consider what you know from `learnings.md` about model performance on similar tasks.
+
 ## Step 1: Create variant templates
 
-For each permutation, create a new XML in `experiments/main/default/genAiPromptTemplates/`:
+For each permutation, create a new XML in the experiment folder's `main/default/genAiPromptTemplates/`:
 
 - Copy the original template XML
 - `<developerName>`: `{Template}_{ModelShort}_{ContentVariant}` (e.g. `ConsolidateMemory_GPT41Mini_Shorter`)
@@ -91,26 +94,27 @@ For each permutation, create a new XML in `experiments/main/default/genAiPromptT
 When rewriting prompt content:
 
 1. Read the current `<content>` from the template XML
-2. Rewrite following the agreed instruction (e.g. "shorter, remove examples")
-3. Preserve all `{!$Input:...}`, `{!$RecordSnapshot:...}`, and `{!$EinsteinSearch:...}` placeholders exactly
-4. Use XML escaping (`&apos;`, `&quot;`, `&lt;`, `&gt;`) in the generated content
+2. Apply learnings from `learnings.md` — e.g. if past experiments show "removing examples rarely hurts quality", use that insight
+3. Rewrite following the agreed instruction
+4. Preserve all `{!$Input:...}`, `{!$RecordSnapshot:...}`, and `{!$EinsteinSearch:...}` placeholders exactly
+5. Use XML escaping (`&apos;`, `&quot;`, `&lt;`, `&gt;`) in the generated content
 
 ## Step 2: Deploy variants
 
 ```bash
 sf agent deactivate --api-name MyOrgButler
-sf project deploy start --source-dir experiments --concise
+sf project deploy start --source-dir unpackaged/experiments --concise
 sf agent activate --api-name MyOrgButler
 ```
 
 ## Step 3: Create run.yaml and test
 
-Generate a promptfoo YAML in the experiment folder. This uses the `sf-generations-api.mjs` provider from `agentforce-eval`:
+Generate a promptfoo YAML in the experiment folder:
 
 ```yaml
-# experiments/{Template}/run.yaml
+# unpackaged/experiments/{Template}/run.yaml
 providers:
-  - id: "file://../../.claude/skills/agentforce-eval/providers/sf-generations-api.mjs"
+  - id: "file://../../.claude/skills/agentforce/providers/sf-generations-api.mjs"
     label: "Einstein Generations API"
 
 prompts:
@@ -139,12 +143,12 @@ tests:
 Run it:
 
 ```bash
-cd experiments/{Template} && npx promptfoo@latest eval -c run.yaml --env-file ../../agentforce-eval/.env --json -o results.json
+cd unpackaged/experiments/{Template} && npx promptfoo@latest eval -c run.yaml --env-file ../../../agentforce-eval/.env --json -o results.json
 ```
 
 ## Step 4: Update experiment manifest
 
-Each experiment folder has an `experiment.yaml` — a housekeeping manifest, not an execution spec:
+Each experiment folder has an `experiment.yaml` — a housekeeping manifest:
 
 ```yaml
 template: ConsolidateMemory
@@ -163,8 +167,6 @@ variants:
 winner: ConsolidateMemory_Gemini25Flash_Shorter
 applied: false
 ```
-
-Update `status` and `winner` as the experiment progresses.
 
 ## Step 5: Present results
 
@@ -186,29 +188,41 @@ Baseline: GPT4OmniMini + original content | 1200ms
 Winner: #1 Gemini 2.5 Flash + shorter prompt — 67% faster than baseline, all tests pass.
 ```
 
-Then list what's in the org:
+Then list what's in the org and offer next steps:
 
 ```
 Experiment variants in your org:
-- ConsolidateMemory_GPT41Mini (GPT 4.1 Mini + original content)
-- ConsolidateMemory_Gemini25Flash_Shorter (Gemini 2.5 Flash + shorter prompt)
-- ...
+- ConsolidateMemory_GPT41Mini (GPT 4.1 Mini + original)
+- ConsolidateMemory_Gemini25Flash_Shorter (Gemini 2.5 Flash + shorter)
 
 You can test these manually in Prompt Builder. When done, say "clean up".
 To apply the winner, say "apply #1".
 ```
 
-## Step 6: Apply winner (on user request)
+## Step 6: Store learnings (REQUIRED — do not skip)
 
-Copy the winning variant's `<primaryModel>` and `<content>` into the original template XML in `force-app/` and deploy.
-Update `applied: true` in the manifest.
+After presenting results, append insights to `learnings.md` in this skill folder. Format:
 
-## Step 7: Cleanup (on user request)
+```markdown
+### {TemplateName} — {date}
 
-Delete variant files and the metadata structure:
+- {insight about what worked or didn't}
+- {surprising result}
+- {pattern confirmed or disproven}
+```
+
+Focus on insights that generalize to future experiments. Not raw data — that's in `results.json`.
+
+## Step 7: Apply winner (on user request)
+
+Copy the winning variant's `<primaryModel>` and `<content>` into the original template XML in `force-app/` and deploy. Update `applied: true` in the manifest.
+
+## Step 8: Cleanup (on user request)
+
+Delete variant files:
 
 ```bash
-rm -rf experiments/main/default/genAiPromptTemplates/{Template}_*
+rm -rf unpackaged/experiments/main/default/genAiPromptTemplates/{Template}_*
 ```
 
 Then destructive deploy or tell the user to delete manually in Setup → Prompt Templates.
@@ -216,6 +230,6 @@ Then destructive deploy or tell the user to delete manually in Setup → Prompt 
 ## Rules
 
 - Never modify the original template in `force-app/` during experiments — only when applying a winner
-- Never auto-delete variant templates — the user may want to test them manually first
+- Never auto-delete variant templates — the user may want to test them manually
 - Experiment folders are committed to git as history
-- The `experiment.yaml` manifest is descriptive — it tracks what exists, it doesn't drive execution
+- Always read `learnings.md` before proposing and write to it after results
