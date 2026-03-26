@@ -73,7 +73,7 @@ You: apply #1
 Skill: writes winner into original template, offers cleanup
 ```
 
-Experiment history and process [learnings](learnings.md) accumulate in the skill, making each experiment smarter than the last.
+The experiment workflow accumulates [process learnings](learnings.md) — deployment gotchas, measurement methodology, tooling tips — making each experiment smarter than the last.
 
 ## Folder structure
 
@@ -81,14 +81,14 @@ Experiment history and process [learnings](learnings.md) accumulate in the skill
 .claude/skills/agentforce/
 ├── SKILL.md                          # routing + shared context
 ├── README.md                         # this file
-├── learnings.md                      # accumulated process knowledge
 ├── commands/
 │   ├── eval.md                       # regression testing instructions
 │   ├── experiment.md                 # optimization workflow
 │   └── port.md                       # Testing Center conversion rules
-└── providers/
-    ├── sf-agent-api.mjs              # Agent API provider
-    └── sf-generations-api.mjs        # Generations API provider
+├── providers/
+│   ├── sf-agent-api.mjs              # Agent API provider
+│   └── sf-generations-api.mjs        # Generations API provider
+└── learnings.md                      # experiment process knowledge
 ```
 
 Test files: `regressions/promptfoo/`
