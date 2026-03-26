@@ -1,4 +1,7 @@
-description: "MyOrgButler Regression Tests"
+description: "MyOrgButler Multi-Turn Agent Tests (promptfoo)"
+
+# Single-turn tests live in Testing Center (Regression_Test.aiEvaluationDefinition).
+# This file covers only multi-turn conversations that Testing Center can't handle.
 
 providers:
   - id: "file://../.claude/skills/agentforce-eval/providers/sf-agent-api.mjs"
@@ -11,106 +14,38 @@ evaluateOptions:
   maxConcurrency: 1
 
 defaultTest:
+  vars:
+    agentName: MyOrgButler
+    apiVersion: v65.0
   options:
-    provider: "openai:o3-mini"
+    provider: "openai:gpt-4o"
 
 tests:
 
-  # ── Single-turn tests ──────────────────────────────────────────────
+  # ── File grounding: find file, then ask about content ─────────────
 
-  # 1: Opportunity recommendation
-  - vars:
-      utterance: "which opportunity should I focus on next"
+  - description: "Find the sample document on the Acme opportunity"
+    vars:
+      utterance: "what files are attached to the Acme Q1 Expansion Deal"
+      conversationId: file-grounding
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Recommends an opportunity based on value and close date"
+        value: "Lists or mentions the Sample Company Document file"
 
-  # 2: Task creation
-  - vars:
-      utterance: "create a follow-up task for the Burlington Textiles opportunity"
+  - description: "Ask a content question that spans multiple sections"
+    vars:
+      utterance: "open that document and tell me what the total contract value is and what remedies are available if the agreement is breached"
+      conversationId: file-grounding
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Confirms task creation with a link to view it"
+        value: "Mentions $500,000 total contract value and references equitable relief or injunction as breach remedies"
 
-  # 3: Org customizations
-  - vars:
-      utterance: "I'm new here, what customizations does this org have?"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Lists custom objects including Memory__c"
+  # ── Drill-down: query then follow up on a result ──────────────────
 
-  # 4: Object diagram
-  - vars:
-      utterance: "show me a diagram of the custom objects in this org"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Provides a diagram link showing object relationships"
-
-  # 5: Web search
-  - vars:
-      utterance: "who built this assistant? search the web for Aquiva Labs"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Provides information about Aquiva Labs as a Salesforce company"
-
-  # 6: Apex code via Tooling API
-  - vars:
-      utterance: "how much Apex code is in this org?"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Returns the count or list of Apex classes"
-
-  # 7: Metadata API
-  - vars:
-      utterance: "use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Shows the permission set configuration from the Metadata API"
-
-  # 8: File reading
-  - vars:
-      utterance: "read the files attached to the Acme Q1 Expansion Deal and summarize what they contain"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Summarizes the NDA document content"
-
-  # 9: Scheduling
-  - vars:
-      utterance: "every weekday at 9am, check for opportunities closing this week and notify me"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms a plan was scheduled for weekdays at 9am with a cron expression"
-
-  # 10: Notifications
-  - vars:
-      utterance: "notify me that the quarterly report is ready for review"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms the notification was sent to the current user"
-
-  # ── Multi-turn conversations ────────────────────────────────────────
-
-  # Conversation A: Drill into query results
   - description: "Ask for opportunities"
     vars:
       utterance: "Show me my open opportunities"
@@ -131,28 +66,8 @@ tests:
       - type: llm-rubric
         value: "Provides details about a specific opportunity from the previous list"
 
-  # Conversation B: Preference storage + verification
-  - description: "Set a display preference"
-    vars:
-      utterance: "From now on, always sort my opportunities by close date"
-      conversationId: preference
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms it will remember the sorting preference"
+  # ── Correction: narrow scope mid-conversation ─────────────────────
 
-  - description: "Check if preference was applied"
-    vars:
-      utterance: "Show me my opportunities"
-      conversationId: preference
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Shows opportunities sorted by close date, soonest first"
-
-  # Conversation C: Correction flow
   - description: "Ask about Acme opportunities"
     vars:
       utterance: "How many opportunities does Acme have?"
@@ -173,8 +88,9 @@ tests:
       - type: llm-rubric
         value: "Acknowledges the correction and narrows scope to Acme Corporation"
 
-  # Conversation D: Memory — agent gets it wrong, user corrects and stores preference
-  - description: "Ask for opportunities in wrong format"
+  # ── Memory: correct format and store preference ───────────────────
+
+  - description: "Ask for opportunities in default format"
     vars:
       utterance: "Show me my opportunities"
       conversationId: memory

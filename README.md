@@ -38,6 +38,8 @@ Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlug
 - Read and modify code and configuration via the [Tooling API](force-app/main/default/genAiFunctions/CallToolingApi/) and [Metadata API](force-app/main/default/genAiFunctions/CallMetadataApi/)
 - Generate [PlantUML diagrams](force-app/main/default/genAiFunctions/CreatePlantUmlUrl/) for data models and processes
 - [Search the web](force-app/main/default/genAiFunctions/SearchWeb/)
+- [Answer questions about a file](force-app/main/default/genAiFunctions/AnswerWithCurrentFile/) using platform-native file grounding
+- [Answer from a Data Library](force-app/main/default/genAiFunctions/AnswerFromDataLibrary/) using Data Cloud's DynamicRetriever (requires Data Cloud setup — see below)
 - [Notify](force-app/main/default/genAiFunctions/NotifyUser/) people and [delegate tasks](force-app/main/default/genAiFunctions/RunMyOrgButler/) to a headless sub-agent
 
 ### Is it safe?
@@ -47,6 +49,14 @@ Built entirely on Agentforce with [**1 topic**](force-app/main/default/genAiPlug
 **Metadata & Tooling API: ✅ Permission-Gated** - Create, update, and delete operations on metadata/code require specific user permissions ("View All Data" for Tooling API, "Modify Metadata" or "Author Apex" for Metadata API). Operations execute with the current user's session - users without these permissions cannot make changes even through the agent.
 
 **Slack Integration: ✅ Secure** - When used in Slack channels, Agentforce shows you a private draft response first. You review it, then decide whether to share it publicly. This prevents accidental exposure of sensitive data.
+
+### Optional: Data Cloud Setup
+
+The **Answer from Data Library** action searches company documents using Data Cloud. The scratch org creation script will prompt you to upload a sample PDF into a Data Library — the same file that's already attached to the demo Opportunity for file grounding.
+
+> **Note:** Your DevHub needs "Create Data Cloud Scratch Org" permissions. If you don't have this, [open a Partner Community case](https://partners.salesforce.com/) to request it.
+
+Without completing the Data Library setup, the action deploys fine but returns no results.
 
 ### How can I make this my own?
 

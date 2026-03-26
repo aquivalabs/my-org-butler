@@ -49,16 +49,30 @@ sf apex run --file scripts/create-sample-data.apex
 
 echo "Uploading Sample Files"
 OPP_ID=$(sf data query --query "SELECT Id FROM Opportunity WHERE Name='Acme Q1 Expansion Deal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-sf data create file --file "scripts/Acme_NDA_2026.pdf" --title "Acme Corporation NDA 2026" --parent-id "$OPP_ID"
+sf data create file --file "scripts/sample-company-document.pdf" --title "Sample Company Document" --parent-id "$OPP_ID"
 
 echo "Populating agentforce-eval/.env with test record IDs"
-CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Corporation NDA 2026' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
+CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Sample Company Document' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
 cat > agentforce-eval/.env <<EOF
-AGENT_NAME=MyOrgButler
-API_VERSION=v65.0
 OPENAI_API_KEY=${OPENAI_API_KEY}
 CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}
 EOF
+
+echo ""
+echo "============================================"
+echo " MANUAL STEP: Data Library Setup"
+echo "============================================"
+echo " The org is opening now. To enable 'Answer from Data Library':"
+echo " 1. Go to Setup → Data Library"
+echo " 2. Create a new Data Library named: CompanyDocuments"
+echo " 3. Type: File"
+echo " 4. Upload: scripts/sample-company-document.pdf"
+echo "    (same PDF already attached to the Acme Opportunity)"
+echo " 5. Create a search index and wait for it to complete"
+echo "============================================"
+echo ""
+sf org open
+read -p "Press Enter when done (or to skip)..."
 
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
