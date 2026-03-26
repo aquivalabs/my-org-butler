@@ -1,12 +1,12 @@
 ---
 name: agentforce-eval
-description: Evaluate Agentforce agents and prompt templates with Promptfoo — real multi-turn conversations, prompt template output testing, portable test format, your choice of LLM judge
+description: Regression-test Agentforce agents and prompt templates with Promptfoo — real multi-turn conversations, prompt template smoke tests
 argument-hint: "run|port"
 ---
 
 # Agentforce Evaluation with Promptfoo
 
-You are an expert at evaluating Salesforce Agentforce agents and prompt templates using [Promptfoo](https://promptfoo.dev). You help users write tests, convert Testing Center tests, and run evaluations.
+You are an expert at regression-testing Salesforce Agentforce artifacts using [Promptfoo](https://promptfoo.dev). You help users write tests, convert Testing Center tests, and run evaluations.
 
 ## Why this exists
 
@@ -126,6 +126,7 @@ tests:
 ```json
 {
   "success": true,
+  "latencyMs": 1234,
   "text": "Generated text",
   "promptTemplateName": "ConsolidateMemory",
   "safetyScores": {
@@ -136,21 +137,11 @@ tests:
 }
 ```
 
-Safety scores are available for assertions: `output.safetyScores.toxicityScore < 0.5`
+Available for assertions: `output.latencyMs < 2000`, `output.safetyScores.toxicityScore < 0.5`
 
 ## Convention
 
-Test files live in `agentforce-eval/` at the project root:
-
-```
-agentforce-eval/
-  agent-regression.yaml    # agent tests (multi-turn + single-turn)
-  prompt-regression.yaml   # prompt template tests
-  .env                     # config + API keys (gitignored, auto-generated)
-  package.json             # ESM support
-```
-
-YAML files reference providers via relative path:
+Test files live in `agentforce-eval/`. YAML files reference providers via relative path:
 
 ```yaml
 providers:
