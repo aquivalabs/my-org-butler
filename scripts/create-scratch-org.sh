@@ -51,12 +51,11 @@ echo "Uploading Sample Files"
 OPP_ID=$(sf data query --query "SELECT Id FROM Opportunity WHERE Name='Acme Q1 Expansion Deal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
 sf data create file --file "scripts/Acme_NDA_2026.pdf" --title "Acme Corporation NDA 2026" --parent-id "$OPP_ID"
 
-echo "Populating agentforce-eval/.env with test record IDs"
+echo "Populating agentforce-eval/.env.salesforce with test record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Corporation NDA 2026' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-cat > agentforce-eval/.env <<EOF
+cat > agentforce-eval/.env.salesforce <<EOF
 AGENT_NAME=MyOrgButler
 API_VERSION=v65.0
-OPENAI_API_KEY=${OPENAI_API_KEY}
 CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}
 EOF
 
@@ -67,10 +66,10 @@ echo "Running Testing Center Tests"
 sf agent test run --api-name Regression_Test --wait 10
 
 echo "Running Promptfoo Agent Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env && cd ..
+cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env --env-file .env.salesforce && cd ..
 
 echo "Running Promptfoo Prompt Template Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env && cd ..
+cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --env-file .env.salesforce && cd ..
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default
