@@ -217,19 +217,31 @@ After presenting results, append insights to `learnings.md` in this skill folder
 
 Copy the winning variant's `<primaryModel>` and `<content>` into the original template XML in `force-app/` and deploy. Update `applied: true` in the manifest.
 
-## Step 8: Cleanup (on user request)
+## Step 8: Ask about cleanup (REQUIRED — always ask)
 
-Delete variant files:
+After applying a winner, always ask: "Want me to clean up the experiment data? This removes variant templates from the org and deletes the local experiment folder."
+
+If yes:
+
+1. Remove variants from the org via destructive deploy:
 
 ```bash
+# Create destructiveChanges.xml listing variant template names
+# Create empty package.xml
+sf project deploy start --manifest package.xml --post-destructive-changes destructiveChanges.xml --concise
+```
+
+2. Remove local experiment folder:
+
+```bash
+rm -rf unpackaged/experiments/{Template}
 rm -rf unpackaged/experiments/main/default/genAiPromptTemplates/{Template}_*
 ```
 
-Then destructive deploy or tell the user to delete manually in Setup → Prompt Templates.
+3. Commit the cleanup.
 
 ## Rules
 
 - Never modify the original template in `force-app/` during experiments — only when applying a winner
-- Never auto-delete variant templates — the user may want to test them manually
-- Experiment folders are committed to git as history
+- Never auto-delete — always ask the user first
 - Always read `learnings.md` before proposing and write to it after results
