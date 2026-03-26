@@ -1,0 +1,37 @@
+description: "Experiment: ConsolidateMemory — model comparison"
+
+providers:
+  - id: "file://../../../.claude/skills/agentforce/providers/sf-generations-api.mjs"
+    label: "Einstein Generations API"
+
+prompts:
+  - "{{promptTemplateName}}"
+
+defaultTest:
+  options:
+    provider: "openai:gpt-4o"
+  assert:
+    - type: javascript
+      value: "output.success === true"
+    - type: llm-rubric
+      value: "The consolidated result preserves specific field names and object contexts — does NOT generalize to vague statements like 'data displays' or 'structured formats'"
+
+tests:
+  - description: "Baseline: GPT-4o Mini"
+    vars:
+      promptTemplateName: ConsolidateMemory
+      consolidatedMemory: "User prefers opportunities sorted by Amount descending"
+      newMemory: "User now wants opportunities sorted by CloseDate ascending"
+
+  - description: "GPT-4.1 Mini"
+    vars:
+      promptTemplateName: ConsolidateMemory_GPT41Mini
+      consolidatedMemory: "User prefers opportunities sorted by Amount descending"
+      newMemory: "User now wants opportunities sorted by CloseDate ascending"
+
+  - description: "Gemini 2.5 Flash"
+    vars:
+      promptTemplateName: ConsolidateMemory_Gemini25Flash
+      consolidatedMemory: "User prefers opportunities sorted by Amount descending"
+      newMemory: "User now wants opportunities sorted by CloseDate ascending"
+

@@ -211,7 +211,7 @@ After presenting results, append insights to `learnings.md` in this skill folder
 - {pattern confirmed or disproven}
 ```
 
-Focus on insights that generalize to future experiments. Not raw data — that's in `results.json`.
+**Only store meta-learnings about process and methodology** — how to deploy correctly, how to measure reliably, what tools/flags to use. Never store project-specific results like "Model X is faster than Model Y" — those belong in `results.json` and the experiment manifest, not in learnings. Learnings must be useful across any project, any template, any model.
 
 ## Step 7: Apply winner (on user request)
 

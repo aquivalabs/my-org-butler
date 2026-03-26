@@ -1,0 +1,15 @@
+template: ConsolidateMemory
+optimizing: latencyMs
+status: completed
+created: 2026-03-26
+
+variants:
+  - name: ConsolidateMemory_GPT41Mini
+    model: sfdc_ai__DefaultGPT41Mini
+    content: original
+  - name: ConsolidateMemory_Gemini25Flash
+    model: sfdc_ai__DefaultVertexAIGemini25Flash001
+    content: original
+
+winner: ConsolidateMemory_Gemini25Flash
+applied: false

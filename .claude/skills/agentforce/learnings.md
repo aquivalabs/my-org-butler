@@ -26,6 +26,13 @@ Accumulated knowledge from experiments. Read this before proposing any experimen
 - Quality is a gate, not a target — a variant must pass all assertions, then lowest latency wins
 - Safety scores rarely vary between variants of the same prompt — don't optimize for them unless there's a specific concern
 
-## Experiment results
+## Process learnings
 
-(Appended automatically after each experiment)
+### Deployment
+- New prompt templates deploy without an active version. Must do a deploy-retrieve-redeploy cycle: deploy first to create the version, retrieve to get the server-generated `versionIdentifier` hash, add `activeVersionIdentifier` matching that hash, then redeploy.
+- Not all models are available in all scratch org regions. If a variant silently fails to deploy, check model availability. Retrieve to confirm the template exists before running tests.
+
+### Running experiments
+- First API call to a template is always slow (cold start / caching). Always use `--repeat 3` minimum to get reliable latency numbers.
+- Salesforce adds ~1s overhead per call (trust layer, template resolution). This is the latency floor — no model can go below it.
+- The Generations REST API requires `Input:` prefix on valueMap keys and `additionalConfig` with `applicationName: "PromptTemplateGenerationsInvocable"`. Without these it returns INTERNAL_ERROR.
