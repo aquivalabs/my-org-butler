@@ -10,11 +10,9 @@ Test and optimize Agentforce agents and prompt templates using the open-source [
 
 ## Commands
 
-| Command | What it does | Details |
-|---------|-------------|---------|
-| `/agentforce eval` | Run regression tests against agents and prompt templates | [eval.md](commands/eval.md) |
-| `/agentforce experiment` | Optimize a prompt template by testing model and prompt variants | [experiment.md](commands/experiment.md) |
-| `/agentforce port` | Convert Testing Center XML tests to Promptfoo YAML | [port.md](commands/port.md) |
+- [`/agentforce eval`](commands/eval.md) — run regression tests against agents and prompt templates
+- [`/agentforce experiment`](commands/experiment.md) — optimize a prompt template by testing model and prompt variants
+- [`/agentforce port`](commands/port.md) — convert Testing Center XML tests to Promptfoo YAML
 
 ## Real agent conversations
 
@@ -75,21 +73,4 @@ Skill: writes winner into original template, offers cleanup
 
 The experiment workflow accumulates [process learnings](learnings.md) — deployment gotchas, measurement methodology, tooling tips — making each experiment smarter than the last.
 
-## Folder structure
-
-```
-.claude/skills/agentforce/
-├── SKILL.md                          # routing + shared context
-├── README.md                         # this file
-├── commands/
-│   ├── eval.md                       # regression testing instructions
-│   ├── experiment.md                 # optimization workflow
-│   └── port.md                       # Testing Center conversion rules
-├── providers/
-│   ├── sf-agent-api.mjs              # Agent API provider
-│   └── sf-generations-api.mjs        # Generations API provider
-└── learnings.md                      # experiment process knowledge
-```
-
-Test files: `regressions/promptfoo/`
-Experiment variants: `unpackaged/experiments/` (temporary, cleaned up after applying winner)
+Test files live in `regressions/promptfoo/`. Experiment variants go in `unpackaged/experiments/` temporarily and are cleaned up after applying the winner.
