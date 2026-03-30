@@ -10,9 +10,6 @@
     "mobileSettings": {
       "enableS1EncryptedStoragePref2": false
     },
-    "EinsteinGptSettings" : {
-      "enableEinsteinGptPlatform": true
-    },
     "botSettings": {
         "enableBots": true
     },
