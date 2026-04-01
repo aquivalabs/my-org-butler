@@ -16,9 +16,6 @@
     "deploymentSettings": {
       "doesSkipAsyncApexValidation": true
     },
-    "EinsteinGptSettings": {
-        "enableEinsteinGptPlatform": true
-    },
     "einsteinGptSettings": {
         "enableEinsteinGptPlatform": true
     },
