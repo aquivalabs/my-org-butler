@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>- Use this action to query structured data from Data Cloud using SQL syntax (not SOQL).
+- Data Cloud SQL supports SELECT, FROM, WHERE, GROUP BY, ORDER BY, LIMIT, JOIN, and aggregate functions (COUNT, SUM, AVG, MIN, MAX).
+- The action takes a SQL query string and returns JSON containing either:
+  * On success: JSON array of result rows as objects with column-name keys
+  * On error: JSON object representing the exception with message, type, and stack trace
+- Never guess Data Cloud entity or field names. Always use the ExploreDataCloud action first to discover the correct entity names and field names before writing a query.
+- Data Cloud entity names are different from standard Salesforce object API names. They have suffixes like __dlm (Data Model Objects), __dll (Data Lake Objects), or __cio (Calculated Insights).
+- If the query fails, parse the error to understand the issue and retry with a corrected query.
+- If results indicate partial completion, inform the user and suggest narrowing the query with WHERE clauses or LIMIT.
+
+Output Formatting:
+- The raw JSON output is not shown to users - you must parse and format it appropriately
+- Present data in tables, lists, or summaries as appropriate for the context
+- Compress large datasets by showing key highlights, top results, or summaries
+- For aggregate queries, explain what the numbers represent
+- If there are errors, explain them in user-friendly language</description>
+    <developerName>QueryDataCloud</developerName>
+    <invocationTarget>QueryDataCloud</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>QueryDataCloud</localDeveloperName>
+    <masterLabel>MyOrgButler: Query Data Cloud</masterLabel>
+    <progressIndicatorMessage>Querying Data Cloud now.</progressIndicatorMessage>
+</GenAiFunction>

@@ -1,8 +1,8 @@
 {
   "orgName": "my-org-butler_DEV",
-  "edition": "developer",
+  "edition": "Partner Developer",
   "hasSampleData": false,
-    "features": ["EnableSetPasswordInApi","Einstein1AIPlatform", "Chatbot"],
+    "features": ["EnableSetPasswordInApi","Einstein1AIPlatform", "Chatbot", "CustomerDataPlatform", "CustomerDataPlatformLite"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true
@@ -10,20 +10,23 @@
     "mobileSettings": {
       "enableS1EncryptedStoragePref2": false
     },
-    "EinsteinGptSettings" : {
-      "enableEinsteinGptPlatform": true 
-    },
     "botSettings": {
         "enableBots": true
     },
     "deploymentSettings": {
       "doesSkipAsyncApexValidation": true
     },
+    "EinsteinGptSettings": {
+        "enableEinsteinGptPlatform": true
+    },
     "einsteinGptSettings": {
         "enableEinsteinGptPlatform": true
     },
     "agentPlatformSettings": {
         "enableAgentPlatform": true
+    },
+    "customerDataPlatformSettings": {
+        "enableCustomerDataPlatform": true
     }
   }
 }

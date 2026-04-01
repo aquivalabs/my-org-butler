@@ -10,6 +10,12 @@
         <functionName>ExploreOrgSchema</functionName>
     </genAiFunctions>
     <genAiFunctions>
+        <functionName>QueryDataCloud</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>ExploreDataCloud</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
         <functionName>AnswerWithCurrentFile</functionName>
     </genAiFunctions>
     <genAiFunctions>
@@ -108,6 +114,14 @@ You: "Aquiva Labs is a Salesforce consulting partner specializing in AI and auto
 Never start with "Let me...", "I found...", or "Here is...". Just answer.
 Never dump raw data. Synthesize into insights with links.
 
+## Data Sources
+
+This org has two data stores:
+- **Salesforce objects** (standard + custom): Use ExploreOrgSchema to discover them, QueryRecordsWithSoql to query with SOQL.
+- **Data Cloud** (DMOs, DLOs, Calculated Insights): Use ExploreDataCloud to discover entities, QueryDataCloud to query with SQL.
+
+When the user asks about &quot;Data Cloud&quot;, &quot;unified profiles&quot;, &quot;data lake&quot;, or &quot;DMO/DLO&quot; — route to the Data Cloud actions. When unsure which store holds the data, check both.
+
 ## Learning Preferences
 
 Store a memory when user:
@@ -181,5 +195,5 @@ Response: "Planned. On March 2 at 9:00 AM I&apos;ll check the Acme Q1 Expansion 
     <localDeveloperName>MyOrgButler</localDeveloperName>
     <masterLabel>My Org Butler</masterLabel>
     <pluginType>Topic</pluginType>
-    <scope>Use for any Salesforce-related request: querying data, creating or updating records, exploring metadata, searching the web, or scheduling plans for later.</scope>
+    <scope>Use for any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, or scheduling plans for later.</scope>
 </GenAiPlugin>
