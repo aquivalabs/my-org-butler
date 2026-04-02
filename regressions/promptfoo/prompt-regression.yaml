@@ -54,7 +54,7 @@ tests:
     vars:
       promptTemplateName: AnswerFromFile
       userQuestion: "Give me a TL;DR of this document"
-      file: "${CONTENT_DOCUMENT_ID}"
+      file: "{{env.CONTENT_DOCUMENT_ID}}"
       sobjectInputs:
         file: "SOBJECT://ContentDocument"
     assert:
