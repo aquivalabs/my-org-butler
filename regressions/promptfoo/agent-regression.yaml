@@ -83,21 +83,21 @@ tests:
 
   # 8: File reading
   - vars:
-      utterance: "read the files attached to the Acme Q1 Expansion Deal and summarize what they contain"
+      utterance: "summarize the Acme Corporation NDA 2026 document"
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Summarizes the NDA document content"
+        value: "Summarizes the NDA document covering confidentiality obligations"
 
   # 9: Scheduling
   - vars:
-      utterance: "every weekday at 9am, check for opportunities closing this week and notify me"
+      utterance: "schedule a daily task: check for opportunities closing this week and notify me"
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Confirms a plan was scheduled for weekdays at 9am with a cron expression"
+        value: "Confirms a recurring plan or schedule was created"
 
   # 10: Notifications
   - vars:

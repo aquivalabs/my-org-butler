@@ -7,6 +7,7 @@ delete [SELECT Id FROM Task];
 delete [SELECT Id FROM Opportunity];
 delete [SELECT Id FROM Case];
 delete [SELECT Id FROM Contact];
+delete [SELECT Id FROM Entitlement];
 delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
 delete [SELECT Id FROM ContentDocument WHERE Title = 'Acme Corporation NDA 2026'];
 
