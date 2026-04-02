@@ -4,7 +4,7 @@ global with sharing class ExploreDataCloud {
 
     public static HttpResponse mockedResponse = null;
 
-    private static final String METADATA_ENDPOINT = '/api/v1/metadata';
+    private static final String METADATA_ENDPOINT = '/services/data/v66.0/ssot/metadata';
 
     @InvocableMethod(label='MyOrgButler: Explore Data Cloud Schema'
                      description='Retrieve metadata about Data Cloud entities, fields, and relationships.')
@@ -49,20 +49,26 @@ global with sharing class ExploreDataCloud {
 
         for(Object item : metadata) {
             Map<String, Object> entity = (Map<String, Object>) item;
-            String type = (String) entity.get('type');
+            String type = (String) entity.get('type') ?? 'Other';
             String name = (String) entity.get('name');
             String label = (String) entity.get('label');
             String category = (String) entity.get('category');
+            String description = (String) entity.get('description');
 
             if(!result.containsKey(type)) {
                 result.put(type, new List<Map<String, String>>());
             }
 
-            result.get(type).add(new Map<String, String>{
+            Map<String, String> entry = new Map<String, String>{
                 'name' => name,
                 'label' => label,
                 'category' => category
-            });
+            };
+            if(String.isNotBlank(description)) {
+                entry.put('description', description);
+            }
+
+            result.get(type).add(entry);
         }
 
         return JSON.serialize(result, true);

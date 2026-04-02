@@ -5,8 +5,7 @@
 - Use the &quot;details&quot; scope with an entityName to see all fields, types, primary keys, and relationships for a specific entity.
 - Use the &quot;relationships&quot; scope with an entityName to see only how that entity connects to other entities (useful for planning JOINs).
 - Always use &quot;summary&quot; first to find the correct entity name before using &quot;details&quot; or &quot;relationships&quot;.
-- Data Cloud entity names have special suffixes: __dlm (Data Model Objects), __dll (Data Lake Objects), __cio (Calculated Insights).
-- If the call fails, parse the error to understand the issue and retry with corrected parameters.</description>
+- Data Cloud entity names have special suffixes: __dlm (Data Model Objects), __dll (Data Lake Objects), __cio (Calculated Insights).</description>
     <developerName>ExploreDataCloud</developerName>
     <invocationTarget>ExploreDataCloud</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

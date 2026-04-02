@@ -44,6 +44,9 @@ global with sharing class QueryDataCloud {
         }
 
         List<Map<String, Object>> records = new List<Map<String, Object>>();
+        if(rows == null) {
+            rows = new List<Object>();
+        }
         for(Object row : rows) {
             List<Object> values = (List<Object>) row;
             Map<String, Object> record = new Map<String, Object>();
