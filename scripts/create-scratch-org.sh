@@ -5,6 +5,13 @@ execute() {
   $@ || exit
 }
 
+STASHED=false
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Stashing uncommitted changes"
+  git stash --include-untracked
+  STASHED=true
+fi
+
 echo "Updating tools"
 npm install --global @salesforce/cli
 sf plugins update
@@ -29,20 +36,31 @@ execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name Age
 echo "Installing dependencies"
 execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
 
+echo "Stripping namespace for unnamespaced scratch org"
+sed -i '' 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/' sfdx-project.json
+find force-app unpackaged regressions -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) -exec sed -i '' 's/aquiva_os__//g; s/aquiva_os\.//g' {} +
+
 echo "Pushing changes to scratch org"
 execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
 echo "Pushing unpackaged changes to scratch org"
 execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
+echo "Deploying regressions"
+execute sf project deploy start --source-dir regressions --concise
+
+echo "Restoring namespace in source"
+git checkout -- sfdx-project.json force-app/ unpackaged/ regressions/
+if [ "$STASHED" = true ]; then
+  echo "Restoring stashed changes"
+  git stash pop
+fi
+
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
 
 echo "Activate My Org Butler"
 execute sf agent activate --api-name MyOrgButler
-
-echo "Deploying regressions"
-execute sf project deploy start --source-dir regressions --concise
 
 echo "Creating Sample Data"
 sf apex run --file scripts/create-sample-data.apex
