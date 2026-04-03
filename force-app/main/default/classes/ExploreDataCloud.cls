@@ -111,6 +111,10 @@ global with sharing class ExploreDataCloud {
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
         List<Object> metadata = (List<Object>) parsed.get('metadata');
 
+        if(metadata == null || metadata.isEmpty()) {
+            throw new DataCloudException('Entity not found: ' + entityName);
+        }
+
         Map<String, Object> result = (Map<String, Object>) metadata[0];
 
         return result;
