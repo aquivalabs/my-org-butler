@@ -5,6 +5,10 @@
       "default": true
     },
     {
+      "path": "no-namespace",
+      "default": false
+    },
+    {
       "path": "unpackaged",
       "default": false
     },
@@ -37,7 +41,7 @@
     }
   ],
   "name": "my-org-butler",
-  "namespace": "aquiva_os",
+  "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "66.0",
   "packageAliases": {
