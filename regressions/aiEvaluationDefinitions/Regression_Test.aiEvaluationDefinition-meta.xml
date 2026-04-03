@@ -280,7 +280,7 @@
     <testCase>
         <number>15</number>
         <inputs>
-            <utterance>query the first 5 rows from the UnifiedIndividual Data Cloud object</utterance>
+            <utterance>query the first 5 rows from the CompanyDocuments Data Cloud object</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -288,7 +288,7 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['QueryDataCloud']</expectedValue>
+            <expectedValue>['ExploreDataCloud', 'QueryDataCloud'] </expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
