@@ -81,20 +81,37 @@ tests:
 
 ## Running tests
 
-Test files live in `agentforce-eval/`. Run from there:
+Test files live in `regressions/promptfoo/`. Always use `--output` to capture structured results, then report failures inline — never rerun just to see what failed.
 
 ```bash
 # Agent regression
-cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env
+cd regressions/promptfoo && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env --output /tmp/agent-results.json
 
 # Prompt template regression
-cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env
-
-# All suites
-cd agentforce-eval && for f in *.yaml; do npx promptfoo@latest eval -c "$f" --env-file .env; done
+cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --output /tmp/prompt-results.json
 ```
 
-View results: `npx promptfoo@latest view`
+## Reading results
+
+After every run, parse the JSON output to report pass/fail per test with failure reasons. Never ask to rerun.
+
+```bash
+python3 -c "
+import json
+data = json.load(open('/tmp/agent-results.json'))
+results = data.get('results', {}).get('results', [])
+for r in results:
+    desc = r.get('description', r.get('vars', {}).get('utterance', '?'))[:60]
+    passed = r.get('success', False)
+    if not passed:
+        failures = [a.get('reason','?') for a in r.get('gradingResult',{}).get('componentResults',[]) if not a.get('pass')]
+        print(f'FAIL: {desc}')
+        for f in failures:
+            print(f'      {f[:120]}')
+    else:
+        print(f'PASS: {desc}')
+"
+```
 
 ## Key differences from Testing Center
 
