@@ -1,0 +1,14 @@
+{
+  "required" : [ "sqlQuery" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "sqlQuery" : {
+      "title" : "SQL Query",
+      "description" : "SQL query to execute against Data Cloud",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

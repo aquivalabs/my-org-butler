@@ -167,4 +167,40 @@
             <expectedValue>Confirms notification sent with the words quarterly report in the message</expectedValue>
         </expectation>
     </testCase>
+    <testCase>
+        <number>14</number>
+        <inputs>
+            <utterance>what Data Cloud entities are available in this org?</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreDataCloud']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Lists Data Cloud entity names (DMOs, DLOs, or Calculated Insights)</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs>
+            <utterance>query the first 5 rows from the CompanyDocuments Data Cloud object</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['ExploreDataCloud', 'QueryDataCloud'] </expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Shows rows of data from a Data Cloud entity in a formatted table or list</expectedValue>
+        </expectation>
+    </testCase>
 </AiEvaluationDefinition>

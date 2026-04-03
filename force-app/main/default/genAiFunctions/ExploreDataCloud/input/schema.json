@@ -1,0 +1,35 @@
+{
+  "required" : [ "scope" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "scope" : {
+      "title" : "Scope",
+      "description" : "summary, details, or relationships",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "entityType" : {
+      "title" : "Entity Type",
+      "description" : "Optional filter: DataModelObject, DataLakeObject, or CalculatedInsight",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "entityCategory" : {
+      "title" : "Entity Category",
+      "description" : "Optional filter: Profile, Engagement, or Related",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "entityName" : {
+      "title" : "Entity Name",
+      "description" : "Exact API name of a Data Cloud entity (required for details or relationships scope)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

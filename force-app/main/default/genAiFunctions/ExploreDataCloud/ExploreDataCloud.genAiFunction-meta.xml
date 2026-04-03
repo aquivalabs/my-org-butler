@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This action helps you explore Data Cloud entities, their fields, and relationships. Use the &quot;summary&quot; scope to discover available entities, &quot;details&quot; with an entityName to see fields, primary keys, and relationships, and &quot;relationships&quot; with an entityName to see only how that entity connects to others (useful for planning JOINs). Always use &quot;summary&quot; first to find the correct entity name. Data Cloud entity names have suffixes: __dlm (Data Model Objects), __dll (Data Lake Objects), __cio (Calculated Insights).</description>
+    <developerName>ExploreDataCloud</developerName>
+    <invocationTarget>ExploreDataCloud</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>ExploreDataCloud</localDeveloperName>
+    <masterLabel>My Org Butler: Explore Data Cloud</masterLabel>
+    <progressIndicatorMessage>Exploring Data Cloud schema.</progressIndicatorMessage>
+</GenAiFunction>

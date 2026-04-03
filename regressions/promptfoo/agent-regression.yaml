@@ -109,6 +109,24 @@ tests:
       - type: llm-rubric
         value: "Confirms the notification was sent to the current user"
 
+  # 11: Data Cloud exploration
+  - vars:
+      utterance: "what Data Cloud entities are available in this org?"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists Data Cloud entity names (DMOs, DLOs, or Calculated Insights)"
+
+  # 12: Data Cloud query
+  - vars:
+      utterance: "query the users from Data Cloud"
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Shows user records with names or emails from Data Cloud"
+
   # ── Multi-turn conversations ────────────────────────────────────────
 
   # Conversation A: Drill into query results
