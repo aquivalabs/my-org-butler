@@ -9,7 +9,7 @@ delete [SELECT Id FROM Case];
 delete [SELECT Id FROM Contact];
 delete [SELECT Id FROM Entitlement];
 delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
-delete [SELECT Id FROM ContentDocument WHERE Title = 'Acme Corporation NDA 2026'];
+delete [SELECT Id FROM ContentDocument WHERE Title = 'Sample Company Document'];
 
 
 // ACCOUNT 1: Acme Corporation - Primary demo account
@@ -143,3 +143,8 @@ Opportunity burlingtonDeal = new Opportunity(
     Description = 'Generator installation for new weaving plant expansion.'
 );
 insert burlingtonDeal;
+
+
+// CUSTOM SETTINGS
+// DataLibraryRetriever: must match the Data Library name created during scratch org setup
+upsert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = '--TODO--');

@@ -13,7 +13,7 @@
         <functionName>AnswerWithCurrentFile</functionName>
     </genAiFunctions>
     <genAiFunctions>
-        <functionName>AnswerWithRelatedFiles</functionName>
+        <functionName>AnswerFromDataLibrary</functionName>
     </genAiFunctions>
     <genAiFunctions>
         <functionName>SearchWeb</functionName>

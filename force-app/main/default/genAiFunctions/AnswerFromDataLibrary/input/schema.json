@@ -1,0 +1,14 @@
+{
+  "required" : [ "question" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "question" : {
+      "title" : "Question",
+      "description" : "The question to answer using the company knowledge base.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
