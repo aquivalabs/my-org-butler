@@ -41,10 +41,10 @@ tests:
 
   # ── AnswerFromFile ────────────────────────────────────────────────
 
-  - description: "Summarize the Acme NDA"
+  - description: "Extract total contract value from NDA"
     vars:
       promptTemplateName: AnswerFromFile
-      userQuestion: "Give me a TL;DR of this document"
+      userQuestion: "What is the total contract value and how is it split across phases?"
       file: "{{env.CONTENT_DOCUMENT_ID}}"
       sobjectInputs:
         file: "SOBJECT://ContentDocument"
@@ -52,4 +52,4 @@ tests:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Mentions this is an NDA between Acme Corporation and another party, covering confidentiality obligations, permitted disclosures, and a term/expiration"
+        value: "Mentions $500,000 total and references the three phases: $75,000 for Discovery, $250,000 for Implementation, $175,000 for Rollout"
