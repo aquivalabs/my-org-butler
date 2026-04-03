@@ -3,7 +3,7 @@
   "properties" : {
     "resultOrException" : {
       "title" : "Result or Exception JSON",
-      "description" : "JSON array of result rows on success, or exception object on error",
+      "description" : "JSON array of result rows on success, envelope with status and data on partial completion, or exception object on error",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,

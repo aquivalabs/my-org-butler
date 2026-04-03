@@ -5,11 +5,9 @@
 - The action takes a SQL query string and returns JSON containing either:
   * On success: JSON array of result rows as objects with column-name keys
   * On error: JSON object representing the exception with message, type, and stack trace
-- Never guess Data Cloud entity or field names. Always use the ExploreDataCloud action first to discover the correct entity names and field names before writing a query.
-- Data Cloud entity names are different from standard Salesforce object API names. They have suffixes like __dlm (Data Model Objects), __dll (Data Lake Objects), or __cio (Calculated Insights).
-- If the query is invalid, parse the exception JSON to understand the error and retry with a corrected query
-- Use the error details to fix the SQL query and retry a few times before returning an error to the user
-- If you cannot fix the issue on your own, use ExploreDataCloud to discover the correct entity and field names, then retry
+- Never guess Data Cloud entity or field names. Always use the ExploreDataCloud action first to discover the correct names before writing a query.
+- If the query is invalid, parse the exception JSON to understand the error and retry with a corrected query.
+- If you cannot fix the issue on your own, use ExploreDataCloud to discover the correct entity and field names, then retry.
 - If results indicate partial completion, inform the user and suggest narrowing the query with WHERE clauses or LIMIT.
 
 Output Formatting:

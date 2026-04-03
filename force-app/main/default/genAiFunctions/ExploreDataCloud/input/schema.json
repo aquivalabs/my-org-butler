@@ -4,7 +4,7 @@
   "properties" : {
     "scope" : {
       "title" : "Scope",
-      "description" : "summary or details",
+      "description" : "summary, details, or relationships",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
@@ -25,7 +25,7 @@
     },
     "entityName" : {
       "title" : "Entity Name",
-      "description" : "Exact API name of a Data Cloud entity (used with details scope)",
+      "description" : "Exact API name of a Data Cloud entity (required for details or relationships scope)",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

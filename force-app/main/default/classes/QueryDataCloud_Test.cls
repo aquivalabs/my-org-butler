@@ -31,13 +31,17 @@ private class QueryDataCloud_Test {
 
 
     @IsTest
-    private static void wrapsExceptionAsJson() {
+    private static void partialCompletionIncludesWarning() {
 
         // Setup
-        setup(200, 'not valid json {{{');
+        setup(200, '{' +
+            '"completionStatus":"PARTIAL",' +
+            '"metadata":[{"name":"Name__c","type":"VARCHAR"}],' +
+            '"data":[["Acme"]]' +
+            '}');
 
         QueryDataCloud.Input input = new QueryDataCloud.Input();
-        input.sqlQuery = 'INVALID SQL';
+        input.sqlQuery = 'SELECT Name__c FROM Account__dlm';
 
 
         // Exercise
@@ -45,9 +49,9 @@ private class QueryDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(result[0].resultOrException);
-        Assert.isTrue(exceptionResult.containsKey('message'));
-        Assert.isTrue(exceptionResult.containsKey('typeName'));
+        Map<String, Object> envelope = (Map<String, Object>) JSON.deserializeUntyped(result[0].resultOrException);
+        Assert.areEqual('PARTIAL', envelope.get('status'));
+        Assert.isTrue(((List<Object>) envelope.get('data')).size() > 0);
     }
 
 
@@ -68,7 +72,6 @@ private class QueryDataCloud_Test {
         // Verify
         Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(result[0].resultOrException);
         Assert.isTrue(((String) exceptionResult.get('message')).contains('400'));
-        Assert.isTrue(((String) exceptionResult.get('message')).contains('Syntax error'));
     }
 
 

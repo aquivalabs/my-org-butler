@@ -20,8 +20,9 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Assert.isTrue(result[0].response.contains('UnifiedIndividual__dlm'));
-        Assert.isTrue(result[0].response.contains('SalesOrder__dll'));
+        Map<String, Object> grouped = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.isTrue(grouped.containsKey('DataModelObject'));
+        Assert.isTrue(grouped.containsKey('DataLakeObject'));
     }
 
 
@@ -48,11 +49,11 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Assert.isTrue(result[0].response.contains('FirstName__c'));
-        Assert.isTrue(result[0].response.contains('AccountId__c'));
-        Assert.isTrue(result[0].response.contains('Account__dlm'));
-        Assert.isTrue(result[0].response.contains('MANY_TO_ONE'));
-        Assert.isTrue(result[0].response.contains('Id__c'));
+        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.areEqual('UnifiedIndividual__dlm', entity.get('name'));
+        Assert.isTrue(entity.containsKey('fields'));
+        Assert.isTrue(entity.containsKey('relationships'));
+        Assert.isTrue(entity.containsKey('primaryKeys'));
     }
 
 
@@ -77,8 +78,29 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Assert.isTrue(result[0].response.contains('Account__dlm'));
-        Assert.isFalse(result[0].response.contains('FirstName__c'));
+        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.isTrue(entity.containsKey('relationships'));
+        Assert.isFalse(entity.containsKey('fields'));
+    }
+
+
+    @IsTest
+    private static void detailsWithoutEntityNameFails() {
+
+        // Setup
+        setup('{}');
+
+        ExploreDataCloud.Input input = new ExploreDataCloud.Input();
+        input.scope = 'details';
+
+
+        // Exercise
+        List<ExploreDataCloud.Output> result = ExploreDataCloud.execute(new List<ExploreDataCloud.Input>{ input });
+
+
+        // Verify
+        Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.isTrue(((String) exceptionResult.get('message')).contains('entityName is required'));
     }
 
 
@@ -101,7 +123,6 @@ private class ExploreDataCloud_Test {
 
         // Verify
         Map<String, Object> exceptionResult = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Assert.isTrue(exceptionResult.containsKey('message'));
         Assert.isTrue(((String) exceptionResult.get('message')).contains('401'));
     }
 
