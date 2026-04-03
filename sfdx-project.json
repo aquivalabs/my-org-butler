@@ -16,8 +16,8 @@
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",
-      "versionName": "March 2026",
-      "versionNumber": "2026.3.0.NEXT",
+      "versionName": "April 2026",
+      "versionNumber": "2026.4.0.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
@@ -39,7 +39,7 @@
   "name": "my-org-butler",
   "namespace": "aquiva_os",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "65.0",
+  "sourceApiVersion": "66.0",
   "packageAliases": {
     "app-foundations@LATEST": "04tVI000000L3ZBYA0",
     "my-org-butler": "0HoVI0000002h2T0AQ",
@@ -117,6 +117,7 @@
     "my-org-butler@2.30.0-1": "04tVI000000VONpYAO",
     "my-org-butler@2.31.0-1": "04tVI000000VSODYA4",
     "my-org-butler@2.32.0-1": "04tVI000000VUBVYA4",
-    "my-org-butler@2026.3.0-1": "04tVI000000Xl1lYAC"
+    "my-org-butler@2026.3.0-1": "04tVI000000Xl1lYAC",
+    "my-org-butler@2026.4.0-1": "04tVI000000YH6TYAW"
   }
 }
