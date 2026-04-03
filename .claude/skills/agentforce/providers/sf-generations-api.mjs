@@ -20,24 +20,19 @@ const RESERVED_VARS = new Set(['promptTemplateName', 'sobjectInputs', 'apiVersio
 
 function buildInputParams(vars) {
   const sobjectInputs = vars.sobjectInputs || {};
-  const inputParams = {};
+  const valueMap = {};
 
   for (const [key, value] of Object.entries(vars)) {
     if (RESERVED_VARS.has(key)) continue;
 
+    const inputKey = `Input:${key}`;
     if (sobjectInputs[key]) {
-      inputParams[key] = {
-        value: { id: value },
-        valueType: sobjectInputs[key],
-      };
+      valueMap[inputKey] = { value: { id: value } };
     } else {
-      inputParams[key] = {
-        value: String(value),
-        valueType: 'STRING',
-      };
+      valueMap[inputKey] = { value: String(value) };
     }
   }
-  return inputParams;
+  return { valueMap };
 }
 
 export default class SfGenerationsApiProvider {
@@ -66,7 +61,11 @@ export default class SfGenerationsApiProvider {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ inputParams, isPreview: false }),
+        body: JSON.stringify({
+          inputParams,
+          isPreview: false,
+          additionalConfig: { applicationName: 'PromptTemplateGenerationsInvocable' },
+        }),
       }
     );
 

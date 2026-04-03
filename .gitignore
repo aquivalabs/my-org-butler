@@ -54,8 +54,8 @@ retrieval-staging/
 
 # Environment variables
 .env
+.env.salesforce
 .claude/settings.local.json
-.vercel
 
 # Blog drafts
 blog/

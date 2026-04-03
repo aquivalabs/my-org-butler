@@ -2,11 +2,26 @@
   "permissions": {
     "allow": [
       "Bash(sf agent test run:*)",
+      "Bash(sf agent activate:*)",
+      "Bash(sf agent deactivate:*)",
       "Bash(sf project deploy start:*)",
+      "Bash(sf apex run:*)",
+      "Bash(sf org create scratch:*)",
+      "Bash(sf org delete scratch:*)",
+      "Bash(sf org display:*)",
+      "Bash(sf org assign permset:*)",
+      "Bash(sf data *)",
+      "Bash(sf package install:*)",
+      "Bash(sf config set:*)",
       "Bash(npx promptfoo@latest eval:*)",
       "Bash(npx promptfoo@latest view:*)",
       "Bash(npx promptfoo@latest redteam:*)",
-      "WebFetch(domain:agentforce.guide)"
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:agentforce.guide)",
+      "WebFetch(domain:developer.salesforce.com)"
     ],
     "additionalDirectories": [
       "/tmp"

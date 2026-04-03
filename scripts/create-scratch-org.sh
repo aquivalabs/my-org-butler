@@ -87,10 +87,10 @@ echo "Running Testing Center Tests"
 sf agent test run --api-name Regression_Test --wait 10
 
 echo "Running Promptfoo Agent Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env && cd ..
+cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env --env-file .env.salesforce && cd ..
 
 echo "Running Promptfoo Prompt Template Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env && cd ..
+cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --env-file .env.salesforce && cd ..
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default

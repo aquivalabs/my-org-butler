@@ -47,7 +47,7 @@ Return ONLY the consolidated memory content, no meta-commentary.
             <referenceName>Input:newMemory</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultGPT4OmniMini</primaryModel>
+        <primaryModel>sfdc_ai__DefaultVertexAIGemini25Flash001</primaryModel>
         <status>Published</status>
         <versionIdentifier>CNSyYi7XBrJXfPt263fnNSJ26Xsc+rcfRzrE+DtAFyo=_2</versionIdentifier>
     </templateVersions>
