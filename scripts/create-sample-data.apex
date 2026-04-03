@@ -146,4 +146,4 @@ insert burlingtonDeal;
 
 // CUSTOM SETTINGS
 // DataLibraryRetriever: must match the Data Library name created during scratch org setup
-upsert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = 'CompanyDocuments');
+upsert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = '--TODO--');
