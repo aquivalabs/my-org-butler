@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:   #032D60;
+    --blue:   #0176D3;
+    --border: #D8DEE4;
+    --text:   #181818;
+    --soft:   #444;
+    --muted:  #888;
+    --green:  #2E7D32;
+    --red:    #C62828;
+    --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  body {
+    width: 540px; height: 750px;
+    background: transparent;
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  /* ══════════════════════════════════════
+     SIDEBAR — Agentforce chat with input
+     ══════════════════════════════════════ */
+  .sidebar {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  .sb-hdr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sb-hdr-left { display: flex; align-items: center; gap: 8px; }
+  .sb-logo {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sb-logo svg { width: 14px; height: 14px; fill: #fff; }
+  .sb-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .sb-actions { display: flex; gap: 7px; }
+  .sb-actions span { font-size: 13px; color: var(--muted); }
+
+  .chat { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .msg { display: flex; gap: 7px; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .av {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .av-user { background: #4CAF50; }
+  .av-user svg { width: 13px; height: 13px; fill: #fff; }
+  .bbl {
+    max-width: 320px; padding: 9px 12px;
+    border-radius: 10px; font-size: 14px; line-height: 1.45;
+    color: var(--text);
+  }
+  .bbl-user {
+    background: #E8F2FF;
+    border-radius: 10px 3px 10px 10px;
+  }
+  .bbl-user strong { color: var(--navy); }
+
+  .sb-input {
+    border-top: 1px solid var(--border); padding: 9px 12px;
+    background: #FAFBFC;
+  }
+  .sb-input-box {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 7px 11px; font-size: 12px; color: var(--muted);
+    background: #fff;
+  }
+
+  /* ══════════════════════════════════════
+     RESULT SECTIONS — clean, no card
+     ══════════════════════════════════════ */
+  .section { }
+
+  .section-title {
+    font-size: 17px; font-weight: 800;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title .icon {
+    width: 22px; height: 22px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .title-soql { color: var(--red); }
+  .title-soql .icon { background: var(--red); }
+  .title-sem  { color: var(--green); }
+  .title-sem .icon { background: var(--green); }
+
+  /* SQL code block */
+  .sql-block {
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 13.5px;
+    color: var(--soft);
+    background: #F3F5F8;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .sql-block .kw { color: #7B1FA2; font-weight: 600; }
+  .sql-block .fn { color: #0D47A1; font-weight: 600; }
+  .sql-block .str { color: #C62828; }
+  .sql-block .hl-bad { background: #FFCDD2; border-radius: 3px; padding: 1px 3px; }
+  .sql-block .hl-good { background: rgba(46,125,50,0.12); border-radius: 3px; padding: 1px 3px; }
+
+  /* Result rows */
+  .rows { display: flex; flex-direction: column; gap: 6px; }
+
+  .row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .row-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .row-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 10px;
+    flex-shrink: 0; white-space: nowrap;
+  }
+
+  .row.hit       { border-left-color: var(--green); }
+  .badge-hit     { background: #E8F5E9; color: var(--green); }
+  .row.false-pos { border-left-color: var(--red); background: #FFFAFA; }
+  .badge-false   { background: #FFCDD2; color: var(--red); }
+  .row.missed    { border-left-color: #ddd; opacity: 0.45; }
+  .row.missed .row-name { text-decoration: line-through; color: var(--muted); }
+  .badge-missed  { background: #FFEBEE; color: var(--red); }
+
+  .hl-name {
+    background: rgba(255, 235, 59, 0.55);
+    border-radius: 2px; padding: 0 3px;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px; background: var(--border); margin: 2px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR — user asks question ═══ -->
+<div class="sidebar">
+  <div class="sb-hdr">
+    <div class="sb-hdr-left">
+      <div class="sb-logo">
+        <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+      </div>
+      <span class="sb-title">My Org Butler</span>
+    </div>
+    <div class="sb-actions">
+      <span>ℹ</span>
+      <span>📌</span>
+      <span>✕</span>
+    </div>
+  </div>
+  <div class="chat">
+    <div class="msg user">
+      <div class="av av-user">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div class="bbl bbl-user">Find me all opportunities related to <strong>AI</strong></div>
+    </div>
+  </div>
+  <div class="sb-input">
+    <div class="sb-input-box">Describe your task or ask a question...</div>
+  </div>
+</div>
+
+<!-- ═══ SOQL — keyword match ═══ -->
+<div class="section">
+  <div class="section-title title-soql">
+    <div class="icon">!</div>
+    SOQL — keyword match
+  </div>
+
+  <div class="sql-block"><span class="kw">SELECT</span> Name <span class="kw">FROM</span> Opportunity
+<span class="kw">WHERE</span> Name <span class="kw">LIKE</span> <span class="str hl-bad">'%AI%'</span></div>
+
+  <div class="rows">
+    <div class="row false-pos">
+      <div class="row-name"><span class="hl-name">Dubai</span> Dreamin' Sponsoring</div>
+      <div class="row-badge badge-false">false positive</div>
+    </div>
+    <div class="row hit">
+      <div class="row-name">Acme <span class="hl-name">AI</span> Platform Renewal</div>
+      <div class="row-badge badge-hit">✓ match</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ Data Cloud — hybrid search ═══ -->
+<div class="section">
+  <div class="section-title title-sem">
+    <div class="icon">✓</div>
+    Data Cloud — hybrid search
+  </div>
+
+  <div class="sql-block"><span class="kw">SELECT</span> Name, h.hybrid_score__c
+<span class="kw">FROM</span> <span class="fn hl-good">hybrid_search</span>(
+    <span class="kw">TABLE</span>(Opportunity_search_index__dlm),
+    <span class="str">'AI'</span>, <span class="str">''</span>, 10
+) <span class="kw">AS</span> h
+<span class="kw">ORDER BY</span> h.hybrid_score__c <span class="kw">DESC</span></div>
+
+  <div class="rows">
+    <div class="row hit">
+      <div class="row-name">Stark LLM Ops Automation</div>
+      <div class="row-badge badge-hit">LLM = AI</div>
+    </div>
+    <div class="row hit">
+      <div class="row-name">Acme AI Platform Renewal</div>
+      <div class="row-badge badge-hit">keyword + semantic</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

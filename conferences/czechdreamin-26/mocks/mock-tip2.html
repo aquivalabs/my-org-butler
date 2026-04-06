@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:   #032D60;
+    --blue:   #0176D3;
+    --border: #D8DEE4;
+    --bg-canvas: #F3F5F8;
+    --bg-node:   #FFFFFF;
+    --text:      #181818;
+    --soft:      #555;
+    --muted:     #888;
+    --green:     #2E7D32;
+    --red:       #C62828;
+    --font: system-ui, -apple-system, sans-serif;
+  }
+  body {
+    width: 680px; height: 760px;
+    display: flex; flex-direction: column;
+    overflow: hidden; font-family: var(--font);
+    background: transparent;
+  }
+
+  /* ── HEADER ── */
+  .hdr {
+    background: var(--navy); height: 38px; flex-shrink: 0;
+    display: flex; align-items: center; padding: 0 14px; gap: 10px;
+  }
+  .hdr-title { color:#fff; font-weight:600; font-size:12px; }
+  .hdr-sep   { color:rgba(255,255,255,.35); font-size:12px; }
+  .hdr-agent { color:rgba(255,255,255,.75); font-size:11px; }
+  .hdr-space { flex:1; }
+  .btn { border:1px solid rgba(255,255,255,.3); border-radius:4px;
+         color:#fff; font-size:10px; padding:3px 8px; background:transparent; }
+
+  /* ── SPLIT VIEW ── */
+  .split { flex:1; display:flex; overflow:hidden; }
+
+  /* LEFT: CANVAS */
+  .canvas {
+    flex: 1; min-width: 0;
+    background: var(--bg-canvas);
+    overflow-y: auto; padding: 8px 10px;
+    display: flex; flex-direction: column; gap: 4px;
+    border-right: 1px solid var(--border);
+  }
+
+  /* Connector dots */
+  .dots {
+    display: flex; justify-content: center; padding: 2px 0;
+    gap: 3px;
+  }
+  .dots span {
+    width: 4px; height: 4px; border-radius: 50%; background: #BBBAB8;
+  }
+
+  /* Node cards */
+  .node {
+    background: var(--bg-node); border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+  .node-hdr {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 10px; background: #FAFBFC; border-bottom: 1px solid var(--border);
+    font-size: 10.5px; font-weight: 600; color: var(--text);
+  }
+  .node-hdr .t { color: var(--muted); font-weight: 400; font-size: 9px; }
+  .node-body {
+    padding: 6px 10px; font-size: 10.5px; line-height: 1.45; color: var(--soft);
+  }
+
+  /* Node variants */
+  .node-prompt .node-hdr { background: #EDF5FF; border-left: 3px solid var(--blue); }
+  .node-prompt .node-body { font-size: 11px; color: var(--text); font-weight: 500; }
+  .node-reason .node-hdr { background: #F0F0FF; border-left: 3px solid #5C6BC0; }
+  .node-reason .node-hdr .star { color: #5C6BC0; margin-right: 4px; }
+  .node-reason .node-body { font-size: 10px; color: var(--soft); font-style: italic; }
+  .node-action .node-hdr { border-left: 3px solid var(--blue); }
+  .node-error .node-hdr { border-left: 3px solid var(--red); }
+  .node-success .node-hdr { border-left: 3px solid var(--green); }
+
+  /* IO panes — side by side */
+  .io-stack { display: flex; border-top: 1px solid var(--border); }
+  .io-block { flex: 1; min-width: 0; background: #FAFAFA; padding: 5px 8px; }
+  .io-block + .io-block { border-left: 1px solid var(--border); }
+  .io-label {
+    font-size: 8px; font-weight: 700; letter-spacing: .1em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 2px;
+  }
+  .io-code {
+    font-family: 'Menlo','Consolas', monospace; font-size: 9.5px;
+    line-height: 1.45; color: var(--text); white-space: pre-wrap; word-break: break-word;
+  }
+
+  .hl { background: rgba(255, 235, 59, 0.55); border-radius: 2px; padding: 1px 4px; }
+  .ok { color: var(--green); font-weight: 600; }
+  .err { color: var(--red); font-weight: 600; }
+
+  /* API type badges */
+  .api-badge {
+    display: inline-block; font-size: 8px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px; margin-left: 3px;
+    vertical-align: middle;
+  }
+  .badge-rest { background: #E3F2FD; color: #1565C0; }
+  .badge-tooling { background: #F3E5F5; color: #6A1B9A; }
+  .badge-meta { background: #FFF3E0; color: #E65100; }
+  .badge-github { background: #F5F5F5; color: #24292F; }
+
+  /* RIGHT: CONVERSATION */
+  .convo {
+    width: 220px; flex-shrink: 0;
+    background: #FAFBFC; display: flex; flex-direction: column;
+  }
+  .convo-hdr {
+    padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--text);
+    border-bottom: 1px solid var(--border); background: #FAFBFC;
+  }
+  .convo-body {
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .msg { display: flex; gap: 6px; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .av { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; }
+  .av-bot { background: var(--blue); }
+  .av-bot svg { width: 12px; height: 12px; fill: #fff; }
+  .av-user { background: #4CAF50; }
+  .av-user svg { width: 11px; height: 11px; fill: #fff; }
+  .bbl { max-width: 230px; padding: 7px 10px; border-radius: 10px;
+         font-size: 11px; line-height: 1.5; color: var(--text); }
+  .bbl-user { background: #E8F2FF; border-radius: 10px 2px 10px 10px; }
+  .bbl-bot { background: #F5F5F5; border-radius: 2px 10px 10px 10px; }
+  .bbl-bot strong { color: var(--navy); }
+  .bbl-bot a { color: var(--blue); text-decoration: none; font-weight: 500; }
+  .bbl-bot .err-text { color: var(--red); font-size: 10px; }
+
+  .convo-input {
+    border-top: 1px solid var(--border); padding: 8px 10px;
+    display: flex; gap: 6px; align-items: center; background: #FAFBFC;
+  }
+  .convo-input input {
+    flex: 1; border: 1px solid var(--border); border-radius: 4px;
+    padding: 5px 8px; font-size: 10px; background: #fff; color: var(--muted); outline: none;
+  }
+  .send { width: 24px; height: 24px; border-radius: 4px; background: var(--blue);
+          display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .send svg { width: 12px; height: 12px; fill: #fff; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <span class="hdr-title">Agent Builder</span>
+  <span class="hdr-sep">|</span>
+  <span class="hdr-agent">My Org Butler · Version 1 (Active)</span>
+  <div class="hdr-space"></div>
+  <button class="btn">Batch Test</button>
+</div>
+
+<div class="split">
+
+  <!-- ═══ LEFT: CANVAS ═══ -->
+  <div class="canvas">
+
+    <div class="node node-prompt">
+      <div class="node-hdr">User Prompt</div>
+      <div class="node-body">Create an Opportunity for Globex Corp — 120k, Negotiation stage</div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <!-- REST API — Insert Opportunity (fails) -->
+    <div class="node node-error">
+      <div class="node-hdr"><span>Action: <span class="hl">Call REST API</span> <span class="api-badge badge-rest">REST</span></span><span class="t">0.4s</span></div>
+      <div class="io-stack">
+        <div class="io-block">
+          <div class="io-label">Input</div>
+          <div class="io-code">POST /sobjects/Opportunity
+{ "Name": "Globex 120k",
+  "Amount": 120000, ... }</div>
+        </div>
+        <div class="io-block">
+          <div class="io-label">Output</div>
+          <div class="io-code"><span class="err">✗ CANNOT_INSERT</span>
+"ValidateOpp trigger:
+ Budget__c is required"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <div class="node node-reason">
+      <div class="node-hdr"><span><span class="star">✦</span> Reasoning</span></div>
+      <div class="node-body">Insert failed — a trigger is blocking it. Let me look at the code.</div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <!-- Tooling API — Query trigger -->
+    <div class="node node-action">
+      <div class="node-hdr"><span>Action: <span class="hl">Call Tooling API</span> <span class="api-badge badge-tooling">TOOLING</span></span><span class="t">0.2s</span></div>
+      <div class="io-stack">
+        <div class="io-block">
+          <div class="io-label">Input</div>
+          <div class="io-code">GET /tooling/query?q=
+  SELECT Name, Body
+  FROM ApexTrigger ...</div>
+        </div>
+        <div class="io-block">
+          <div class="io-label">Output</div>
+          <div class="io-code"><span class="ok">✓ Found</span>
+"if(Budget__c == null)
+  throw 'Budget required'"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <div class="node node-prompt">
+      <div class="node-hdr">User Prompt</div>
+      <div class="node-body">Deactivate that trigger for now and create a GitHub issue to fix it</div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <!-- Metadata API — Deactivate trigger -->
+    <div class="node node-action">
+      <div class="node-hdr"><span>Action: <span class="hl">Call Metadata API</span> <span class="api-badge badge-meta">METADATA</span></span><span class="t">1.1s</span></div>
+      <div class="io-stack">
+        <div class="io-block">
+          <div class="io-label">Input</div>
+          <div class="io-code">deploy ApexTrigger
+{ "fullName": "ValidateOpp",
+  "status": "Inactive" }</div>
+        </div>
+        <div class="io-block">
+          <div class="io-label">Output</div>
+          <div class="io-code"><span class="ok">✓ Deactivated</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dots"><span></span><span></span><span></span></div>
+
+    <!-- GitHub API — Create issue -->
+    <div class="node node-success">
+      <div class="node-hdr"><span>Action: <span class="hl">Call GitHub API</span> <span class="api-badge badge-github">GITHUB</span></span><span class="t">0.3s</span></div>
+      <div class="io-stack">
+        <div class="io-block">
+          <div class="io-label">Input</div>
+          <div class="io-code">POST /repos/aquivalabs/
+  my-org-butler/issues
+{ "title": "Fix ValidateOpp
+  trigger ..." }</div>
+        </div>
+        <div class="io-block">
+          <div class="io-label">Output</div>
+          <div class="io-code"><span class="ok">✓ Issue #42 created</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ RIGHT: CONVERSATION ═══ -->
+  <div class="convo">
+    <div class="convo-hdr">Conversation Preview</div>
+    <div class="convo-body">
+
+      <div class="msg">
+        <div class="av av-bot">
+          <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+        </div>
+        <div class="bbl bbl-bot">Hi, I'm My Org Butler! How can I help?</div>
+      </div>
+
+      <div class="msg user">
+        <div class="av av-user">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+        <div class="bbl bbl-user">Create an Opportunity for Globex Corp — 120k, Negotiation stage</div>
+      </div>
+
+      <div class="msg">
+        <div class="av av-bot">
+          <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+        </div>
+        <div class="bbl bbl-bot">
+          <span class="err-text">The insert failed.</span> A trigger called <strong>ValidateOpp</strong> requires Budget__c. I looked at the code — it throws if Budget is null.
+        </div>
+      </div>
+
+      <div class="msg user">
+        <div class="av av-user">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        </div>
+        <div class="bbl bbl-user">Deactivate that trigger for now and create a GitHub issue to fix it</div>
+      </div>
+
+      <div class="msg">
+        <div class="av av-bot">
+          <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+        </div>
+        <div class="bbl bbl-bot">
+          Done. Trigger deactivated and <a href="#">issue #42</a> created. Want me to retry the Opportunity?
+        </div>
+      </div>
+
+    </div>
+    <div class="convo-input">
+      <input type="text" placeholder="Describe your task or ask a question..." disabled>
+      <div class="send"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

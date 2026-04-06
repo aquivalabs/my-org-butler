@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic now! — CzechDreamin 2026</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue: #2A609D;
+  --blue-light: #BFD1E5;
+  --blue-pale: #E3ECF4;
+  --orange: #ED7D31;
+  --dark: #484745;
+  --text: #484745;
+  --text-light: #6b6862;
+  --cream: #F5F4EE;
+  --white: #ffffff;
+  --bg: #F5F4EE;
+  --bg-alt: #EDECE6;
+}
+
+html { scroll-behavior: smooth; font-size: clamp(16px, 1.15vw, 22px); scroll-snap-type: y mandatory; }
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* --- NAV --- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0.6rem 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  backdrop-filter: blur(20px);
+  background: rgba(245,244,238,0.92);
+  border-bottom: 2px solid var(--blue);
+}
+.nav-brand {
+  font-family: 'Geo', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--blue);
+  letter-spacing: 0.05em;
+}
+nav .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+
+/* --- PROGRESS --- */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; z-index: 200; background: var(--blue); width: 0%; transition: width 0.3s; }
+
+/* --- SLIDE --- */
+.slide {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  padding: 5.5rem 3.5vw 5.5rem;
+  position: relative;
+  scroll-snap-align: start;
+  background: var(--bg);
+}
+.slide-inner {
+  width: 100%;
+}
+
+/* --- SKYLINE FOOTER (on every slide) --- */
+.slide::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: url('czechdreamin-skyline.png') no-repeat right bottom;
+  background-size: auto 60px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- CZECHDREAMIN FOOTER LABEL --- */
+.slide::before {
+  content: 'CzechDreamin';
+  position: absolute;
+  bottom: 1rem; right: 2.5rem;
+  font-family: 'Geo', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.85rem;
+  color: var(--blue);
+  opacity: 0.35;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- COVER SLIDE --- */
+.slide-cover {
+  background: var(--bg);
+  color: var(--dark);
+  overflow: hidden;
+  align-items: center;
+}
+.slide-cover::after {
+  height: 120px;
+  background-size: auto 100px;
+  opacity: 0.25;
+}
+/* Decorative leaf shape */
+.slide-cover .leaf-deco {
+  position: absolute;
+  top: -80px; right: -60px;
+  width: 400px; height: 600px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.slide-cover h1 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(4rem, 9vw, 6.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  margin-bottom: 1.2rem;
+  color: var(--blue);
+}
+.slide-cover .sub {
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--text-light);
+  margin-bottom: 3.5rem;
+}
+.slide-cover .meta {
+  font-size: 1rem;
+  color: var(--text-light);
+  opacity: 0.6;
+}
+.slide-cover .arrow-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2s infinite;
+}
+.slide-cover .arrow-hint svg { opacity: 0.25; }
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+/* Blue bar accent on cover */
+.slide-cover .cover-bar {
+  width: 80px; height: 4px;
+  background: var(--blue);
+  margin-bottom: 2rem;
+}
+
+/* --- INTRO SLIDE --- */
+.slide-intro { background: var(--bg); }
+.slide-intro .tip-showcase { top: 2.2rem; }
+.slide-intro .tip-showcase::before { background: linear-gradient(to right, var(--bg), transparent); }
+.slide-intro .tip-showcase::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 240px;
+  z-index: 2;
+  background: linear-gradient(to bottom,
+    transparent 0px,
+    transparent 44px,
+    var(--bg) 90px,
+    var(--bg) 160px,
+    transparent 240px
+  );
+  pointer-events: none;
+}
+
+/* --- TIP SLIDES --- */
+.slide-tip { border-top: 2px solid var(--blue-light); position: relative; overflow: hidden; }
+.slide-tip:nth-child(even) { background: var(--bg-alt); }
+.slide-tip:nth-child(even)::after {
+  background: url('czechdreamin-skyline.png') no-repeat right bottom;
+  background-size: auto 60px;
+}
+.slide-tip .bg-num {
+  position: absolute;
+  left: -5vw; bottom: -28vh;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(36rem, 63vw, 54rem);
+  font-weight: 800;
+  color: var(--blue);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.slide-tip .slide-inner {
+  position: relative; z-index: 1;
+}
+
+.tip-header {
+  margin-bottom: 3rem;
+}
+.tip-num {
+  color: var(--orange);
+  font-weight: 700;
+  margin-right: 0.3em;
+}
+.tip-h {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(2.2rem, 3.6vw, 3rem);
+  font-weight: 600;
+  color: var(--blue);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.tip-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tip-bullets li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 1.8rem;
+  font-size: 1.9rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+.tip-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.9rem;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  background: var(--orange);
+}
+.tip-bullets code {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--blue);
+  background: rgba(42,96,157,0.08);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+}
+
+/* --- SHOWCASE: full-height right-side screenshot crop window --- */
+.tip-showcase {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 42%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tip-showcase::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 160px;
+  z-index: 2;
+  background: linear-gradient(to right, var(--bg), transparent);
+  pointer-events: none;
+}
+.slide-tip:nth-child(even) .tip-showcase::before {
+  background: linear-gradient(to right, var(--bg-alt), transparent);
+}
+
+.tip-showcase img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--crop-x, center) top;
+}
+
+/* Mock screenshots */
+.tip-showcase.showcase-mock {
+  width: 52%;
+  top: 11rem;
+  bottom: 0;
+}
+.tip-showcase.showcase-mock:not(.showcase-no-fade) {
+  top: 2.5rem;
+}
+.tip-showcase.showcase-mock img {
+  object-fit: contain;
+  object-position: right top;
+}
+.tip-showcase.showcase-mock iframe {
+  border: none;
+  position: absolute;
+  top: 0; right: 0;
+  width: var(--mock-w, 680px);
+  height: var(--mock-h, 900px);
+  transform-origin: right top;
+  pointer-events: none;
+}
+.tip-showcase.showcase-mock::before {
+  width: 320px;
+}
+.tip-showcase.showcase-no-fade::before {
+  display: none;
+}
+.tip-showcase.showcase-narrow {
+  width: 40%;
+}
+
+.tip-showcase.showcase-multi {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tip-showcase.showcase-multi img {
+  position: relative;
+  min-height: 0;
+  width: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.tip-showcase.showcase-multi img:first-child { flex: 3; }
+.tip-showcase.showcase-multi img:last-child { flex: 7; }
+
+.tip-showcase .showcase-placeholder {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue-pale);
+  opacity: 0.2;
+}
+.tip-showcase .showcase-placeholder span {
+  font-size: 0.9rem; color: var(--blue);
+  font-weight: 500; text-align: center;
+  padding: 0 1.5rem;
+}
+
+/* --- TIP BODY --- */
+.tip-body {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+}
+.tip-content { flex: 1; min-width: 0; max-width: 55%; }
+
+/* --- ORG BUTLER FOOTER (pinned to bottom of slide) --- */
+.tip-butler {
+  position: absolute;
+  bottom: 2rem;
+  left: 3.5vw;
+  right: 42%;
+  padding: 0.5rem 1.2rem;
+  background: var(--blue-pale);
+  border-left: 4px solid var(--blue);
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 2;
+}
+.tip-butler-icon {
+  width: 80px; height: 80px;
+  flex-shrink: 0;
+  border-radius: 14px;
+}
+.tip-butler-body { flex: 1; min-width: 0; }
+.tip-butler-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.15rem;
+}
+.tip-butler p {
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0;
+}
+.tip-butler code {
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--blue);
+  background: rgba(42,96,157,0.08);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+}
+
+/* --- BLUE ACCENT TIP --- */
+.slide-tip-blue {
+  background: var(--blue) !important;
+  color: var(--white);
+  border-top-color: transparent;
+}
+.slide-tip-blue::after { opacity: 0.08; }
+.slide-tip-blue::before { color: rgba(255,255,255,0.2); }
+.slide-tip-blue .tip-num { color: rgba(255,255,255,0.4); }
+.slide-tip-blue .tip-h { color: var(--white); }
+.slide-tip-blue .tip-bullets li { color: rgba(255,255,255,0.92); }
+.slide-tip-blue .tip-bullets li::before { background: var(--orange); }
+.slide-tip-blue .tip-bullets code { color: var(--white); background: rgba(255,255,255,0.15); }
+.slide-tip-blue .bg-num { color: rgba(255,255,255,0.06); opacity: 1; }
+.slide-tip-blue .tip-showcase::before { background: linear-gradient(to right, var(--blue), transparent); }
+.slide-tip-blue .tip-showcase .showcase-placeholder { background: rgba(255,255,255,0.08); }
+.slide-tip-blue .tip-showcase .showcase-placeholder span { color: rgba(255,255,255,0.4); }
+.slide-tip-blue .tip-butler { background: rgba(255,255,255,0.1); border-left-color: var(--orange); }
+.slide-tip-blue .tip-butler-label { color: rgba(255,255,255,0.6); }
+.slide-tip-blue .tip-butler p { color: rgba(255,255,255,0.92); }
+.slide-tip-blue .tip-butler code { color: var(--white); background: rgba(255,255,255,0.12); }
+
+/* --- DARK ACCENT TIP --- */
+.slide-tip-dark {
+  background: var(--dark) !important;
+  color: var(--white);
+  border-top-color: transparent;
+}
+.slide-tip-dark::after { opacity: 0.06; }
+.slide-tip-dark::before { color: rgba(255,255,255,0.15); }
+.slide-tip-dark .tip-num { color: rgba(255,255,255,0.35); }
+.slide-tip-dark .tip-h { color: var(--white); }
+.slide-tip-dark .tip-bullets li { color: rgba(255,255,255,0.92); }
+.slide-tip-dark .tip-bullets li::before { background: var(--orange); }
+.slide-tip-dark .tip-bullets code { color: var(--blue-light); background: rgba(191,209,229,0.12); }
+.slide-tip-dark .bg-num { color: rgba(255,255,255,0.04); }
+.slide-tip-dark .tip-showcase::before { background: linear-gradient(to right, var(--dark), transparent); }
+.slide-tip-dark .tip-showcase .showcase-placeholder { background: rgba(255,255,255,0.06); }
+.slide-tip-dark .tip-showcase .showcase-placeholder span { color: rgba(255,255,255,0.3); }
+.slide-tip-dark .tip-butler { background: rgba(255,255,255,0.08); border-left-color: var(--orange); }
+.slide-tip-dark .tip-butler-label { color: rgba(255,255,255,0.5); }
+.slide-tip-dark .tip-butler p { color: rgba(255,255,255,0.92); }
+.slide-tip-dark .tip-butler code { color: var(--blue-light); background: rgba(191,209,229,0.1); }
+
+/* --- CLOSING --- */
+.slide-closing {
+  background: var(--bg);
+  text-align: center;
+  align-items: center;
+}
+.slide-closing h2 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(3.5rem, 6vw, 5rem);
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 2.5rem;
+}
+.slide-closing .qr {
+  width: 200px; height: 200px;
+  border: 2px solid var(--blue-light);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  background: var(--white);
+  padding: 12px;
+}
+.slide-closing .qr svg {
+  width: 100%; height: 100%;
+}
+.slide-closing a {
+  font-size: 1.6rem; font-weight: 500;
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 2px solid var(--blue-light);
+}
+.slide-closing .speaker {
+  margin-top: 3rem;
+  font-size: 1.4rem;
+  color: var(--text-light);
+}
+.closing-footer {
+  margin-top: 2rem;
+  font-family: 'Geo', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1rem;
+  color: var(--blue);
+  opacity: 0.35;
+}
+
+/* --- REVEAL --- */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .slide { padding: 4rem 1.5rem; }
+  .tip-bullets li { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<nav>
+  <div class="nav-brand">CzechDreamin</div>
+  <div class="nav-right"></div>
+</nav>
+
+<!-- COVER -->
+<div class="slide slide-cover" data-slide="0">
+  <img src="czechdreamin-leaf.png" alt="" class="leaf-deco">
+  <div class="slide-inner">
+    <div class="cover-bar"></div>
+    <h1>Agentic now!</h1>
+    <p class="sub">Tips and Tricks to make the best of Agentforce</p>
+    <p class="meta">Robert Sösemann &middot; CzechDreamin 2026</p>
+  </div>
+  <div class="arrow-hint">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2A609D" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="slide slide-intro slide-tip" data-slide="1">
+  <div class="tip-showcase">
+    <div class="showcase-placeholder"><span>Intro screenshot</span></div>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h"><span class="tip-num">Why now:</span> The right time to go agentic</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>We brought more Agentforce projects through security review than most.</li>
+          <li>Customers are coming back &mdash; not just PoCs anymore, they actually deliver.</li>
+          <li>The time to start is now. AgentScript is coming and will add complexity.</li>
+          <li>Building a mental model is easier while Agentforce is still simple.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p>Open source. Everything we learned. <a href="https://github.com/aquivalabs/my-org-butler" target="_blank" style="color:var(--blue)">github.com/aquivalabs/my-org-butler</a></p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 1 ================================================ -->
+<div class="slide slide-tip" data-slide="2">
+  <div class="bg-num">1</div>
+  <div class="tip-showcase showcase-mock">
+    <iframe src="mocks/mock-tip1.html" title="Tip 1 – bold generic actions" style="--mock-w:680px;--mock-h:660px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Only generic actions unfold the real power of AI</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>One action per use case &rarr; 20 narrow actions, LLM picks wrong.</li>
+          <li>2 generic actions replace dozens of hardcoded ones.</li>
+          <li>Trust the LLM. Prescribing every step is orchestration &mdash; not agentic.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p><code>ExploreOrgSchema</code> + <code>QueryRecordsWithSoql</code> &mdash; two actions handle what would need dozens.</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 2 ================================================ -->
+<div class="slide slide-tip" data-slide="3">
+  <div class="bg-num">2</div>
+  <div class="tip-showcase showcase-mock">
+    <iframe src="mocks/mock-tip2.html" title="Tip 2 – API calls" style="--mock-w:680px;--mock-h:760px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Use APIs to get close to code execution</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>Every REST endpoint is a function call. Chain enough and the agent is programming.</li>
+          <li>Sandboxed power &mdash; no arbitrary code, just API calls.</li>
+          <li>Two paths: custom Apex or External Services + OpenAPI.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p>Salesforce APIs via Apex. GitHub API via no-code External Services (OpenAPI spec).</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 3 ================================================ -->
+<div class="slide slide-tip" data-slide="4">
+  <div class="bg-num">3</div>
+  <div class="tip-showcase showcase-mock showcase-no-fade showcase-narrow">
+    <iframe src="mocks/mock-tip3.html" title="Tip 3 – semantic search vs SOQL" style="--mock-w:540px;--mock-h:750px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Use semantic queries with Data Cloud</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>&ldquo;Find deals similar to Acme.&rdquo; No WHERE clause can do that.</li>
+          <li>Semantic search on CRM data via Data Cloud hybrid retrievers.</li>
+          <li>SOQL for precision, vectors for intuition &mdash; agents speak both.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p>Hybrid retriever on Opportunities &mdash; vector ranked results no SOQL could produce.</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 4 ================================================ -->
+<div class="slide slide-tip" data-slide="5">
+  <div class="bg-num">4</div>
+  <div class="tip-showcase showcase-mock showcase-no-fade">
+    <iframe src="mocks/mock-tip4.html" title="Tip 4 – ground prompts on files" style="--mock-w:620px;--mock-h:740px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">One prompt for all your files — RAG included</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>Grounding comes in many flavors: a single file, related records, semantic search across your doc library.</li>
+          <li>Don&rsquo;t build three actions. One Flex prompt with optional inputs handles all of them.</li>
+          <li>Data Cloud hybrid retriever = RAG on unstructured documents. Same simplicity as SOQL on structured data.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p><code>AnswerFromFiles</code> &mdash; one action, one prompt. Attached SOW, related files, or full doc library &mdash; it figures it out.</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 5 ================================================ -->
+<div class="slide slide-tip" data-slide="6">
+  <div class="bg-num">5</div>
+  <div class="tip-showcase showcase-mock">
+    <iframe src="mocks/mock-tip5.html" title="Tip 5 – agent memory load and store" style="--mock-w:680px;--mock-h:700px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Let your agents learn with memory</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>Every conversation starts from scratch. Brilliant consultant with amnesia.</li>
+          <li>Persist preferences, decisions, tasks across sessions.</li>
+          <li>Memory turns a tool into a colleague.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p><code>AgentMemory</code> + <code>LoadCustomInstructions</code> &mdash; persistent context, zero code.</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 6 ================================================ -->
+<div class="slide slide-tip slide-tip-blue" data-slide="7">
+  <div class="bg-num">6</div>
+  <div class="tip-showcase showcase-mock showcase-no-fade">
+    <iframe src="mocks/mock-tip6.html" title="Tip 6 – headless agent" style="--mock-w:540px;--mock-h:800px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Make agents autonomous with headless</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>Chat is step one. Real pattern: no user, just triggers.</li>
+          <li>Runs on schedule, reacts to events, works autonomously.</li>
+          <li>Interactive agents are the demo. Autonomous agents are the product.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p><code>HeadlessAgent</code> + <code>PlanForLater</code> &mdash; &ldquo;Every Monday, check stale opps and Slack me.&rdquo;</p>
+      </div>
+    </div>
+</div>
+
+<!-- TIP 7 ================================================ -->
+<div class="slide slide-tip slide-tip-dark" data-slide="8">
+  <div class="bg-num">7</div>
+  <div class="tip-showcase showcase-mock">
+    <iframe src="mocks/mock-tip7.html" title="Tip 7 – Testing Center problems" style="--mock-w:680px;--mock-h:780px"></iframe>
+  </div>
+  <div class="slide-inner reveal">
+    <div class="tip-header">
+      <h2 class="tip-h">Don&rsquo;t trust Testing Center&rsquo;s judge</h2>
+    </div>
+    <div class="tip-body">
+      <div class="tip-content">
+        <ul class="tip-bullets">
+          <li>Topic match is 100% for any single-topic agent &mdash; meaningless.</li>
+          <li>Action order penalizes agents that find smarter paths.</li>
+          <li>Outcome assertion is the only one that matters &mdash; and its LLM judge is a black box that fails correct responses.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="tip-butler">
+      <img src="https://github.com/aquivalabs/my-org-butler/raw/main/resources/logo.png" alt="My Org Butler" class="tip-butler-icon">
+      <div class="tip-butler-body">
+        <div class="tip-butler-label">In My Org Butler</div>
+        <p>We use <code>promptfoo</code> with <code>o3-mini</code> as judge &mdash; open rubrics you can fix in YAML, not a black box.</p>
+      </div>
+    </div>
+</div>
+
+<!-- CLOSING -->
+<div class="slide slide-closing" data-slide="9">
+  <div class="slide-inner reveal">
+    <h2>Start building. Now.</h2>
+    <div class="qr"><svg viewBox="0 0 3.3 3.3" xmlns="http://www.w3.org/2000/svg"><path d="M0,0H0.1V0.1H0zM0.1,0H0.2V0.1H0.1zM0.2,0H0.3V0.1H0.2zM0.3,0H0.4V0.1H0.3zM0.4,0H0.5V0.1H0.4zM0.5,0H0.6V0.1H0.5zM0.6,0H0.7V0.1H0.6zM1,0H1.1V0.1H1zM1.3,0H1.4V0.1H1.3zM1.4,0H1.5V0.1H1.4zM1.7,0H1.8V0.1H1.7zM1.8,0H1.9V0.1H1.8zM2.2,0H2.3V0.1H2.2zM2.6,0H2.7V0.1H2.6zM2.7,0H2.8V0.1H2.7zM2.8,0H2.9V0.1H2.8zM2.9,0H3V0.1H2.9zM3,0H3.1V0.1H3zM3.1,0H3.2V0.1H3.1zM3.2,0H3.3V0.1H3.2zM0,0.1H0.1V0.2H0zM0.6,0.1H0.7V0.2H0.6zM1,0.1H1.1V0.2H1zM1.3,0.1H1.4V0.2H1.3zM1.6,0.1H1.7V0.2H1.6zM2,0.1H2.1V0.2H2zM2.1,0.1H2.2V0.2H2.1zM2.2,0.1H2.3V0.2H2.2zM2.6,0.1H2.7V0.2H2.6zM3.2,0.1H3.3V0.2H3.2zM0,0.2H0.1V0.3H0zM0.2,0.2H0.3V0.3H0.2zM0.3,0.2H0.4V0.3H0.3zM0.4,0.2H0.5V0.3H0.4zM0.6,0.2H0.7V0.3H0.6zM0.9,0.2H1V0.3H0.9zM1.4,0.2H1.5V0.3H1.4zM1.5,0.2H1.6V0.3H1.5zM1.6,0.2H1.7V0.3H1.6zM1.9,0.2H2V0.3H1.9zM2,0.2H2.1V0.3H2zM2.1,0.2H2.2V0.3H2.1zM2.2,0.2H2.3V0.3H2.2zM2.4,0.2H2.5V0.3H2.4zM2.6,0.2H2.7V0.3H2.6zM2.8,0.2H2.9V0.3H2.8zM2.9,0.2H3V0.3H2.9zM3,0.2H3.1V0.3H3zM3.2,0.2H3.3V0.3H3.2zM0,0.3H0.1V0.4H0zM0.2,0.3H0.3V0.4H0.2zM0.3,0.3H0.4V0.4H0.3zM0.4,0.3H0.5V0.4H0.4zM0.6,0.3H0.7V0.4H0.6zM0.8,0.3H0.9V0.4H0.8zM1,0.3H1.1V0.4H1zM1.1,0.3H1.2V0.4H1.1zM1.2,0.3H1.3V0.4H1.2zM1.3,0.3H1.4V0.4H1.3zM1.6,0.3H1.7V0.4H1.6zM1.7,0.3H1.8V0.4H1.7zM2,0.3H2.1V0.4H2zM2.1,0.3H2.2V0.4H2.1zM2.2,0.3H2.3V0.4H2.2zM2.3,0.3H2.4V0.4H2.3zM2.4,0.3H2.5V0.4H2.4zM2.6,0.3H2.7V0.4H2.6zM2.8,0.3H2.9V0.4H2.8zM2.9,0.3H3V0.4H2.9zM3,0.3H3.1V0.4H3zM3.2,0.3H3.3V0.4H3.2zM0,0.4H0.1V0.5H0zM0.2,0.4H0.3V0.5H0.2zM0.3,0.4H0.4V0.5H0.3zM0.4,0.4H0.5V0.5H0.4zM0.6,0.4H0.7V0.5H0.6zM0.8,0.4H0.9V0.5H0.8zM1.1,0.4H1.2V0.5H1.1zM1.3,0.4H1.4V0.5H1.3zM1.6,0.4H1.7V0.5H1.6zM1.7,0.4H1.8V0.5H1.7zM1.8,0.4H1.9V0.5H1.8zM1.9,0.4H2V0.5H1.9zM2,0.4H2.1V0.5H2zM2.3,0.4H2.4V0.5H2.3zM2.6,0.4H2.7V0.5H2.6zM2.8,0.4H2.9V0.5H2.8zM2.9,0.4H3V0.5H2.9zM3,0.4H3.1V0.5H3zM3.2,0.4H3.3V0.5H3.2zM0,0.5H0.1V0.6H0zM0.6,0.5H0.7V0.6H0.6zM0.9,0.5H1V0.6H0.9zM1,0.5H1.1V0.6H1zM1.2,0.5H1.3V0.6H1.2zM1.7,0.5H1.8V0.6H1.7zM2,0.5H2.1V0.6H2zM2.1,0.5H2.2V0.6H2.1zM2.2,0.5H2.3V0.6H2.2zM2.4,0.5H2.5V0.6H2.4zM2.6,0.5H2.7V0.6H2.6zM3.2,0.5H3.3V0.6H3.2zM0,0.6H0.1V0.7H0zM0.1,0.6H0.2V0.7H0.1zM0.2,0.6H0.3V0.7H0.2zM0.3,0.6H0.4V0.7H0.3zM0.4,0.6H0.5V0.7H0.4zM0.5,0.6H0.6V0.7H0.5zM0.6,0.6H0.7V0.7H0.6zM0.8,0.6H0.9V0.7H0.8zM1,0.6H1.1V0.7H1zM1.2,0.6H1.3V0.7H1.2zM1.4,0.6H1.5V0.7H1.4zM1.6,0.6H1.7V0.7H1.6zM1.8,0.6H1.9V0.7H1.8zM2,0.6H2.1V0.7H2zM2.2,0.6H2.3V0.7H2.2zM2.4,0.6H2.5V0.7H2.4zM2.6,0.6H2.7V0.7H2.6zM2.7,0.6H2.8V0.7H2.7zM2.8,0.6H2.9V0.7H2.8zM2.9,0.6H3V0.7H2.9zM3,0.6H3.1V0.7H3zM3.1,0.6H3.2V0.7H3.1zM3.2,0.6H3.3V0.7H3.2zM0.9,0.7H1V0.8H0.9zM1.5,0.7H1.6V0.8H1.5zM1.8,0.7H1.9V0.8H1.8zM2.2,0.7H2.3V0.8H2.2zM2.3,0.7H2.4V0.8H2.3zM0,0.8H0.1V0.9H0zM0.1,0.8H0.2V0.9H0.1zM0.5,0.8H0.6V0.9H0.5zM0.6,0.8H0.7V0.9H0.6zM0.7,0.8H0.8V0.9H0.7zM0.9,0.8H1V0.9H0.9zM1,0.8H1.1V0.9H1zM1.3,0.8H1.4V0.9H1.3zM1.4,0.8H1.5V0.9H1.4zM1.6,0.8H1.7V0.9H1.6zM1.7,0.8H1.8V0.9H1.7zM2.2,0.8H2.3V0.9H2.2zM2.3,0.8H2.4V0.9H2.3zM2.4,0.8H2.5V0.9H2.4zM2.8,0.8H2.9V0.9H2.8zM2.9,0.8H3V0.9H2.9zM0,0.9H0.1V1H0zM0.1,0.9H0.2V1H0.1zM0.2,0.9H0.3V1H0.2zM0.3,0.9H0.4V1H0.3zM0.5,0.9H0.6V1H0.5zM0.7,0.9H0.8V1H0.7zM1,0.9H1.1V1H1zM1.1,0.9H1.2V1H1.1zM1.4,0.9H1.5V1H1.4zM1.5,0.9H1.6V1H1.5zM1.9,0.9H2V1H1.9zM2.2,0.9H2.3V1H2.2zM2.3,0.9H2.4V1H2.3zM2.4,0.9H2.5V1H2.4zM2.7,0.9H2.8V1H2.7zM2.8,0.9H2.9V1H2.8zM3,0.9H3.1V1H3zM3.1,0.9H3.2V1H3.1zM0,1H0.1V1.1H0zM0.1,1H0.2V1.1H0.1zM0.2,1H0.3V1.1H0.2zM0.3,1H0.4V1.1H0.3zM0.4,1H0.5V1.1H0.4zM0.5,1H0.6V1.1H0.5zM0.6,1H0.7V1.1H0.6zM0.7,1H0.8V1.1H0.7zM0.8,1H0.9V1.1H0.8zM0.9,1H1V1.1H0.9zM1.2,1H1.3V1.1H1.2zM1.4,1H1.5V1.1H1.4zM1.5,1H1.6V1.1H1.5zM1.6,1H1.7V1.1H1.6zM2,1H2.1V1.1H2zM2.4,1H2.5V1.1H2.4zM2.9,1H3V1.1H2.9zM3.1,1H3.2V1.1H3.1zM0.1,1.1H0.2V1.2H0.1zM0.2,1.1H0.3V1.2H0.2zM0.3,1.1H0.4V1.2H0.3zM0.5,1.1H0.6V1.2H0.5zM0.7,1.1H0.8V1.2H0.7zM1,1.1H1.1V1.2H1zM1.2,1.1H1.3V1.2H1.2zM1.5,1.1H1.6V1.2H1.5zM1.8,1.1H1.9V1.2H1.8zM1.9,1.1H2V1.2H1.9zM2,1.1H2.1V1.2H2zM2.2,1.1H2.3V1.2H2.2zM2.3,1.1H2.4V1.2H2.3zM2.4,1.1H2.5V1.2H2.4zM2.5,1.1H2.6V1.2H2.5zM2.7,1.1H2.8V1.2H2.7zM2.8,1.1H2.9V1.2H2.8zM3,1.1H3.1V1.2H3zM0,1.2H0.1V1.3H0zM0.2,1.2H0.3V1.3H0.2zM0.5,1.2H0.6V1.3H0.5zM0.6,1.2H0.7V1.3H0.6zM0.9,1.2H1V1.3H0.9zM1,1.2H1.1V1.3H1zM1.2,1.2H1.3V1.3H1.2zM1.5,1.2H1.6V1.3H1.5zM1.6,1.2H1.7V1.3H1.6zM2,1.2H2.1V1.3H2zM2.3,1.2H2.4V1.3H2.3zM2.4,1.2H2.5V1.3H2.4zM2.6,1.2H2.7V1.3H2.6zM2.7,1.2H2.8V1.3H2.7zM3.1,1.2H3.2V1.3H3.1zM3.2,1.2H3.3V1.3H3.2zM0,1.3H0.1V1.4H0zM0.3,1.3H0.4V1.4H0.3zM0.4,1.3H0.5V1.4H0.4zM0.5,1.3H0.6V1.4H0.5zM0.7,1.3H0.8V1.4H0.7zM0.8,1.3H0.9V1.4H0.8zM0.9,1.3H1V1.4H0.9zM1,1.3H1.1V1.4H1zM1.1,1.3H1.2V1.4H1.1zM1.4,1.3H1.5V1.4H1.4zM1.5,1.3H1.6V1.4H1.5zM1.6,1.3H1.7V1.4H1.6zM1.7,1.3H1.8V1.4H1.7zM1.8,1.3H1.9V1.4H1.8zM1.9,1.3H2V1.4H1.9zM2.1,1.3H2.2V1.4H2.1zM2.3,1.3H2.4V1.4H2.3zM2.6,1.3H2.7V1.4H2.6zM2.7,1.3H2.8V1.4H2.7zM3.1,1.3H3.2V1.4H3.1zM3.2,1.3H3.3V1.4H3.2zM0,1.4H0.1V1.5H0zM0.2,1.4H0.3V1.5H0.2zM0.5,1.4H0.6V1.5H0.5zM0.6,1.4H0.7V1.5H0.6zM0.8,1.4H0.9V1.5H0.8zM1,1.4H1.1V1.5H1zM1.2,1.4H1.3V1.5H1.2zM1.3,1.4H1.4V1.5H1.3zM1.5,1.4H1.6V1.5H1.5zM1.6,1.4H1.7V1.5H1.6zM1.8,1.4H1.9V1.5H1.8zM2,1.4H2.1V1.5H2zM2.2,1.4H2.3V1.5H2.2zM2.5,1.4H2.6V1.5H2.5zM2.6,1.4H2.7V1.5H2.6zM3.1,1.4H3.2V1.5H3.1zM0,1.5H0.1V1.6H0zM0.2,1.5H0.3V1.6H0.2zM0.4,1.5H0.5V1.6H0.4zM0.7,1.5H0.8V1.6H0.7zM1,1.5H1.1V1.6H1zM1.1,1.5H1.2V1.6H1.1zM1.4,1.5H1.5V1.6H1.4zM1.5,1.5H1.6V1.6H1.5zM1.9,1.5H2V1.6H1.9zM2,1.5H2.1V1.6H2zM2.7,1.5H2.8V1.6H2.7zM2.8,1.5H2.9V1.6H2.8zM3,1.5H3.1V1.6H3zM3.2,1.5H3.3V1.6H3.2zM0.2,1.6H0.3V1.7H0.2zM0.3,1.6H0.4V1.7H0.3zM0.4,1.6H0.5V1.7H0.4zM0.6,1.6H0.7V1.7H0.6zM0.7,1.6H0.8V1.7H0.7zM0.8,1.6H0.9V1.7H0.8zM0.9,1.6H1V1.7H0.9zM1,1.6H1.1V1.7H1zM1.1,1.6H1.2V1.7H1.1zM1.2,1.6H1.3V1.7H1.2zM1.3,1.6H1.4V1.7H1.3zM1.4,1.6H1.5V1.7H1.4zM1.7,1.6H1.8V1.7H1.7zM2,1.6H2.1V1.7H2zM2.2,1.6H2.3V1.7H2.2zM2.5,1.6H2.6V1.7H2.5zM2.7,1.6H2.8V1.7H2.7zM2.8,1.6H2.9V1.7H2.8zM3.1,1.6H3.2V1.7H3.1zM0,1.7H0.1V1.8H0zM0.1,1.7H0.2V1.8H0.1zM0.7,1.7H0.8V1.8H0.7zM0.8,1.7H0.9V1.8H0.8zM1,1.7H1.1V1.8H1zM1.1,1.7H1.2V1.8H1.1zM1.2,1.7H1.3V1.8H1.2zM1.5,1.7H1.6V1.8H1.5zM1.8,1.7H1.9V1.8H1.8zM1.9,1.7H2V1.8H1.9zM2,1.7H2.1V1.8H2zM2.1,1.7H2.2V1.8H2.1zM2.3,1.7H2.4V1.8H2.3zM2.6,1.7H2.7V1.8H2.6zM2.7,1.7H2.8V1.8H2.7zM2.9,1.7H3V1.8H2.9zM3.1,1.7H3.2V1.8H3.1zM3.2,1.7H3.3V1.8H3.2zM0.1,1.8H0.2V1.9H0.1zM0.5,1.8H0.6V1.9H0.5zM0.6,1.8H0.7V1.9H0.6zM0.8,1.8H0.9V1.9H0.8zM1,1.8H1.1V1.9H1zM1.1,1.8H1.2V1.9H1.1zM1.2,1.8H1.3V1.9H1.2zM1.3,1.8H1.4V1.9H1.3zM1.5,1.8H1.6V1.9H1.5zM1.6,1.8H1.7V1.9H1.6zM1.8,1.8H1.9V1.9H1.8zM1.9,1.8H2V1.9H1.9zM2.3,1.8H2.4V1.9H2.3zM2.4,1.8H2.5V1.9H2.4zM3.2,1.8H3.3V1.9H3.2zM0.1,1.9H0.2V2H0.1zM0.2,1.9H0.3V2H0.2zM0.3,1.9H0.4V2H0.3zM0.5,1.9H0.6V2H0.5zM0.7,1.9H0.8V2H0.7zM1,1.9H1.1V2H1zM1.1,1.9H1.2V2H1.1zM1.4,1.9H1.5V2H1.4zM1.5,1.9H1.6V2H1.5zM1.6,1.9H1.7V2H1.6zM2,1.9H2.1V2H2zM2.4,1.9H2.5V2H2.4zM2.6,1.9H2.7V2H2.6zM3,1.9H3.1V2H3zM0,2H0.1V2.1H0zM0.1,2H0.2V2.1H0.1zM0.2,2H0.3V2.1H0.2zM0.4,2H0.5V2.1H0.4zM0.5,2H0.6V2.1H0.5zM0.6,2H0.7V2.1H0.6zM0.9,2H1V2.1H0.9zM1.3,2H1.4V2.1H1.3zM1.4,2H1.5V2.1H1.4zM1.5,2H1.6V2.1H1.5zM1.6,2H1.7V2.1H1.6zM1.7,2H1.8V2.1H1.7zM1.8,2H1.9V2.1H1.8zM2.2,2H2.3V2.1H2.2zM2.3,2H2.4V2.1H2.3zM2.4,2H2.5V2.1H2.4zM2.8,2H2.9V2.1H2.8zM3.1,2H3.2V2.1H3.1zM0,2.1H0.1V2.2H0zM0.1,2.1H0.2V2.2H0.1zM0.2,2.1H0.3V2.2H0.2zM0.7,2.1H0.8V2.2H0.7zM0.8,2.1H0.9V2.2H0.8zM1,2.1H1.1V2.2H1zM1.1,2.1H1.2V2.2H1.1zM1.2,2.1H1.3V2.2H1.2zM1.4,2.1H1.5V2.2H1.4zM1.5,2.1H1.6V2.2H1.5zM1.6,2.1H1.7V2.2H1.6zM1.7,2.1H1.8V2.2H1.7zM1.8,2.1H1.9V2.2H1.8zM1.9,2.1H2V2.2H1.9zM2.2,2.1H2.3V2.2H2.2zM2.3,2.1H2.4V2.2H2.3zM2.7,2.1H2.8V2.2H2.7zM2.8,2.1H2.9V2.2H2.8zM2.9,2.1H3V2.2H2.9zM3.1,2.1H3.2V2.2H3.1zM0,2.2H0.1V2.3H0zM0.2,2.2H0.3V2.3H0.2zM0.4,2.2H0.5V2.3H0.4zM0.5,2.2H0.6V2.3H0.5zM0.6,2.2H0.7V2.3H0.6zM0.7,2.2H0.8V2.3H0.7zM0.9,2.2H1V2.3H0.9zM1,2.2H1.1V2.3H1zM1.2,2.2H1.3V2.3H1.2zM1.5,2.2H1.6V2.3H1.5zM2,2.2H2.1V2.3H2zM2.2,2.2H2.3V2.3H2.2zM2.4,2.2H2.5V2.3H2.4zM2.5,2.2H2.6V2.3H2.5zM2.6,2.2H2.7V2.3H2.6zM2.9,2.2H3V2.3H2.9zM3.1,2.2H3.2V2.3H3.1zM0,2.3H0.1V2.4H0zM0.4,2.3H0.5V2.4H0.4zM0.8,2.3H0.9V2.4H0.8zM1,2.3H1.1V2.4H1zM1.1,2.3H1.2V2.4H1.1zM1.2,2.3H1.3V2.4H1.2zM1.4,2.3H1.5V2.4H1.4zM1.5,2.3H1.6V2.4H1.5zM1.9,2.3H2V2.4H1.9zM2.6,2.3H2.7V2.4H2.6zM2.7,2.3H2.8V2.4H2.7zM2.9,2.3H3V2.4H2.9zM3,2.3H3.1V2.4H3zM0,2.4H0.1V2.5H0zM0.1,2.4H0.2V2.5H0.1zM0.2,2.4H0.3V2.5H0.2zM0.3,2.4H0.4V2.5H0.3zM0.5,2.4H0.6V2.5H0.5zM0.6,2.4H0.7V2.5H0.6zM0.7,2.4H0.8V2.5H0.7zM1.1,2.4H1.2V2.5H1.1zM1.5,2.4H1.6V2.5H1.5zM1.9,2.4H2V2.5H1.9zM2,2.4H2.1V2.5H2zM2.3,2.4H2.4V2.5H2.3zM2.4,2.4H2.5V2.5H2.4zM2.5,2.4H2.6V2.5H2.5zM2.6,2.4H2.7V2.5H2.6zM2.7,2.4H2.8V2.5H2.7zM2.8,2.4H2.9V2.5H2.8zM3.1,2.4H3.2V2.5H3.1zM0.8,2.5H0.9V2.6H0.8zM1.1,2.5H1.2V2.6H1.1zM1.2,2.5H1.3V2.6H1.2zM1.3,2.5H1.4V2.6H1.3zM1.5,2.5H1.6V2.6H1.5zM1.7,2.5H1.8V2.6H1.7zM1.8,2.5H1.9V2.6H1.8zM1.9,2.5H2V2.6H1.9zM2,2.5H2.1V2.6H2zM2.3,2.5H2.4V2.6H2.3zM2.4,2.5H2.5V2.6H2.4zM2.8,2.5H2.9V2.6H2.8zM3,2.5H3.1V2.6H3zM3.2,2.5H3.3V2.6H3.2zM0,2.6H0.1V2.7H0zM0.1,2.6H0.2V2.7H0.1zM0.2,2.6H0.3V2.7H0.2zM0.3,2.6H0.4V2.7H0.3zM0.4,2.6H0.5V2.7H0.4zM0.5,2.6H0.6V2.7H0.5zM0.6,2.6H0.7V2.7H0.6zM0.8,2.6H0.9V2.7H0.8zM0.9,2.6H1V2.7H0.9zM1,2.6H1.1V2.7H1zM1.4,2.6H1.5V2.7H1.4zM1.5,2.6H1.6V2.7H1.5zM1.6,2.6H1.7V2.7H1.6zM1.7,2.6H1.8V2.7H1.7zM2.1,2.6H2.2V2.7H2.1zM2.2,2.6H2.3V2.7H2.2zM2.3,2.6H2.4V2.7H2.3zM2.4,2.6H2.5V2.7H2.4zM2.6,2.6H2.7V2.7H2.6zM2.8,2.6H2.9V2.7H2.8zM3.1,2.6H3.2V2.7H3.1zM0,2.7H0.1V2.8H0zM0.6,2.7H0.7V2.8H0.6zM0.8,2.7H0.9V2.8H0.8zM0.9,2.7H1V2.8H0.9zM1,2.7H1.1V2.8H1zM1.8,2.7H1.9V2.8H1.8zM1.9,2.7H2V2.8H1.9zM2.3,2.7H2.4V2.8H2.3zM2.4,2.7H2.5V2.8H2.4zM2.8,2.7H2.9V2.8H2.8zM2.9,2.7H3V2.8H2.9zM3,2.7H3.1V2.8H3zM3.2,2.7H3.3V2.8H3.2zM0,2.8H0.1V2.9H0zM0.2,2.8H0.3V2.9H0.2zM0.3,2.8H0.4V2.9H0.3zM0.4,2.8H0.5V2.9H0.4zM0.6,2.8H0.7V2.9H0.6zM0.9,2.8H1V2.9H0.9zM1,2.8H1.1V2.9H1zM1.1,2.8H1.2V2.9H1.1zM1.2,2.8H1.3V2.9H1.2zM1.3,2.8H1.4V2.9H1.3zM1.4,2.8H1.5V2.9H1.4zM1.7,2.8H1.8V2.9H1.7zM1.9,2.8H2V2.9H1.9zM2.2,2.8H2.3V2.9H2.2zM2.4,2.8H2.5V2.9H2.4zM2.5,2.8H2.6V2.9H2.5zM2.6,2.8H2.7V2.9H2.6zM2.7,2.8H2.8V2.9H2.7zM2.8,2.8H2.9V2.9H2.8zM2.9,2.8H3V2.9H2.9zM3.1,2.8H3.2V2.9H3.1zM3.2,2.8H3.3V2.9H3.2zM0,2.9H0.1V3H0zM0.2,2.9H0.3V3H0.2zM0.3,2.9H0.4V3H0.3zM0.4,2.9H0.5V3H0.4zM0.6,2.9H0.7V3H0.6zM1,2.9H1.1V3H1zM1.1,2.9H1.2V3H1.1zM1.2,2.9H1.3V3H1.2zM1.3,2.9H1.4V3H1.3zM1.5,2.9H1.6V3H1.5zM1.7,2.9H1.8V3H1.7zM1.8,2.9H1.9V3H1.8zM1.9,2.9H2V3H1.9zM2,2.9H2.1V3H2zM2.2,2.9H2.3V3H2.2zM2.3,2.9H2.4V3H2.3zM2.4,2.9H2.5V3H2.4zM2.5,2.9H2.6V3H2.5zM2.8,2.9H2.9V3H2.8zM3,2.9H3.1V3H3zM0,3H0.1V3.1H0zM0.2,3H0.3V3.1H0.2zM0.3,3H0.4V3.1H0.3zM0.4,3H0.5V3.1H0.4zM0.6,3H0.7V3.1H0.6zM0.9,3H1V3.1H0.9zM1.1,3H1.2V3.1H1.1zM1.2,3H1.3V3.1H1.2zM1.3,3H1.4V3.1H1.3zM1.4,3H1.5V3.1H1.4zM1.5,3H1.6V3.1H1.5zM1.9,3H2V3.1H1.9zM2.2,3H2.3V3.1H2.2zM2.3,3H2.4V3.1H2.3zM2.5,3H2.6V3.1H2.5zM2.8,3H2.9V3.1H2.8zM3.2,3H3.3V3.1H3.2zM0,3.1H0.1V3.2H0zM0.6,3.1H0.7V3.2H0.6zM0.8,3.1H0.9V3.2H0.8zM1,3.1H1.1V3.2H1zM1.1,3.1H1.2V3.2H1.1zM1.4,3.1H1.5V3.2H1.4zM1.5,3.1H1.6V3.2H1.5zM1.6,3.1H1.7V3.2H1.6zM2,3.1H2.1V3.2H2zM2.5,3.1H2.6V3.2H2.5zM2.7,3.1H2.8V3.2H2.7zM2.8,3.1H2.9V3.2H2.8zM2.9,3.1H3V3.2H2.9zM3,3.1H3.1V3.2H3zM0,3.2H0.1V3.3H0zM0.1,3.2H0.2V3.3H0.1zM0.2,3.2H0.3V3.3H0.2zM0.3,3.2H0.4V3.3H0.3zM0.4,3.2H0.5V3.3H0.4zM0.5,3.2H0.6V3.3H0.5zM0.6,3.2H0.7V3.3H0.6zM0.8,3.2H0.9V3.3H0.8zM0.9,3.2H1V3.3H0.9zM1,3.2H1.1V3.3H1zM1.1,3.2H1.2V3.3H1.1zM1.2,3.2H1.3V3.3H1.2zM1.3,3.2H1.4V3.3H1.3zM1.4,3.2H1.5V3.3H1.4zM1.5,3.2H1.6V3.3H1.5zM1.6,3.2H1.7V3.3H1.6zM1.7,3.2H1.8V3.3H1.7zM2.2,3.2H2.3V3.3H2.2zM2.3,3.2H2.4V3.3H2.3zM2.4,3.2H2.5V3.3H2.4zM2.5,3.2H2.6V3.3H2.5zM2.6,3.2H2.7V3.3H2.6zM2.8,3.2H2.9V3.3H2.8zM3.1,3.2H3.2V3.3H3.1z" fill="#000000"/></svg></div>
+    <a href="https://rsoesemann.github.io/conferences/agentic-now-26/czechdreamin-26.html" target="_blank">rsoesemann.github.io/conferences/agentic-now-26/czechdreamin-26.html</a>
+    <p class="speaker">Robert Sösemann &middot; CzechDreamin 2026</p>
+    <div class="closing-footer">CzechDreamin</div>
+  </div>
+</div>
+
+<script>
+// --- Slide navigation ---
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+function goTo(i) {
+  if (i < 0 || i >= total) return;
+  current = i;
+  slides[i].scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    goTo(current + 1);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    goTo(current - 1);
+  }
+});
+
+// --- Progress bar + scroll tracking ---
+window.addEventListener('scroll', () => {
+  const s = window.scrollY;
+  const d = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progressBar').style.width = d > 0 ? (s / d) * 100 + '%' : '0%';
+
+  for (let i = slides.length - 1; i >= 0; i--) {
+    if (slides[i].getBoundingClientRect().top <= window.innerHeight * 0.5) {
+      current = i;
+      break;
+    }
+  }
+});
+
+// --- Reveal on scroll ---
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// --- Auto-scale iframes to fill container height ---
+function scaleIframes() {
+  document.querySelectorAll('.showcase-mock iframe').forEach(iframe => {
+    const container = iframe.parentElement;
+    const containerH = container.offsetHeight;
+    const nativeH = parseFloat(getComputedStyle(iframe).height);
+    if (nativeH > 0 && containerH > 0) {
+      const scale = Math.min(containerH / nativeH, 1.4);
+      iframe.style.transform = `scale(${scale})`;
+    }
+  });
+}
+window.addEventListener('load', scaleIframes);
+window.addEventListener('resize', scaleIframes);
+</script>
+
+</body>
+</html>

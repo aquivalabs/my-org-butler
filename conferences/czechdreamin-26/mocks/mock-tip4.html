@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:   #032D60;
+    --blue:   #0176D3;
+    --border: #D8DEE4;
+    --text:   #181818;
+    --soft:   #444;
+    --muted:  #888;
+    --green:  #2E7D32;
+    --red:    #C62828;
+    --purple: #6A1B9A;
+    --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  body {
+    width: 620px; height: 880px;
+    background: transparent;
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR CHAT ── */
+  .sidebar {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  .sb-hdr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sb-hdr-left { display: flex; align-items: center; gap: 8px; }
+  .sb-logo {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sb-logo svg { width: 14px; height: 14px; fill: #fff; }
+  .sb-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .sb-actions { display: flex; gap: 7px; }
+  .sb-actions span { font-size: 13px; color: var(--muted); }
+
+  .chat { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .msg { display: flex; gap: 7px; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .av {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .av-bot { background: var(--blue); }
+  .av-bot svg { width: 13px; height: 13px; fill: #fff; }
+  .av-user { background: #4CAF50; }
+  .av-user svg { width: 13px; height: 13px; fill: #fff; }
+  .bbl {
+    max-width: 380px; padding: 9px 12px;
+    border-radius: 10px; font-size: 14px; line-height: 1.45;
+    color: var(--text);
+  }
+  .bbl-user {
+    background: #E8F2FF;
+    border-radius: 10px 3px 10px 10px;
+  }
+  .bbl-user strong { color: var(--navy); }
+  .bbl-bot {
+    background: #F3F5F8;
+    border-radius: 3px 10px 10px 10px;
+  }
+  .bbl-bot strong { color: var(--navy); }
+
+  .sb-input {
+    border-top: 1px solid var(--border); padding: 9px 12px;
+    background: #FAFBFC;
+  }
+  .sb-input-box {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 7px 11px; font-size: 12px; color: var(--muted);
+    background: #fff;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--muted); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── PROMPT BUILDER MOCK ── */
+  .prompt-builder {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .pb-hdr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    background: #FAFBFC;
+  }
+  .pb-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--purple);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pb-icon svg { width: 16px; height: 16px; fill: #fff; }
+  .pb-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .pb-subtitle { font-size: 11px; color: var(--muted); }
+
+  .pb-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  /* Prompt text area */
+  .pb-prompt {
+    background: #F8F6FF;
+    border: 1px solid #E0D8F0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--soft);
+    font-family: 'Menlo', 'Consolas', monospace;
+  }
+  .pb-prompt .tag {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--font);
+  }
+  .pb-prompt .tag-green {
+    background: var(--green);
+  }
+  .pb-prompt .tag-blue {
+    background: var(--blue);
+  }
+  .pb-prompt .comment {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Input sources */
+  .pb-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pb-inputs-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .pb-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #FAFBFC;
+  }
+  .pb-input-row.active {
+    border-color: var(--green);
+    background: #F1F8F1;
+  }
+  .pb-input-row.inactive {
+    opacity: 0.45;
+  }
+  .pb-input-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green { background: var(--green); }
+  .dot-gray { background: #ccc; }
+  .pb-input-label {
+    font-size: 12px; font-weight: 600; color: var(--text);
+    flex: 1;
+  }
+  .pb-input-desc {
+    font-size: 11px; color: var(--muted);
+  }
+  .pb-input-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .badge-active {
+    background: #E8F5E9; color: var(--green);
+  }
+  .badge-optional {
+    background: #F0F0F0; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ CHAT — user asks about a file ═══ -->
+<div class="sidebar">
+  <div class="sb-hdr">
+    <div class="sb-hdr-left">
+      <div class="sb-logo">
+        <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+      </div>
+      <span class="sb-title">My Org Butler</span>
+    </div>
+    <div class="sb-actions">
+      <span>ℹ</span>
+      <span>📌</span>
+      <span>✕</span>
+    </div>
+  </div>
+  <div class="chat">
+    <div class="msg user">
+      <div class="av av-user">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div class="bbl bbl-user">What are the <strong>payment terms</strong> in the Acme SOW?</div>
+    </div>
+    <div class="msg">
+      <div class="av av-bot">
+        <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+      </div>
+      <div class="bbl bbl-bot">According to <strong>Acme_SOW_2026.pdf</strong> (Section 4.2): Net 30 from invoice date, with 2% early-payment discount within 10 days.</div>
+    </div>
+  </div>
+  <div class="sb-input">
+    <div class="sb-input-box">Describe your task or ask a question...</div>
+  </div>
+</div>
+
+<div class="divider">Under the hood — one prompt, three sources</div>
+
+<!-- ═══ PROMPT BUILDER — Flex template ═══ -->
+<div class="prompt-builder">
+  <div class="pb-hdr">
+    <div class="pb-icon">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zm-3 9h4v1.5h-4V13zm-2 3.5h8V18H8v-1.5zm0-7h3V11H8V9.5z"/></svg>
+    </div>
+    <div>
+      <div class="pb-title">AnswerFromFiles</div>
+      <div class="pb-subtitle">Flex Prompt Template · AnswerFromFiles</div>
+    </div>
+  </div>
+  <div class="pb-body">
+    <div class="pb-prompt">
+<span class="comment">// answer the user's question from whatever files are available</span>
+Answer <span class="tag">userQuestion</span> using the context below.
+
+<span class="comment">// all optional — prompt handles whatever it gets</span>
+File content: <span class="tag-green tag">fileContent</span>
+Related files: <span class="tag-blue tag">relatedFiles</span>
+Knowledge base: <span class="tag tag-green">retrieverChunks</span>
+
+Cite the source file and section.
+    </div>
+
+    <div class="pb-inputs">
+      <div class="pb-inputs-title">Input Sources (all optional)</div>
+
+      <div class="pb-input-row active">
+        <div class="pb-input-dot dot-green"></div>
+        <div class="pb-input-label">Attached file</div>
+        <div class="pb-input-desc">ContentDocumentLink on this record</div>
+        <div class="pb-input-badge badge-active">✓ found</div>
+      </div>
+
+      <div class="pb-input-row inactive">
+        <div class="pb-input-dot dot-gray"></div>
+        <div class="pb-input-label">Related files</div>
+        <div class="pb-input-desc">Files from Opportunity + Account</div>
+        <div class="pb-input-badge badge-optional">not needed</div>
+      </div>
+
+      <div class="pb-input-row active">
+        <div class="pb-input-dot dot-green"></div>
+        <div class="pb-input-label">Data Cloud retriever</div>
+        <div class="pb-input-desc">Hybrid search across all indexed docs</div>
+        <div class="pb-input-badge badge-active">✓ ready</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

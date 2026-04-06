@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:   #032D60;
+    --blue:   #0176D3;
+    --border: #D8DEE4;
+    --text:   #181818;
+    --soft:   #444;
+    --muted:  #888;
+    --green:  #2E844A;
+    --red:    #C23934;
+    --orange: #DD7A01;
+    --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  body {
+    width: 680px; height: 780px;
+    background: transparent;
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .hdr {
+    background: var(--navy); height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; padding: 0 14px; gap: 10px;
+  }
+  .hdr-crumb { color: rgba(255,255,255,.5); font-size: 10px; }
+  .hdr-title { color: #fff; font-weight: 600; font-size: 12px; }
+  .hdr-space { flex: 1; }
+  .btn { border: 1px solid rgba(255,255,255,.3); border-radius: 4px;
+         color: #fff; font-size: 10px; padding: 3px 8px; background: transparent; }
+  .btn-blue { background: var(--blue); border-color: var(--blue); }
+
+  /* ── SUMMARY BAR ── */
+  .summary {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .summary-top {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .summary-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: #E3F2FD;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .summary-icon svg { width: 22px; height: 22px; fill: var(--blue); }
+  .summary-name { font-size: 16px; font-weight: 700; color: var(--text); }
+  .summary-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  .kpis {
+    display: flex; gap: 0; margin-top: 2px;
+  }
+  .kpi {
+    flex: 1; padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-right: none;
+    position: relative;
+  }
+  .kpi:first-child { border-radius: 6px 0 0 6px; }
+  .kpi:last-child { border-radius: 0 6px 6px 0; border-right: 1px solid var(--border); }
+  .kpi-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 3px; }
+  .kpi-val { font-size: 20px; font-weight: 700; }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.red { color: var(--red); }
+  .kpi-val.orange { color: var(--orange); }
+
+  /* Annotation overlays */
+  .kpi-anno {
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    padding: 3px 6px;
+    font-size: 8px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    text-align: center;
+    border-radius: 0 0 5px 5px;
+  }
+  .anno-trivial {
+    background: #E8F5E9;
+    color: #558B2F;
+  }
+  .anno-irrelevant {
+    background: #E8F5E9;
+    color: #558B2F;
+  }
+  .anno-broken {
+    background: #FFEBEE;
+    color: var(--red);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    flex: 1; overflow: hidden;
+    background: #FAFBFC;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 10.5px;
+  }
+  thead th {
+    background: #F3F5F7;
+    padding: 7px 8px;
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 0;
+  }
+  tbody td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #EAECEF;
+    color: var(--soft);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  tbody tr:hover { background: #F0F4FA; }
+
+  /* Column widths */
+  .col-test { width: 26%; }
+  .col-topic { width: 11%; text-align: center; }
+  .col-action { width: 11%; text-align: center; }
+  .col-response { width: 26%; }
+  .col-result { width: 11%; text-align: center; }
+
+  /* Status badges */
+  .badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 10px;
+  }
+  .badge-pass { background: #E8F5E9; color: var(--green); }
+  .badge-fail { background: #FFEBEE; color: var(--red); }
+  .badge svg { width: 10px; height: 10px; }
+
+  .response-preview {
+    font-size: 9.5px; color: var(--soft); line-height: 1.4;
+    max-height: 28px; overflow: hidden;
+  }
+  .response-preview.wrong {
+    color: var(--red);
+  }
+
+  /* ── PROBLEM CALLOUTS ── */
+  .callout-row td {
+    background: #FFF8E1 !important;
+    border-bottom: 2px solid #FFD54F;
+    padding: 5px 8px;
+  }
+  .callout-text {
+    font-size: 9.5px;
+    color: #E65100;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .callout-text svg { width: 13px; height: 13px; fill: #E65100; flex-shrink: 0; }
+
+  /* Column header annotations */
+  .th-anno {
+    display: block;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+  .th-anno.trivial { color: #9E9E9E; }
+  .th-anno.noisy { color: #9E9E9E; }
+  .th-anno.flaky { color: var(--red); }
+
+  /* Strikethrough for irrelevant columns */
+  .faded { opacity: 0.35; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <span class="hdr-crumb">Setup &rsaquo; Testing Center &rsaquo;</span>
+  <span class="hdr-title">Regression_Test</span>
+  <div class="hdr-space"></div>
+  <button class="btn">Download Results</button>
+  <button class="btn btn-blue">New Test Suite</button>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary">
+  <div class="summary-top">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+    </div>
+    <div>
+      <div class="summary-name">Regression_Test</div>
+      <div class="summary-sub">Status: Complete &middot; Duration: 0 min 35 sec &middot; Agent: My Org Butler</div>
+    </div>
+  </div>
+  <div class="kpis">
+    <div class="kpi" style="position:relative">
+      <div class="kpi-label">Topic Pass %</div>
+      <div class="kpi-val green">100%</div>
+      <div class="kpi-anno anno-trivial">Always 100% for single-topic agents</div>
+    </div>
+    <div class="kpi" style="position:relative">
+      <div class="kpi-label">Action Pass %</div>
+      <div class="kpi-val green">100%</div>
+      <div class="kpi-anno anno-irrelevant">Order doesn't matter if output is correct</div>
+    </div>
+    <div class="kpi" style="position:relative">
+      <div class="kpi-label">Response Pass %</div>
+      <div class="kpi-val red">73.33%</div>
+      <div class="kpi-anno anno-broken">The only one that matters &mdash; and it's broken</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="col-test">Test Utterance</th>
+        <th class="col-topic faded">Topic
+          <span class="th-anno trivial">Trivial</span>
+        </th>
+        <th class="col-action faded">Actions
+          <span class="th-anno noisy">Noisy</span>
+        </th>
+        <th class="col-response">Agent Response</th>
+        <th class="col-result">Outcome
+          <span class="th-anno flaky">Flaky</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Test 1: PASS -->
+      <tr>
+        <td>Which opportunity should I focus on?</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Acme Q1 Expansion, $500K, closes in 3 days...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 2: PASS -->
+      <tr>
+        <td>Create a follow-up task for Burlington</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Task created with a follow-up for Burlington...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 3: PASS -->
+      <tr>
+        <td>List custom objects in this org</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Your org has the following custom objects...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 4: FAIL — judge wrong, response was correct -->
+      <tr style="background:#FFF5F5">
+        <td>Show open GitHub issues for our repo</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Found 4 open issues: #32 Fix SOQL injection...</div></td>
+        <td><span class="badge badge-fail"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Fail</span></td>
+      </tr>
+      <!-- Callout: judge was wrong -->
+      <tr class="callout-row">
+        <td colspan="5">
+          <div class="callout-text">
+            <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            Response was correct — agent returned real GitHub data. LLM judge said "no match." You can't see why.
+          </div>
+        </td>
+      </tr>
+
+      <!-- Test 5: PASS -->
+      <tr>
+        <td>How many Apex classes do we have?</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Your org contains 64 Apex classes...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 6: FAIL — judge wrong again -->
+      <tr style="background:#FFF5F5">
+        <td>Remember: I prefer bullet points</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Got it! I've saved your preference for bullet...</div></td>
+        <td><span class="badge badge-fail"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Fail</span></td>
+      </tr>
+      <tr class="callout-row">
+        <td colspan="5">
+          <div class="callout-text">
+            <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            Agent stored the preference correctly. Judge failed it — phrasing didn't match expected text exactly.
+          </div>
+        </td>
+      </tr>
+
+      <!-- Test 7: PASS -->
+      <tr>
+        <td>Read the NDA file attached to Acme</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">The Acme NDA was signed on Jan 15, valid for...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 8: FAIL — passed bad response -->
+      <tr style="background:#FFF5F5">
+        <td>Generate a diagram of custom objects</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview wrong">Sorry, I wasn't able to generate the diagram...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+      <tr class="callout-row">
+        <td colspan="5">
+          <div class="callout-text">
+            <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            Response was wrong — agent failed to generate the diagram. LLM judge passed it anyway.
+          </div>
+        </td>
+      </tr>
+
+      <!-- Test 9: PASS -->
+      <tr>
+        <td>Schedule a weekly opp check</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Scheduled! Every Monday at 9 AM I'll check...</div></td>
+        <td><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Pass</span></td>
+      </tr>
+
+      <!-- Test 10: FAIL -->
+      <tr style="background:#FFF5F5">
+        <td>Send me a notification about it</td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td class="faded"><span class="badge badge-pass"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></td>
+        <td><div class="response-preview">Notification sent successfully to your...</div></td>
+        <td><span class="badge badge-fail"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Fail</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
