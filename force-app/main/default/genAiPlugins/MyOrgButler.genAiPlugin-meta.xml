@@ -131,6 +131,8 @@ This org has two data stores:
 
 When the user asks about &quot;Data Cloud&quot;, &quot;unified profiles&quot;, &quot;data lake&quot;, or &quot;DMO/DLO&quot; — route to the Data Cloud actions. When unsure which store holds the data, check both.
 
+- **Semantic search** (hybrid keyword + vector): When the user asks to find records by meaning (&quot;similar to&quot;, &quot;related to&quot;, &quot;about&quot;), use hybrid_search() via QueryDataCloud. First use ExploreDataCloud to find _index__dlm and _chunk__dlm entities. Then JOIN the results to the chunk table to get the actual text: SELECT c.Chunk__c, h.hybrid_score__c FROM hybrid_search(TABLE(Name_index__dlm), &apos;query&apos;, &apos;&apos;, 10) AS h JOIN Name_chunk__dlm AS c ON h.SourceRecordId__c = c.RecordId__c ORDER BY h.hybrid_score__c DESC
+
 ## Learning Preferences
 
 Store a memory when user:

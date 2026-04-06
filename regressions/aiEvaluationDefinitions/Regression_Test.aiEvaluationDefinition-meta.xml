@@ -4,11 +4,11 @@
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Single-turn tests only. Multi-turn tests live in promptfoo (agent-regression.yaml).</description>
+    <description>Per-action regression tests. One test per action or action pair. Multi-turn demo story lives in promptfoo.</description>
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>create a follow-up task for the Burlington Textiles opportunity</utterance>
+            <utterance>which opportunity should I work on next?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -16,11 +16,11 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['CallRestApi']</expectedValue>
+            <expectedValue>['QueryRecordsWithSoql']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms a task was created and references Burlington Textiles by name</expectedValue>
+            <expectedValue>Recommends the Acme Q1 Expansion Deal as the top priority because it has the highest amount ($500,000) and closes soonest</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -62,7 +62,7 @@
     <testCase>
         <number>4</number>
         <inputs>
-            <utterance>who built this assistant? search the web for Aquiva Labs</utterance>
+            <utterance>create a follow-up task for the Burlington Textiles opportunity</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -70,11 +70,11 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['SearchWeb']</expectedValue>
+            <expectedValue>['CallRestApi']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions Aquiva Labs and that they build Salesforce or Agentforce solutions</expectedValue>
+            <expectedValue>Confirms a task was created and references Burlington Textiles by name</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -98,7 +98,7 @@
     <testCase>
         <number>6</number>
         <inputs>
-            <utterance>use the Metadata API to read the aquiva_os__MyOrgButlerUser permission set definition</utterance>
+            <utterance>use the Metadata API to read the MyOrgButlerUser permission set definition</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -116,6 +116,42 @@
     <testCase>
         <number>7</number>
         <inputs>
+            <utterance>search the web for Aquiva Labs</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['SearchWeb']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Mentions Aquiva Labs and that they build Salesforce or Agentforce solutions</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>8</number>
+        <inputs>
+            <utterance>what are our remedies if a vendor breaches an agreement? check the company docs</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['AnswerFromDataLibrary']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Mentions equitable relief or injunction as remedies for breach</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>9</number>
+        <inputs>
             <utterance>from now on, show opportunities with the Amount and CloseDate fields</utterance>
         </inputs>
         <expectation>
@@ -132,7 +168,7 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>8</number>
+        <number>10</number>
         <inputs>
             <utterance>every weekday at 9am, check for opportunities closing this week and notify me</utterance>
         </inputs>
@@ -146,11 +182,11 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms a scheduled plan with a cron expression like 0 0 9 ? * MON-FRI</expectedValue>
+            <expectedValue>Confirms a scheduled plan with a cron expression like 0 9 ? * MON-FRI</expectedValue>
         </expectation>
     </testCase>
     <testCase>
-        <number>9</number>
+        <number>11</number>
         <inputs>
             <utterance>notify me that the quarterly report is ready for review</utterance>
         </inputs>
@@ -168,9 +204,9 @@
         </expectation>
     </testCase>
     <testCase>
-        <number>14</number>
+        <number>12</number>
         <inputs>
-            <utterance>what Data Cloud entities are available in this org?</utterance>
+            <utterance>query the most recent agent conversation messages from Data Cloud and show me what users asked</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -178,17 +214,17 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['ExploreDataCloud']</expectedValue>
+            <expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Lists Data Cloud entity names (DMOs, DLOs, or Calculated Insights)</expectedValue>
+            <expectedValue>Shows actual user utterances from agent conversations stored in Data Cloud, such as questions about opportunities or custom objects</expectedValue>
         </expectation>
     </testCase>
     <testCase>
-        <number>15</number>
+        <number>13</number>
         <inputs>
-            <utterance>query the first 5 rows from the CompanyDocuments Data Cloud object</utterance>
+            <utterance>use semantic search in Data Cloud to find past agent conversations about opportunity prioritization</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -196,11 +232,11 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['ExploreDataCloud', 'QueryDataCloud'] </expectedValue>
+            <expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Shows rows of data from a Data Cloud entity in a formatted table or list</expectedValue>
+            <expectedValue>Returns semantically matched conversation messages about opportunities, ranked by relevance score from hybrid_search()</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>

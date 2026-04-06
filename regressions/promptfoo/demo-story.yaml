@@ -1,0 +1,98 @@
+description: "MyOrgButler Demo — A Sales Rep's Monday Morning"
+
+# One coherent multi-turn conversation: a rep reviews their top deal,
+# checks the proposal, asks about discount policy, researches the market,
+# creates a follow-up, saves preferences, and automates the workflow.
+#
+# Testing Center handles per-action regression. This tests the full story.
+
+providers:
+  - id: "file://../../.claude/skills/agentforce/providers/sf-agent-api.mjs"
+    label: "MyOrgButler"
+
+prompts:
+  - "{{utterance}}"
+
+evaluateOptions:
+  maxConcurrency: 1
+
+defaultTest:
+  vars:
+    agentName: MyOrgButler
+    apiVersion: v65.0
+  options:
+    provider: "openai:gpt-4o"
+
+tests:
+
+  # ── A Sales Rep's Monday Morning ─────────────────────────────────────
+
+  - description: "Prioritize: what needs my attention?"
+    vars:
+      utterance: "which opportunity should I work on next?"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Recommends Acme Q1 Expansion Deal ($500,000) as top priority because it closes soonest"
+
+  - description: "Review: what did we agree on?"
+    vars:
+      utterance: "what are the payment terms in the attached proposal?"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "References specific payment terms or contract value from the attached document"
+
+  - description: "Policy check: can I offer a discount?"
+    vars:
+      utterance: "the customer asked for a 15% discount — is that within our company policy?"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "References the company discount policy with specific approval thresholds"
+
+  - description: "Research: is this discount normal in the market?"
+    vars:
+      utterance: "are enterprise software discounts above 10% common? search the web"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Returns web search results about enterprise software discount practices"
+
+  - description: "Act: create the follow-up"
+    vars:
+      utterance: "create a task to call Acme and discuss the discount — note that VP approval is needed"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms a task was created for the Acme opportunity mentioning VP approval or discount"
+
+  - description: "Learn: remember my preferences"
+    vars:
+      utterance: "from now on always show Amount and CloseDate when listing opportunities"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it stored a preference to include Amount and CloseDate"
+
+  - description: "Automate: do this every week"
+    vars:
+      utterance: "do this opportunity review every Monday morning at 9am and notify me"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms a scheduled plan with a Monday 9am cron expression"

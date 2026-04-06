@@ -1,8 +1,8 @@
 // AGENT TEST DATA SETUP
-// Creates realistic demo data for conference talks and agent regression tests
+// Creates minimal demo data for conference talks and agent regression tests.
+// Every record here serves a specific test or demo purpose — nothing extra.
 
-// First: Delete ALL old Salesforce sample data (United Oil, Edge, Grand Hotels, etc.)
-// This ensures only OUR demo data exists for clean conference demos
+// First: Delete ALL old Salesforce sample data
 delete [SELECT Id FROM Task];
 delete [SELECT Id FROM Opportunity];
 delete [SELECT Id FROM Case];
@@ -12,7 +12,8 @@ delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
 delete [SELECT Id FROM ContentDocument WHERE Title = 'Sample Company Document'];
 
 
-// ACCOUNT 1: Acme Corporation - Primary demo account
+// ACCOUNTS
+
 Account acme = new Account(
     Name = 'Acme Corporation',
     BillingCity = 'New York',
@@ -24,31 +25,6 @@ Account acme = new Account(
 );
 insert acme;
 
-// ACCOUNT 2: TechStart Industries - Growing startup
-Account techStart = new Account(
-    Name = 'TechStart Industries',
-    BillingCity = 'San Francisco',
-    BillingCountry = 'USA',
-    Industry = 'Technology',
-    NumberOfEmployees = 150,
-    AnnualRevenue = 25000000,
-    Description = 'Fast-growing B2B SaaS startup focused on workflow automation.'
-);
-insert techStart;
-
-// ACCOUNT 3: Global Manufacturing Corp - Traditional enterprise
-Account globalMfg = new Account(
-    Name = 'Global Manufacturing Corp',
-    BillingCity = 'Chicago',
-    BillingCountry = 'USA',
-    Industry = 'Manufacturing',
-    NumberOfEmployees = 12000,
-    AnnualRevenue = 2000000000,
-    Description = 'Fortune 500 manufacturing company with global operations.'
-);
-insert globalMfg;
-
-// ACCOUNT 4: Burlington Textiles - Standard Salesforce demo company
 Account burlington = new Account(
     Name = 'Burlington Textiles Corp of America',
     BillingCity = 'Burlington',
@@ -60,11 +36,24 @@ Account burlington = new Account(
 );
 insert burlington;
 
+Account stark = new Account(
+    Name = 'Stark Industries',
+    BillingCity = 'Los Angeles',
+    BillingCountry = 'USA',
+    Industry = 'Technology',
+    NumberOfEmployees = 8000,
+    AnnualRevenue = 750000000,
+    Description = 'Defense and technology conglomerate specializing in advanced AI systems, robotics, and clean energy.'
+);
+insert stark;
 
-// OPPORTUNITIES FOR ACME (Primary demo account)
 
-// HIGH PRIORITY: Closes in 3 days, $500k - Agent SHOULD prioritize this
-Opportunity acmeUrgent = new Opportunity(
+// OPPORTUNITIES
+// Note: Close dates use Date.today() so the "which opp should I work on next?" question
+// always has a clear winner regardless of when the scratch org is created.
+
+// Note: The clear #1 priority — highest amount + soonest close = agent must pick this
+Opportunity acmeExpansion = new Opportunity(
     Name = 'Acme Q1 Expansion Deal',
     AccountId = acme.Id,
     Amount = 500000,
@@ -72,68 +61,9 @@ Opportunity acmeUrgent = new Opportunity(
     CloseDate = Date.today().addDays(3),
     Description = 'Critical deal for Q1 targets, requires executive follow-up. Customer ready to sign.'
 );
-insert acmeUrgent;
+insert acmeExpansion;
 
-// MEDIUM: Closes in 2 weeks, $150k
-Opportunity acmeRenewal = new Opportunity(
-    Name = 'Acme Annual License Renewal',
-    AccountId = acme.Id,
-    Amount = 150000,
-    StageName = 'Proposal',
-    CloseDate = Date.today().addDays(14),
-    Description = 'Standard annual renewal. Good relationship with champion.'
-);
-insert acmeRenewal;
-
-// LOW: Closes in 3 months, exploratory
-Opportunity acmeFuture = new Opportunity(
-    Name = 'Acme Cloud Migration Project',
-    AccountId = acme.Id,
-    Amount = 800000,
-    StageName = 'Discovery',
-    CloseDate = Date.today().addDays(90),
-    Description = 'Long-term strategic initiative. Still in early discovery phase.'
-);
-insert acmeFuture;
-
-
-// OPPORTUNITIES FOR TECHSTART
-
-Opportunity techStartDeal = new Opportunity(
-    Name = 'TechStart Platform Implementation',
-    AccountId = techStart.Id,
-    Amount = 75000,
-    StageName = 'Qualification',
-    CloseDate = Date.today().addDays(30),
-    Description = 'New customer interested in full platform deployment.'
-);
-insert techStartDeal;
-
-
-// OPPORTUNITIES FOR GLOBAL MANUFACTURING
-
-Opportunity globalMfgPilot = new Opportunity(
-    Name = 'Global Mfg Pilot Program',
-    AccountId = globalMfg.Id,
-    Amount = 50000,
-    StageName = 'Proposal',
-    CloseDate = Date.today().addDays(21),
-    Description = 'Pilot program for one manufacturing plant. Success leads to enterprise rollout.'
-);
-insert globalMfgPilot;
-
-Opportunity globalMfgEnterprise = new Opportunity(
-    Name = 'Global Mfg Enterprise Rollout',
-    AccountId = globalMfg.Id,
-    Amount = 2500000,
-    StageName = 'Discovery',
-    CloseDate = Date.today().addDays(180),
-    Description = 'Full enterprise deployment across all 15 plants. Dependent on pilot success.'
-);
-insert globalMfgEnterprise;
-
-
-// OPPORTUNITY FOR BURLINGTON TEXTILES
+// Note: For the task creation test (Testing Center #4)
 Opportunity burlingtonDeal = new Opportunity(
     Name = 'Burlington Textiles Weaving Plant Generator',
     AccountId = burlington.Id,
@@ -144,6 +74,48 @@ Opportunity burlingtonDeal = new Opportunity(
 );
 insert burlingtonDeal;
 
+// SEMANTIC SEARCH DEMO DATA
+// Note: These demonstrate SOQL vs hybrid_search() contrast (CzechDreamin Tip 3)
+// - "Stark LLM Ops" = semantic match for "AI" (LLM relates to AI, no literal "AI" in name)
+// - "Acme AI Platform" = keyword + semantic match
+// - "Dubai Dreamin'" = SOQL false positive (LIKE '%AI%' matches "Dubai")
+
+Opportunity starkLlm = new Opportunity(
+    Name = 'Stark LLM Ops Automation',
+    AccountId = stark.Id,
+    Amount = 320000,
+    StageName = 'Proposal',
+    CloseDate = Date.today().addDays(45),
+    Description = 'Large language model operations platform for automating internal workflows. Includes GPT-based document processing, neural network inference pipelines, and machine learning model deployment.'
+);
+insert starkLlm;
+
+Opportunity acmeAi = new Opportunity(
+    Name = 'Acme AI Platform Renewal',
+    AccountId = acme.Id,
+    Amount = 200000,
+    StageName = 'Negotiation',
+    CloseDate = Date.today().addDays(10),
+    Description = 'Annual renewal of the Acme artificial intelligence and machine learning platform. Covers predictive analytics, natural language processing, and computer vision modules.'
+);
+insert acmeAi;
+
+Opportunity dubaiSponsoring = new Opportunity(
+    Name = 'Dubai Dreamin\' Sponsoring',
+    AccountId = acme.Id,
+    Amount = 15000,
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-30),
+    Description = 'Gold sponsorship of the Dubai Dreamin\' Salesforce community conference. Includes booth, speaking slot, and logo placement.'
+);
+insert dubaiSponsoring;
+
 
 // CUSTOM SETTINGS
-upsert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = 'MyOrgButlerLibrary');
+List<CustomSetting__c> existing = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryRetriever'];
+if(existing.isEmpty()) {
+    insert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = 'MyOrgButlerLibrary');
+} else {
+    existing[0].put('Value__c', 'MyOrgButlerLibrary');
+    update as user existing;
+}

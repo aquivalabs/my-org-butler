@@ -10,12 +10,12 @@ For actions that work in a single request/response. Runs on-platform.
 sf agent test run --api-name Regression_Test --wait 15 --result-format human
 ```
 
-## Promptfoo Agent Tests (multi-turn)
-`agentforce-eval/agent-regression.yaml`
+## Promptfoo Demo Story (multi-turn)
+`regressions/promptfoo/demo-story.yaml`
 
-For conversations that need multiple turns or dynamic record IDs from `.env`. Uses real agent sessions.
+Multi-turn conversations that chain actions into coherent user workflows. This IS the conference demo, automated as a test.
 ```
-cd agentforce-eval && npx promptfoo@latest eval -c agent-regression.yaml --env-file .env
+cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env
 ```
 
 ## Promptfoo Prompt Tests (template isolation)

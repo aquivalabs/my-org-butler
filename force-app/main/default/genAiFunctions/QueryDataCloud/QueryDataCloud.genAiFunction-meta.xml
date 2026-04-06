@@ -9,6 +9,9 @@
 - If the query is invalid, parse the exception JSON to understand the error and retry with a corrected query.
 - If you cannot fix the issue on your own, use ExploreDataCloud to discover the correct entity and field names, then retry.
 - If results indicate partial completion, inform the user and suggest narrowing the query with WHERE clauses or LIMIT.
+- For semantic search (finding records by meaning, not exact match), use hybrid_search() and JOIN to the chunk table for text:
+  SELECT c.Chunk__c, h.hybrid_score__c FROM hybrid_search(TABLE(Name_index__dlm), 'query', '', 10) AS h JOIN Name_chunk__dlm AS c ON h.SourceRecordId__c = c.RecordId__c ORDER BY h.hybrid_score__c DESC
+  Use ExploreDataCloud first to find _index__dlm and _chunk__dlm entities. Replace 'Name' with the actual index prefix (e.g., AI_Agent_Interaction_Message).
 
 Output Formatting:
 - The raw JSON output is not shown to users - you must parse and format it appropriately
