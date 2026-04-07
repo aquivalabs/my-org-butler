@@ -69,12 +69,12 @@ execute sf agent activate --api-name MyOrgButler
 echo "Creating Sample Data"
 sf apex run --file scripts/create-sample-data.apex
 
-echo "Uploading Sample Files"
+echo "Uploading Proposal to Acme Opportunity"
 OPP_ID=$(sf data query --query "SELECT Id FROM Opportunity WHERE Name='Acme Q1 Expansion Deal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-sf data create file --file "scripts/sample-company-document.pdf" --title "Sample Company Document" --parent-id "$OPP_ID"
+sf data create file --file "scripts/acme-q1-expansion-proposal.pdf" --title "Acme Q1 Expansion Proposal" --parent-id "$OPP_ID"
 
 echo "Populating test env files with record IDs"
-CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Sample Company Document' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
+CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
 echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> regressions/promptfoo/.env
 
 echo ""
@@ -90,14 +90,20 @@ read -p "Press Enter when done (or to skip)..."
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
-echo "Running Testing Center Tests"
-sf agent test run --api-name Regression_Test --wait 10
+echo "Running Testing Center Tests (first pass — generates session tracing data for semantic search)"
+sf agent test run --api-name Regression_Test --wait 15
 
-echo "Running Promptfoo Agent Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env --env-file .env.salesforce && cd ..
+echo "Running Testing Center Tests (second pass — session data now indexed for hybrid_search)"
+sf agent test run --api-name Regression_Test --wait 15
+
+echo "Running Promptfoo Demo Story"
+cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env && cd ../..
+
+echo "Running Promptfoo Regression Tests"
+cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env && cd ../..
 
 echo "Running Promptfoo Prompt Template Regression Tests"
-cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --env-file .env.salesforce && cd ..
+cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env && cd ../..
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default

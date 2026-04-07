@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</activeVersionIdentifier>
     <description>Answers questions using company documents from a Data Cloud data library.</description>
-    <activeVersionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tA=_1</activeVersionIdentifier>
     <developerName>AnswerFromDataLibrary</developerName>
     <masterLabel>Answer from Data Library</masterLabel>
+    <overridable>false</overridable>
     <templateVersions>
         <content>You are a knowledgeable assistant that answers questions using company documentation.
 
@@ -12,7 +13,7 @@
 &lt;/QUESTION&gt;
 
 &lt;KNOWLEDGE&gt;
-{!$EinsteinSearch:sfdc_ai__DynamicRetriever.results}
+{!$EinsteinSearch:sfdc_ai__DynamicRetriever.results} 
 &lt;/KNOWLEDGE&gt;
 
 ### Instructions
@@ -37,7 +38,7 @@
             <referenceName>Input:RetrieverId</referenceName>
             <required>false</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultGPT41Mini</primaryModel>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
         <status>Published</status>
         <templateDataProviders>
             <definition>invocable://getEinsteinRetrieverResults/sfdc_ai__DynamicRetriever</definition>
@@ -57,7 +58,7 @@
             </parameters>
             <referenceName>EinsteinSearch:sfdc_ai__DynamicRetriever</referenceName>
         </templateDataProviders>
-        <versionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tA=_1</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

@@ -1,0 +1,56 @@
+description: "MyOrgButler Multi-Turn Regression Tests"
+
+# Tests that require multiple turns — things Testing Center can't do.
+# Demo story lives separately in demo-story.yaml.
+
+providers:
+  - id: "file://../../.claude/skills/agentforce/providers/sf-agent-api.mjs"
+    label: "MyOrgButler"
+
+prompts:
+  - "{{utterance}}"
+
+evaluateOptions:
+  maxConcurrency: 1
+
+defaultTest:
+  vars:
+    agentName: MyOrgButler
+    apiVersion: v65.0
+  options:
+    provider: "openai:gpt-4o"
+
+tests:
+
+  # ── Custom Instructions round-trip ───────────────────────────────────
+  # Store a preference, then verify it changes the agent's behavior.
+
+  - description: "Ask about opportunities (baseline)"
+    vars:
+      utterance: "show me my open opportunities"
+      conversationId: instructions-roundtrip
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists opportunities with their names"
+
+  - description: "Store a display preference"
+    vars:
+      utterance: "from now on always show the Amount and CloseDate when listing opportunities"
+      conversationId: instructions-roundtrip
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Confirms it stored the preference for Amount and CloseDate"
+
+  - description: "Ask same question again — response should include Amount and CloseDate"
+    vars:
+      utterance: "show me my open opportunities"
+      conversationId: instructions-roundtrip
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Lists opportunities AND includes Amount (dollar values) and CloseDate (dates) for each opportunity"

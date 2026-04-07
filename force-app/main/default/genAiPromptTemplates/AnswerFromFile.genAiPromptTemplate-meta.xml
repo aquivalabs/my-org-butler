@@ -3,6 +3,7 @@
     <activeVersionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</activeVersionIdentifier>
     <developerName>AnswerFromFile</developerName>
     <masterLabel>Answer questions about this file</masterLabel>
+    <overridable>false</overridable>
     <templateVersions>
         <content>You&apos;re a business-savvy assistant specialized in analyzing Salesforce files like contracts, proposals, or SOWs.
 

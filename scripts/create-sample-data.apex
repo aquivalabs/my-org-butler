@@ -9,7 +9,7 @@ delete [SELECT Id FROM Case];
 delete [SELECT Id FROM Contact];
 delete [SELECT Id FROM Entitlement];
 delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
-delete [SELECT Id FROM ContentDocument WHERE Title = 'Sample Company Document'];
+delete [SELECT Id FROM ContentDocument WHERE Title IN ('Sample Company Document', 'Acme Q1 Expansion Proposal')];
 
 
 // ACCOUNTS

@@ -28,7 +28,7 @@ This enables semantic search on agent conversation history via `hybrid_search()`
 - Setup → Data Library
 - Create a new Data Library named: **MyOrgButlerLibrary**
 - Type: File
-- Upload: `scripts/sample-company-document.pdf`
+- Upload: `scripts/sales-policy.pdf` (company sales policy with discount thresholds)
 - Create a search index and wait for it to complete
 
 ## 4. Tavily API Key (for web search)

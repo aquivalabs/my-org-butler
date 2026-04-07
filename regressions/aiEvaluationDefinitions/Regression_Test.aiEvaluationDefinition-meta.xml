@@ -4,7 +4,7 @@
     <subjectName>MyOrgButler</subjectName>
     <subjectType>AGENT</subjectType>
     <subjectVersion>v1</subjectVersion>
-    <description>Per-action regression tests. One test per action or action pair. Multi-turn demo story lives in promptfoo.</description>
+    <description>Per-action regression tests. One test per action. Multi-turn demo story lives in promptfoo (demo-story.yaml).</description>
     <testCase>
         <number>1</number>
         <inputs>
@@ -26,7 +26,7 @@
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>what custom objects does this org have?</utterance>
+            <utterance>what fields does the Memory__c object have and what are their types?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -38,13 +38,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Lists custom objects including Memory__c and Plan__c</expectedValue>
+            <expectedValue>Lists fields of Memory__c including Content__c (long text or text area) and IsShared__c (checkbox or boolean)</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>3</number>
         <inputs>
-            <utterance>show me a diagram of the custom objects in this org</utterance>
+            <utterance>create a PlantUML ER diagram showing how Account, Opportunity and Contact are related</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -52,17 +52,17 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['ExploreOrgSchema', 'CreatePlantUmlUrl']</expectedValue>
+            <expectedValue>['CreatePlantUmlUrl']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Returns a PlantUML URL containing a diagram with Memory__c and Plan__c</expectedValue>
+            <expectedValue>Returns a clickable PlantUML URL containing a diagram that shows Account, Opportunity and Contact with their relationships</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>4</number>
         <inputs>
-            <utterance>create a follow-up task for the Burlington Textiles opportunity</utterance>
+            <utterance>create a task to call Burlington Textiles about the weaving plant deal</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -74,13 +74,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms a task was created and references Burlington Textiles by name</expectedValue>
+            <expectedValue>Confirms a task was created that references Burlington Textiles and the weaving plant</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>5</number>
         <inputs>
-            <utterance>how many Apex classes are in this org?</utterance>
+            <utterance>what is the Apex code coverage percentage in this org?</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -92,13 +92,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Returns a specific number of Apex classes (not a vague statement)</expectedValue>
+            <expectedValue>Returns a specific code coverage percentage or lists coverage per class with percentages</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>6</number>
         <inputs>
-            <utterance>use the Metadata API to read the MyOrgButlerUser permission set definition</utterance>
+            <utterance>is there an approval process configured for Opportunities? use the Metadata API to check</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -110,13 +110,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Shows permission set details mentioning at least one of: ExecutePromptTemplates, Memory__c, Plan__c, or CustomSetting__c</expectedValue>
+            <expectedValue>Shows approval process details for Opportunity or states that no approval process is configured</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>7</number>
         <inputs>
-            <utterance>search the web for Aquiva Labs</utterance>
+            <utterance>where is Aquiva Labs located and when were they founded? search the web</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -128,13 +128,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions Aquiva Labs and that they build Salesforce or Agentforce solutions</expectedValue>
+            <expectedValue>Mentions Florida (Celebration or Orlando) as location and 2015 as founding year</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>8</number>
         <inputs>
-            <utterance>what are our remedies if a vendor breaches an agreement? check the company docs</utterance>
+            <utterance>what is our company discount policy for deals over $100K? check the company docs</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -146,13 +146,13 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions equitable relief or injunction as remedies for breach</expectedValue>
+            <expectedValue>Mentions that discounts above 10% require VP of Sales approval</expectedValue>
         </expectation>
     </testCase>
     <testCase>
         <number>9</number>
         <inputs>
-            <utterance>from now on, show opportunities with the Amount and CloseDate fields</utterance>
+            <utterance>from now on, always show the StageName when listing opportunities</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -164,7 +164,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms it stored a preference mentioning Amount and CloseDate specifically</expectedValue>
+            <expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -182,7 +182,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms a scheduled plan with a cron expression like 0 9 ? * MON-FRI</expectedValue>
+            <expectedValue>Confirms a scheduled plan that runs on weekday mornings at 9am and includes a link to the plan record</expectedValue>
         </expectation>
     </testCase>
     <testCase>
@@ -237,6 +237,42 @@
         <expectation>
             <name>bot_response_rating</name>
             <expectedValue>Returns semantically matched conversation messages about opportunities, ranked by relevance score from hybrid_search()</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>14</number>
+        <inputs>
+            <utterance>read the PDF attached to the Acme Q1 Expansion Deal and tell me the total contract value</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['AnswerWithCurrentFile']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>States the total contract value is $500,000</expectedValue>
+        </expectation>
+    </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs>
+            <utterance>show me my stored preferences</utterance>
+        </inputs>
+        <expectation>
+            <name>topic_assertion</name>
+            <expectedValue>MyOrgButler</expectedValue>
+        </expectation>
+        <expectation>
+            <name>actions_assertion</name>
+            <expectedValue>['LoadCustomInstructions']</expectedValue>
+        </expectation>
+        <expectation>
+            <name>bot_response_rating</name>
+            <expectedValue>Shows stored user preferences or states that no custom preferences have been saved yet</expectedValue>
         </expectation>
     </testCase>
 </AiEvaluationDefinition>
