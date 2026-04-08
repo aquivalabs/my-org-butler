@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</activeVersionIdentifier>
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_3</activeVersionIdentifier>
     <description>Answers questions using company documents from a Data Cloud data library.</description>
     <developerName>AnswerFromDataLibrary</developerName>
     <masterLabel>Answer from Data Library</masterLabel>
@@ -38,7 +38,7 @@
             <referenceName>Input:RetrieverId</referenceName>
             <required>false</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
         <status>Published</status>
         <templateDataProviders>
             <definition>invocable://getEinsteinRetrieverResults/sfdc_ai__DynamicRetriever</definition>
@@ -58,7 +58,7 @@
             </parameters>
             <referenceName>EinsteinSearch:sfdc_ai__DynamicRetriever</referenceName>
         </templateDataProviders>
-        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_3</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

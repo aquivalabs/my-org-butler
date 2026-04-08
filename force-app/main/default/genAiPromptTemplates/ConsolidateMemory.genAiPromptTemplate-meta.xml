@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>CNSyYi7XBrJXfPt263fnNSJ26Xsc+rcfRzrE+DtAFyo=_2</activeVersionIdentifier>
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</activeVersionIdentifier>
     <description>Merge all new memory entries into a single, compact summary—removing duplicates, resolving conflicts (keeping later entries), and packing related details together.</description>
     <developerName>ConsolidateMemory</developerName>
     <masterLabel>Consolidate Memory</masterLabel>
+    <overridable>false</overridable>
     <templateVersions>
         <content>Merge these memories while PRESERVING SPECIFICITY.
 
@@ -47,9 +48,9 @@ Return ONLY the consolidated memory content, no meta-commentary.
             <referenceName>Input:newMemory</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultVertexAIGemini25Flash001</primaryModel>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
         <status>Published</status>
-        <versionIdentifier>CNSyYi7XBrJXfPt263fnNSJ26Xsc+rcfRzrE+DtAFyo=_2</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_2</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

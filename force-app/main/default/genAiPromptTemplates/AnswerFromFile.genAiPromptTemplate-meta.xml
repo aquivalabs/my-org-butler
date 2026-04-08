@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</activeVersionIdentifier>
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</activeVersionIdentifier>
     <developerName>AnswerFromFile</developerName>
     <masterLabel>Answer questions about this file</masterLabel>
     <overridable>false</overridable>
@@ -42,10 +42,12 @@ A user has asked a question about the file you&apos;re currently focused on.
             <referenceName>Input:userQuestion</referenceName>
             <required>true</required>
         </inputs>
-        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
         <status>Published</status>
         <templateDataProviders>
             <definition>invocable://getDataForGrounding</definition>
+            <description>Retrieves record data for grounding a prompt template.</description>
+            <label>Record Snapshot</label>
             <parameters>
                 <definition>primitive://String</definition>
                 <isRequired>true</isRequired>
@@ -54,7 +56,7 @@ A user has asked a question about the file you&apos;re currently focused on.
             </parameters>
             <referenceName>RecordSnapshot:file</referenceName>
         </templateDataProviders>
-        <versionIdentifier>Oq+z2t7jnhqpqemOhnh1UFWAMUvqqyi3bFjeWFcN3tQ=_1</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

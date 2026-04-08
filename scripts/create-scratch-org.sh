@@ -71,7 +71,7 @@ sf apex run --file scripts/create-sample-data.apex
 
 echo "Uploading Proposal to Acme Opportunity"
 OPP_ID=$(sf data query --query "SELECT Id FROM Opportunity WHERE Name='Acme Q1 Expansion Deal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-sf data create file --file "scripts/acme-q1-expansion-proposal.pdf" --title "Acme Q1 Expansion Proposal" --parent-id "$OPP_ID"
+sf data create file --file "scripts/proposal.pdf" --title "Acme Q1 Expansion Proposal" --parent-id "$OPP_ID"
 
 echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
