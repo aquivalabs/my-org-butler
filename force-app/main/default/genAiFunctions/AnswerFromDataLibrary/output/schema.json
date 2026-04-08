@@ -6,7 +6,7 @@
       "description" : "AI-generated answer grounded in company documents.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
-      "copilotAction:isDisplayable" : false,
+      "copilotAction:isDisplayable" : true,
       "copilotAction:isUsedByPlanner" : true
     },
     "citations": {
@@ -14,7 +14,7 @@
         "description": "Citations associated with the generated response",
         "lightning:type": "@apexClassType/AiCopilot__GenAiCitationInput",
         "lightning:isPII": false,
-        "copilotAction:isDisplayable": false,
+        "copilotAction:isDisplayable": true,
         "copilotAction:isUsedByPlanner": false,
         "copilotAction:useHydratedPrompt": false
     }
