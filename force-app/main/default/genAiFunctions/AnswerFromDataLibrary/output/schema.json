@@ -8,6 +8,15 @@
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
       "copilotAction:isUsedByPlanner" : true
+    },
+    "citations": {
+        "title": "Citations",
+        "description": "Citations associated with the generated response",
+        "lightning:type": "@apexClassType/AiCopilot__GenAiCitationInput",
+        "lightning:isPII": false,
+        "copilotAction:isDisplayable": false,
+        "copilotAction:isUsedByPlanner": false,
+        "copilotAction:useHydratedPrompt": false
     }
   },
   "lightning:type" : "lightning__objectType"

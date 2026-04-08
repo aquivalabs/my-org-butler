@@ -97,13 +97,13 @@ echo "Running Testing Center Tests (second pass — session data now indexed for
 sf agent test run --api-name Regression_Test --wait 15
 
 echo "Running Promptfoo Demo Story"
-cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env && cd ../..
+(cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env)
 
 echo "Running Promptfoo Regression Tests"
-cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env && cd ../..
+(cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env)
 
 echo "Running Promptfoo Prompt Template Regression Tests"
-cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env && cd ../..
+(cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default
