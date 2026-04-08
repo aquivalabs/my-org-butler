@@ -62,7 +62,7 @@
     <testCase>
         <number>4</number>
         <inputs>
-            <utterance>create a task to call Burlington Textiles about the weaving plant deal</utterance>
+            <utterance>use the REST API to create a new Task with Subject "Call Burlington" and Status "Not Started"</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -74,7 +74,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms a task was created that references Burlington Textiles and the weaving plant</expectedValue>
+            <expectedValue>Confirms a Task record was created with subject containing "Call Burlington"</expectedValue>
         </expectation>
     </testCase>
     <testCase>

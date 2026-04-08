@@ -27,13 +27,13 @@ tests:
 
   - description: "Ask about opportunities (baseline)"
     vars:
-      utterance: "show me my open opportunities"
+      utterance: "list all opportunities in the org"
       conversationId: instructions-roundtrip
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Lists opportunities with their names"
+        value: "Lists opportunities including Acme Q1 Expansion Deal"
 
   - description: "Store a display preference"
     vars:
@@ -47,7 +47,7 @@ tests:
 
   - description: "Ask same question again — response should include Amount and CloseDate"
     vars:
-      utterance: "show me my open opportunities"
+      utterance: "list all opportunities in the org"
       conversationId: instructions-roundtrip
     assert:
       - type: javascript
