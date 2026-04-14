@@ -142,11 +142,11 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['AnswerFromDataLibrary']</expectedValue>
+            <expectedValue>['SearchDataLibrary']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions that discounts above 10% require VP of Sales approval</expectedValue>
+            <expectedValue>Mentions that discounts above 10% require VP of Sales approval and cites the source file name (e.g. policy.pdf)</expectedValue>
         </expectation>
     </testCase>
     <testCase>
