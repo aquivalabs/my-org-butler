@@ -142,7 +142,7 @@
         </expectation>
         <expectation>
             <name>actions_assertion</name>
-            <expectedValue>['SearchDataLibrary']</expectedValue>
+            <expectedValue>['ExploreDataCloud', 'SearchDataLibrary']</expectedValue>
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
