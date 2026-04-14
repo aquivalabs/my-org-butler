@@ -1,18 +1,18 @@
 @IsTest
-private class SemanticSearchTest {
+private class DataCloudDocuments_Test {
 
-    private static MockCdpQuery mockCdpQuery = new MockCdpQuery();
+    private static MockDataCloudDocuments mock = new MockDataCloudDocuments();
 
 
     @IsTest
     private static void returnsEmptyResultWhenNoDocumentsFound() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        String result = search('test query');
+        String result = retrieve('test query');
 
 
         // Verify
@@ -24,19 +24,19 @@ private class SemanticSearchTest {
     private static void returnsFormattedDocumentContent() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
             new List<Object>{ 'doc1' },
             new List<Object>{ 'doc2' }
         }));
 
-        mockCdpQuery.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
+        mock.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
             new List<Object>{ 'doc1', 'Content from document 1' },
             new List<Object>{ 'doc2', 'Content from document 2' }
         }));
 
 
         // Exercise
-        String result = search('maternity policy');
+        String result = retrieve('maternity policy');
 
 
         // Verify
@@ -51,11 +51,11 @@ private class SemanticSearchTest {
         // Setup
         ConnectApi.CdpQueryOutputV2 queryResult = new ConnectApi.CdpQueryOutputV2();
         queryResult.data = null;
-        mockCdpQuery.whenQueryContains('hybrid_search', queryResult);
+        mock.whenQueryContains('hybrid_search', queryResult);
 
 
         // Exercise
-        String result = search('test query');
+        String result = retrieve('test query');
 
 
         // Verify
@@ -67,19 +67,19 @@ private class SemanticSearchTest {
     private static void filtersOutBlankDocumentIds() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
             new List<Object>{ 'doc1' },
             new List<Object>{ '' },
             new List<Object>{ null }
         }));
 
-        mockCdpQuery.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
+        mock.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
             new List<Object>{ 'doc1', 'Valid content' }
         }));
 
 
         // Exercise
-        String result = search('test query');
+        String result = retrieve('test query');
 
 
         // Verify
@@ -91,17 +91,15 @@ private class SemanticSearchTest {
     private static void derivesSearchIndexFromChunkDmo() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        SemanticSearch semanticSearch = new SemanticSearch();
-        semanticSearch.cdpQuery = mockCdpQuery;
-        semanticSearch.execute('test', 'ADL_MyOrgButlerLibr_chunk__dlm');
+        mock.retrieve('test', 'ADL_MyOrgButlerLibr_chunk__dlm');
 
 
         // Verify
-        Assert.isTrue(mockCdpQuery.lastQuery().contains('ADL_MyOrgButlerLibr_index__dlm'));
+        Assert.isTrue(mock.lastQuery().contains('ADL_MyOrgButlerLibr_index__dlm'));
     }
 
 
@@ -109,15 +107,15 @@ private class SemanticSearchTest {
     private static void usesDefaultSimilarityThreshold() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        search('test');
+        retrieve('test');
 
 
         // Verify
-        Assert.isTrue(mockCdpQuery.lastQuery().contains('0.4'));
+        Assert.isTrue(mock.lastQuery().contains('0.4'));
     }
 
 
@@ -125,24 +123,22 @@ private class SemanticSearchTest {
     private static void escapesApostrophesInQuery() {
 
         // Setup
-        mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        search('colleague\'s non-working day');
+        retrieve('colleague\'s non-working day');
 
 
         // Verify
-        Assert.isTrue(mockCdpQuery.lastQuery().contains('colleague\\\'s non-working day'));
+        Assert.isTrue(mock.lastQuery().contains('colleague\\\'s non-working day'));
     }
 
 
     // HELPER
 
-    private static String search(String query) {
-        SemanticSearch semanticSearch = new SemanticSearch();
-        semanticSearch.cdpQuery = mockCdpQuery;
-        return semanticSearch.execute(query, 'TestChunk_chunk__dlm');
+    private static String retrieve(String query) {
+        return mock.retrieve(query, 'TestChunk_chunk__dlm');
     }
 
 
@@ -160,7 +156,7 @@ private class SemanticSearchTest {
     }
 
 
-    private class MockCdpQuery extends CdpQuery {
+    private class MockDataCloudDocuments extends DataCloudDocuments {
         private List<String> executedQueries = new List<String>();
         private Map<String, ConnectApi.CdpQueryOutputV2> responses = new Map<String, ConnectApi.CdpQueryOutputV2>();
 
@@ -172,9 +168,9 @@ private class SemanticSearchTest {
             return executedQueries.isEmpty() ? null : executedQueries[executedQueries.size() - 1];
         }
 
-        public override ConnectApi.CdpQueryOutputV2 query(String sql) {
+        protected override ConnectApi.CdpQueryOutputV2 query(String sql) {
             ConnectApi.CdpQueryOutputV2 result = null;
-            
+
             executedQueries.add(sql);
 
             for (String pattern : responses.keySet()) {

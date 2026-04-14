@@ -10,7 +10,7 @@ global with sharing class AnswerFromDataLibrary {
                             .call(new Map<String, Object>{
                                 'Input:userQuestion' => input.question,
                                 'Input:RetrieverId' => CustomSettings.valueFor('DataLibraryRetriever'),
-                                'Input:documentContext' => new SemanticSearch().execute(input.question, CustomSettings.optionalValueFor('DataLibraryChunkDmo'))
+                                'Input:documentContext' => new DataCloudDocuments().retrieve(input.question, CustomSettings.optionalValueFor('DataLibraryChunkDmo'))
                             });
 
         Output output = new Output();

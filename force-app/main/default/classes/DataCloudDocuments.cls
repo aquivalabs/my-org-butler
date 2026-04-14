@@ -1,16 +1,13 @@
-public with sharing class SemanticSearch {
+public virtual with sharing class DataCloudDocuments {
 
     private static final Integer DEFAULT_TOP_K = 10;
     private static final Decimal DEFAULT_SIMILARITY_THRESHOLD = 0.4;
     private static final Integer MAX_CHUNKS = 1000;
 
-    @TestVisible
-    private CdpQuery cdpQuery = new CdpQuery();
-
 
     // PUBLIC
 
-    public String execute(String query, String chunkDmo) {
+    public String retrieve(String query, String chunkDmo) {
         String result = '';
 
         if (String.isNotBlank(chunkDmo)) {
@@ -26,6 +23,16 @@ public with sharing class SemanticSearch {
     }
 
 
+    // PROTECTED
+
+    @TestVisible
+    protected virtual ConnectApi.CdpQueryOutputV2 query(String sql) {
+        ConnectApi.CdpQueryInput input = new ConnectApi.CdpQueryInput();
+        input.sql = sql;
+        return ConnectApi.CdpQuery.queryANSISqlV2(input);
+    }
+
+
     // PRIVATE
 
 
@@ -36,7 +43,7 @@ public with sharing class SemanticSearch {
 
     private Set<String> findRelevantDocuments(String query, String searchIndex, String chunkDmo) {
         String sql = buildHybridSearchSql(query, searchIndex, chunkDmo);
-        return extractDocumentIds(cdpQuery.query(sql));
+        return extractDocumentIds(query(sql));
     }
 
 
@@ -74,7 +81,7 @@ public with sharing class SemanticSearch {
 
     private List<Chunk> fetchChunks(Set<String> documentIds, String chunkDmo) {
         String sql = buildDocumentQuerySql(documentIds, chunkDmo);
-        return parseChunks(cdpQuery.query(sql));
+        return parseChunks(query(sql));
     }
 
 
