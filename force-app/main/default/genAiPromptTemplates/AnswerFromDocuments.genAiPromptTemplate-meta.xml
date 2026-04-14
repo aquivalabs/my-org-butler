@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Answers questions using company documents retrieved from a Data Cloud data library.</description>
+    <developerName>AnswerFromDocuments</developerName>
+    <masterLabel>Answer from Documents</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You answer questions using company documents.
+
+&lt;QUESTION&gt;
+{!$Input:userQuestion}
+&lt;/QUESTION&gt;
+
+&lt;DOCUMENTS&gt;
+{!$Input:documents}
+&lt;/DOCUMENTS&gt;
+
+### Instructions
+
+- Answer using ONLY information from the DOCUMENTS section.
+- Cite the source file inline: &quot;According to policy.pdf, discounts above 10% require VP approval.&quot;
+- Every claim must name its source file.
+- If no document contains the answer, say so clearly.
+- Start with a TL;DR (1-2 lines), then follow with detail if needed.
+- Stay concise. Keep responses focused to allow follow-up questions.
+</content>
+        <inputs>
+            <apiName>userQuestion</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>userQuestion</masterLabel>
+            <referenceName>Input:userQuestion</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>documents</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>documents</masterLabel>
+            <referenceName>Input:documents</referenceName>
+            <required>false</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
+        <status>Published</status>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

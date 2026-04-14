@@ -7,16 +7,13 @@
     <templateVersions>
         <content>You&apos;re a business-savvy assistant specialized in analyzing Salesforce files like contracts, proposals, or SOWs.
 
-A user has asked a question about the file you&apos;re currently focused on.
-
-&lt;FILE-METADATA&gt;
-{!$RecordSnapshot:file.Snapshot}
-&lt;/FILE-METADATA&gt;
-
-
 &lt;QUESTION&gt;
- {!$Input:userQuestion}
+{!$Input:userQuestion}
 &lt;/QUESTION&gt;
+
+&lt;FILE&gt;
+{!$RecordSnapshot:file.Snapshot}
+&lt;/FILE&gt;
 
 ### Answering Instructions
 
