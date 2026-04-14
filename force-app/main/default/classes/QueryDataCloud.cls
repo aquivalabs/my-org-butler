@@ -6,7 +6,7 @@ global with sharing class QueryDataCloud {
 
     private static final String QUERY_ENDPOINT = '/services/data/v66.0/ssot/query-sql';
 
-    @InvocableMethod(label='MyOrgButler: Run Data Cloud SQL Query'
+    @InvocableMethod(label='MyOrgButler: Query Data with SQL'
                      description='Run a SQL query against Data Cloud and return results or errors')
     global static List<Output> execute(List<Input> inputs) {
         Output output = new Output();
