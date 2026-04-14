@@ -41,7 +41,7 @@ public with sharing class SemanticSearch {
 
 
     private String buildHybridSearchSql(String query, String searchIndex, String chunkDmo) {
-        String escapedQuery = query.replace('\'', '');
+        String escapedQuery = String.escapeSingleQuotes(query);
         String threshold = String.valueOf(DEFAULT_SIMILARITY_THRESHOLD);
         String topK = String.valueOf(DEFAULT_TOP_K);
 

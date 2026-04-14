@@ -122,7 +122,7 @@ private class SemanticSearchTest {
 
 
     @IsTest
-    private static void stripsApostrophesFromQuery() {
+    private static void escapesApostrophesInQuery() {
 
         // Setup
         mockCdpQuery.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
@@ -133,7 +133,7 @@ private class SemanticSearchTest {
 
 
         // Verify
-        Assert.isTrue(mockCdpQuery.lastQuery().contains('colleagues non-working day'));
+        Assert.isTrue(mockCdpQuery.lastQuery().contains('colleague\\\'s non-working day'));
     }
 
 
@@ -160,8 +160,6 @@ private class SemanticSearchTest {
     }
 
 
-    // MOCK
-
     private class MockCdpQuery extends CdpQuery {
         private List<String> executedQueries = new List<String>();
         private Map<String, ConnectApi.CdpQueryOutputV2> responses = new Map<String, ConnectApi.CdpQueryOutputV2>();
@@ -175,15 +173,18 @@ private class SemanticSearchTest {
         }
 
         public override ConnectApi.CdpQueryOutputV2 query(String sql) {
+            ConnectApi.CdpQueryOutputV2 result = null;
+            
             executedQueries.add(sql);
 
             for (String pattern : responses.keySet()) {
                 if (sql.containsIgnoreCase(pattern)) {
-                    return responses.get(pattern);
+                    result = responses.get(pattern);
+                    break;
                 }
             }
 
-            return null;
+            return result;
         }
     }
 }
