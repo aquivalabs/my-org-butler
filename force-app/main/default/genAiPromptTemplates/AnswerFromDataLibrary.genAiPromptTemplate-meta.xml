@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_3</activeVersionIdentifier>
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</activeVersionIdentifier>
     <description>Answers questions using company documents from a Data Cloud data library.</description>
     <developerName>AnswerFromDataLibrary</developerName>
     <masterLabel>Answer from Data Library</masterLabel>
@@ -13,12 +13,16 @@
 &lt;/QUESTION&gt;
 
 &lt;KNOWLEDGE&gt;
-{!$EinsteinSearch:sfdc_ai__DynamicRetriever.results} 
+{!$EinsteinSearch:sfdc_ai__DynamicRetriever.results}
 &lt;/KNOWLEDGE&gt;
+
+&lt;DOCUMENT_CONTEXT&gt;
+{!$Input:documentContext}
+&lt;/DOCUMENT_CONTEXT&gt;
 
 ### Instructions
 
-- Answer using ONLY the information in the KNOWLEDGE section.
+- Answer using ONLY the information in the KNOWLEDGE and DOCUMENT_CONTEXT sections.
 - When you use information from a source, introduce it naturally (e.g. &quot;According to [source name], ...&quot;).
 - If the knowledge doesn&apos;t contain the answer, say so clearly.
 - Start with a TL;DR (1-2 lines), then follow with detail if needed.
@@ -36,6 +40,13 @@
             <definition>primitive://String</definition>
             <masterLabel>RetrieverId</masterLabel>
             <referenceName>Input:RetrieverId</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>documentContext</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>documentContext</masterLabel>
+            <referenceName>Input:documentContext</referenceName>
             <required>false</required>
         </inputs>
         <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
@@ -58,7 +69,7 @@
             </parameters>
             <referenceName>EinsteinSearch:sfdc_ai__DynamicRetriever</referenceName>
         </templateDataProviders>
-        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_3</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>
