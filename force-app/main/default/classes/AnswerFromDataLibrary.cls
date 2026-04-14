@@ -9,7 +9,8 @@ global with sharing class AnswerFromDataLibrary {
         PromptTemplate.Result result = new PromptTemplate('AnswerFromDataLibrary')
                             .call(new Map<String, Object>{
                                 'Input:userQuestion' => input.question,
-                                'Input:RetrieverId' => CustomSettings.valueFor('DataLibraryRetriever')
+                                'Input:RetrieverId' => CustomSettings.valueFor('DataLibraryRetriever'),
+                                'Input:documentContext' => new SemanticSearch().execute(input.question, CustomSettings.optionalValueFor('DataLibraryChunkDmo'))
                             });
 
         Output output = new Output();

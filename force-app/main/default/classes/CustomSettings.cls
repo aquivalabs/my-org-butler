@@ -4,12 +4,17 @@ public with sharing class CustomSettings {
     
     public static String valueFor(String settingName) {
         CustomSetting__c setting = CustomSetting__c.getValues(settingName);
-        
+
         if (setting == null) {
             throw new ApplicationException('Custom Setting not found: ' + settingName);
         }
-        
+
         return setting.Value__c;
+    }
+
+    public static String optionalValueFor(String settingName) {
+        CustomSetting__c setting = CustomSetting__c.getValues(settingName);
+        return setting != null ? setting.Value__c : null;
     }
     
     @TestVisible

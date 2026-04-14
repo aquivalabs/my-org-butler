@@ -111,11 +111,20 @@ Opportunity dubaiSponsoring = new Opportunity(
 insert dubaiSponsoring;
 
 
-// CUSTOM SETTINGS
-List<CustomSetting__c> existing = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryRetriever'];
-if(existing.isEmpty()) {
+// CUSTOM SETTINGS: Data Library retriever
+List<CustomSetting__c> retrieverSettings = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryRetriever'];
+if(retrieverSettings.isEmpty()) {
     insert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = 'MyOrgButlerLibrary');
 } else {
-    existing[0].put('Value__c', 'MyOrgButlerLibrary');
-    update as user existing;
+    retrieverSettings[0].put('Value__c', 'MyOrgButlerLibrary');
+    update as user retrieverSettings;
+}
+
+// CUSTOM SETTING: Data Library chunk DMO
+List<CustomSetting__c> chunkDmoSettings = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryChunkDmo'];
+if(chunkDmoSettings.isEmpty()) {
+    insert as user new CustomSetting__c(Name = 'DataLibraryChunkDmo', Value__c = 'ADL_MyOrgButlerLibr_chunk__dlm');
+} else {
+    chunkDmoSettings[0].put('Value__c', 'ADL_MyOrgButlerLibr_chunk__dlm');
+    update as user chunkDmoSettings;
 }
