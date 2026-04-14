@@ -1,18 +1,19 @@
 @IsTest
-private class DataCloudDocuments_Test {
+private class DataLibrary_Test {
 
-    private static MockDataCloudDocuments mock = new MockDataCloudDocuments();
+    private static final String CHUNK_DMO = 'TestChunk_chunk__dll';
+    private static MockDataLibrary mock = new MockDataLibrary();
 
 
     @IsTest
-    private static void returnsEmptyResultWhenNoDocumentsFound() {
+    private static void returnsEmptyForNoMatches() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        String result = retrieve('test query');
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -21,7 +22,38 @@ private class DataCloudDocuments_Test {
 
 
     @IsTest
-    private static void returnsFormattedDocumentContent() {
+    private static void returnsJsonWithFileNameAndContent() {
+
+        // Setup
+        mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
+            new List<Object>{ 'doc1' }
+        }));
+
+        mock.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
+            new List<Object>{ '1JDRt000001/policy.pdf', 'First chunk' },
+            new List<Object>{ '1JDRt000001/policy.pdf', 'Second chunk' }
+        }));
+
+
+        // Exercise
+        String result = mock.retrieve('discount policy', CHUNK_DMO, false);
+
+
+        // Verify
+        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result);
+        Assert.areEqual(1, documents.size());
+
+        Map<String, Object> doc = (Map<String, Object>) documents[0];
+        Assert.areEqual('policy.pdf', doc.get('fileName'));
+        Assert.areEqual('1JDRt000001', doc.get('sourceId'));
+        Assert.areEqual('full_document', doc.get('type'));
+        Assert.isTrue(((String) doc.get('content')).contains('First chunk'));
+        Assert.isTrue(((String) doc.get('content')).contains('Second chunk'));
+    }
+
+
+    @IsTest
+    private static void groupsChunksByDocument() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
@@ -30,23 +62,23 @@ private class DataCloudDocuments_Test {
         }));
 
         mock.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
-            new List<Object>{ 'doc1', 'Content from document 1' },
-            new List<Object>{ 'doc2', 'Content from document 2' }
+            new List<Object>{ '1JDRt000001/policy.pdf', 'Policy content' },
+            new List<Object>{ '1JDRt000002/handbook.pdf', 'Handbook content' }
         }));
 
 
         // Exercise
-        String result = retrieve('maternity policy');
+        String result = mock.retrieve('company docs', CHUNK_DMO, false);
 
 
         // Verify
-        Assert.isTrue(result.contains('Content from document 1'));
-        Assert.isTrue(result.contains('Content from document 2'));
+        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result);
+        Assert.areEqual(2, documents.size());
     }
 
 
     @IsTest
-    private static void handlesNullDataInHybridSearchResult() {
+    private static void returnsEmptyForNullResult() {
 
         // Setup
         ConnectApi.CdpQueryOutputV2 queryResult = new ConnectApi.CdpQueryOutputV2();
@@ -55,7 +87,7 @@ private class DataCloudDocuments_Test {
 
 
         // Exercise
-        String result = retrieve('test query');
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -64,7 +96,7 @@ private class DataCloudDocuments_Test {
 
 
     @IsTest
-    private static void filtersOutBlankDocumentIds() {
+    private static void skipsBlankDocumentIds() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
@@ -74,12 +106,12 @@ private class DataCloudDocuments_Test {
         }));
 
         mock.whenQueryContains('Chunk__c', createQueryResult(new List<List<Object>>{
-            new List<Object>{ 'doc1', 'Valid content' }
+            new List<Object>{ '1JDRt000001/policy.pdf', 'Valid content' }
         }));
 
 
         // Exercise
-        String result = retrieve('test query');
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -88,18 +120,18 @@ private class DataCloudDocuments_Test {
 
 
     @IsTest
-    private static void derivesSearchIndexFromChunkDmo() {
+    private static void derivesSearchIndex() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        mock.retrieve('test', 'ADL_MyOrgButlerLibr_chunk__dlm');
+        mock.retrieve('test', 'ADL_CpdT_MyOrgButle_chunk__dll', false);
 
 
         // Verify
-        Assert.isTrue(mock.lastQuery().contains('ADL_MyOrgButlerLibr_index__dlm'));
+        Assert.isTrue(mock.lastQuery().contains('ADL_CpdT_MyOrgButle_index__dll'));
     }
 
 
@@ -111,7 +143,7 @@ private class DataCloudDocuments_Test {
 
 
         // Exercise
-        retrieve('test');
+        mock.retrieve('test', CHUNK_DMO, false);
 
 
         // Verify
@@ -127,7 +159,7 @@ private class DataCloudDocuments_Test {
 
 
         // Exercise
-        retrieve('colleague\'s non-working day');
+        mock.retrieve('colleague\'s non-working day', CHUNK_DMO, false);
 
 
         // Verify
@@ -136,11 +168,6 @@ private class DataCloudDocuments_Test {
 
 
     // HELPER
-
-    private static String retrieve(String query) {
-        return mock.retrieve(query, 'TestChunk_chunk__dlm');
-    }
-
 
     private static ConnectApi.CdpQueryOutputV2 createQueryResult(List<List<Object>> rows) {
         ConnectApi.CdpQueryOutputV2 result = new ConnectApi.CdpQueryOutputV2();
@@ -156,7 +183,7 @@ private class DataCloudDocuments_Test {
     }
 
 
-    private class MockDataCloudDocuments extends DataCloudDocuments {
+    private class MockDataLibrary extends DataLibrary {
         private List<String> executedQueries = new List<String>();
         private Map<String, ConnectApi.CdpQueryOutputV2> responses = new Map<String, ConnectApi.CdpQueryOutputV2>();
 
@@ -168,7 +195,7 @@ private class DataCloudDocuments_Test {
             return executedQueries.isEmpty() ? null : executedQueries[executedQueries.size() - 1];
         }
 
-        protected override ConnectApi.CdpQueryOutputV2 query(String sql) {
+        protected override ConnectApi.CdpQueryOutputV2 queryCdp(String sql) {
             ConnectApi.CdpQueryOutputV2 result = null;
 
             executedQueries.add(sql);
