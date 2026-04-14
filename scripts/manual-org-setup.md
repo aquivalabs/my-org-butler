@@ -2,7 +2,13 @@
 
 Complete these steps when the org opens during scratch org creation.
 
-## 1. Enable Agent Analytics & Session Tracing
+## 1. Verify Data Cloud is provisioned
+
+- Setup → Data Cloud → Overview
+- If not provisioned yet, wait — it can take a few minutes after scratch org creation
+- Do not proceed until the Data Cloud overview page loads successfully
+
+## 2. Enable Agent Analytics & Session Tracing
 
 - Setup → search "Audit" → Einstein Generative AI
 - Turn on **Agent Analytics**
@@ -11,7 +17,7 @@ Complete these steps when the org opens during scratch org creation.
 
 This provisions the session tracing data model in Data Cloud (`ssot__AiAgent*__dlm` entities).
 
-## 2. Hybrid Search Index on Agent Conversations
+## 3. Hybrid Search Index on Agent Conversations
 
 - Data Cloud → Search Index → New → Advanced Setup
 - Search Type: **Hybrid Search**
@@ -23,7 +29,7 @@ This provisions the session tracing data model in Data Cloud (`ssot__AiAgent*__d
 
 This enables semantic search on agent conversation history via `hybrid_search()`.
 
-## 3. Data Library
+## 4. Data Library
 
 - Setup → Data Library
 - Create a new Data Library named: **MyOrgButlerLibrary**
@@ -31,6 +37,6 @@ This enables semantic search on agent conversation history via `hybrid_search()`
 - Upload: `scripts/policy.pdf` (company sales policy with discount thresholds — print from `scripts/policy.md`)
 - Create a search index and wait for it to complete
 
-## 4. Tavily API Key (for web search)
+## 5. Tavily API Key (for web search)
 
 - If not already configured, add your Tavily API key to the TavilyApi external credential
