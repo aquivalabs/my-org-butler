@@ -31,13 +31,6 @@ This enables semantic search on agent conversation history via `hybrid_search()`
 - Upload: `scripts/policy.pdf` (company sales policy with discount thresholds — print from `scripts/policy.md`)
 - Create a search index and wait for it to complete
 
-## 4. Configure Data Library Retriever
-
-- Einstein Studio → Retrievers → open the retriever created for **MyOrgButlerLibrary**
-- Copy the **API Name** (e.g. `File_ADL_MyOrgButlerLibr_1Cx_abc123`)
-- Setup → Custom Settings → **CustomSetting__c** → Manage
-- Edit the record named **DataLibraryRetriever** and paste the retriever API name into the **Value** field
-
-## 5. Tavily API Key (for web search)
+## 4. Tavily API Key (for web search)
 
 - If not already configured, add your Tavily API key to the TavilyApi external credential
