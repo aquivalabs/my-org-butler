@@ -21,7 +21,6 @@ public with sharing class PromptTemplate {
             ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output = invokeTemplate(templateName, inputParams);
             validateOutput(output, templateName);
             result.text = output.generations[0].text;
-            result.citations = toGenAiCitation(output.citations?.sourceReferences);
         }
 
         return result;
@@ -59,7 +58,6 @@ public with sharing class PromptTemplate {
         input.additionalConfig.applicationName = 'PromptBuilderPreview';
         input.isPreview = false;
         input.inputParams = params;
-        input.citationMode = 'post_generation';
 
         return ConnectApi.EinsteinLLM.generateMessagesForPromptTemplate(templateName, input);
     }
@@ -84,49 +82,10 @@ public with sharing class PromptTemplate {
     }
 
 
-    private static AiCopilot.GenAiCitationInput toGenAiCitation(List<ConnectApi.EinsteinLlmGenAiSourceReference> sourceRefs) {
-        List<AiCopilot.GenAiSourceReference> result = new List<AiCopilot.GenAiSourceReference>();
-
-        if (sourceRefs != null) {
-            for (ConnectApi.EinsteinLlmGenAiSourceReference sourceRef : sourceRefs) {
-                List<AiCopilot.GenAiSourceContentInfo> contents = toGenAiSourceContentInfo(sourceRef.contents);
-                List<AiCopilot.GenAiSourceReferenceInfo> metadata = toGenAiSourceReferenceInfo(sourceRef.metadata);
-
-                result.add(new AiCopilot.GenAiSourceReference(null, contents, metadata));
-            }
-        }
-
-        return new AiCopilot.GenAiCitationInput(null, result);
-    }
-
-
-    private static List<AiCopilot.GenAiSourceContentInfo> toGenAiSourceContentInfo(List<ConnectApi.EinsteinLlmGenerationGenAiSourceContentInfo> contentInfo) {
-        List<AiCopilot.GenAiSourceContentInfo> result = new List<AiCopilot.GenAiSourceContentInfo>();
-
-        for (ConnectApi.EinsteinLlmGenerationGenAiSourceContentInfo content : contentInfo) {
-            result.add(new AiCopilot.GenAiSourceContentInfo(content.fieldName, content.objectName, content.content));
-        }
-
-        return result;
-    }
-
-
-    private static List<AiCopilot.GenAiSourceReferenceInfo> toGenAiSourceReferenceInfo(List<ConnectApi.EinsteinLlmGenerationGenAiSourceReferenceInfo> referenceInfos) {
-        List<AiCopilot.GenAiSourceReferenceInfo> result = new List<AiCopilot.GenAiSourceReferenceInfo>();
-
-        for (ConnectApi.EinsteinLlmGenerationGenAiSourceReferenceInfo referenceInfo : referenceInfos) {
-            result.add(new AiCopilot.GenAiSourceReferenceInfo(referenceInfo.link, referenceInfo.sourceObjectRecordId, referenceInfo.sourceObjectApiName));
-        }
-
-        return result;
-    }
-
-
     // INNER
 
     public class Result {
         public String text;
-        public AiCopilot.GenAiCitationInput citations;
     }
 
     public class PromptTemplateException extends Exception {}
