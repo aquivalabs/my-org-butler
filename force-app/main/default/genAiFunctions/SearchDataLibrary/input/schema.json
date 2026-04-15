@@ -1,5 +1,5 @@
 {
-  "required" : [ "question", "chunkDmo" ],
+  "required" : [ "question", "chunkDmo", "searchIndex" ],
   "unevaluatedProperties" : false,
   "properties" : {
     "question" : {
@@ -11,7 +11,14 @@
     },
     "chunkDmo" : {
       "title" : "Chunk DMO",
-      "description" : "API name of the Data Cloud chunk table (e.g. ADL_CpdT_MyOrgButle_chunk__dll). Use ExploreDataCloud to find it.",
+      "description" : "API name of the Data Cloud chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "searchIndex" : {
+      "title" : "Search Index",
+      "description" : "API name of the Data Cloud search index entity (ending in _index__dlm). Use ExploreDataCloud to find it.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

@@ -9,7 +9,7 @@ private class SearchDataLibrary_Test {
 
         // Exercise
         List<SearchDataLibrary.Output> results = SearchDataLibrary.execute(
-            new List<SearchDataLibrary.Input>{ inputWith('What is our refund policy?', 'TestChunk_chunk__dll') }
+            new List<SearchDataLibrary.Input>{ inputWith('What is our refund policy?') }
         );
 
         // Verify
@@ -20,10 +20,11 @@ private class SearchDataLibrary_Test {
 
     // HELPER
 
-    private static SearchDataLibrary.Input inputWith(String question, String chunkDmo) {
+    private static SearchDataLibrary.Input inputWith(String question) {
         SearchDataLibrary.Input result = new SearchDataLibrary.Input();
         result.question = question;
-        result.chunkDmo = chunkDmo;
+        result.chunkDmo = 'TestChunk_chunk__dlm';
+        result.searchIndex = 'TestChunk_index__dlm';
 
         return result;
     }
