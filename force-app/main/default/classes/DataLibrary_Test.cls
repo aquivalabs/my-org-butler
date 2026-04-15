@@ -2,7 +2,6 @@
 private class DataLibrary_Test {
 
     private static final String CHUNK_DMO = 'TestChunk_chunk__dlm';
-    private static final String SEARCH_INDEX = 'TestChunk_index__dlm';
     private static MockDataLibrary mock = new MockDataLibrary();
 
 
@@ -14,7 +13,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, SEARCH_INDEX, false);
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -37,7 +36,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('discount policy', CHUNK_DMO, SEARCH_INDEX, false);
+        String result = mock.retrieve('discount policy', CHUNK_DMO, false);
 
 
         // Verify
@@ -69,7 +68,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('company docs', CHUNK_DMO, SEARCH_INDEX, false);
+        String result = mock.retrieve('company docs', CHUNK_DMO, false);
 
 
         // Verify
@@ -88,7 +87,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, SEARCH_INDEX, false);
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -112,7 +111,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, SEARCH_INDEX, false);
+        String result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
@@ -121,14 +120,14 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void usesProvidedSearchIndex() {
+    private static void derivesSearchIndexFromChunkDmo() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        mock.retrieve('test', 'ADL_MyOrgButlerLibr_chunk__dlm', 'ADL_MyOrgButlerLibr_index__dlm', false);
+        mock.retrieve('test', 'ADL_MyOrgButlerLibr_chunk__dlm', false);
 
 
         // Verify
@@ -144,7 +143,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        mock.retrieve('test', CHUNK_DMO, SEARCH_INDEX, false);
+        mock.retrieve('test', CHUNK_DMO, false);
 
 
         // Verify
@@ -160,7 +159,7 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        mock.retrieve('colleague\'s non-working day', CHUNK_DMO, SEARCH_INDEX, false);
+        mock.retrieve('colleague\'s non-working day', CHUNK_DMO, false);
 
 
         // Verify

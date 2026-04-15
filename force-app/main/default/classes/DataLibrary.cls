@@ -11,7 +11,7 @@ public virtual with sharing class DataLibrary {
 
     // PUBLIC
 
-    public String retrieve(String query, String chunkDmo, String searchIndex, Boolean chunksOnly) {
+    public String retrieve(String query, String chunkDmo, Boolean chunksOnly) {
         if (Test.isRunningTest() && mockedResult != null) {
             return mockedResult;
         }
@@ -20,12 +20,9 @@ public virtual with sharing class DataLibrary {
             return '';
         }
 
-        if (String.isBlank(searchIndex) || !Pattern.matches('[A-Za-z0-9_]+', searchIndex)) {
-            return '';
-        }
-
         String result = '';
 
+        String searchIndex = chunkDmo.replace('_chunk__dlm', '_index__dlm');
         Set<String> documentIds = findRelevantDocumentIds(query, searchIndex, chunkDmo);
 
         if (!documentIds.isEmpty()) {

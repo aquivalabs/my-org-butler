@@ -1,5 +1,5 @@
 {
-  "required" : [ "question", "chunkDmo", "searchIndex" ],
+  "required" : [ "question", "chunkDmo" ],
   "unevaluatedProperties" : false,
   "properties" : {
     "question" : {
@@ -12,13 +12,6 @@
     "chunkDmo" : {
       "title" : "Chunk DMO",
       "description" : "API name of the Data Cloud chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.",
-      "lightning:type" : "lightning__textType",
-      "lightning:isPII" : false,
-      "copilotAction:isUserInput" : false
-    },
-    "searchIndex" : {
-      "title" : "Search Index",
-      "description" : "API name of the Data Cloud search index entity (ending in _index__dlm). Use ExploreDataCloud to find it.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false

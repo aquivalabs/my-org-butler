@@ -24,7 +24,6 @@ private class SearchDataLibrary_Test {
         SearchDataLibrary.Input result = new SearchDataLibrary.Input();
         result.question = question;
         result.chunkDmo = 'TestChunk_chunk__dlm';
-        result.searchIndex = 'TestChunk_index__dlm';
 
         return result;
     }

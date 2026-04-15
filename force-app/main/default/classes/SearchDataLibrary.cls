@@ -6,7 +6,7 @@ global with sharing class SearchDataLibrary {
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
 
-        String documents = new DataLibrary().retrieve(input.question, input.chunkDmo, input.searchIndex, false);
+        String documents = new DataLibrary().retrieve(input.question, input.chunkDmo, false);
 
         PromptTemplate.Result result = new PromptTemplate('AnswerFromDocuments')
                             .call(new Map<String, Object>{
@@ -29,9 +29,6 @@ global with sharing class SearchDataLibrary {
 
         @InvocableVariable(label='Chunk DMO' description='API name of the Data Cloud chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.' required=true)
         global String chunkDmo;
-
-        @InvocableVariable(label='Search Index' description='API name of the Data Cloud search index entity (ending in _index__dlm). Use ExploreDataCloud to find it.' required=true)
-        global String searchIndex;
     }
 
 

@@ -4,7 +4,7 @@
         - Use this to answer questions using the company's internal knowledge base stored in a Data Cloud data library.
         - Searches through company documents, policies, and other files uploaded to a data library.
         - Returns AI-generated answers with inline source citations (file names).
-        - Requires two parameters from ExploreDataCloud: chunkDmo (entity ending in _chunk__dlm) and searchIndex (entity ending in _index__dlm). Both are DataModelObjects.
+        - Requires a chunkDmo parameter: the API name of the chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.
 
         IMPORTANT: When calling this function, do NOT simply pass the user's last utterance as the question. Instead:
         1. Analyze the entire conversation context and previous exchanges
