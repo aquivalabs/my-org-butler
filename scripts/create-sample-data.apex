@@ -111,20 +111,4 @@ Opportunity dubaiSponsoring = new Opportunity(
 insert dubaiSponsoring;
 
 
-// CUSTOM SETTINGS: Data Library retriever
-List<CustomSetting__c> retrieverSettings = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryRetriever'];
-if(retrieverSettings.isEmpty()) {
-    insert as user new CustomSetting__c(Name = 'DataLibraryRetriever', Value__c = 'MyOrgButlerLibrary');
-} else {
-    retrieverSettings[0].put('Value__c', 'MyOrgButlerLibrary');
-    update as user retrieverSettings;
-}
-
-// CUSTOM SETTING: Data Library chunk DMO
-List<CustomSetting__c> chunkDmoSettings = [SELECT Id FROM CustomSetting__c WHERE Name = 'DataLibraryChunkDmo'];
-if(chunkDmoSettings.isEmpty()) {
-    insert as user new CustomSetting__c(Name = 'DataLibraryChunkDmo', Value__c = 'ADL_MyOrgButlerLibr_chunk__dlm');
-} else {
-    chunkDmoSettings[0].put('Value__c', 'ADL_MyOrgButlerLibr_chunk__dlm');
-    update as user chunkDmoSettings;
-}
+// Note: Data Library custom settings removed — the agent discovers the chunk DMO via ExploreDataCloud at runtime

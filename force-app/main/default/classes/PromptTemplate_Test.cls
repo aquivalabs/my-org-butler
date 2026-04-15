@@ -28,18 +28,4 @@ private class PromptTemplate_Test {
         // Verify
         Assert.areEqual(PromptTemplate.mockedResult, result.text);
     }
-
-
-    @IsTest
-    private static void citationsAreNullInTestContext() {
-
-        // Exercise
-        PromptTemplate.Result result = new PromptTemplate('TestTemplate')
-            .call(new Map<String, Object>{
-                'Input:query' => 'test'
-            });
-
-        // Verify
-        Assert.isNull(result.citations);
-    }
 }

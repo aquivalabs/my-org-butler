@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
-    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</activeVersionIdentifier>
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_5</activeVersionIdentifier>
     <developerName>AnswerFromFile</developerName>
     <masterLabel>Answer questions about this file</masterLabel>
     <overridable>false</overridable>
     <templateVersions>
         <content>You&apos;re a business-savvy assistant specialized in analyzing Salesforce files like contracts, proposals, or SOWs.
 
-A user has asked a question about the file you&apos;re currently focused on.
-
-&lt;FILE-METADATA&gt;
-{!$RecordSnapshot:file.Snapshot}
-&lt;/FILE-METADATA&gt;
-
-
 &lt;QUESTION&gt;
- {!$Input:userQuestion}
+{!$Input:userQuestion}
 &lt;/QUESTION&gt;
+
+&lt;FILE&gt;
+{!$RecordSnapshot:file.Snapshot}
+&lt;/FILE&gt;
 
 ### Answering Instructions
 
@@ -56,7 +53,7 @@ A user has asked a question about the file you&apos;re currently focused on.
             </parameters>
             <referenceName>RecordSnapshot:file</referenceName>
         </templateDataProviders>
-        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_4</versionIdentifier>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_5</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>

@@ -49,11 +49,15 @@ tests:
       - type: llm-rubric
         value: "Mentions payment milestones: 25% at signing, 25% at delivery, 50% at go-live"
 
-  # Step 3 disabled — Data Library search index broken (Issue #49)
-  # - description: "Policy check: can I offer a discount?"
-  #   vars:
-  #     utterance: "the customer asked for a 15% discount — is that within our company policy?"
-  #     conversationId: monday-morning
+  - description: "Policy check: can I offer a discount?"
+    vars:
+      utterance: "the customer asked for a 15% discount — is that within our company policy?"
+      conversationId: monday-morning
+    assert:
+      - type: javascript
+        value: "output.success === true"
+      - type: llm-rubric
+        value: "Mentions that discounts above 10% require VP of Sales approval and cites policy.pdf as the source"
 
   - description: "Research: is this discount normal in the market?"
     vars:
