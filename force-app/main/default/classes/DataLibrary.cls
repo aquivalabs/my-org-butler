@@ -2,7 +2,7 @@ public virtual with sharing class DataLibrary {
 
     private static final Integer DEFAULT_TOP_K = 10;
     private static final Decimal DEFAULT_SIMILARITY_THRESHOLD = 0.4;
-    private static final Integer MAX_CHUNKS = 10;
+    private static final Integer MAX_CHUNKS = 1000;
 
 
     @TestVisible
@@ -14,6 +14,10 @@ public virtual with sharing class DataLibrary {
     public String retrieve(String query, String chunkDmo, Boolean chunksOnly) {
         if (Test.isRunningTest() && mockedResult != null) {
             return mockedResult;
+        }
+
+        if (String.isBlank(chunkDmo) || !Pattern.matches('[A-Za-z0-9_]+', chunkDmo)) {
+            return '';
         }
 
         String result = '';
@@ -64,7 +68,7 @@ public virtual with sharing class DataLibrary {
         if (queryResult != null && queryResult.data != null) {
             for (ConnectApi.CdpQueryV2Row row : queryResult.data) {
                 String docId = rowValue(row, 0);
-              
+
                 if (String.isNotBlank(docId)) {
                     result.add(docId);
                 }
@@ -102,7 +106,7 @@ public virtual with sharing class DataLibrary {
 
     private String toSqlList(Set<String> values) {
         List<String> result = new List<String>();
-        
+
         for (String value : values) {
             result.add('\'' + String.escapeSingleQuotes(value) + '\'');
         }
@@ -112,7 +116,7 @@ public virtual with sharing class DataLibrary {
 
 
     private String toJson(ConnectApi.CdpQueryOutputV2 queryResult, Boolean chunksOnly) {
-        Map<String, Document> byFile = new Map<String, Document>();
+        Map<String, Document> bySourceId = new Map<String, Document>();
 
         if (queryResult != null && queryResult.data != null) {
             for (ConnectApi.CdpQueryV2Row row : queryResult.data) {
@@ -123,19 +127,19 @@ public virtual with sharing class DataLibrary {
                     continue;
                 }
 
-                String fileName = sourceRecordId.contains('/')
-                    ? sourceRecordId.substringAfter('/')
-                    : sourceRecordId;
+                if (!bySourceId.containsKey(sourceRecordId)) {
+                    String fileName = sourceRecordId.contains('/')
+                        ? sourceRecordId.substringAfter('/')
+                        : sourceRecordId;
 
-                if (!byFile.containsKey(fileName)) {
-                    byFile.put(fileName, new Document(fileName, sourceRecordId, chunksOnly));
+                    bySourceId.put(sourceRecordId, new Document(fileName, sourceRecordId, chunksOnly));
                 }
 
-                byFile.get(fileName).chunks.add(content);
+                bySourceId.get(sourceRecordId).chunks.add(content);
             }
         }
 
-        List<Document> result = byFile.values();
+        List<Document> result = bySourceId.values();
         for (Document doc : result) {
             doc.content = String.join(doc.chunks, '\n');
         }
