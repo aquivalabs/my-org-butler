@@ -29,7 +29,7 @@ Accumulated knowledge from experiments. Read this before proposing any experimen
 ## Process learnings
 
 ### Deployment
-- New prompt templates deploy without an active version. Must do a deploy-retrieve-redeploy cycle: deploy first to create the version, retrieve to get the server-generated `versionIdentifier` hash, add `activeVersionIdentifier` matching that hash, then redeploy.
+- **Prompt templates MUST have `activeVersionIdentifier` and `versionIdentifier`.** Without these fields the deploy fails with "invalid version identifier". You cannot invent these values — they are server-generated hashes (format: `base64=_N`, e.g. `XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsa=_1`). For NEW templates: deploy first without them to create the version, then `sf project retrieve start` to get the generated hash, then add both fields and redeploy. For EXISTING templates: copy the values from the current file — never delete them.
 - Not all models are available in all scratch org regions. If a variant silently fails to deploy, check model availability. Retrieve to confirm the template exists before running tests.
 
 ### Running experiments
