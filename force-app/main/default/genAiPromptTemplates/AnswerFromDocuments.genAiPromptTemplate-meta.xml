@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsa=_1</activeVersionIdentifier>
     <description>Answers questions using company documents retrieved from a Data Cloud data library.</description>
     <developerName>AnswerFromDocuments</developerName>
     <masterLabel>Answer from Documents</masterLabel>
@@ -40,6 +41,7 @@
         </inputs>
         <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
         <status>Published</status>
+        <versionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsa=_1</versionIdentifier>
     </templateVersions>
     <type>einstein_gpt__flex</type>
     <visibility>Global</visibility>
