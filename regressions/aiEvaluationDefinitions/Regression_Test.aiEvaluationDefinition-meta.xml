@@ -206,7 +206,7 @@
     <testCase>
         <number>12</number>
         <inputs>
-            <utterance>query the most recent agent conversation messages from Data Cloud and show me what users asked</utterance>
+            <utterance>query the most recent agent conversation messages from Data Cloud</utterance>
         </inputs>
         <expectation>
             <name>topic_assertion</name>
@@ -218,7 +218,7 @@
         </expectation>
         <expectation>
             <name>bot_response_rating</name>
-            <expectedValue>Shows actual user utterances from agent conversations stored in Data Cloud, such as questions about opportunities or custom objects</expectedValue>
+            <expectedValue>Shows recent agent conversation messages with timestamps and content text</expectedValue>
         </expectation>
     </testCase>
     <testCase>
