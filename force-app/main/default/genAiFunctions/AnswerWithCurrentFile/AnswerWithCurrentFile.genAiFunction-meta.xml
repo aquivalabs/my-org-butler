@@ -10,6 +10,6 @@
     <isConfirmationRequired>false</isConfirmationRequired>
     <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
     <localDeveloperName>AnswerWithCurrentFile</localDeveloperName>
-    <masterLabel>Answer questions with current file</masterLabel>
+    <masterLabel>MyOrgButler: Answer Questions With Current File</masterLabel>
     <progressIndicatorMessage>Digesting file content</progressIndicatorMessage>
 </GenAiFunction>
