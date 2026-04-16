@@ -1,4 +1,4 @@
-## <img src="resources/logo.png" width="50"/> My Org Butler [`v2026.4.0`](https://github.com/aquivalabs/my-org-butler/releases/tag/v2026.4.0)
+## <img src="resources/logo.png" width="50"/> My Org Butler [`v2026.4.1`](https://github.com/aquivalabs/my-org-butler/releases/tag/v2026.4.1)
 
 My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. It started in early 2024 on the [OpenAI Assistants API with a custom LWC frontend](../../tree/openai-agentforce-hybrid), then moved to pure Agentforce when it became powerful enough. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
