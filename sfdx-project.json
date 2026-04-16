@@ -21,7 +21,7 @@
       "default": false,
       "package": "my-org-butler",
       "versionName": "April 2026",
-      "versionNumber": "2026.4.1.NEXT",
+      "versionNumber": "2026.4.2.NEXT",
       "versionDescription": "",
       "packageMetadataAccess": {
         "permissionSets": [
@@ -41,7 +41,7 @@
     }
   ],
   "name": "my-org-butler",
-  "namespace": "",
+  "namespace": "aquiva_os",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "66.0",
   "packageAliases": {
@@ -123,6 +123,7 @@
     "my-org-butler@2.32.0-1": "04tVI000000VUBVYA4",
     "my-org-butler@2026.3.0-1": "04tVI000000Xl1lYAC",
     "my-org-butler@2026.4.0-1": "04tVI000000YH6TYAW",
-    "my-org-butler@2026.4.1-1": "04tVI000000YlcPYAS"
+    "my-org-butler@2026.4.1-1": "04tVI000000YlcPYAS",
+    "my-org-butler@2026.4.2-1": "04tVI000000Yle1YAC"
   }
 }
