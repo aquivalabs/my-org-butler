@@ -90,10 +90,22 @@ read -p "Press Enter when done (or to skip)..."
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
-echo "Running Testing Center Tests (first pass — generates session tracing data for semantic search)"
+echo "Running Promptfoo Prompt Template Regression Tests (no index needed)"
+(cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
+
+echo "Waiting for Data Library chunks..."
+until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
+ConnectApi.CdpQueryInput i = new ConnectApi.CdpQueryInput();
+i.sql = 'SELECT COUNT(*) FROM ADL_MyOrgButlerLibr_chunk__dlm';
+ConnectApi.CdpQueryOutputV2 r = ConnectApi.CdpQuery.queryANSISqlV2(i);
+if(r.data != null && !r.data.isEmpty() && String.valueOf(r.data[0].rowData[0]) != '0') System.debug('READY');
+APEX
+do echo "  ...retrying in 30s"; sleep 30; done
+
+echo "Running Testing Center Tests (first pass — generates session tracing data)"
 sf agent test run --api-name Regression_Test --wait 15
 
-echo "Running Testing Center Tests (second pass — session data now indexed for hybrid_search)"
+echo "Running Testing Center Tests (second pass — session data now indexed)"
 sf agent test run --api-name Regression_Test --wait 15
 
 echo "Running Promptfoo Demo Story"
@@ -101,9 +113,6 @@ echo "Running Promptfoo Demo Story"
 
 echo "Running Promptfoo Regression Tests"
 (cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env)
-
-echo "Running Promptfoo Prompt Template Regression Tests"
-(cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default
