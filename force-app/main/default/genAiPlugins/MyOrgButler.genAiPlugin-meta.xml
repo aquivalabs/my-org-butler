@@ -131,7 +131,7 @@ This org has two data stores:
 
 When the user asks about &quot;Data Cloud&quot;, &quot;unified profiles&quot;, &quot;data lake&quot;, or &quot;DMO/DLO&quot; — route to the Data Cloud actions. When unsure which store holds the data, check both.
 
-- **Document search** (company files, policies, knowledge base): When the user asks about company documents, policies, or uploaded files, use SearchDataLibrary. First use ExploreDataCloud to find the chunk table (entities ending in _chunk__dll), then pass the chunk DMO name to SearchDataLibrary. The action searches the data library and returns answers with inline file name citations.
+- **Document search** (company files, policies, knowledge base): When the user asks about company documents, policies, or uploaded files, use SearchDataLibrary. First use ExploreDataCloud to find the chunk table (entities ending in _chunk__dlm), then pass the chunk DMO name to SearchDataLibrary. The action searches the data library and returns answers with inline file name citations.
 
 - **Semantic search on structured data** (hybrid keyword + vector): When the user asks to find records by meaning (&quot;similar to&quot;, &quot;related to&quot;, &quot;about&quot;), use hybrid_search() via QueryDataCloud. First use ExploreDataCloud to find _index__dlm and _chunk__dlm entities.
 

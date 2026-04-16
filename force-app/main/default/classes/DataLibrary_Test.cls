@@ -13,11 +13,11 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, false);
+        DataLibrary.Result result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
-        Assert.areEqual('', result);
+        Assert.areEqual('', result.documents);
     }
 
 
@@ -36,11 +36,11 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('discount policy', CHUNK_DMO, false);
+        DataLibrary.Result result = mock.retrieve('discount policy', CHUNK_DMO, false);
 
 
         // Verify
-        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result);
+        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result.documents);
         Assert.areEqual(1, documents.size());
 
         Map<String, Object> doc = (Map<String, Object>) documents[0];
@@ -68,11 +68,11 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('company docs', CHUNK_DMO, false);
+        DataLibrary.Result result = mock.retrieve('company docs', CHUNK_DMO, false);
 
 
         // Verify
-        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result);
+        List<Object> documents = (List<Object>) JSON.deserializeUntyped(result.documents);
         Assert.areEqual(2, documents.size());
     }
 
@@ -87,11 +87,11 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, false);
+        DataLibrary.Result result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
-        Assert.areEqual('', result);
+        Assert.areEqual('', result.documents);
     }
 
 
@@ -111,11 +111,11 @@ private class DataLibrary_Test {
 
 
         // Exercise
-        String result = mock.retrieve('test query', CHUNK_DMO, false);
+        DataLibrary.Result result = mock.retrieve('test query', CHUNK_DMO, false);
 
 
         // Verify
-        Assert.isTrue(result.contains('Valid content'));
+        Assert.isTrue(result.documents.contains('Valid content'));
     }
 
 
@@ -208,6 +208,11 @@ private class DataLibrary_Test {
             }
 
             return result;
+        }
+
+        protected override String queryCdpRest(String sql) {
+            executedQueries.add(sql);
+            return '{"data":[],"metadata":[]}';
         }
     }
 }
