@@ -4,6 +4,10 @@ private class DataLibrary_Test {
     private static final String CHUNK_DMO = 'TestChunk_chunk__dlm';
     private static MockDataLibrary mock = new MockDataLibrary();
 
+    static {
+        PresignedCitations.mockedRestResponse = '{"data":[],"metadata":[]}';
+    }
+
 
     @IsTest
     private static void returnsEmptyForNoMatches() {
@@ -210,9 +214,5 @@ private class DataLibrary_Test {
             return result;
         }
 
-        protected override String queryCdpRest(String sql) {
-            executedQueries.add(sql);
-            return '{"data":[],"metadata":[]}';
-        }
     }
 }

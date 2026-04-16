@@ -1,10 +1,8 @@
-@SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
 public virtual with sharing class DataLibrary {
 
     private static final Integer DEFAULT_TOP_K = 10;
     private static final Decimal DEFAULT_SIMILARITY_THRESHOLD = 0.4;
     private static final Integer MAX_CHUNKS = 1000;
-    private static final String QUERY_SQL_ENDPOINT = '/services/data/v66.0/ssot/query-sql';
 
 
     @TestVisible
@@ -27,7 +25,6 @@ public virtual with sharing class DataLibrary {
         Result result = new Result();
 
         String searchIndex = chunkDmo.replace('_chunk', '_index');
-        String directoryDmo = chunkDmo.replace('_chunk', '');
         Set<String> documentIds = findRelevantDocumentIds(query, searchIndex, chunkDmo);
 
         if (!documentIds.isEmpty()) {
@@ -36,7 +33,7 @@ public virtual with sharing class DataLibrary {
                 : queryAllChunksOf(documentIds, chunkDmo);
 
             result.documents = toJson(chunkRows, chunksOnly);
-            result.citations = queryPresignedCitations(directoryDmo, chunkDmo, documentIds);
+            result.citations = new PresignedCitations(chunkDmo).forDocuments(documentIds);
         }
 
         return result;
@@ -51,21 +48,6 @@ public virtual with sharing class DataLibrary {
         input.sql = sql;
 
         return ConnectApi.CdpQuery.queryANSISqlV2(input);
-    }
-
-
-    @TestVisible
-    protected virtual String queryCdpRest(String sql) {
-        HttpRequest request = new HttpRequest();
-        request.setMethod('POST');
-        request.setHeader('Authorization', 'Bearer ' + new SessionId().asString());
-        request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + QUERY_SQL_ENDPOINT);
-        request.setBody(JSON.serialize(new Map<String, String>{ 'sql' => sql }));
-
-        HttpResponse response = new Http().send(request);
-
-        return response.getBody();
     }
 
 
@@ -177,51 +159,6 @@ public virtual with sharing class DataLibrary {
         }
 
         return result;
-    }
-
-
-    private AiCopilot.GenAiCitationInput queryPresignedCitations(String directoryDmo, String chunkDmo, Set<String> documentIds) {
-        List<AiCopilot.GenAiSourceReference> sourceReferences = new List<AiCopilot.GenAiSourceReference>();
-
-        List<String> conditions = new List<String>();
-        for (String docId : documentIds) {
-            conditions.add('d.ResolvedFilePath__c LIKE \'%' + String.escapeSingleQuotes(docId) + '\'');
-        }
-
-        String responseBody = queryCdpRest(
-            'SELECT get_presigned_url(TABLE(' + directoryDmo + '), d.ResolvedFilePath__c, 180), d.ResolvedFilePath__c ' +
-            'FROM "' + directoryDmo + '" d ' +
-            'WHERE ' + String.join(conditions, ' OR ')
-        );
-
-        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
-        List<Object> rows = (List<Object>) parsed.get('data');
-
-        if (rows != null) {
-            for (Object row : rows) {
-                List<Object> values = (List<Object>) row;
-                String url = (String) values[0];
-                String filePath = (String) values[1];
-
-                if (String.isNotBlank(filePath) && String.isNotBlank(url)) {
-                    String fileName = filePath.substringAfterLast('/');
-
-                    sourceReferences.add(new AiCopilot.GenAiSourceReference(
-                        null,
-                        new List<AiCopilot.GenAiSourceContentInfo>{
-                            new AiCopilot.GenAiSourceContentInfo('DataSource__c', chunkDmo, 'FilePath__c'),
-                            new AiCopilot.GenAiSourceContentInfo('DataSourceObject__c', chunkDmo, directoryDmo),
-                            new AiCopilot.GenAiSourceContentInfo('FilePath__c', directoryDmo, fileName)
-                        },
-                        new List<AiCopilot.GenAiSourceReferenceInfo>{
-                            new AiCopilot.GenAiSourceReferenceInfo(url, fileName, directoryDmo)
-                        }
-                    ));
-                }
-            }
-        }
-
-        return sourceReferences.isEmpty() ? null : new AiCopilot.GenAiCitationInput(null, sourceReferences);
     }
 
 
