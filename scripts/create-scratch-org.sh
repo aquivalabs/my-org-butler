@@ -46,19 +46,32 @@ if [ "$NAMESPACE" = "false" ]; then
 
   # Note: Restore source even if deploy fails — namespace stripping rewrites files in place
   trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ regressions/' EXIT
+
+  echo "Pushing changes to scratch org"
+  execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
+
+  echo "Pushing unpackaged changes to scratch org"
+  execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
+
+  echo "Deploying regressions"
+  execute sf project deploy start --source-dir regressions --concise
+
+  echo "Restoring namespace in source"
+  git checkout -- sfdx-project.json force-app/ unpackaged/ regressions/
+  trap - EXIT
 else
   echo "Installing dependencies"
   execute sf package install --package "app-foundations@LATEST" --publish-wait 3 --wait 10
+
+  echo "Pushing changes to scratch org"
+  execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
+
+  echo "Pushing unpackaged changes to scratch org"
+  execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
+
+  echo "Deploying regressions"
+  execute sf project deploy start --source-dir regressions --concise
 fi
-
-echo "Pushing changes to scratch org"
-execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
-
-echo "Pushing unpackaged changes to scratch org"
-execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
-
-echo "Deploying regressions"
-execute sf project deploy start --source-dir regressions --concise
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
