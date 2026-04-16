@@ -28,7 +28,7 @@ global with sharing class SearchDataLibrary {
         @InvocableVariable(label='Question' description='The question to answer using the company knowledge base.' required=true)
         global String question;
 
-        @InvocableVariable(label='Chunk DMO' description='API name of the Data Cloud chunk table (e.g. ADL_CpdT_MyOrgButle_chunk__dll). Use ExploreDataCloud to find it.' required=true)
+        @InvocableVariable(label='Chunk DMO' description='API name of the Data Cloud chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.' required=true)
         global String chunkDmo;
     }
 

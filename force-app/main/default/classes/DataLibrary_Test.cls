@@ -1,7 +1,7 @@
 @IsTest
 private class DataLibrary_Test {
 
-    private static final String CHUNK_DMO = 'TestChunk_chunk__dll';
+    private static final String CHUNK_DMO = 'TestChunk_chunk__dlm';
     private static MockDataLibrary mock = new MockDataLibrary();
 
 
@@ -120,18 +120,18 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void derivesSearchIndex() {
+    private static void derivesSearchIndexFromChunkDmo() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
 
 
         // Exercise
-        mock.retrieve('test', 'ADL_CpdT_MyOrgButle_chunk__dll', false);
+        mock.retrieve('test', 'ADL_MyOrgButlerLibr_chunk__dlm', false);
 
 
         // Verify
-        Assert.isTrue(mock.lastQuery().contains('ADL_CpdT_MyOrgButle_index__dll'));
+        Assert.isTrue(mock.lastQuery().contains('ADL_MyOrgButlerLibr_index__dlm'));
     }
 
 

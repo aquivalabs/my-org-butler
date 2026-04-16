@@ -11,7 +11,7 @@
     },
     "chunkDmo" : {
       "title" : "Chunk DMO",
-      "description" : "API name of the Data Cloud chunk table, use ExploreDataCloud to find the correct data model object (e.g. ADL_MyOrgButlerLibr_chunk__dlm).",
+      "description" : "API name of the Data Cloud chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
       "copilotAction:isUserInput" : false
