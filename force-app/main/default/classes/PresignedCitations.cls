@@ -21,15 +21,15 @@ public virtual with sharing class PresignedCitations {
     // PUBLIC
 
     public AiCopilot.GenAiCitationInput forDocuments(Set<String> documentIds) {
-        List<String> conditions = new List<String>();
+        List<String> quoted = new List<String>();
         for (String docId : documentIds) {
-            conditions.add('d.ResolvedFilePath__c = \'' + String.escapeSingleQuotes(docId) + '\'');
+            quoted.add('\'' + String.escapeSingleQuotes(docId) + '\'');
         }
 
         String responseBody = queryCdpRest(
             'SELECT get_presigned_url(TABLE(' + directoryDmo + '), d.ResolvedFilePath__c, 180), d.ResolvedFilePath__c ' +
             'FROM "' + directoryDmo + '" d ' +
-            'WHERE ' + String.join(conditions, ' OR ')
+            'WHERE d.FilePath__c IN (' + String.join(quoted, ', ') + ')'
         );
 
         return toCitations(responseBody);
