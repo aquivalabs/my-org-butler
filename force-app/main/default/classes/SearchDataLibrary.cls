@@ -6,16 +6,17 @@ global with sharing class SearchDataLibrary {
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
 
-        String documents = new DataLibrary().retrieve(input.question, input.chunkDmo, false);
+        DataLibrary.Result data = new DataLibrary().retrieve(input.question, input.chunkDmo, false);
 
         PromptTemplate.Result result = new PromptTemplate('AnswerFromDocuments')
                             .call(new Map<String, Object>{
                                 'Input:userQuestion' => input.question,
-                                'Input:documents' => documents
+                                'Input:documents' => data.documents
                             });
 
         Output output = new Output();
         output.answer = result.text;
+        output.citations = data.citations;
 
         return new List<Output>{ output };
     }
@@ -35,5 +36,8 @@ global with sharing class SearchDataLibrary {
     global class Output {
         @InvocableVariable(label='Answer' description='AI-generated answer grounded in company documents with inline source citations.')
         global String answer;
+
+        @InvocableVariable(label='Citations' description='Source references for the generated answer.')
+        global AiCopilot.GenAiCitationInput citations;
     }
 }

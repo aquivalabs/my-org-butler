@@ -6,8 +6,17 @@
       "description" : "AI-generated answer grounded in company documents with inline source citations.",
       "lightning:type" : "lightning__textType",
       "lightning:isPII" : false,
-      "copilotAction:isDisplayable" : true,
+      "copilotAction:isDisplayable" : false,
       "copilotAction:isUsedByPlanner" : true
+    },
+    "citations" : {
+      "title" : "Citations",
+      "description" : "Source references for the generated answer.",
+      "lightning:type" : "@apexClassType/AiCopilot__GenAiCitationInput",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : false,
+      "copilotAction:useHydratedPrompt" : false
     }
   },
   "lightning:type" : "lightning__objectType"

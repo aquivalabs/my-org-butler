@@ -11,18 +11,20 @@ public virtual with sharing class DataLibrary {
 
     // PUBLIC
 
-    public String retrieve(String query, String chunkDmo, Boolean chunksOnly) {
+    public Result retrieve(String query, String chunkDmo, Boolean chunksOnly) {
         if (Test.isRunningTest() && mockedResult != null) {
-            return mockedResult;
+            Result r = new Result();
+            r.documents = mockedResult;
+            return r;
         }
 
         if (String.isBlank(chunkDmo) || !Pattern.matches('[A-Za-z0-9_]+', chunkDmo)) {
-            return '';
+            return new Result();
         }
 
-        String result = '';
+        Result result = new Result();
 
-        String searchIndex = chunkDmo.replace('_chunk__dlm', '_index__dlm');
+        String searchIndex = chunkDmo.replace('_chunk', '_index');
         Set<String> documentIds = findRelevantDocumentIds(query, searchIndex, chunkDmo);
 
         if (!documentIds.isEmpty()) {
@@ -30,7 +32,8 @@ public virtual with sharing class DataLibrary {
                 ? queryChunksFor(query, searchIndex, chunkDmo)
                 : queryAllChunksOf(documentIds, chunkDmo);
 
-            result = toJson(chunkRows, chunksOnly);
+            result.documents = toJson(chunkRows, chunksOnly);
+            result.citations = new PresignedCitations(chunkDmo).forDocuments(documentIds);
         }
 
         return result;
@@ -160,6 +163,12 @@ public virtual with sharing class DataLibrary {
 
 
     // INNER
+
+    public class Result {
+        public String documents = '';
+        public AiCopilot.GenAiCitationInput citations;
+    }
+
 
     private class Document {
         private String fileName;
