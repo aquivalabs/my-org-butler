@@ -38,6 +38,10 @@ public with sharing class PresignedCitations {
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
         List<Object> rows = (List<Object>) parsed.get('data');
 
+        if (rows == null) {
+            return new AiCopilot.GenAiCitationInput(null, result);
+        }
+
         for (Object row : rows) {
             List<Object> values = (List<Object>) row;
             String url = (String) values[0];
