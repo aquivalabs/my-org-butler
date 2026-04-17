@@ -26,41 +26,66 @@ public with sharing class PresignedCitations {
             'WHERE d.FilePath__c IN (' + String.join(quoted, ', ') + ')'
         );
 
-        return toCitations(responseBody);
+        return toCitations(extract(responseBody));
     }
 
 
     // PRIVATE
 
-    private AiCopilot.GenAiCitationInput toCitations(String responseBody) {
-        List<AiCopilot.GenAiSourceReference> result = new List<AiCopilot.GenAiSourceReference>();
+    @TestVisible
+    private List<Citation> extract(String responseBody) {
+        List<Citation> result = new List<Citation>();
 
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
         List<Object> rows = (List<Object>) parsed.get('data');
 
         if (rows == null) {
-            return new AiCopilot.GenAiCitationInput(null, result);
+            return result;
         }
 
         for (Object row : rows) {
             List<Object> values = (List<Object>) row;
-            String url = (String) values[0];
-            String filePath = (String) values[1];
-            String fileName = filePath.substringAfterLast('/');
+            result.add(new Citation(
+                (String) values[0],
+                ((String) values[1]).substringAfterLast('/')
+            ));
+        }
 
+        return result;
+    }
+
+
+    private AiCopilot.GenAiCitationInput toCitations(List<Citation> citations) {
+        List<AiCopilot.GenAiSourceReference> result = new List<AiCopilot.GenAiSourceReference>();
+
+        for (Citation citation : citations) {
             result.add(new AiCopilot.GenAiSourceReference(
                 null,
                 new List<AiCopilot.GenAiSourceContentInfo>{
                     new AiCopilot.GenAiSourceContentInfo('DataSource__c', chunkDmo, 'FilePath__c'),
                     new AiCopilot.GenAiSourceContentInfo('DataSourceObject__c', chunkDmo, directoryDmo),
-                    new AiCopilot.GenAiSourceContentInfo('FilePath__c', directoryDmo, fileName)
+                    new AiCopilot.GenAiSourceContentInfo('FilePath__c', directoryDmo, citation.fileName)
                 },
                 new List<AiCopilot.GenAiSourceReferenceInfo>{
-                    new AiCopilot.GenAiSourceReferenceInfo(url, fileName, directoryDmo)
+                    new AiCopilot.GenAiSourceReferenceInfo(citation.url, citation.fileName, directoryDmo)
                 }
             ));
         }
 
         return new AiCopilot.GenAiCitationInput(null, result);
+    }
+
+
+    // INNER
+
+    @TestVisible
+    public class Citation {
+        public String url;
+        public String fileName;
+
+        public Citation(String url, String fileName) {
+            this.url = url;
+            this.fileName = fileName;
+        }
     }
 }
