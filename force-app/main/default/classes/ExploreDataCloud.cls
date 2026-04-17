@@ -2,9 +2,12 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexSuggestUsingNamedCred')
 global with sharing class ExploreDataCloud {
 
-    public static HttpResponse mockedResponse = null;
+    @TestVisible
+    private static List<HttpResponse> mockedResponses = new List<HttpResponse>();
 
     private static final String METADATA_ENDPOINT = '/services/data/v66.0/ssot/metadata';
+    private static final Integer MAX_PAGES = 10;
+
 
     @InvocableMethod(label='MyOrgButler: Explore Data Cloud Schema'
                      description='Retrieve metadata about Data Cloud entities, fields, and relationships.')
@@ -36,49 +39,109 @@ global with sharing class ExploreDataCloud {
     // PRIVATE
 
     private static String prepareSummary(String entityType, String entityCategory) {
+        Map<String, List<Map<String, String>>> entities = new Map<String, List<Map<String, String>>>();
+
         String url = METADATA_ENDPOINT + buildQueryParams(entityType, entityCategory);
-        HttpResponse response = callApi(url);
+        Integer pages = 0;
+        Boolean truncated = false;
 
-        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-        List<Object> metadata = (List<Object>) parsed.get('metadata');
-
-        Map<String, List<Map<String, String>>> result = new Map<String, List<Map<String, String>>>();
-
-        for(Object item : metadata) {
-            Map<String, Object> entity = (Map<String, Object>) item;
-            String type = (String) entity.get('type') ?? 'Other';
-            String name = (String) entity.get('name');
-            String label = (String) entity.get('label');
-            String category = (String) entity.get('category');
-            String description = (String) entity.get('description');
-
-            if(!result.containsKey(type)) {
-                result.put(type, new List<Map<String, String>>());
+        while(url != null) {
+            if(pages >= MAX_PAGES) {
+                truncated = true;
+                break;
             }
 
-            Map<String, String> entry = new Map<String, String>{
-                'name' => name,
-                'label' => label,
-                'category' => category
-            };
-            if(String.isNotBlank(description)) {
-                entry.put('description', description);
-            }
+            HttpResponse response = callApi(url);
+            Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
 
-            result.get(type).add(entry);
+            addEntitiesTo(entities, (List<Object>) parsed.get('metadata'));
+
+            url = (String) parsed.get('nextPageUrl');
+            pages++;
+        }
+
+        Map<String, Object> result = new Map<String, Object>{ 'entities' => entities };
+        if(truncated) {
+            result.put('truncated', 'Results truncated at ' + MAX_PAGES + ' pages. Narrow with entityType or entityCategory filters.');
         }
 
         return JSON.serialize(result, true);
     }
 
 
-    private static String prepareEntityDetails(String entityName, String scope) {
-        if(String.isBlank(entityName)) {
+    private static void addEntitiesTo(Map<String, List<Map<String, String>>> target, List<Object> metadata) {
+        if(metadata == null) {
+            return;
+        }
+
+        for(Object item : metadata) {
+            Map<String, Object> entity = (Map<String, Object>) item;
+            String name = (String) entity.get('name');
+            String type = typeFromName(name);
+
+            if(!target.containsKey(type)) {
+                target.put(type, new List<Map<String, String>>());
+            }
+
+            Map<String, String> entry = new Map<String, String>{
+                'name' => name,
+                'category' => (String) entity.get('category')
+            };
+            String label = (String) entity.get('label');
+            if(String.isNotBlank(label)) {
+                entry.put('label', label);
+            }
+            String description = (String) entity.get('description');
+            if(String.isNotBlank(description)) {
+                entry.put('description', description);
+            }
+
+            target.get(type).add(entry);
+        }
+    }
+
+
+    private static String typeFromName(String name) {
+        String result = 'Other';
+
+        if(name != null) {
+            if(name.endsWith('__dlm')) {
+                result = 'DataModelObject';
+            }
+            else if(name.endsWith('__dll')) {
+                result = 'DataLakeObject';
+            }
+            else if(name.endsWith('__cio')) {
+                result = 'CalculatedInsight';
+            }
+        }
+
+        return result;
+    }
+
+
+    private static String prepareEntityDetails(String entityNames, String scope) {
+        if(String.isBlank(entityNames)) {
             throw new DataCloudException('entityName is required for scope "' + scope + '"');
         }
 
-        Map<String, Object> entity = fetchEntity(entityName);
+        Map<String, Object> result = new Map<String, Object>();
 
+        for(String raw : entityNames.split(',')) {
+            String entityName = raw.trim();
+            if(String.isBlank(entityName)) {
+                continue;
+            }
+
+            Map<String, Object> entity = fetchEntity(entityName);
+            result.put(entityName, projectEntity(entity, scope));
+        }
+
+        return JSON.serialize(result, true);
+    }
+
+
+    private static Map<String, Object> projectEntity(Map<String, Object> entity, String scope) {
         Map<String, Object> result = new Map<String, Object>();
         result.put('name', entity.get('name'));
         result.put('label', entity.get('label'));
@@ -100,7 +163,7 @@ global with sharing class ExploreDataCloud {
             result.put('relationships', relationships);
         }
 
-        return JSON.serialize(result, true);
+        return result;
     }
 
 
@@ -115,9 +178,7 @@ global with sharing class ExploreDataCloud {
             throw new DataCloudException('Entity not found: ' + entityName);
         }
 
-        Map<String, Object> result = (Map<String, Object>) metadata[0];
-
-        return result;
+        return (Map<String, Object>) metadata[0];
     }
 
 
@@ -131,21 +192,22 @@ global with sharing class ExploreDataCloud {
             params.add('entityCategory=' + EncodingUtil.urlEncode(entityCategory, 'UTF-8'));
         }
 
-        String result = params.isEmpty() ? '' : '?' + String.join(params, '&');
-
-        return result;
+        return params.isEmpty() ? '' : '?' + String.join(params, '&');
     }
 
 
     private static HttpResponse callApi(String endpoint) {
-        HttpResponse result = mockedResponse;
+        HttpResponse result;
 
-        if(result == null) {
+        if(Test.isRunningTest() && !mockedResponses.isEmpty()) {
+            result = mockedResponses.remove(0);
+        }
+        else {
             HttpRequest request = new HttpRequest();
             request.setMethod('GET');
             request.setHeader('Authorization', 'Bearer ' + new SessionId().asString());
             request.setHeader('Content-Type', 'application/json');
-            request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + endpoint);
+            request.setEndpoint(toFullUrl(endpoint));
 
             result = new Http().send(request);
         }
@@ -155,6 +217,13 @@ global with sharing class ExploreDataCloud {
         }
 
         return result;
+    }
+
+
+    private static String toFullUrl(String endpoint) {
+        return endpoint.startsWith('http')
+            ? endpoint
+            : Url.getOrgDomainURL().toExternalForm() + endpoint;
     }
 
 
@@ -170,7 +239,7 @@ global with sharing class ExploreDataCloud {
         @InvocableVariable(label='Entity Category' description='Optional filter: Profile, Engagement, or Related')
         global String entityCategory;
 
-        @InvocableVariable(label='Entity Name' description='Exact API name of a Data Cloud entity (required for details or relationships scope)')
+        @InvocableVariable(label='Entity Names' description='One or more Data Cloud entity API names, comma-separated (required for details or relationships scope)')
         global String entityName;
 
         // Note: Empty constructor required for Invocable Methods deserialization
