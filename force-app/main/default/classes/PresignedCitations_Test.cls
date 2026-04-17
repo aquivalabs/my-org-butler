@@ -6,7 +6,7 @@ private class PresignedCitations_Test {
     private static void buildsCitationWithUrlAndFileName() {
 
         // Setup
-        PresignedCitations.mockedRestResponse = '{"data":[["https://presigned.example.com/policy.pdf?token=abc","1JDRK000005/policy.pdf"]],"metadata":[]}';
+        DataCloudSql.mockedResponse = '{"data":[["https://presigned.example.com/policy.pdf?token=abc","1JDRK000005/policy.pdf"]],"metadata":[]}';
 
         // Exercise
         AiCopilot.GenAiCitationInput result = new PresignedCitations('ADL_MyOrgButlerLibr_chunk__dlm')

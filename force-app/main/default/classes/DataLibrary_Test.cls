@@ -5,7 +5,7 @@ private class DataLibrary_Test {
     private static MockDataLibrary mock = new MockDataLibrary();
 
     static {
-        PresignedCitations.mockedRestResponse = '{"data":[],"metadata":[]}';
+        DataCloudSql.mockedResponse = '{"data":[],"metadata":[]}';
     }
 
 
@@ -85,7 +85,7 @@ private class DataLibrary_Test {
     private static void returnsEmptyForNullResult() {
 
         // Setup
-        ConnectApi.CdpQueryOutputV2 queryResult = new ConnectApi.CdpQueryOutputV2();
+        DataLibrary.QueryResult queryResult = new DataLibrary.QueryResult();
         queryResult.data = null;
         mock.whenQueryContains('hybrid_search', queryResult);
 
@@ -171,14 +171,27 @@ private class DataLibrary_Test {
     }
 
 
+    @IsTest
+    private static void returnsEmptyOnException() {
+
+        // Exercise
+        DataLibrary.Result result = new ThrowingDataLibrary().retrieve('test query', CHUNK_DMO, false);
+
+
+        // Verify
+        Assert.areEqual('', result.documents);
+        Assert.areEqual(null, result.citations);
+    }
+
+
     // HELPER
 
-    private static ConnectApi.CdpQueryOutputV2 createQueryResult(List<List<Object>> rows) {
-        ConnectApi.CdpQueryOutputV2 result = new ConnectApi.CdpQueryOutputV2();
-        result.data = new List<ConnectApi.CdpQueryV2Row>();
+    private static DataLibrary.QueryResult createQueryResult(List<List<Object>> rows) {
+        DataLibrary.QueryResult result = new DataLibrary.QueryResult();
+        result.data = new List<DataLibrary.QueryRow>();
 
         for (List<Object> rowData : rows) {
-            ConnectApi.CdpQueryV2Row row = new ConnectApi.CdpQueryV2Row();
+            DataLibrary.QueryRow row = new DataLibrary.QueryRow();
             row.rowData = rowData;
             result.data.add(row);
         }
@@ -189,9 +202,9 @@ private class DataLibrary_Test {
 
     private class MockDataLibrary extends DataLibrary {
         private List<String> executedQueries = new List<String>();
-        private Map<String, ConnectApi.CdpQueryOutputV2> responses = new Map<String, ConnectApi.CdpQueryOutputV2>();
+        private Map<String, DataLibrary.QueryResult> responses = new Map<String, DataLibrary.QueryResult>();
 
-        public void whenQueryContains(String pattern, ConnectApi.CdpQueryOutputV2 result) {
+        public void whenQueryContains(String pattern, DataLibrary.QueryResult result) {
             responses.put(pattern, result);
         }
 
@@ -199,8 +212,8 @@ private class DataLibrary_Test {
             return executedQueries.isEmpty() ? null : executedQueries[executedQueries.size() - 1];
         }
 
-        protected override ConnectApi.CdpQueryOutputV2 queryCdp(String sql) {
-            ConnectApi.CdpQueryOutputV2 result = null;
+        protected override DataLibrary.QueryResult queryCdp(String sql) {
+            DataLibrary.QueryResult result = null;
 
             executedQueries.add(sql);
 
@@ -213,6 +226,13 @@ private class DataLibrary_Test {
 
             return result;
         }
+    }
 
+
+    private class ThrowingDataLibrary extends DataLibrary {
+
+        protected override DataLibrary.QueryResult queryCdp(String sql) {
+            throw new QueryException('Data Cloud not available');
+        }
     }
 }

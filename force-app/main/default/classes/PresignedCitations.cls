@@ -1,10 +1,4 @@
-@SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
-public virtual with sharing class PresignedCitations {
-
-    private static final String QUERY_SQL_ENDPOINT = '/services/data/v66.0/ssot/query-sql';
-
-    @TestVisible
-    private static String mockedRestResponse;
+public with sharing class PresignedCitations {
 
     private String chunkDmo;
     private String directoryDmo;
@@ -26,7 +20,7 @@ public virtual with sharing class PresignedCitations {
             quoted.add('\'' + String.escapeSingleQuotes(docId) + '\'');
         }
 
-        String responseBody = queryCdpRest(
+        String responseBody = DataCloudSql.query(
             'SELECT get_presigned_url(TABLE(' + directoryDmo + '), d.ResolvedFilePath__c, 180), d.ResolvedFilePath__c ' +
             'FROM "' + directoryDmo + '" d ' +
             'WHERE d.FilePath__c IN (' + String.join(quoted, ', ') + ')'
@@ -43,6 +37,10 @@ public virtual with sharing class PresignedCitations {
 
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
         List<Object> rows = (List<Object>) parsed.get('data');
+
+        if (rows == null) {
+            return new AiCopilot.GenAiCitationInput(null, result);
+        }
 
         for (Object row : rows) {
             List<Object> values = (List<Object>) row;
@@ -64,26 +62,5 @@ public virtual with sharing class PresignedCitations {
         }
 
         return new AiCopilot.GenAiCitationInput(null, result);
-    }
-
-
-    // PROTECTED
-
-    @TestVisible
-    protected virtual String queryCdpRest(String sql) {
-        if (Test.isRunningTest() && mockedRestResponse != null) {
-            return mockedRestResponse;
-        }
-
-        HttpRequest request = new HttpRequest();
-        request.setMethod('POST');
-        request.setHeader('Authorization', 'Bearer ' + new SessionId().asString());
-        request.setHeader('Content-Type', 'application/json');
-        request.setEndpoint(Url.getOrgDomainURL().toExternalForm() + QUERY_SQL_ENDPOINT);
-        request.setBody(JSON.serialize(new Map<String, String>{ 'sql' => sql }));
-
-        HttpResponse response = new Http().send(request);
-
-        return response.getBody();
     }
 }
