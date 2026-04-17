@@ -2,7 +2,7 @@
 private class SearchDataLibrary_Test {
 
     @IsTest
-    private static void returnsAnswerFromPromptTemplate() {
+    private static void execute() {
 
         // Setup
         DataLibrary.mockedResult = '[]';

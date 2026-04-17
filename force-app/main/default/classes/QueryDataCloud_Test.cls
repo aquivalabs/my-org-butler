@@ -3,7 +3,7 @@ private class QueryDataCloud_Test {
 
 
     @IsTest
-    private static void executesQueryAndTransformsColumnsToMaps() {
+    private static void execute() {
 
         // Setup
         setup(200, '{' +
@@ -31,7 +31,7 @@ private class QueryDataCloud_Test {
 
 
     @IsTest
-    private static void partialCompletionIncludesWarning() {
+    private static void warnsOnPartialResult() {
 
         // Setup
         setup(200, '{' +
@@ -56,7 +56,7 @@ private class QueryDataCloud_Test {
 
 
     @IsTest
-    private static void wrapsHttpErrorAsException() {
+    private static void exposesHttpError() {
 
         // Setup
         setup(400, '{"errorCode":"INVALID_SQL","message":"Syntax error at line 1"}');

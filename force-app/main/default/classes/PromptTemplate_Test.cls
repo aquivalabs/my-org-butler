@@ -2,7 +2,7 @@
 private class PromptTemplate_Test {
 
     @IsTest
-    private static void callReturnsGeneratedText() {
+    private static void call() {
 
         // Exercise
         PromptTemplate.Result result = new PromptTemplate('TestTemplate')

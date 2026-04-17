@@ -3,7 +3,7 @@ private class PresignedCitations_Test {
 
 
     @IsTest
-    private static void buildsCitationWithUrlAndFileName() {
+    private static void buildsCitation() {
 
         // Setup
         DataCloudSql.mockedResponse = '{"data":[["https://presigned.example.com/policy.pdf?token=abc","1JDRK000005/policy.pdf"]],"metadata":[]}';

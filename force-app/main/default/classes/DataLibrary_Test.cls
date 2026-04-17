@@ -10,7 +10,7 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void returnsEmptyForNoMatches() {
+    private static void returnsEmptyOnNoMatch() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
@@ -26,7 +26,7 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void returnsJsonWithFileNameAndContent() {
+    private static void returnsDocumentContent() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>{
@@ -82,7 +82,7 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void returnsEmptyForNullResult() {
+    private static void handlesNullData() {
 
         // Setup
         DataLibrary.QueryResult queryResult = new DataLibrary.QueryResult();
@@ -124,7 +124,7 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void derivesSearchIndexFromChunkDmo() {
+    private static void derivesSearchIndex() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));
@@ -140,7 +140,7 @@ private class DataLibrary_Test {
 
 
     @IsTest
-    private static void usesDefaultSimilarityThreshold() {
+    private static void defaultSimilarityThreshold() {
 
         // Setup
         mock.whenQueryContains('hybrid_search', createQueryResult(new List<List<Object>>()));

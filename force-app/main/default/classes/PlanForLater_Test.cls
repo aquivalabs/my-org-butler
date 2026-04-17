@@ -3,7 +3,7 @@ private class PlanForLater_Test {
 
 
     @IsTest
-    private static void createsPlanWithPrompt() {
+    private static void createsPlan() {
 
         // Setup
         PlanForLater.Input input = new PlanForLater.Input();
@@ -24,7 +24,7 @@ private class PlanForLater_Test {
 
 
     @IsTest
-    private static void buildsCronFromSchedule() {
+    private static void buildsCronExpression() {
 
         // Setup
         PlanForLater.Input input = new PlanForLater.Input();

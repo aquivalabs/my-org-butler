@@ -13,7 +13,7 @@ private class CustomSettings_Test {
 
 
     @IsTest
-    private static void throwsWhenSettingNotFound() {
+    private static void throwsOnMissingSetting() {
         // Setup
         Exception expectedException = null;
 
@@ -31,7 +31,7 @@ private class CustomSettings_Test {
 
 
     @IsTest
-    private static void returnsNullForMissingOptionalSetting() {
+    private static void optionalSettingReturnsNull() {
 
         // Exercise
         String result = CustomSettings.optionalValueFor('NonExistent');
@@ -42,7 +42,7 @@ private class CustomSettings_Test {
 
 
     @IsTest
-    private static void returnsValueForExistingOptionalSetting() {
+    private static void returnsOptionalValue() {
 
         // Setup
         CustomSettings.mock('TestSetting', 'test-value');

@@ -3,7 +3,7 @@ private class NotifyUser_Test {
 
 
     @IsTest
-    private static void sendsNotificationToSpecificUser() {
+    private static void notifiesRecipient() {
 
         // Setup
         NotifyUser.Input input = new NotifyUser.Input();
@@ -23,7 +23,7 @@ private class NotifyUser_Test {
 
 
     @IsTest
-    private static void sendsNotificationToCurrentUserWhenNoRecipient() {
+    private static void defaultsToCurrentUser() {
 
         // Setup
         NotifyUser.Input input = new NotifyUser.Input();

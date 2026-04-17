@@ -2,7 +2,7 @@
 private class AgentMemory_Test {
 
     @IsTest
-    private static void consolidateWithNoMemory() {
+    private static void consolidateEmpty() {
         
         // Exercise
         new AgentMemory().consolidate();
@@ -13,7 +13,7 @@ private class AgentMemory_Test {
     }
 
     @IsTest
-    private static void consolidateWithNewMemory() {
+    private static void consolidatesNewEntries() {
         
         // Setup
         insert new List<Memory__c>{
@@ -34,7 +34,7 @@ private class AgentMemory_Test {
 
 
     @IsTest
-    private static void consolidateWithExistingConsolidated() {
+    private static void mergesIntoExisting() {
         
         // Setup
         insert new List<Memory__c>{
@@ -55,7 +55,7 @@ private class AgentMemory_Test {
 
 
     @IsTest
-    private static void consolidateSharedMemory() {
+    private static void consolidatesShared() {
         
         // Setup
         insert new List<Memory__c>{

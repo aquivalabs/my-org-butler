@@ -3,7 +3,7 @@ private class HeadlessAgent_Test {
 
 
     @IsTest
-    private static void returnsSuccessfulResponse() {
+    private static void execute() {
 
         // Exercise
         HeadlessAgent agent = new HeadlessAgent('MyOrgButler');
@@ -18,7 +18,7 @@ private class HeadlessAgent_Test {
 
 
     @IsTest
-    private static void acceptsContextVariables() {
+    private static void withContext() {
 
         // Setup
         Map<String, String> context = new Map<String, String>{
@@ -38,7 +38,7 @@ private class HeadlessAgent_Test {
 
 
     @IsTest
-    private static void maintainsSessionAcrossTurns() {
+    private static void maintainsSession() {
 
         // Exercise
         HeadlessAgent agent = new HeadlessAgent('MyOrgButler');

@@ -3,7 +3,7 @@ private class ExploreDataCloud_Test {
 
 
     @IsTest
-    private static void summaryReturnsEntitiesGroupedByType() {
+    private static void summary() {
 
         // Setup
         setup('{"metadata":[' +
@@ -27,7 +27,7 @@ private class ExploreDataCloud_Test {
 
 
     @IsTest
-    private static void detailsReturnsFieldsAndRelationships() {
+    private static void details() {
 
         // Setup
         setup('{"metadata":[{' +
@@ -58,7 +58,7 @@ private class ExploreDataCloud_Test {
 
 
     @IsTest
-    private static void relationshipsReturnsOnlyRelationships() {
+    private static void relationships() {
 
         // Setup
         setup('{"metadata":[{' +
@@ -85,7 +85,7 @@ private class ExploreDataCloud_Test {
 
 
     @IsTest
-    private static void detailsWithoutEntityNameFails() {
+    private static void requiresEntityName() {
 
         // Setup
         setup('{}');
@@ -105,7 +105,7 @@ private class ExploreDataCloud_Test {
 
 
     @IsTest
-    private static void wrapsApiErrorAsException() {
+    private static void exposesApiError() {
 
         // Setup
         HttpResponse response = new HttpResponse();
