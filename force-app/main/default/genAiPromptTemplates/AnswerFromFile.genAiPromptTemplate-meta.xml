@@ -2,7 +2,7 @@
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <activeVersionIdentifier>XKhLCa4sj2JrMpHwkjfDxBEOUi9KooH1VeWEaYBgPsc=_5</activeVersionIdentifier>
     <developerName>AnswerFromFile</developerName>
-    <masterLabel>Answer questions about this file</masterLabel>
+    <masterLabel>MyOrgButler: Answer questions about this file</masterLabel>
     <overridable>false</overridable>
     <templateVersions>
         <content>You&apos;re a business-savvy assistant specialized in analyzing Salesforce files like contracts, proposals, or SOWs.
