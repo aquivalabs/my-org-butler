@@ -6,12 +6,9 @@ private class ExploreDataCloud_Test {
     private static void summary() {
 
         // Setup
-        enqueue('{"metadata":[' +
+        setup('{"metadata":[' +
             '{"name":"UnifiedIndividual__dlm","label":"Unified Individual","type":"DataModelObject","category":"Profile"},' +
             '{"name":"SalesOrder__dll","label":"Sales Order","type":"DataLakeObject","category":"Engagement"}' +
-            '],"nextPageUrl":"/services/data/v66.0/ssot/metadata?page=2"}');
-        enqueue('{"metadata":[' +
-            '{"name":"AiAgentInteractionStep__dlm","label":"Agent Interaction Step","type":"DataModelObject","category":"Related"}' +
             ']}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
@@ -23,11 +20,9 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> root = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Map<String, Object> entities = (Map<String, Object>) root.get('entities');
-        List<Object> dmos = (List<Object>) entities.get('DataModelObject');
-        Assert.areEqual(2, dmos.size());
-        Assert.isTrue(entities.containsKey('DataLakeObject'));
+        Map<String, Object> grouped = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.isTrue(grouped.containsKey('DataModelObject'));
+        Assert.isTrue(grouped.containsKey('DataLakeObject'));
     }
 
 
@@ -35,20 +30,18 @@ private class ExploreDataCloud_Test {
     private static void details() {
 
         // Setup
-        enqueue('{"metadata":[{' +
-            '"name":"AiAgentSession__dlm","label":"AI Agent Session","category":"Related",' +
-            '"fields":[{"name":"Id__c","type":"VARCHAR"}],' +
+        setup('{"metadata":[{' +
+            '"name":"UnifiedIndividual__dlm",' +
+            '"label":"Unified Individual",' +
+            '"category":"Profile",' +
+            '"fields":[{"name":"FirstName__c","type":"VARCHAR"},{"name":"AccountId__c","type":"VARCHAR"}],' +
+            '"relationships":[{"fromEntity":"UnifiedIndividual__dlm","fromField":"AccountId__c","toEntity":"Account__dlm","toField":"Id","cardinality":"MANY_TO_ONE"}],' +
             '"primaryKeys":["Id__c"]' +
-            '}]}');
-        enqueue('{"metadata":[{' +
-            '"name":"AiAgentInteractionStep__dlm","label":"Agent Interaction Step","category":"Related",' +
-            '"fields":[{"name":"StepType__c","type":"VARCHAR"}],' +
-            '"relationships":[{"fromEntity":"AiAgentInteractionStep__dlm","toEntity":"AiAgentInteraction__dlm"}]' +
             '}]}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
         input.scope = 'details';
-        input.entityName = 'AiAgentSession__dlm, AiAgentInteractionStep__dlm';
+        input.entityName = 'UnifiedIndividual__dlm';
 
 
         // Exercise
@@ -56,13 +49,11 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> entities = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Assert.isTrue(entities.containsKey('AiAgentSession__dlm'));
-        Assert.isTrue(entities.containsKey('AiAgentInteractionStep__dlm'));
-
-        Map<String, Object> step = (Map<String, Object>) entities.get('AiAgentInteractionStep__dlm');
-        Assert.isTrue(step.containsKey('fields'));
-        Assert.isTrue(step.containsKey('relationships'));
+        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.areEqual('UnifiedIndividual__dlm', entity.get('name'));
+        Assert.isTrue(entity.containsKey('fields'));
+        Assert.isTrue(entity.containsKey('relationships'));
+        Assert.isTrue(entity.containsKey('primaryKeys'));
     }
 
 
@@ -70,10 +61,11 @@ private class ExploreDataCloud_Test {
     private static void relationships() {
 
         // Setup
-        enqueue('{"metadata":[{' +
-            '"name":"UnifiedIndividual__dlm","label":"Unified Individual",' +
+        setup('{"metadata":[{' +
+            '"name":"UnifiedIndividual__dlm",' +
+            '"label":"Unified Individual",' +
             '"fields":[{"name":"FirstName__c","type":"VARCHAR"}],' +
-            '"relationships":[{"fromEntity":"UnifiedIndividual__dlm","toEntity":"Account__dlm"}]' +
+            '"relationships":[{"fromEntity":"UnifiedIndividual__dlm","fromField":"AccountId__c","toEntity":"Account__dlm","toField":"Id","cardinality":"MANY_TO_ONE"}]' +
             '}]}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
@@ -86,8 +78,7 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> entities = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Map<String, Object> entity = (Map<String, Object>) entities.get('UnifiedIndividual__dlm');
+        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
         Assert.isTrue(entity.containsKey('relationships'));
         Assert.isFalse(entity.containsKey('fields'));
     }
@@ -97,7 +88,7 @@ private class ExploreDataCloud_Test {
     private static void requiresEntityName() {
 
         // Setup
-        enqueue('{}');
+        setup('{}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
         input.scope = 'details';
@@ -120,7 +111,7 @@ private class ExploreDataCloud_Test {
         HttpResponse response = new HttpResponse();
         response.setStatusCode(401);
         response.setBody('{"error":"Unauthorized"}');
-        ExploreDataCloud.mockedResponses.add(response);
+        ExploreDataCloud.mockedResponse = response;
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
         input.scope = 'summary';
@@ -138,10 +129,10 @@ private class ExploreDataCloud_Test {
 
     // HELPER
 
-    private static void enqueue(String body) {
+    private static void setup(String body) {
         HttpResponse response = new HttpResponse();
         response.setStatusCode(200);
         response.setBody(body);
-        ExploreDataCloud.mockedResponses.add(response);
+        ExploreDataCloud.mockedResponse = response;
     }
 }
