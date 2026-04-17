@@ -24,16 +24,21 @@ public virtual with sharing class DataLibrary {
 
         Result result = new Result();
 
-        String searchIndex = chunkDmo.replace('_chunk', '_index');
-        Set<String> documentIds = findRelevantDocumentIds(query, searchIndex, chunkDmo);
+        try {
+            String searchIndex = chunkDmo.replace('_chunk', '_index');
+            Set<String> documentIds = findRelevantDocumentIds(query, searchIndex, chunkDmo);
 
-        if (!documentIds.isEmpty()) {
-            ConnectApi.CdpQueryOutputV2 chunkRows = chunksOnly
-                ? queryChunksFor(query, searchIndex, chunkDmo)
-                : queryAllChunksOf(documentIds, chunkDmo);
+            if (!documentIds.isEmpty()) {
+                QueryResult chunkRows = chunksOnly
+                    ? queryChunksFor(query, searchIndex, chunkDmo)
+                    : queryAllChunksOf(documentIds, chunkDmo);
 
-            result.documents = toJson(chunkRows, chunksOnly);
-            result.citations = new PresignedCitations(chunkDmo).forDocuments(documentIds);
+                result.documents = toJson(chunkRows, chunksOnly);
+                result.citations = new PresignedCitations(chunkDmo).forDocuments(documentIds);
+            }
+        }
+        catch (Exception error) {
+            System.debug(LoggingLevel.ERROR, 'DataLibrary: ' + error.getMessage());
         }
 
         return result;
@@ -43,15 +48,24 @@ public virtual with sharing class DataLibrary {
     // PROTECTED
 
     @TestVisible
-    protected virtual ConnectApi.CdpQueryOutputV2 queryCdp(String sql) {
-        ConnectApi.CdpQueryInput input = new ConnectApi.CdpQueryInput();
-        input.sql = sql;
+    protected virtual QueryResult queryCdp(String sql) {
+        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(DataCloudSql.query(sql));
+        List<Object> rows = (List<Object>) parsed.get('data');
 
-        return ConnectApi.CdpQuery.queryANSISqlV2(input);
+        QueryResult result = new QueryResult();
+        result.data = new List<QueryRow>();
+
+        if (rows != null) {
+            for (Object row : rows) {
+                QueryRow qr = new QueryRow();
+                qr.rowData = (List<Object>) row;
+                result.data.add(qr);
+            }
+        }
+
+        return result;
     }
 
-
-    // PRIVATE
 
     private Set<String> findRelevantDocumentIds(String query, String searchIndex, String chunkDmo) {
         Set<String> result = new Set<String>();
@@ -60,7 +74,7 @@ public virtual with sharing class DataLibrary {
         String topK = String.valueOf(DEFAULT_TOP_K);
         String threshold = String.valueOf(DEFAULT_SIMILARITY_THRESHOLD);
 
-        ConnectApi.CdpQueryOutputV2 queryResult = queryCdp(
+        QueryResult queryResult = queryCdp(
             'SELECT DISTINCT c.SourceRecordId__c ' +
             'FROM hybrid_search(TABLE(' + searchIndex + '), \'' + escapedQuery + '\', \'\', ' + topK + ') h ' +
             'JOIN ' + chunkDmo + ' c ON h.SourceRecordId__c = c.RecordId__c ' +
@@ -69,7 +83,7 @@ public virtual with sharing class DataLibrary {
         );
 
         if (queryResult != null && queryResult.data != null) {
-            for (ConnectApi.CdpQueryV2Row row : queryResult.data) {
+            for (QueryRow row : queryResult.data) {
                 String docId = rowValue(row, 0);
 
                 if (String.isNotBlank(docId)) {
@@ -82,7 +96,7 @@ public virtual with sharing class DataLibrary {
     }
 
 
-    private ConnectApi.CdpQueryOutputV2 queryChunksFor(String query, String searchIndex, String chunkDmo) {
+    private QueryResult queryChunksFor(String query, String searchIndex, String chunkDmo) {
         String escapedQuery = String.escapeSingleQuotes(query);
         String topK = String.valueOf(DEFAULT_TOP_K);
         String threshold = String.valueOf(DEFAULT_SIMILARITY_THRESHOLD);
@@ -97,7 +111,7 @@ public virtual with sharing class DataLibrary {
     }
 
 
-    private ConnectApi.CdpQueryOutputV2 queryAllChunksOf(Set<String> documentIds, String chunkDmo) {
+    private QueryResult queryAllChunksOf(Set<String> documentIds, String chunkDmo) {
         return queryCdp(
             'SELECT SourceRecordId__c, Chunk__c FROM ' + chunkDmo + ' ' +
             'WHERE SourceRecordId__c IN (' + toSqlList(documentIds) + ') ' +
@@ -118,11 +132,11 @@ public virtual with sharing class DataLibrary {
     }
 
 
-    private String toJson(ConnectApi.CdpQueryOutputV2 queryResult, Boolean chunksOnly) {
+    private String toJson(QueryResult queryResult, Boolean chunksOnly) {
         Map<String, Document> bySourceId = new Map<String, Document>();
 
         if (queryResult != null && queryResult.data != null) {
-            for (ConnectApi.CdpQueryV2Row row : queryResult.data) {
+            for (QueryRow row : queryResult.data) {
                 String sourceRecordId = rowValue(row, 0);
                 String content = rowValue(row, 1);
 
@@ -151,7 +165,7 @@ public virtual with sharing class DataLibrary {
     }
 
 
-    private String rowValue(ConnectApi.CdpQueryV2Row row, Integer idx) {
+    private String rowValue(QueryRow row, Integer idx) {
         String result = null;
 
         if (idx < row.rowData.size() && row.rowData[idx] != null) {
@@ -167,6 +181,18 @@ public virtual with sharing class DataLibrary {
     public class Result {
         public String documents = '';
         public AiCopilot.GenAiCitationInput citations;
+    }
+
+
+    @TestVisible
+    class QueryResult {
+        @TestVisible List<QueryRow> data;
+    }
+
+
+    @TestVisible
+    class QueryRow {
+        @TestVisible List<Object> rowData;
     }
 
 
