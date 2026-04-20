@@ -21,24 +21,44 @@ async function sendMessage(instanceUrl, accessToken, agentName, apiVersion, user
   const input = { userMessage };
   if (sessionId) input.sessionId = sessionId;
 
-  const res = await fetch(
-    `${instanceUrl}/services/data/${apiVersion}/actions/custom/generateAiAgentResponse/${agentName}`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ inputs: [input] }),
-    }
-  );
+  // Retry on transient Salesforce agent API failures (HTTP 5xx or known flaky errors)
+  const MAX_ATTEMPTS = 3;
+  let lastError = null;
+  let data = null;
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HTTP ${res.status}: ${text}`);
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const res = await fetch(
+      `${instanceUrl}/services/data/${apiVersion}/actions/custom/generateAiAgentResponse/${agentName}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inputs: [input] }),
+      }
+    );
+
+    const bodyText = await res.text();
+    const isFlakyServerError = /InvalidPlannerConfigException|MISSING_RECORD|response code 5\d\d/.test(bodyText);
+
+    if (!res.ok) {
+      lastError = `HTTP ${res.status}: ${bodyText}`;
+      if (res.status >= 500 || isFlakyServerError) {
+        if (attempt < MAX_ATTEMPTS) { await new Promise(r => setTimeout(r, 1500 * attempt)); continue; }
+      }
+      throw new Error(lastError);
+    }
+
+    data = JSON.parse(bodyText);
+    const checkResult = data[0];
+    if (!checkResult.isSuccess && isFlakyServerError && attempt < MAX_ATTEMPTS) {
+      await new Promise(r => setTimeout(r, 1500 * attempt));
+      continue;
+    }
+    break;
   }
 
-  const data = await res.json();
   const actionResult = data[0];
 
   if (!actionResult.isSuccess) {

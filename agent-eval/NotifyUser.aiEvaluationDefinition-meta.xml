@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>NotifyUser</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Sends an in-app notification via NotifyUser</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>notify me that the quarterly report is ready for review</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['NotifyUser']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms notification sent with the words quarterly report in the message</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

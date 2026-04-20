@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>LoadCustomInstructions</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Reads user context and stored preferences via LoadCustomInstructions</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>show me my stored preferences</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['LoadCustomInstructions']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Shows stored user preferences or states that no custom preferences have been saved yet</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

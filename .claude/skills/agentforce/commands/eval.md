@@ -10,66 +10,96 @@ Two test systems, distinct purposes:
 
 ## Testing Center
 
-### Running
+### Structure
 
-ALWAYS use `--json`. NEVER use `--result-format human` — the human output is full of ANSI escape codes and progress spinners that break all parsing.
+One XML per action in `agent-eval/`. Filename = `<ActionName>.aiEvaluationDefinition-meta.xml`. API name inside `<name>` matches the filename stem. Each file has exactly one `testCase`.
 
-```bash
-sf agent test run --api-name Regression_Test --wait 15 --json 2>&1 > /tmp/tc-results.json
-```
+Why one-per-file: lets us run all tests in parallel with one `sf agent test run` invocation per file — a full suite completes in ~2 min instead of 5–10 min serial.
 
-### Reading results
+### Running in parallel
 
-Parse the JSON output. The file may have a non-JSON prefix (shell warnings) — skip to the first `{`.
+`sf agent test run --wait` has two issues: it's serial (one at a time) and the CLI polling crashes with `TestPollFailed: no constant with the specified name: RETRY` on ~20% of runs. The test completes server-side even when the CLI dies. Handle both by launching jobs in the background, capturing JSON output to `/tmp/`, and parsing what landed.
 
 ```bash
-python3 -c "
-import json
-with open('/tmp/tc-results.json') as f:
-    content = f.read()
-    d = json.loads(content[content.index('{'):])
-r = d.get('result', {})
-cases = r.get('testCases', [])
-tp = ap = op = 0
-for c in cases:
-    num = c.get('testNumber', '?')
-    utt = c.get('inputs', {}).get('utterance', '')[:70]
-    results = {tr.get('name'): tr for tr in c.get('testResults', [])}
-    t = results.get('topic_assertion', {})
-    a = results.get('actions_assertion', {})
-    o = results.get('output_validation', {}) or results.get('bot_response_rating', {})
-    tr_ = t.get('result', '?')
-    ar_ = a.get('result', '?')
-    or_ = o.get('result', '?')
-    if tr_ == 'PASS': tp += 1
-    if ar_ == 'PASS': ap += 1
-    if or_ == 'PASS': op += 1
-    ok = tr_ == 'PASS' and ar_ == 'PASS' and or_ == 'PASS'
-    print(f'{\"PASS\" if ok else \"FAIL\"} #{num} T:{tr_} A:{ar_} O:{or_} | {utt}')
-    if ar_ != 'PASS' and a.get('actualValue'):
-        print(f'   Expected: {a.get(\"expectedValue\",\"\")}')
-        print(f'   Actual:   {a.get(\"actualValue\",\"\")}')
-    if or_ != 'PASS' and o.get('actualValue'):
-        print(f'   Outcome: {str(o.get(\"actualValue\",\"\"))[:200]}')
-n = len(cases) or 1
-print(f'\nTopic: {tp}/{n} ({100*tp//n}%) | Action: {ap}/{n} ({100*ap//n}%) | Outcome: {op}/{n} ({100*op//n}%)')
-"
+# Run all tests in parallel
+mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
+for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
+  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
+  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+done
+wait
 ```
 
-### Test file
+`--wait 10` caps each polling loop at 10 min. The `&` backgrounds each invocation; `wait` blocks until all finish.
 
-`regressions/aiEvaluationDefinitions/Regression_Test.aiEvaluationDefinition-meta.xml`
+### Consolidating results (handles the polling bug)
 
-Deploy with: `sf project deploy start --source-dir regressions --concise`
+The CLI captures JSON even when the polling crashes mid-way — the last `{` in the file marks the start of the result document. Python parses that robustly:
 
-### What Testing Center tests
+```bash
+python3 <<'PY'
+import os, re, json
+passed = failed = crashed = 0
+failures = []
+for fn in sorted(os.listdir('/tmp/ae')):
+    if not fn.endswith('.json'): continue
+    name = fn[:-5]
+    raw = open(f'/tmp/ae/{fn}').read()
+    matches = list(re.finditer(r'\n\{\n', raw))
+    if not matches:
+        crashed += 1; failures.append((name, 'CLI polling crash — check Testing Center UI'))
+        continue
+    start = matches[-1].start() + 1
+    try:
+        d = json.loads(raw[start:])
+    except Exception as e:
+        crashed += 1; failures.append((name, f'JSON parse error: {e}')); continue
+    # walk for testResults
+    def find(o):
+        if isinstance(o, dict):
+            if 'testResults' in o: return o['testResults']
+            for v in o.values():
+                r = find(v)
+                if r: return r
+        if isinstance(o, list):
+            for v in o:
+                r = find(v)
+                if r: return r
+    results = find(d) or []
+    statuses = {r['name']: r['result'] for r in results}
+    ok = all(s == 'PASS' for s in statuses.values())
+    if ok:
+        passed += 1
+    else:
+        failed += 1
+        expl = ' '.join(f'{k[:6]}={v}' for k,v in statuses.items())
+        failures.append((name, expl))
+print(f'PASS {passed}  FAIL {failed}  CRASH {crashed}')
+for n, msg in failures: print(f'  {n}: {msg}')
+PY
+```
 
-One test per action. Single-turn only. Each test has three expectations:
-- `topic_assertion` — agent routes to the right topic
-- `actions_assertion` — agent calls the expected action(s)
-- `bot_response_rating` — LLM judge evaluates the response content
+### Retrying crashes
 
-Goal: 100% on all three.
+Polling crashes are CLI-only; the test finished server-side. Two strategies:
+
+1. **Re-run only the crashed ones** (fast): after the first pass, re-invoke `sf agent test run --api-name <name>` for each crashed name. 2nd attempt usually succeeds because polling hits at a different server state.
+2. **Check the UI**: Setup → Agentforce → Testing Center → the eval run has the real result.
+
+Prefer strategy 1 in scripts; strategy 2 when debugging.
+
+### Deploy
+
+`sf project deploy start --source-dir agent-eval --concise`
+
+### What each test probes
+
+Each file has:
+- `topic_assertion` — agent routes to MyOrgButler topic
+- `actions_assertion` — agent calls the expected action sequence
+- `bot_response_rating` — LLM judge grades response content
+
+Goal: 100% on all three, across all files.
 
 ---
 
@@ -77,17 +107,17 @@ Goal: 100% on all three.
 
 ### Running
 
-Test files live in `regressions/promptfoo/`. Always use `--output` to capture structured results, then report failures inline — never rerun just to see what failed.
+Test files live in `agent-eval/`. Always use `--output` to capture structured results, then report failures inline — never rerun just to see what failed.
 
 ```bash
 # Demo story (multi-turn)
-cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env --output /tmp/demo-results.json
+cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env --output /tmp/demo-results.json
 
 # Multi-turn regression
-cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env --output /tmp/regression-results.json
+cd agent-eval && npx promptfoo@latest eval -c regression.yaml --env-file .env --output /tmp/regression-results.json
 
 # Prompt template regression
-cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --output /tmp/prompt-results.json
+cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --output /tmp/prompt-results.json
 ```
 
 ### Reading results
@@ -118,7 +148,7 @@ Turns sharing a `conversationId` are part of the same real conversation — the 
 
 ```yaml
 providers:
-  - id: "file://../../.claude/skills/agentforce/providers/sf-agent-api.mjs"
+  - id: "file://../.claude/skills/agentforce/providers/sf-agent-api.mjs"
     label: "MyOrgButler"
 
 evaluateOptions:
@@ -152,7 +182,7 @@ Each test specifies `promptTemplateName` and the template's input variables. For
 
 ```yaml
 providers:
-  - id: "file://../../.claude/skills/agentforce/providers/sf-generations-api.mjs"
+  - id: "file://../.claude/skills/agentforce/providers/sf-generations-api.mjs"
     label: "Einstein Generations API"
 
 tests:

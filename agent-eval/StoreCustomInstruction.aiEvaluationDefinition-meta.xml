@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>StoreCustomInstruction</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Persists preferences via StoreCustomInstruction</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>from now on, always show the StageName when listing opportunities</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['StoreCustomInstruction']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

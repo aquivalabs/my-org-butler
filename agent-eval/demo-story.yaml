@@ -9,7 +9,7 @@ description: "MyOrgButler Demo — A Sales Rep's Monday Morning"
 # Note: Step 3 (discount policy) is disabled until Data Library search index works (Issue #49)
 
 providers:
-  - id: "file://../../.claude/skills/agentforce/providers/sf-agent-api.mjs"
+  - id: "file://../.claude/skills/agentforce/providers/sf-agent-api.mjs"
     label: "MyOrgButler"
 
 prompts:

@@ -5,7 +5,7 @@ description: "Prompt Template Smoke Test"
 # This file exists as a smoke test for the prompt provider itself.
 
 providers:
-  - id: "file://../../.claude/skills/agentforce/providers/sf-generations-api.mjs"
+  - id: "file://../.claude/skills/agentforce/providers/sf-generations-api.mjs"
     label: "Einstein Generations API"
 
 prompts:

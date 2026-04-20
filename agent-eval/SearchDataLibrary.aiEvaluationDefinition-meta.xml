@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>SearchDataLibrary</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Answers company-document questions via ExploreDataCloud + SearchDataLibrary</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>what is our company discount policy for deals over $100K? check the company docs</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'SearchDataLibrary']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Mentions that discounts above 10 percent require VP of Sales approval</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

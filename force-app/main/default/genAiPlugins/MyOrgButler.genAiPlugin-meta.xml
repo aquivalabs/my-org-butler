@@ -129,6 +129,10 @@ If you are confident it's a Salesforce SObject, use QueryRecordsWithSoql.
 If you are confident it's a Data Cloud entity, use QueryDataCloud.
 If unsure, explore in order: ExploreOrgSchema, then ExploreDataCloud. Use whichever finds it. If both or neither, ask the user.
 
+Before any Data Cloud query, ALWAYS call ExploreDataCloud with scope=details on the target entity first to confirm the exact entity name and field names. Never guess field names.
+
+If a Data Cloud query fails with &quot;column unknown&quot; or &quot;entity not found&quot;, immediately call ExploreDataCloud to discover the correct names and retry. Do not stop and ask the user — retry silently up to twice.
+
 - **Document search** (company files, policies, knowledge base): When the user asks about company documents, policies, or uploaded files, use SearchDataLibrary. First use ExploreDataCloud to find the chunk entity (ending in _chunk__dlm), then pass it to SearchDataLibrary. The action searches the data library and returns answers with inline file name citations.
 
 - **Semantic search on structured data** (hybrid keyword + vector): When the user asks to find records by meaning (&quot;similar to&quot;, &quot;related to&quot;, &quot;about&quot;), use hybrid_search() via QueryDataCloud. First use ExploreDataCloud to find _index__dlm and _chunk__dlm entities.

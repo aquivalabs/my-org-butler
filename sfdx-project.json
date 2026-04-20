@@ -13,7 +13,7 @@
       "default": false
     },
     {
-      "path": "regressions",
+      "path": "agent-eval",
       "default": false
     },
     {

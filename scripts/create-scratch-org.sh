@@ -42,10 +42,10 @@ if [ "$NAMESPACE" = "false" ]; then
 
   echo "Stripping namespace from source"
   sed -i '' 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/' sfdx-project.json
-  find force-app unpackaged regressions -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) -exec sed -i '' 's/aquiva_os__//g; s/aquiva_os\.//g' {} +
+  find force-app unpackaged agent-eval -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) -exec sed -i '' 's/aquiva_os__//g; s/aquiva_os\.//g' {} +
 
   # Note: Restore source even if deploy fails — namespace stripping rewrites files in place
-  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ regressions/' EXIT
+  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/' EXIT
 
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
@@ -53,11 +53,11 @@ if [ "$NAMESPACE" = "false" ]; then
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
-  echo "Deploying regressions"
-  execute sf project deploy start --source-dir regressions --concise
+  echo "Deploying agent-eval"
+  execute sf project deploy start --source-dir agent-eval --concise
 
   echo "Restoring namespace in source"
-  git checkout -- sfdx-project.json force-app/ unpackaged/ regressions/
+  git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/
   trap - EXIT
 else
   echo "Installing dependencies"
@@ -69,8 +69,8 @@ else
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
-  echo "Deploying regressions"
-  execute sf project deploy start --source-dir regressions --concise
+  echo "Deploying agent-eval"
+  execute sf project deploy start --source-dir agent-eval --concise
 fi
 
 echo "Assigning permissions"
@@ -88,7 +88,7 @@ sf data create file --file "scripts/proposal.pdf" --title "Acme Q1 Expansion Pro
 
 echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> regressions/promptfoo/.env
+echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
 
 echo ""
 echo "============================================"
@@ -104,7 +104,7 @@ echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
 echo "Running Promptfoo Prompt Template Regression Tests (no index needed)"
-(cd regressions/promptfoo && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
+(cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
 
 echo "Waiting for Data Library chunks..."
 until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
@@ -115,17 +115,16 @@ if(r.data != null && !r.data.isEmpty() && String.valueOf(r.data[0].rowData[0]) !
 APEX
 do echo "  ...retrying in 30s"; sleep 30; done
 
-echo "Running Testing Center Tests (first pass — generates session tracing data)"
-sf agent test run --api-name Regression_Test --wait 15
-
-echo "Running Testing Center Tests (second pass — session data now indexed)"
-sf agent test run --api-name Regression_Test --wait 15
+echo "Running Testing Center suite in parallel"
+mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
+for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
+  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
+  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+done
+wait
 
 echo "Running Promptfoo Demo Story"
-(cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env)
-
-echo "Running Promptfoo Regression Tests"
-(cd regressions/promptfoo && npx promptfoo@latest eval -c regression.yaml --env-file .env)
+(cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env)
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default

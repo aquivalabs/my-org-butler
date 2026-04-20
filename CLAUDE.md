@@ -10,37 +10,51 @@ sf project deploy start \
 
 # Testing Strategy
 
-Three test layers, zero overlap. Every action is tested exactly once.
+Everything lives in `agent-eval/`. Three test layers, zero overlap:
 
-## Testing Center (single-turn)
-`regressions/aiEvaluationDefinitions/Regression_Test.aiEvaluationDefinition-meta.xml`
+## Testing Center (single-turn, per-action)
 
-For actions that work in a single request/response. Runs on-platform.
+One XML per action in `agent-eval/<ActionName>.aiEvaluationDefinition-meta.xml`. Single `testCase` each. Runs on-platform via `sf agent test run --api-name <ActionName>`.
+
+Run all in parallel (~2 min total vs 5–10 min serial):
+
+```bash
+mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
+for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
+  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
+  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+done
+wait
 ```
-sf agent test run --api-name Regression_Test --wait 15 --result-format human
-```
+
+Parsing + retry logic is in `.claude/skills/agentforce/commands/eval.md`.
 
 ## Promptfoo Demo Story (multi-turn)
-`regressions/promptfoo/demo-story.yaml`
 
-Multi-turn conversations that chain actions into coherent user workflows. This IS the conference demo, automated as a test.
+`agent-eval/demo-story.yaml` — the conference demo automated. Multi-turn conversation chaining actions into a sales-rep workflow.
+
 ```
-cd regressions/promptfoo && npx promptfoo@latest eval -c demo-story.yaml --env-file .env
+cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env
 ```
 
 ## Promptfoo Prompt Tests (template isolation)
-`agentforce-eval/prompt-regression.yaml`
 
-Smoke test for the prompt template provider. Calls the Generations REST API directly, no agent involved.
+`agent-eval/prompt-regression.yaml` — smoke test for the prompt template provider via Generations REST API.
+
 ```
-cd agentforce-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env
+cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env
 ```
 
 ## LLM Judge
-All rubrics assert on **specific data** (dollar amounts, field names, object names, cron expressions) — not vague "confirms it worked" statements. Judge model: `gpt-4o`.
 
-## Running Tests
-Run independent test suites in parallel using background tasks or subagents. Never run them sequentially when they don't depend on each other. Show results in one pass — never rerun to analyze, never use Python to parse CLI output.
+Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Judge model: `gpt-4o-mini`.
 
 ## .env
-Only two values: `OPENAI_API_KEY` (LLM judge) and `CONTENT_DOCUMENT_ID` (sample file). Agent name and API version are hardcoded in the YAML.
+
+Two values: `OPENAI_API_KEY` (LLM judge) and `CONTENT_DOCUMENT_ID` (sample file).
+
+# Current State (2026-04-20)
+
+Testing Center suite has **14 per-action tests** in `agent-eval/`. Parallel run completes in ~2 min. Typical result: **12 clean PASS, 0 real FAIL, 2 polling crashes** (CLI-side bug `TestPollFailed: no constant with the specified name: RETRY` — tests complete server-side, just need re-polling).
+
+**Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — Data Cloud routing nondeterminism. Tests 8 (SearchDataLibrary) and the Data Cloud ones (QueryDataCloud) sometimes route correctly and sometimes skip the action. Real question: is the agent reasoning itself unstable, or are the tests wrong? Done criteria: four consecutive 100% runs.

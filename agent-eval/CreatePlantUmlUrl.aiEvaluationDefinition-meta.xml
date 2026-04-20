@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>CreatePlantUmlUrl</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Renders a PlantUML ERD via CreatePlantUmlUrl</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>create a PlantUML ER diagram showing how Account, Opportunity and Contact are related</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CreatePlantUmlUrl']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns a clickable PlantUML URL containing a diagram that shows Account, Opportunity and Contact with their relationships</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

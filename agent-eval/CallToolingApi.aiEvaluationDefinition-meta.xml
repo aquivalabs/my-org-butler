@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>CallToolingApi</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Reads code / schema via CallToolingApi</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>what is the Apex code coverage percentage in this org?</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CallToolingApi']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns a specific code coverage percentage or lists coverage per class with percentages</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>

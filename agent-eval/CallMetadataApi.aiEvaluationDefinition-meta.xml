@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>CallMetadataApi</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Reads configuration metadata via CallMetadataApi</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>is there an approval process configured for Opportunities? use the Metadata API to check</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CallMetadataApi']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Shows approval process details for Opportunity or states that no approval process is configured</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>
