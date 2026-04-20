@@ -42,46 +42,51 @@ global with sharing class ExploreDataCloud {
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
         List<Object> metadata = (List<Object>) parsed.get('metadata');
 
-        Map<String, List<Map<String, String>>> result = new Map<String, List<Map<String, String>>>();
+        List<Map<String, String>> result = new List<Map<String, String>>();
 
         for(Object item : metadata) {
             Map<String, Object> entity = (Map<String, Object>) item;
-            String type = (String) entity.get('type') ?? 'Other';
-            String name = (String) entity.get('name');
-            String label = (String) entity.get('label');
-            String category = (String) entity.get('category');
-            String description = (String) entity.get('description');
-
-            if(!result.containsKey(type)) {
-                result.put(type, new List<Map<String, String>>());
-            }
 
             Map<String, String> entry = new Map<String, String>{
-                'name' => name,
-                'label' => label,
-                'category' => category
+                'name' => (String) entity.get('name'),
+                'displayName' => (String) entity.get('displayName'),
+                'category' => (String) entity.get('category')
             };
+            String description = (String) entity.get('description');
             if(String.isNotBlank(description)) {
                 entry.put('description', description);
             }
 
-            result.get(type).add(entry);
+            result.add(entry);
         }
 
         return JSON.serialize(result, true);
     }
 
 
-    private static String prepareEntityDetails(String entityName, String scope) {
-        if(String.isBlank(entityName)) {
+    private static String prepareEntityDetails(String entityNames, String scope) {
+        if(String.isBlank(entityNames)) {
             throw new DataCloudException('entityName is required for scope "' + scope + '"');
         }
 
-        Map<String, Object> entity = fetchEntity(entityName);
+        Map<String, Object> result = new Map<String, Object>();
 
+        for(String raw : entityNames.split(',')) {
+            String entityName = raw.trim();
+            if(String.isBlank(entityName)) {
+                continue;
+            }
+            result.put(entityName, projectEntity(fetchEntity(entityName), scope));
+        }
+
+        return JSON.serialize(result, true);
+    }
+
+
+    private static Map<String, Object> projectEntity(Map<String, Object> entity, String scope) {
         Map<String, Object> result = new Map<String, Object>();
         result.put('name', entity.get('name'));
-        result.put('label', entity.get('label'));
+        result.put('displayName', entity.get('displayName'));
 
         if(scope == 'details') {
             result.put('category', entity.get('category'));
@@ -100,7 +105,7 @@ global with sharing class ExploreDataCloud {
             result.put('relationships', relationships);
         }
 
-        return JSON.serialize(result, true);
+        return result;
     }
 
 
@@ -170,7 +175,7 @@ global with sharing class ExploreDataCloud {
         @InvocableVariable(label='Entity Category' description='Optional filter: Profile, Engagement, or Related')
         global String entityCategory;
 
-        @InvocableVariable(label='Entity Name' description='Exact API name of a Data Cloud entity (required for details or relationships scope)')
+        @InvocableVariable(label='Entity Names' description='One or more Data Cloud entity API names, comma-separated (required for details or relationships scope)')
         global String entityName;
 
         // Note: Empty constructor required for Invocable Methods deserialization

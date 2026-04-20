@@ -7,8 +7,8 @@ private class ExploreDataCloud_Test {
 
         // Setup
         setup('{"metadata":[' +
-            '{"name":"UnifiedIndividual__dlm","label":"Unified Individual","type":"DataModelObject","category":"Profile"},' +
-            '{"name":"SalesOrder__dll","label":"Sales Order","type":"DataLakeObject","category":"Engagement"}' +
+            '{"name":"UnifiedIndividual__dlm","displayName":"Unified Individual","category":"Profile"},' +
+            '{"name":"SalesOrder__dll","displayName":"Sales Order","category":"Engagement"}' +
             ']}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
@@ -20,9 +20,8 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> grouped = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Assert.isTrue(grouped.containsKey('DataModelObject'));
-        Assert.isTrue(grouped.containsKey('DataLakeObject'));
+        List<Object> entities = (List<Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.areEqual(2, entities.size());
     }
 
 
@@ -32,7 +31,7 @@ private class ExploreDataCloud_Test {
         // Setup
         setup('{"metadata":[{' +
             '"name":"UnifiedIndividual__dlm",' +
-            '"label":"Unified Individual",' +
+            '"displayName":"Unified Individual",' +
             '"category":"Profile",' +
             '"fields":[{"name":"FirstName__c","type":"VARCHAR"},{"name":"AccountId__c","type":"VARCHAR"}],' +
             '"relationships":[{"fromEntity":"UnifiedIndividual__dlm","fromField":"AccountId__c","toEntity":"Account__dlm","toField":"Id","cardinality":"MANY_TO_ONE"}],' +
@@ -49,8 +48,8 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
-        Assert.areEqual('UnifiedIndividual__dlm', entity.get('name'));
+        Map<String, Object> entities = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Map<String, Object> entity = (Map<String, Object>) entities.get('UnifiedIndividual__dlm');
         Assert.isTrue(entity.containsKey('fields'));
         Assert.isTrue(entity.containsKey('relationships'));
         Assert.isTrue(entity.containsKey('primaryKeys'));
@@ -63,7 +62,7 @@ private class ExploreDataCloud_Test {
         // Setup
         setup('{"metadata":[{' +
             '"name":"UnifiedIndividual__dlm",' +
-            '"label":"Unified Individual",' +
+            '"displayName":"Unified Individual",' +
             '"fields":[{"name":"FirstName__c","type":"VARCHAR"}],' +
             '"relationships":[{"fromEntity":"UnifiedIndividual__dlm","fromField":"AccountId__c","toEntity":"Account__dlm","toField":"Id","cardinality":"MANY_TO_ONE"}]' +
             '}]}');
@@ -78,7 +77,8 @@ private class ExploreDataCloud_Test {
 
 
         // Verify
-        Map<String, Object> entity = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Map<String, Object> entities = (Map<String, Object>) JSON.deserializeUntyped(result[0].response);
+        Map<String, Object> entity = (Map<String, Object>) entities.get('UnifiedIndividual__dlm');
         Assert.isTrue(entity.containsKey('relationships'));
         Assert.isFalse(entity.containsKey('fields'));
     }

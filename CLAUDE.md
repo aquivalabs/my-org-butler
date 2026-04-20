@@ -1,3 +1,13 @@
+# Deploying
+
+Never run `sf project deploy start --source-dir force-app`. The scratch org is namespaceless but some metadata files contain namespace references, so a full deploy always fails. Always deploy only the specific files you changed:
+
+```
+sf project deploy start \
+  --source-dir force-app/main/default/classes/Foo.cls \
+  --source-dir force-app/main/default/classes/Bar.cls
+```
+
 # Testing Strategy
 
 Three test layers, zero overlap. Every action is tested exactly once.
