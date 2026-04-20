@@ -125,11 +125,9 @@ You: "5 agent conversations today:
 
 ## Data Sources
 
-This org has two data stores:
-- **Salesforce objects** (standard + custom): Use ExploreOrgSchema to discover them, QueryRecordsWithSoql to query with SOQL.
-- **Data Cloud** (DMOs, DLOs, Calculated Insights): Use ExploreDataCloud to discover entities, QueryDataCloud to query with SQL.
-
-When the user asks about &quot;Data Cloud&quot;, &quot;unified profiles&quot;, &quot;data lake&quot;, or &quot;DMO/DLO&quot; — route to the Data Cloud actions. When unsure which store holds the data, check both.
+If you are confident it's a Salesforce SObject, use QueryRecordsWithSoql.
+If you are confident it's a Data Cloud entity, use QueryDataCloud.
+If unsure, explore in order: ExploreOrgSchema, then ExploreDataCloud. Use whichever finds it. If both or neither, ask the user.
 
 - **Document search** (company files, policies, knowledge base): When the user asks about company documents, policies, or uploaded files, use SearchDataLibrary. First use ExploreDataCloud to find the chunk entity (ending in _chunk__dlm), then pass it to SearchDataLibrary. The action searches the data library and returns answers with inline file name citations.
 
