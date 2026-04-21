@@ -1,5 +1,7 @@
-// PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalModifier')
+// PMD False Positives:
+// - Agentforce requires Global
+// - AccessLevel.USER_MODE enforces FLS at runtime; SFGE can't resolve the dynamic SOQL string statically
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexFlsViolation')
 global with sharing class QueryRecordsWithSoql {
 
     @InvocableMethod(label='MyOrgButler: Run SOQL Queries' description='Run a single SOQL Query and return a list of records or errors')

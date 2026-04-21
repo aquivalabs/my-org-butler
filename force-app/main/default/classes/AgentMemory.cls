@@ -18,13 +18,16 @@ public with sharing class AgentMemory {
    
     // PUBLIC
     
+    // PMD False Positives:
+    // - Batch runs cross-user; Memory__c is agent-managed, end users have no CRUD on it
+    @SuppressWarnings('PMD.ApexCRUDViolation')
     public void consolidate() {
         queryMemories();
 
         if(newMemory.size() > 0) {
             String content = performConsolidation();
             updateConsolidated(content);
-            delete newMemory;
+            delete as system newMemory;
         }
     }
     
@@ -75,9 +78,12 @@ public with sharing class AgentMemory {
             }).text;
     }
     
+    // PMD False Positives:
+    // - Batch runs cross-user; Memory__c is agent-managed, end users have no CRUD on it
+    @SuppressWarnings('PMD.ApexCRUDViolation')
     private void updateConsolidated(String content) {
         consolidated.Name = CONSOLIDATED_NAME;
         consolidated.Content__c = content.left(32768);
-        upsert consolidated;
+        upsert as system consolidated;
     }
 }

@@ -1,5 +1,7 @@
-// PMD False Positives: Agentforce requires Global
-@SuppressWarnings('PMD.AvoidGlobalModifier')
+// PMD False Positives:
+// - Agentforce requires Global
+// - DML uses `insert as system`; SFGE does not recognise the system-mode DML keyword and reports a false FLS miss
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexFlsViolation')
 global with sharing class StoreCustomInstruction {
 
     @InvocableMethod(label='MyOrgButler: Store Custom Instruction' description='Updates user context with learned preferences and instructions for future AI agent interactions.')

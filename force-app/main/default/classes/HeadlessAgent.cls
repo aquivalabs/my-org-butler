@@ -33,6 +33,9 @@ public with sharing class HeadlessAgent {
 
     // PRIVATE
 
+    // PMD False Positives:
+    // - Rule matches on variable name (sessionId), not semantics; 'mock-session-id' is a test stub, not a credential
+    @SuppressWarnings('PMD.AvoidHardcodedCredentialsInVarAssign')
     private Response invokeAgent(String userMessage, Map<String, String> contextVariables) {
         Response result = new Response();
 

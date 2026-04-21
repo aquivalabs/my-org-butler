@@ -9,6 +9,9 @@ global with sharing class LoadCustomInstructions {
 
     // PRIVATE
 
+    // PMD False Positives:
+    // - SOQL has explicit WITH SYSTEM_MODE; SFGE doesn't recognise the access-level hint
+    @SuppressWarnings('PMD.ApexFlsViolation')
     private static CustomInstructions getCustomInstructions() {
         List<String> lines = new List<String>();
         lines.add('\n### Agent Identity');

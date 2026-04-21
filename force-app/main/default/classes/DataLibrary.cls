@@ -132,6 +132,9 @@ public virtual with sharing class DataLibrary {
     }
 
 
+    // PMD False Positives:
+    // - sourceRecordId comes from Data Cloud SourceRecordId__c, a required key field that is always populated
+    @SuppressWarnings('PMD.ApexNullPointerException')
     private String toJson(QueryResult queryResult, Boolean chunksOnly) {
         Map<String, Document> bySourceId = new Map<String, Document>();
 
