@@ -12,17 +12,18 @@ sf project deploy start \
 
 Everything lives in `agent-eval/`. Three test layers, zero overlap:
 
-## Testing Center (single-turn, per-action)
+## Testing Center (single-turn regression)
 
-One XML per action in `agent-eval/<ActionName>.aiEvaluationDefinition-meta.xml`. Single `testCase` each. Runs on-platform via `sf agent test run --api-name <ActionName>`.
+One `agent-eval/Regression.aiEvaluationDefinition-meta.xml` with 14 `testCase` blocks — one per action. Runs on-platform via `sf agent test run --api-name Regression`.
 
-Run all in parallel (~2 min total vs 5–10 min serial):
+Salesforce caps concurrent test jobs at **10 per 10-hour window** ([Trailhead](https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/trust-your-agents)). Launching 14 per-action tests in parallel hit that cap and threw `TestStartFailed: Too many inflight evaluations`, so we use a single definition with multiple cases instead.
+
+Run 2 passes in parallel:
 
 ```bash
 mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
-  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
-  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+for i in 1 2; do
+  (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
 done
 wait
 ```
@@ -53,8 +54,8 @@ Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not 
 
 Two values: `OPENAI_API_KEY` (LLM judge) and `CONTENT_DOCUMENT_ID` (sample file).
 
-# Current State (2026-04-20)
+# Current State (2026-04-21)
 
-Testing Center suite has **14 per-action tests** in `agent-eval/`. Parallel run completes in ~2 min. Typical result: **12 clean PASS, 0 real FAIL, 2 polling crashes** (CLI-side bug `TestPollFailed: no constant with the specified name: RETRY` — tests complete server-side, just need re-polling).
+Testing Center suite is a single `Regression` definition with 14 cases. Parallel run of 2 passes completes in a few minutes without tripping the 10-job concurrency cap.
 
-**Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — Data Cloud routing nondeterminism. Tests 8 (SearchDataLibrary) and the Data Cloud ones (QueryDataCloud) sometimes route correctly and sometimes skip the action. Real question: is the agent reasoning itself unstable, or are the tests wrong? Done criteria: four consecutive 100% runs.
+**Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — test-suite shape / flakiness tracker. Data Cloud routing (SearchDataLibrary, QueryDataCloud) remains the one intermittent case. Done criteria: multiple consecutive clean runs.

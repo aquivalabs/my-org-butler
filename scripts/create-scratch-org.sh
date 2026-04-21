@@ -115,11 +115,10 @@ if(r.data != null && !r.data.isEmpty() && String.valueOf(r.data[0].rowData[0]) !
 APEX
 do echo "  ...retrying in 30s"; sleep 30; done
 
-echo "Running Testing Center suite in parallel"
+echo "Running Regression suite (2 parallel runs)"
 mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
-  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
-  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+for i in 1 2; do
+  (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
 done
 wait
 
