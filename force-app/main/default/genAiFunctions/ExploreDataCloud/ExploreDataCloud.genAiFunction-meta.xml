@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>This action helps you explore Data Cloud entities, their fields, and relationships. Use the &quot;summary&quot; scope to discover available entities, &quot;details&quot; with an entityName to see fields, primary keys, and relationships, and &quot;relationships&quot; with an entityName to see only how that entity connects to others (useful for planning JOINs). Always use &quot;summary&quot; first to find the correct entity name. Data Cloud entity names have suffixes: __dlm (Data Model Objects), __dll (Data Lake Objects), __cio (Calculated Insights). Entities ending in _index__dlm are search indexes — these can be used with hybrid_search() or vector_search() in QueryDataCloud for semantic search.</description>
+    <description>Explore Data Cloud entities, their fields, and relationships. MUST be called BEFORE any QueryDataCloud or SearchDataLibrary call whenever entity or field names are not already confirmed — never guess Data Cloud names.
+
+Scopes:
+- &quot;summary&quot;: list available entities. Always start here when the entity name is uncertain.
+- &quot;details&quot;: fields, primary keys, relationships for one entity. Requires entityName.
+- &quot;relationships&quot;: JOIN planning — how the entity connects to others. Requires entityName.
+
+Entity suffix conventions:
+- __dlm = Data Model Object
+- __dll = Data Lake Object
+- __cio = Calculated Insight
+- _index__dlm = search index, usable with hybrid_search()/vector_search() in QueryDataCloud
+- _chunk__dlm = document chunk table, used as the chunkDmo parameter for SearchDataLibrary
+
+Retry silently up to twice on &quot;entity not found&quot; or &quot;column unknown&quot; errors from QueryDataCloud — call this action to discover the correct names, then retry. Do not stop and ask the user.
+
+NOT for Standard/Custom SObjects (Account, Opportunity, __c objects) — use ExploreOrgSchema for those.</description>
     <developerName>ExploreDataCloud</developerName>
     <invocationTarget>ExploreDataCloud</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Load user context and stored custom instructions. CRITICAL: You MUST follow the returned custom instructions for the entire conversation.
+    <description>Load user context (identity, timezone, org URL, current date/time) AND the user&apos;s stored custom instructions from previous conversations. MUST be called as the FIRST action of every new conversation, before any other action.
+
+Use when:
+- A conversation begins — call this before doing anything else (including before any topic-specific work).
+- At the start of every headless PlanForLater / RunMyOrgButler execution — step 1 of the numbered plan.
 
 Returns:
-- User details (ID, name, email, language, timezone)
-- Organization information (ID, base URL)
-- Current date/time
-- Custom instructions the user has asked you to remember from previous conversations
+- User: Id, name, email, language, timezone — needed for &quot;my accounts&quot;, &quot;last week&quot;, user-filtered queries.
+- Org: Id, base URL — needed for building record links.
+- Current date/time in the user&apos;s timezone — needed for relative dates and cron schedules.
+- Custom instructions (preferences, corrections, tool-use rules) the user has asked to remember.
 
-The custom instructions include user preferences, corrections, specific ways they want you to behave, AND crucially how to use tools and when to use them. You MUST apply these instructions to ALL subsequent responses and actions in this conversation.
+CRITICAL: the returned custom instructions are binding for the rest of the conversation. Apply them to every subsequent response and action.
 
-User and time information is needed for creating user-filtered queries or handling relative time expressions like &quot;last week&quot; or &quot;my accounts&quot;. The Org Base URL is needed when constructing links to records or pages.</description>
+NOT for:
+- Storing a new preference — use StoreCustomInstruction.
+- Reading arbitrary records — use QueryRecordsWithSoql.</description>
     <developerName>LoadCustomInstructions</developerName>
     <invocationTarget>LoadCustomInstructions</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

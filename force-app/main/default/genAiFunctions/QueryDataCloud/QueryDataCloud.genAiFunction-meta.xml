@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use ONLY for questions answered by structured data in Data Cloud entities (DMO, DLO, CIO) via SQL.
-- NOT for questions answered by uploaded documents or PDFs — use SearchDataLibrary instead.
-- Example fit: "How many accounts per industry?", "Top 10 opportunities by amount", "Average order value last quarter."
-- Example NOT fit: "What does the refund policy say?", "Search the contract for the termination clause." → SearchDataLibrary.
+    <description>Query STRUCTURED data in Data Cloud entities (DMO, DLO, CIO) using SQL (not SOQL). Supports SELECT, WHERE, GROUP BY, ORDER BY, LIMIT, JOIN, and aggregates (COUNT, SUM, AVG, MIN, MAX).
 
-- Use this action to query structured data from Data Cloud using SQL syntax (not SOQL).
-- Data Cloud SQL supports SELECT, FROM, WHERE, GROUP BY, ORDER BY, LIMIT, JOIN, and aggregate functions (COUNT, SUM, AVG, MIN, MAX).
-- The action takes a SQL query string and returns JSON containing either:
-  * On success: JSON array of result rows as objects with column-name keys
-  * On error: JSON object representing the exception with message, type, and stack trace
-- Never guess Data Cloud entity or field names. Always use the ExploreDataCloud action first to discover the correct names before writing a query.
-- If the query is invalid, parse the exception JSON to understand the error and retry with a corrected query.
-- If you cannot fix the issue on your own, use ExploreDataCloud to discover the correct entity and field names, then retry.
-- If results indicate partial completion, inform the user and suggest narrowing the query with WHERE clauses or LIMIT.
-- For semantic search (finding records by meaning, not exact match), use hybrid_search() and JOIN to the chunk table:
-  SELECT c.Chunk__c, h.hybrid_score__c FROM hybrid_search(TABLE(Name_index__dlm), &apos;query&apos;, &apos;&apos;, 10) AS h JOIN Name_chunk__dlm AS c ON h.SourceRecordId__c = c.RecordId__c ORDER BY h.hybrid_score__c DESC
-  Use ExploreDataCloud first to find _index__dlm and _chunk__dlm entities.
+Use when:
+- Aggregations or counts over Data Cloud entities: &quot;How many accounts per industry?&quot;, &quot;Top 10 opportunities by amount&quot;, &quot;Average order value last quarter&quot;.
+- Semantic / hybrid search over indexed content: use hybrid_search() and JOIN to the chunk table (example below).
+- The entity name ends in __dlm, __dll, or __cio.
 
-Output Formatting:
-- The raw JSON output is not shown to users - you must parse and format it appropriately
-- Present data in tables, lists, or summaries as appropriate for the context
-- Compress large datasets by showing key highlights, top results, or summaries
-- Include record links when displaying individual records
-- For aggregate queries, explain what the numbers represent
-- If there are errors, explain them in user-friendly language</description>
+NOT for:
+- Standard/Custom SObjects in the org (Account, Opportunity, __c) — use QueryRecordsWithSoql with SOQL.
+- Unstructured document Q&amp;A (&quot;what does the refund policy say?&quot;, &quot;find the termination clause&quot;) — use SearchDataLibrary.
+- Creating/updating records — Data Cloud via this action is read-only SQL.
+
+Preconditions:
+- MUST call ExploreDataCloud (scope=details or summary) FIRST to confirm entity and field names. Never guess Data Cloud names.
+- On &quot;entity not found&quot; or &quot;column unknown&quot;: silently retry up to twice after calling ExploreDataCloud to discover correct names.
+
+Semantic search pattern:
+  SELECT c.Chunk__c, h.hybrid_score__c
+  FROM hybrid_search(TABLE(Name_index__dlm), &apos;query&apos;, &apos;&apos;, 10) AS h
+  JOIN Name_chunk__dlm AS c ON h.SourceRecordId__c = c.RecordId__c
+  ORDER BY h.hybrid_score__c DESC
+Use ExploreDataCloud to find the matching _index__dlm and _chunk__dlm pair first.
+
+Output:
+- Returns JSON array on success, JSON error object on failure — raw JSON is NOT shown to the user.
+- Parse and format: tables, lists, or summaries; compress large result sets; include record links where possible; for aggregates, explain what the numbers represent. Translate errors into user-friendly language.</description>
     <developerName>QueryDataCloud</developerName>
     <invocationTarget>QueryDataCloud</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

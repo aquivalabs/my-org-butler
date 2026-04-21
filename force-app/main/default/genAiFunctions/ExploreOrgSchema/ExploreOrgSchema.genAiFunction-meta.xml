@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>This action helps you explore Custom Objects, Fields, and Relationships in your org. Use the &quot;summary&quot; scope to discover available objects, &quot;relationships&quot; to see how an object connects to others, and &quot;details&quot; for a full list of fields and picklist values on a specific object. Only use &quot;details&quot; or &quot;relationships&quot; when you are sure the object exists.</description>
+    <description>Explore Standard and Custom SObjects in the org (Account, Opportunity, custom __c objects). Use BEFORE QueryRecordsWithSoql whenever custom object or field names are involved — never guess them.
+
+Scopes:
+- &quot;summary&quot;: list available objects. Always start here when the object name is uncertain.
+- &quot;details&quot;: fields, types, picklist values for one object. Only when the object is known to exist.
+- &quot;relationships&quot;: how one object connects to others. Useful before writing SOQL with sub-queries or parent references.
+
+NOT for Data Cloud entities (names ending in __dlm, __dll, __cio) — use ExploreDataCloud for those. Data Cloud entities are invisible to this action.</description>
     <developerName>ExploreOrgSchema</developerName>
     <invocationTarget>ExploreOrgSchema</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

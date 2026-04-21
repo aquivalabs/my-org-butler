@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Store a learning when you notice:
-- User corrects you: &quot;No, use Revenue not Amount&quot;, &quot;That&apos;s not what I meant&quot;, &quot;Actually...&quot;
-- User refines output: &quot;Sort that by close date&quot;, &quot;Can you also include...&quot;
-- User states preference: &quot;always&quot;, &quot;from now on&quot;, &quot;I prefer&quot;, &quot;don&apos;t do X&quot;
-- User shows dissatisfaction: &quot;not quite&quot;, &quot;try again&quot;, &quot;wrong&quot;, rephrasing same request
+    <description>Persist a learned user preference so it is remembered in future conversations (loaded by LoadCustomInstructions at session start).
+
+Use when the user signals a durable preference:
+- Corrects you: &quot;No, use Revenue not Amount&quot;, &quot;That&apos;s not what I meant&quot;, &quot;Actually...&quot;
+- Refines output in a way worth keeping: &quot;Sort that by close date&quot;, &quot;Can you also include...&quot;
+- States a preference: &quot;always&quot;, &quot;from now on&quot;, &quot;I prefer&quot;, &quot;don&apos;t do X&quot;
+- Shows dissatisfaction and rephrases: &quot;not quite&quot;, &quot;try again&quot;, &quot;wrong&quot;.
+
+NOT for:
+- One-off requests that aren&apos;t meant to stick (&quot;for this one report, sort by date&quot;) — just honor them without storing.
+- Loading previous preferences — that&apos;s LoadCustomInstructions.
 
 Format memories as OBSERVATIONS about the user, not commands to yourself:
 - Good: &quot;When showing opportunities, user prefers Amount and CloseDate included&quot;
 - Bad: &quot;When showing opportunities, include Amount and CloseDate&quot;
 
-Include a brief example reference when it fits (keeps memories actionable):
+Include a short example reference when it makes the memory more actionable:
 - With example: &quot;When showing pipeline, user prefers tables (like the January forecast)&quot;
 - Without: &quot;When showing pipeline, user prefers tables with Amount, Stage, CloseDate&quot;
 
-Summary (max 80 chars): Brief description like &quot;Prefers tables for pipeline data&quot;
-Instruction (max 255 chars): &quot;When [context], user prefers [preference]&quot; + optional short example reference
+Inputs:
+- summary: max 80 chars, e.g. &quot;Prefers tables for pipeline data&quot;.
+- instruction: max 255 chars, pattern &quot;When [context], user prefers [preference]&quot; + optional example.
 
-After storing, confirm and immediately apply the preference.</description>
+After storing, confirm briefly and apply the preference immediately in this conversation.</description>
     <developerName>StoreCustomInstruction</developerName>
     <invocationTarget>StoreCustomInstruction</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

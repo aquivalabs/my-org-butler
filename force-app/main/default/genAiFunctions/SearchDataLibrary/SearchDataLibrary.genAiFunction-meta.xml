@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>
-        - Use ONLY for questions whose answer lives in uploaded documents, PDFs, policies, or similar unstructured files in a Data Cloud data library.
-        - NOT for questions about structured records, tables, or fields — use QueryDataCloud instead.
-        - Example fit: "What does our sales policy say about discounts?", "Find the section about refund terms in the uploaded contract."
-        - Example NOT fit: "How many accounts are in tier Gold?", "List opportunities closing this quarter." → QueryDataCloud.
+    <description>Answer questions from the company&apos;s internal knowledge base — uploaded documents, PDFs, policies, contracts, and other unstructured files indexed in a Data Cloud data library. Returns an AI-generated answer with inline file-name citations.
 
-        - Use this to answer questions using the company's internal knowledge base stored in a Data Cloud data library.
-        - Searches through company documents, policies, and other files uploaded to a data library.
-        - Returns AI-generated answers with inline source citations (file names).
-        - Requires a chunkDmo parameter: the API name of the chunk entity (ending in _chunk__dlm). Use ExploreDataCloud to find it.
+Use when:
+- The question is about document content: &quot;What does our sales policy say about discounts?&quot;, &quot;Find the termination clause in the uploaded contract.&quot;, &quot;What&apos;s in the onboarding handbook?&quot;.
+- The user refers to &quot;the policy&quot;, &quot;the contract&quot;, &quot;the handbook&quot;, &quot;our documents&quot;, &quot;internal docs&quot;.
 
-        IMPORTANT: When calling this function, do NOT simply pass the user's last utterance as the question. Instead:
-        1. Analyze the entire conversation context and previous exchanges
-        2. Reformulate the question to be self-contained and contextually complete
-        3. Include relevant background information from the conversation history
-        4. Make the question specific enough for effective search
-    </description>
+NOT for:
+- Structured records, counts, aggregates, lists of records — use QueryDataCloud (Data Cloud entities) or QueryRecordsWithSoql (SObjects). Example NOT fit: &quot;How many accounts in tier Gold?&quot;, &quot;List opportunities closing this quarter.&quot;
+- A file the user just attached in this conversation — use AnswerWithCurrentFile.
+- Public web content — use SearchWeb.
+
+Input:
+- chunkDmo: API name of the chunk entity (ends in _chunk__dlm). Discover via ExploreDataCloud (scope=summary) first — never guess.
+- question: reformulate the user&apos;s message into a self-contained, contextually complete question. Include relevant background from the conversation. Do NOT simply forward the user&apos;s last utterance.</description>
     <developerName>SearchDataLibrary</developerName>
     <invocationTarget>SearchDataLibrary</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

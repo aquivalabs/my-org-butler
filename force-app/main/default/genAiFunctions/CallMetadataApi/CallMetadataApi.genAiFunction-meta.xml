@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Use this action to read and deploy metadata XML definitions. Best for configuration metadata like:
+    <description>Read or deploy full metadata XML definitions via the Salesforce Metadata API. Use for configuration-style metadata that is typically deployed as complete documents.
+
+Use for:
 - PermissionSet, PermissionSetGroup, Profile (permissions, field access, object access)
 - Flow, FlowDefinition (automation definitions)
-- CustomLabel, CustomMetadata (custom settings)
+- CustomLabel, CustomMetadata (labels, custom metadata types)
 - ConnectedApp, NamedCredential (integrations)
 - GenAiPlugin, GenAiFunction (agent configuration)
 
-Use CallToolingApi for code artifacts (ApexClass, ApexTrigger) and schema (CustomField, CustomObject).
-When in doubt, use SearchWeb to find which API supports that metadata type.</description>
+NOT for:
+- Code artifacts (ApexClass, ApexTrigger) or schema pieces (CustomField, CustomObject, ValidationRule) — use CallToolingApi which supports granular CRUD.
+- Reading records (opportunities, accounts) — use QueryRecordsWithSoql.
+- Creating/updating records — use CallRestApi.
+
+If the action errors with &quot;unsupported metadata type&quot;, use SearchWeb to confirm which API (Metadata vs Tooling) supports that type and retry with the correct action.</description>
     <developerName>CallMetadataApi</developerName>
     <invocationTarget>CallMetadataApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

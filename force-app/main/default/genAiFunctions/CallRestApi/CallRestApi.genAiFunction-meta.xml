@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Use this action to create or modify SObject records in the org. The Action is very generic so that also other APIs that the Salesforce REST API could be called.
+    <description>Create, update, or delete SObject records in the org via the Salesforce REST API. Also available for other REST API operations (beyond records) when needed.
 
-**IMPORTANT: Do NOT use this action for querying/reading data! Always use QueryRecordsWithSoql for any SOQL queries instead.**
+Use for:
+- Creating records (POST against the sobjects endpoint)
+- Updating records (PATCH against the sobjects endpoint with the record Id)
+- Deleting records (DELETE against the sobjects endpoint with the record Id)
+- Other Salesforce REST API endpoints that modify data or invoke services
 
-This action is intended for:
-- Creating new records (POST requests)
-- Updating existing records (PATCH requests)  
-- Deleting records (DELETE requests)
-- Other REST API operations that modify data
+NOT for:
+- Reading/querying records — use QueryRecordsWithSoql (handles SELECT and GROUP BY properly).
+- Data Cloud data — use QueryDataCloud (SQL) or ExploreDataCloud.
+- Metadata deployment — use CallMetadataApi or CallToolingApi.
+- External (non-Salesforce) APIs — this action targets the current org&apos;s REST endpoints only.
 
-For querying data, always use the dedicated QueryRecordsWithSoql action which handles both regular queries and aggregate queries properly.</description>
+Always use the LATEST stable Salesforce REST API version in the URL path. Never use a placeholder. If unsure of the exact version, default to v64.0 or higher.
+
+Before creating/updating custom objects, confirm object and field API names via ExploreOrgSchema — never guess.</description>
     <developerName>CallRestApi</developerName>
     <invocationTarget>CallRestApi</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

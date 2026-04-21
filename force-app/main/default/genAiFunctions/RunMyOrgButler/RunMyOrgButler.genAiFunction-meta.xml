@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Delegates a task to a headless sub-butler that works in the background and notifies the user when done. Use this when a task is complex, long-running, or can be handled asynchronously without the user waiting.</description>
+    <description>Run a task RIGHT NOW in a headless background session and notify the user when done. The sub-butler has no conversation context — the prompt must be a self-contained numbered plan including any record IDs.
+
+Use when:
+- The user says &quot;do this in the background&quot;, &quot;don&apos;t wait&quot;, &quot;run this async&quot;, or the task is clearly long-running (large report, multi-step analysis).
+- The user wants the result delivered later but starting immediately.
+
+NOT for:
+- Scheduled or recurring tasks (&quot;every Monday&quot;, &quot;tomorrow at 3pm&quot;, &quot;remind me&quot;, &quot;weekly&quot;) — use PlanForLater with a cron schedule.
+- Simple fast queries or actions — just do them inline.</description>
     <developerName>RunMyOrgButler</developerName>
     <invocationTarget>RunMyOrgButler</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

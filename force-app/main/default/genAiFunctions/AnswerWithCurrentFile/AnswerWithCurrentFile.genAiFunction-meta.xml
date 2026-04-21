@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use the content and metadata of the current file to answer.
-- Respond concisely—prefer TL;DR followed by detail when summarizing.
-- If the file doesn’t contain the answer, say so clearly.
-- Allow follow-up questions by reusing earlier context in rewritten user input.</description>
+    <description>Answer the user&apos;s question using the CURRENTLY attached/open file in the conversation (the ContentDocument the user just shared). Reads the file directly — no search, no indexing.
+
+Use when:
+- The user has attached a file in this turn and asks about it (&quot;what does this say?&quot;, &quot;summarize this&quot;, &quot;find X in this file&quot;).
+- The question is obviously about THIS document, not the broader knowledge base.
+
+NOT for:
+- Searching across many uploaded documents in the Data Library — use SearchDataLibrary (which uses Data Cloud chunks).
+- Records in Salesforce objects — use QueryRecordsWithSoql.
+- Web content — use SearchWeb.
+
+Respond concisely: TL;DR first, then detail. If the file does not contain the answer, say so plainly. Rewrite the user&apos;s follow-ups to include earlier conversation context before searching the file.</description>
     <developerName>AnswerWithCurrentFile</developerName>
     <invocationTarget>AnswerFromFile</invocationTarget>
     <invocationTargetType>generatePromptResponse</invocationTargetType>

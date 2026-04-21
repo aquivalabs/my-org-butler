@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Saves a step-by-step plan and schedules it for later execution. The prompt must be a numbered plan starting with the headless preamble. Requires: prompt and schedule (local time pattern like "0 9 ? * MON-FRI" for weekdays at 9am). Results are delivered via in-app notification which is plain text only (max 750 chars), no links, no formatting, one clickable record only. If the user asks for something that exceeds these limits (e.g. linked lists, large reports), explain the constraint before scheduling.</description>
+    <description>Schedule a task to run at a SPECIFIC FUTURE TIME or on a RECURRING CRON schedule. Saves a numbered plan + cron expression; the plan fires headlessly at that time and notifies the user.
+
+Use when the user says:
+- &quot;every Monday at 9am&quot;, &quot;daily&quot;, &quot;weekly&quot;, &quot;every morning&quot;, &quot;first of the month&quot;
+- &quot;tomorrow at 3pm&quot;, &quot;on March 2&quot;, &quot;in two days&quot;
+- &quot;remind me&quot;, &quot;schedule&quot;, &quot;do this later at [time]&quot;
+
+NOT for:
+- Running something NOW in the background — use RunMyOrgButler (no schedule required).
+- Simple fast tasks the agent can do inline — just do them.
+
+Inputs:
+- prompt: numbered plan. Must start with the headless preamble (&quot;You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.&quot;). Step 1 must call LoadCustomInstructions. Last step must call NotifyUser. Include all record IDs directly in the steps — no conversation context is available at execution time.
+- schedule: cron pattern &quot;minute hour dayOfMonth month dayOfWeek optionalYear&quot; in the user&apos;s local time. Examples: &quot;0 9 ? * MON-FRI&quot; weekdays 9am, &quot;30 14 ? * MON&quot; Mondays 2:30pm, &quot;0 8 1 * ?&quot; first of month 8am, &quot;0 15 28 2 ? 2026&quot; Feb 28 2026 at 3pm.
+
+Results are delivered as in-app notifications: plain text only, max 750 chars, one clickable record via targetId, no links/markdown. If the user requests something that exceeds these limits (linked lists, large reports), explain the constraint before scheduling.</description>
     <developerName>PlanForLater</developerName>
     <invocationTarget>PlanForLater</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

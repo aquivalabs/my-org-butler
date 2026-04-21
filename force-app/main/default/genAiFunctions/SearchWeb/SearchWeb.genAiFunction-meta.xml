@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use this helper action whenever you need information that you dont have.
-- It leverage the Tavily API which does a natural language query to the web and return with a single natural language answer.</description>
+    <description>Search the public web for information that does not live in this Salesforce org. Uses the Tavily API to turn a natural-language query into a single natural-language answer with citations.
+
+Use when:
+- The user asks about general knowledge, news, documentation, or something external (e.g. &quot;what is PlantUML&quot;, &quot;latest Salesforce release notes&quot;, company research).
+- A SOQL, Data Cloud, or Metadata/Tooling API call failed with an unclear error and you need to look up the cause or the correct API/object to use.
+- The user explicitly says &quot;search the web&quot; or names an external site/company.
+
+NOT for:
+- Org records or metadata — use QueryRecordsWithSoql, ExploreOrgSchema, CallMetadataApi, or CallToolingApi.
+- Internal company documents or policies uploaded to the Data Library — use SearchDataLibrary.
+- Data Cloud data — use QueryDataCloud.</description>
     <developerName>SearchWeb</developerName>
     <invocationTarget>SearchWeb</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Send an in-app notification to users. The body is plain text only (max 750 chars) — no markdown, no HTML, no links. Use numbered lists with record names but never link syntax. Only one record can be linked via targetId (the notification itself becomes clickable). If the user asks for a list with links, explain that notifications only support plain text with a single clickable link. Query User Ids with QueryRecordsWithSoql before calling this. If no recipient is specified, the current user is notified.</description>
+    <description>Send an in-app custom notification to one or more Salesforce users. Primarily used as the FINAL step of a PlanForLater headless run to deliver the result, or when the user explicitly asks to notify someone.
+
+Use when:
+- Completing a scheduled plan (PlanForLater) or background task (RunMyOrgButler) — always the last step.
+- The user explicitly says &quot;notify&quot;, &quot;ping&quot;, &quot;send me a notification&quot;, &quot;let [user] know&quot;.
+
+NOT for:
+- The primary response in a live conversation — just reply in the chat.
+- Sending email, Slack, or SMS — this action only produces in-app custom notifications.
+
+Inputs and constraints:
+- recipientIds: comma-separated String of User Ids (NOT a List). If omitted, the current user is notified. Look up Ids via QueryRecordsWithSoql first.
+- title: plain text, max 250 chars.
+- body: plain text, max 750 chars. NO markdown, NO HTML, NO inline links. Numbered lists with record names are fine, but never use link syntax.
+- targetId: a single record Id — the notification as a whole becomes clickable and opens that record.
+
+If the user asks for something that can&apos;t fit (multiple links, long reports, formatting), explain the constraint before calling.</description>
     <developerName>NotifyUser</developerName>
     <invocationTarget>NotifyUser</invocationTarget>
     <invocationTargetType>apex</invocationTargetType>
