@@ -49,7 +49,7 @@ tests:
 
   - description: "Policy check: can I offer a discount?"
     vars:
-      utterance: "the customer asked for a 15% discount — is that within our company policy? check the company docs"
+      utterance: "what is our company discount policy for deals over $100K? check the company docs"
       conversationId: monday-morning
     assert:
       - type: javascript
