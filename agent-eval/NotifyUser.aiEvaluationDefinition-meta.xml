@@ -7,9 +7,9 @@
     <description>Sends an in-app notification via NotifyUser</description>
     <testCase>
         <number>1</number>
-        <inputs><utterance>notify me that the quarterly report is ready for review</utterance></inputs>
+        <inputs><utterance>send me a hello world notification</utterance></inputs>
         <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
         <expectation><name>actions_assertion</name><expectedValue>['NotifyUser']</expectedValue></expectation>
-        <expectation><name>bot_response_rating</name><expectedValue>Confirms notification sent with the words quarterly report in the message</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms a notification containing the words hello world was sent</expectedValue></expectation>
     </testCase>
 </AiEvaluationDefinition>

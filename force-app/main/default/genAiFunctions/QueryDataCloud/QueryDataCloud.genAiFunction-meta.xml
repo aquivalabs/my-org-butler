@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>- Use this action to query structured data from Data Cloud using SQL syntax (not SOQL).
+    <description>- Use ONLY for questions answered by structured data in Data Cloud entities (DMO, DLO, CIO) via SQL.
+- NOT for questions answered by uploaded documents or PDFs — use SearchDataLibrary instead.
+- Example fit: "How many accounts per industry?", "Top 10 opportunities by amount", "Average order value last quarter."
+- Example NOT fit: "What does the refund policy say?", "Search the contract for the termination clause." → SearchDataLibrary.
+
+- Use this action to query structured data from Data Cloud using SQL syntax (not SOQL).
 - Data Cloud SQL supports SELECT, FROM, WHERE, GROUP BY, ORDER BY, LIMIT, JOIN, and aggregate functions (COUNT, SUM, AVG, MIN, MAX).
 - The action takes a SQL query string and returns JSON containing either:
   * On success: JSON array of result rows as objects with column-name keys

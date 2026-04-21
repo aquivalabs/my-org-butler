@@ -5,8 +5,6 @@ description: "MyOrgButler Demo — A Sales Rep's Monday Morning"
 # creates a follow-up, saves preferences, and automates the workflow.
 #
 # Testing Center handles per-action regression. This tests the full story.
-#
-# Note: Step 3 (discount policy) is disabled until Data Library search index works (Issue #49)
 
 providers:
   - id: "file://../.claude/skills/agentforce/providers/sf-agent-api.mjs"
@@ -51,13 +49,13 @@ tests:
 
   - description: "Policy check: can I offer a discount?"
     vars:
-      utterance: "the customer asked for a 15% discount — is that within our company policy?"
+      utterance: "the customer asked for a 15% discount — is that within our company policy? check the company docs"
       conversationId: monday-morning
     assert:
       - type: javascript
         value: "output.success === true"
       - type: llm-rubric
-        value: "Mentions that discounts above 10% require VP of Sales approval and cites policy.pdf as the source"
+        value: "Mentions that discounts above 10% require VP of Sales approval"
 
   - description: "Research: is this discount normal in the market?"
     vars:

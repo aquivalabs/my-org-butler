@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>
+        - Use ONLY for questions whose answer lives in uploaded documents, PDFs, policies, or similar unstructured files in a Data Cloud data library.
+        - NOT for questions about structured records, tables, or fields — use QueryDataCloud instead.
+        - Example fit: "What does our sales policy say about discounts?", "Find the section about refund terms in the uploaded contract."
+        - Example NOT fit: "How many accounts are in tier Gold?", "List opportunities closing this quarter." → QueryDataCloud.
+
         - Use this to answer questions using the company's internal knowledge base stored in a Data Cloud data library.
         - Searches through company documents, policies, and other files uploaded to a data library.
         - Returns AI-generated answers with inline source citations (file names).
