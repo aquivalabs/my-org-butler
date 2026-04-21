@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>Regression</name>
+    <subjectName>MyOrgButler</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <description>Full per-action regression suite for MyOrgButler</description>
+    <testCase>
+        <number>1</number>
+        <inputs><utterance>the Acme Q1 Expansion Deal has a PDF file attached, open it and tell me the total contract value</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['AnswerWithCurrentFile']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>States the total contract value is 500,000</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>2</number>
+        <inputs><utterance>is there an approval process configured for Opportunities? use the Metadata API to check</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CallMetadataApi']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Shows approval process details for Opportunity or states that no approval process is configured</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>3</number>
+        <inputs><utterance>use the REST API to create a new Task with Subject &quot;Call Burlington&quot; and Status &quot;Not Started&quot;</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CallRestApi']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms a Task record was created with subject containing Call Burlington</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>4</number>
+        <inputs><utterance>what is the Apex code coverage percentage in this org?</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CallToolingApi']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns a specific code coverage percentage or lists coverage per class with percentages</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>5</number>
+        <inputs><utterance>create a PlantUML ER diagram showing how Account, Opportunity and Contact are related</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['CreatePlantUmlUrl']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns a clickable PlantUML URL containing a diagram that shows Account, Opportunity and Contact with their relationships</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>6</number>
+        <inputs><utterance>what fields does the Memory__c object have and what are their types?</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['ExploreOrgSchema']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Lists fields of Memory__c including Content__c and IsShared__c</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>7</number>
+        <inputs><utterance>show me my stored preferences</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['LoadCustomInstructions']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Shows stored user preferences or states that no custom preferences have been saved yet</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>8</number>
+        <inputs><utterance>send me a hello world notification</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['NotifyUser']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms a notification containing the words hello world was sent</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>9</number>
+        <inputs><utterance>every weekday at 9am, check for opportunities closing this week and notify me</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['PlanForLater']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms the plan was scheduled successfully and provides a link to the plan record</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>10</number>
+        <inputs><utterance>how many documents has our agent been given to search through?</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>States a count of documents the agent can search (a number, 2 or more)</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>11</number>
+        <inputs><utterance>which deal should I focus on this week?</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['QueryRecordsWithSoql']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Recommends the Acme Q1 Expansion Deal as the opportunity to focus on</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>12</number>
+        <inputs><utterance>what is our company discount policy for deals over $100K? check the company docs</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'SearchDataLibrary']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Mentions that discounts above 10 percent require VP of Sales approval</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>13</number>
+        <inputs><utterance>where is Aquiva Labs located and when were they founded? search the web</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['SearchWeb']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Mentions Florida (Celebration or Orlando) as location and 2015 as founding year</expectedValue></expectation>
+    </testCase>
+    <testCase>
+        <number>14</number>
+        <inputs><utterance>from now on, always show the StageName when listing opportunities</utterance></inputs>
+        <expectation><name>topic_assertion</name><expectedValue>MyOrgButler</expectedValue></expectation>
+        <expectation><name>actions_assertion</name><expectedValue>['StoreCustomInstruction']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue></expectation>
+    </testCase>
+</AiEvaluationDefinition>
