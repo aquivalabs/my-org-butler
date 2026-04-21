@@ -13,9 +13,6 @@
         <mappingType>Variable</mappingType>
     </attributeMappings>
     <description>Your personal Salesforce butler that helps with daily work using natural language. Answers questions about data, metadata, and configuration, and can perform tasks like creating records or making configuration changes.</description>
-    <genAiFunctions>
-        <genAiFunctionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</genAiFunctionName>
-    </genAiFunctions>
     <genAiPlugins>
         <genAiPluginName>MyOrgButler</genAiPluginName>
     </genAiPlugins>
