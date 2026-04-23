@@ -5,20 +5,38 @@ global with sharing class SearchDataLibrary {
     @InvocableMethod(label='MyOrgButler: Search Data Library' description='Search company documents in a Data Cloud data library and return answers grounded in the source files.')
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
+        DataLibrary library = new DataLibrary();
 
-        DataLibrary.Result data = new DataLibrary().retrieve(input.question, input.chunkDmo, false);
+        DataLibrary.Result data = library.retrieve(input.question, input.chunkDmo, false);
+        String answer;
 
-        PromptTemplate.Result result = new PromptTemplate('AnswerFromDocuments')
-                            .call(new Map<String, Object>{
-                                'Input:userQuestion' => input.question,
-                                'Input:documents' => data.documents
-                            });
+        try {
+            answer = answerFrom(input.question, data.documents);
+        }
+        catch (Exception error) {
+            // Note: Full-document payload can blow past prompt-template limits on large files;
+            // fall back to top matching chunks only.
+            data = library.retrieve(input.question, input.chunkDmo, true);
+            answer = answerFrom(input.question, data.documents);
+        }
 
         Output output = new Output();
-        output.answer = result.text;
+        output.answer = answer;
         output.citations = data.citations;
 
         return new List<Output>{ output };
+    }
+
+
+    // PRIVATE
+
+    private static String answerFrom(String question, String documents) {
+        return new PromptTemplate('AnswerFromDocuments')
+            .call(new Map<String, Object>{
+                'Input:userQuestion' => question,
+                'Input:documents' => documents
+            })
+            .text;
     }
 
 
