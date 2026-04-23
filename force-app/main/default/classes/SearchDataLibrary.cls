@@ -6,14 +6,14 @@ global with sharing class SearchDataLibrary {
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
         DataLibrary library = new DataLibrary();
-
-        DataLibrary.Result data = library.retrieve(input.question, input.chunkDmo, false);
+        DataLibrary.Result data;
         String answer;
 
         try {
+            data = library.retrieve(input.question, input.chunkDmo, false);
             answer = answerFrom(input.question, data.documents);
         }
-        catch (Exception error) {
+        catch (PromptTemplate.PromptTemplateException error) {
             // Note: Full-document payload can blow past prompt-template limits on large files;
             // fall back to top matching chunks only.
             data = library.retrieve(input.question, input.chunkDmo, true);
@@ -23,7 +23,6 @@ global with sharing class SearchDataLibrary {
         Output output = new Output();
         output.answer = answer;
         output.citations = data.citations;
-
         return new List<Output>{ output };
     }
 
