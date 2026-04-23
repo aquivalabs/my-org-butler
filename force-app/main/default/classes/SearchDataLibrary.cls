@@ -2,10 +2,13 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class SearchDataLibrary {
 
+    @TestVisible
+    private static DataLibrary libraryOverride;
+
     @InvocableMethod(label='MyOrgButler: Search Data Library' description='Search company documents in a Data Cloud data library and return answers grounded in the source files.')
     global static List<Output> execute(List<Input> inputs) {
         Input input = inputs[0];
-        DataLibrary library = new DataLibrary();
+        DataLibrary library = libraryOverride != null ? libraryOverride : new DataLibrary();
         DataLibrary.Result data;
         String answer;
 

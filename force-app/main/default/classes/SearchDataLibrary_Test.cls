@@ -18,6 +18,26 @@ private class SearchDataLibrary_Test {
     }
 
 
+    @IsTest
+    private static void fallsBackToChunks() {
+
+        // Setup
+        DataLibrarySpy spy = new DataLibrarySpy();
+        SearchDataLibrary.libraryOverride = spy;
+        PromptTemplate.throwOnNextCall = true;
+
+
+        // Exercise
+        SearchDataLibrary.execute(
+            new List<SearchDataLibrary.Input>{ inputWith('What is our refund policy?') }
+        );
+
+
+        // Verify
+        Assert.areEqual(true, spy.chunksOnlySeen);
+    }
+
+
     // HELPER
 
     private static SearchDataLibrary.Input inputWith(String question) {
@@ -26,5 +46,20 @@ private class SearchDataLibrary_Test {
         result.chunkDmo = 'TestChunk_chunk__dlm';
 
         return result;
+    }
+
+
+    // INNER
+
+    private class DataLibrarySpy extends DataLibrary {
+        public Boolean chunksOnlySeen = false;
+
+        public override DataLibrary.Result retrieve(String query, String chunkDmo, Boolean chunksOnly) {
+            if (chunksOnly) {
+                chunksOnlySeen = true;
+            }
+
+            return new DataLibrary.Result();
+        }
     }
 }

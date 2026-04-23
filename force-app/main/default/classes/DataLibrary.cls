@@ -11,7 +11,7 @@ public virtual with sharing class DataLibrary {
 
     // PUBLIC
 
-    public Result retrieve(String query, String chunkDmo, Boolean chunksOnly) {
+    public virtual Result retrieve(String query, String chunkDmo, Boolean chunksOnly) {
         if (Test.isRunningTest() && mockedResult != null) {
             Result r = new Result();
             r.documents = mockedResult;
