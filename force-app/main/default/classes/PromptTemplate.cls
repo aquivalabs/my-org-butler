@@ -6,7 +6,7 @@ public with sharing class PromptTemplate {
     private static String mockedResult = 'Test Generated Content Lorem Ipsum';
 
     @TestVisible
-    private static Boolean throwPayloadTooLargeOnNextCall = false;
+    private static String mockedErrorMessage;
 
     // CONSTRUCTORS
 
@@ -17,9 +17,10 @@ public with sharing class PromptTemplate {
     // PUBLIC
 
     public Result call(Map<String, Object> inputParams) {
-        if (throwPayloadTooLargeOnNextCall) {
-            throwPayloadTooLargeOnNextCall = false;
-            throw new PayloadTooLargeException('Mocked payload-too-large for ' + templateName);
+        if (mockedErrorMessage != null) {
+            String message = mockedErrorMessage;
+            mockedErrorMessage = null;
+            throw new PromptTemplateException(message);
         }
 
         Result result = new Result();
@@ -39,29 +40,12 @@ public with sharing class PromptTemplate {
 
     private static void validateOutput(ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output, String templateName) {
         if (hasGenerationErrors(output)) {
-            String message = buildErrorMessage(output.generationErrors);
-
-            // Einstein surfaces oversized input-parameter payloads as a
-            // parameter-resolution NPE with messageCode=UndefinedResolutionError.
-            if (indicatesOversizedPayload(output.generationErrors)) {
-                throw new PayloadTooLargeException(message);
-            }
-
-            throw new PromptTemplateException(message);
+            throw new PromptTemplateException(buildErrorMessage(output.generationErrors));
         }
 
         if (hasNoGenerations(output)) {
             throw new PromptTemplateException('No generations returned from: ' + templateName);
         }
-    }
-
-    private static Boolean indicatesOversizedPayload(List<ConnectApi.EinsteinPromptTemplateGenerationsError> errors) {
-        for (ConnectApi.EinsteinPromptTemplateGenerationsError error : errors) {
-            if (error.messageCode == 'UndefinedResolutionError') {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static Boolean hasGenerationErrors(ConnectApi.EinsteinPromptTemplateGenerationsRepresentation output) {
@@ -113,6 +97,5 @@ public with sharing class PromptTemplate {
         public String text;
     }
 
-    public virtual class PromptTemplateException extends Exception {}
-    public class PayloadTooLargeException extends PromptTemplateException {}
+    public class PromptTemplateException extends Exception {}
 }

@@ -24,7 +24,7 @@ private class SearchDataLibrary_Test {
         // Setup
         DataLibrarySpy spy = new DataLibrarySpy();
         SearchDataLibrary.libraryOverride = spy;
-        PromptTemplate.throwPayloadTooLargeOnNextCall = true;
+        PromptTemplate.mockedErrorMessage = 'Prompt size exceeds the token limit';
 
 
         // Exercise
@@ -35,6 +35,31 @@ private class SearchDataLibrary_Test {
 
         // Verify
         Assert.areEqual(true, spy.chunksOnlySeen);
+    }
+
+
+    @IsTest
+    private static void rethrowsUnrelatedErrors() {
+
+        // Setup
+        SearchDataLibrary.libraryOverride = new DataLibrarySpy();
+        PromptTemplate.mockedErrorMessage = 'Einstein had an unrelated glitch';
+
+
+        // Exercise
+        Exception caught;
+        try {
+            SearchDataLibrary.execute(
+                new List<SearchDataLibrary.Input>{ inputWith('What is our refund policy?') }
+            );
+        }
+        catch (PromptTemplate.PromptTemplateException error) {
+            caught = error;
+        }
+
+
+        // Verify
+        Assert.areNotEqual(null, caught);
     }
 
 
