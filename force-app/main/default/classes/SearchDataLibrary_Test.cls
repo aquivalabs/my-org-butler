@@ -24,7 +24,7 @@ private class SearchDataLibrary_Test {
         // Setup
         DataLibrarySpy spy = new DataLibrarySpy();
         SearchDataLibrary.libraryOverride = spy;
-        PromptTemplate.throwOnNextCall = true;
+        PromptTemplate.throwPayloadTooLargeOnNextCall = true;
 
 
         // Exercise

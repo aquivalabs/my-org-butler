@@ -16,7 +16,7 @@ global with sharing class SearchDataLibrary {
             data = library.retrieve(input.question, input.chunkDmo, false);
             answer = answerFrom(input.question, data.documents);
         }
-        catch (PromptTemplate.PromptTemplateException error) {
+        catch (PromptTemplate.PayloadTooLargeException error) {
             // Note: Full-document payload can blow past prompt-template limits on large files;
             // fall back to top matching chunks only.
             data = library.retrieve(input.question, input.chunkDmo, true);
