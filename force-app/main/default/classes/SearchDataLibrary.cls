@@ -2,23 +2,65 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class SearchDataLibrary {
 
+    @TestVisible
+    private static DataLibrary libraryOverride;
+
     @InvocableMethod(label='MyOrgButler: Search Data Library' description='Search company documents in a Data Cloud data library and return answers grounded in the source files.')
     global static List<Output> execute(List<Input> inputs) {
-        Input input = inputs[0];
+        Output result = new Output();
 
-        DataLibrary.Result data = new DataLibrary().retrieve(input.question, input.chunkDmo, false);
+        try {
+            result = answerFromFullDocument(inputs[0]);
+        }
+        catch (PromptTemplate.PromptTemplateException error) {
+            if(!isTokenLimit(error)) {
+                throw error;
+            }
 
-        PromptTemplate.Result result = new PromptTemplate('AnswerFromDocuments')
-                            .call(new Map<String, Object>{
-                                'Input:userQuestion' => input.question,
-                                'Input:documents' => data.documents
-                            });
+            result = answerFromChunks(inputs[0]);
+        }
 
-        Output output = new Output();
-        output.answer = result.text;
-        output.citations = data.citations;
+        return new List<Output>{ result };
+    }
 
-        return new List<Output>{ output };
+
+    // PRIVATE
+
+    private static Output answerFromFullDocument(Input input) {
+        return answerFrom(input, false);
+    }
+
+
+    private static Output answerFromChunks(Input input) {
+        return answerFrom(input, true);
+    }
+
+    
+    private static Output answerFrom(Input input, Boolean chunksOnly) {
+        DataLibrary library = libraryOverride != null ? libraryOverride : new DataLibrary();
+        DataLibrary.Result data = library.retrieve(input.question, input.chunkDmo, chunksOnly);
+
+        Output result = new Output();
+        result.citations = data.citations;
+        result.answer = answerFrom(input.question, data.documents);
+        return result;
+    }
+
+    private static Boolean isTokenLimit(PromptTemplate.PromptTemplateException error) {
+        String message = error.getMessage();
+        return message != null
+            && (message.containsIgnoreCase('exceeds the token limit')
+            ||  message.containsIgnoreCase('exceeds model size limit'));
+    }
+
+
+    private static String answerFrom(String question, String documents) {
+        return new PromptTemplate('AnswerFromDocuments')
+            .call(new Map<String, Object>{
+                'Input:userQuestion' => question,
+                'Input:documents' => documents
+            })
+            .text;
     }
 
 

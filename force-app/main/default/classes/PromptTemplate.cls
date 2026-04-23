@@ -5,6 +5,9 @@ public with sharing class PromptTemplate {
     @TestVisible
     private static String mockedResult = 'Test Generated Content Lorem Ipsum';
 
+    @TestVisible
+    private static String mockedErrorMessage;
+
     // CONSTRUCTORS
 
     public PromptTemplate(String templateName) {
@@ -14,6 +17,12 @@ public with sharing class PromptTemplate {
     // PUBLIC
 
     public Result call(Map<String, Object> inputParams) {
+        if (mockedErrorMessage != null) {
+            String message = mockedErrorMessage;
+            mockedErrorMessage = null;
+            throw new PromptTemplateException(message);
+        }
+
         Result result = new Result();
         result.text = mockedResult;
 
