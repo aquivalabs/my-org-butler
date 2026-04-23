@@ -13,7 +13,7 @@ prompts:
 
 defaultTest:
   options:
-    provider: "openai:gpt-4o"
+    provider: "openai:gpt-4o-mini"
 
 tests:
 

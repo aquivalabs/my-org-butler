@@ -21,7 +21,7 @@ defaultTest:
     agentName: MyOrgButler
     apiVersion: v65.0
   options:
-    provider: "openai:gpt-4o"
+    provider: "openai:gpt-4o-mini"
 
 tests:
 

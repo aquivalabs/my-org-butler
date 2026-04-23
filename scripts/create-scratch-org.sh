@@ -103,9 +103,6 @@ read -p "Press Enter when done (or to skip)..."
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
-echo "Running Promptfoo Prompt Template Regression Tests (no index needed)"
-(cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env)
-
 echo "Waiting for Data Library chunks..."
 until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
 ConnectApi.CdpQueryInput i = new ConnectApi.CdpQueryInput();
@@ -121,9 +118,6 @@ for i in 1 2; do
   (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
 done
 wait
-
-echo "Running Promptfoo Demo Story"
-(cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env)
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
 #sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default
