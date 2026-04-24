@@ -19,12 +19,12 @@ private class SearchDataLibrary_Test {
 
 
     @IsTest
-    private static void fallsBackToChunks() {
+    private static void fallsBackToChunksWhenFullDocumentIsTooLong() {
 
         // Setup
         DataLibrarySpy spy = new DataLibrarySpy();
+        spy.oversizedOnFullRetrieval = true;
         SearchDataLibrary.libraryOverride = spy;
-        PromptTemplate.mockedErrorMessage = 'Prompt size exceeds the token limit';
 
 
         // Exercise
@@ -39,11 +39,11 @@ private class SearchDataLibrary_Test {
 
 
     @IsTest
-    private static void rethrowsUnrelatedErrors() {
+    private static void rethrowsPromptTemplateErrors() {
 
         // Setup
         SearchDataLibrary.libraryOverride = new DataLibrarySpy();
-        PromptTemplate.mockedErrorMessage = 'Einstein had an unrelated glitch';
+        PromptTemplate.mockedErrorMessage = 'Einstein had a glitch';
 
 
         // Exercise
@@ -78,13 +78,18 @@ private class SearchDataLibrary_Test {
 
     private class DataLibrarySpy extends DataLibrary {
         public Boolean chunksOnlySeen = false;
+        public Boolean oversizedOnFullRetrieval = false;
 
         public override DataLibrary.Result retrieve(String query, String chunkDmo, Boolean chunksOnly) {
             if (chunksOnly) {
                 chunksOnlySeen = true;
             }
 
-            return new DataLibrary.Result();
+            DataLibrary.Result result = new DataLibrary.Result();
+            if (!chunksOnly && oversizedOnFullRetrieval) {
+                result.documents = 'x'.repeat(SearchDataLibrary.MAX_DOCUMENT_LENGTH +1);
+            }
+            return result;
         }
     }
 }
