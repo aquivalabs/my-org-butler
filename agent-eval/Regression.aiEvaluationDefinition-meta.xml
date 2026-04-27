@@ -61,9 +61,9 @@
     </testCase>
     <testCase>
         <number>10</number>
-        <inputs><utterance>how many documents has our agent been given to search through?</utterance></inputs>
+        <inputs><utterance>what's the name of the document indexed in our knowledge library?</utterance></inputs>
         <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue></expectation>
-        <expectation><name>bot_response_rating</name><expectedValue>States a count of documents the agent can search (a number, 2 or more)</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns a filename Policy PDF</expectedValue></expectation>
     </testCase>
     <testCase>
         <number>11</number>
