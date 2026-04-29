@@ -1,0 +1,85 @@
+agent: MyOrgButler
+
+# Multi-turn agent regression. Driven over the Invocable Action REST endpoint
+# (/services/data/vXX.X/actions/custom/generateAiAgentResponse/<agent>); judged
+# by Claude against each `expect`. See .claude/skills/agentforce/commands/eval.md.
+#
+# Two test shapes:
+#   - single-turn: `say` + `expect` at the test root
+#   - multi-turn:  `turns:` list, each with `say` + `expect`. All turns share
+#                  one agent session (sessionId round-trips), so context carries.
+
+tests:
+  - name: AnswerWithCurrentFile
+    say: the Acme Q1 Expansion Deal has a PDF file attached, open it and tell me the total contract value
+    expect: States the total contract value is 500,000
+
+  - name: CallMetadataApi
+    say: is there an approval process configured for Opportunities? use the Metadata API to check
+    expect: Shows approval process details for Opportunity or states that no approval process is configured
+
+  - name: CallRestApi
+    say: 'use the REST API to create a new Task with Subject "Call Burlington" and Status "Not Started"'
+    expect: Confirms a Task record was created with subject containing Call Burlington
+
+  - name: CallToolingApi
+    say: what is the Apex code coverage percentage in this org?
+    expect: Returns a specific code coverage percentage or lists coverage per class with percentages
+
+  - name: CreatePlantUmlUrl
+    say: create a PlantUML ER diagram showing how Account, Opportunity and Contact are related
+    expect: Returns a clickable PlantUML URL containing a diagram that shows Account, Opportunity and Contact with their relationships
+
+  - name: ExploreOrgSchema
+    say: what fields does the Memory__c object have and what are their types?
+    expect: Lists fields of Memory__c including Content__c and IsShared__c
+
+  - name: LoadCustomInstructions
+    say: show me my stored preferences
+    expect: Shows stored user preferences or states that no custom preferences have been saved yet
+
+  - name: NotifyUser
+    say: send me a hello world notification
+    expect: Confirms a notification containing the words hello world was sent
+
+  - name: PlanForLater
+    say: every weekday at 9am, check for opportunities closing this week and notify me
+    expect: Confirms the plan was scheduled successfully and provides a link to the plan record
+
+  - name: QueryDataCloud
+    say: what's the name of the document indexed in our knowledge library?
+    expect: Returns a filename Policy PDF
+
+  - name: QueryRecordsWithSoql
+    say: which deal should I focus on this week?
+    expect: Recommends the Acme Q1 Expansion Deal as the opportunity to focus on
+
+  - name: SearchDataLibrary
+    say: what is our company discount policy for deals over $100K? check the company docs
+    expect: Mentions that discounts above 10 percent require VP of Sales approval
+
+  - name: SearchWeb
+    say: where is Aquiva Labs located and when were they founded? search the web
+    expect: Mentions Florida (Celebration or Orlando) as location and 2015 as founding year
+
+  - name: StoreCustomInstruction
+    say: from now on, always show the StageName when listing opportunities
+    expect: Confirms it stored a preference to always include StageName when listing opportunities
+
+  - name: SalesRepMondayMorning
+    description: A sales rep's Monday-morning workflow — review top deal, check policy, research, follow up, save preferences, automate.
+    turns:
+      - say: which opportunity should I work on next?
+        expect: Recommends the Acme Q1 Expansion Deal as the top priority opportunity to work on
+      - say: read the file on this opportunity and tell me the payment schedule
+        expect: 'Mentions payment milestones: 25% at signing, 25% at delivery, 50% at go-live'
+      - say: what is our company discount policy for deals over $100K? check the company docs
+        expect: Mentions that discounts above 10% require VP of Sales approval
+      - say: are enterprise software discounts above 10% common? search the web
+        expect: Returns web search results about enterprise software discount practices
+      - say: create a task to call Acme and discuss the discount — note that VP approval is needed
+        expect: Confirms a task was created for the Acme opportunity mentioning VP approval or discount
+      - say: from now on always show Amount and CloseDate when listing opportunities
+        expect: Confirms it stored a preference to include Amount and CloseDate
+      - say: do this opportunity review every Monday morning at 9am and notify me
+        expect: Confirms a scheduled plan with a Monday 9am cron expression

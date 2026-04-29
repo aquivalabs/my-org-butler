@@ -2,9 +2,10 @@
 
 Run regression tests against agents and prompt templates.
 
-Two test systems, distinct purposes:
+Three test systems, distinct purposes:
 - **Testing Center** — per-action single-turn regression (on-platform, `sf agent test run`)
-- **Promptfoo** — multi-turn conversations and prompt template tests (CLI, `npx promptfoo@latest eval`)
+- **Apex-based agent tests** — multi-turn conversations against a deployed agent, judged by Claude
+- **Prompt template tests** — single-prompt evals via Promptfoo + the Generations API (`npx promptfoo@latest eval`)
 
 ---
 
@@ -103,20 +104,109 @@ Goal: 100% on all three, across all files.
 
 ---
 
-## Promptfoo
+## Multi-turn agent tests (REST)
 
-### Running
+All scenarios live in **one** YAML: `agent-eval/regression.test.yaml`. Each entry has plain-English `expect` criteria. Claude drives the agent over the in-org Invocable Action REST endpoint, keeps the transcript in memory, and judges each turn against `expect`.
 
-Test files live in `agent-eval/`. Always use `--output` to capture structured results, then report failures inline — never rerun just to see what failed.
+Why this endpoint: the `generateAiAgentResponse` invocable action is exposed at `/services/data/vXX.X/actions/custom/generateAiAgentResponse/<AgentApiName>`. `sf api request rest` hits it with the CLI's existing org auth — no Connected App, no JWT, no api.salesforce.com. Returns `sessionId` + `agentResponse` directly as JSON. Multi-turn works by passing the `sessionId` back into the next call.
+
+What it can't observe: planner trace (which topic routed, which actions invoked). That data lives in Data Cloud DLM tables; the `ConversationDefinitionEventLog` only captures dialog-level events with sensitive fields redacted. Topic/action assertions stay in Testing Center.
+
+### Spec format
+
+```yaml
+agent: MyOrgButler
+
+tests:
+  # Single-turn shortcut
+  - name: CallRestApi
+    say: 'use the REST API to create a new Task with Subject "Call Burlington"'
+    expect: Confirms a Task record was created with subject containing Call Burlington
+
+  # Multi-turn — all turns share one agent session
+  - name: SalesRepMondayMorning
+    description: Sales rep Monday-morning workflow
+    turns:
+      - say: which opportunity should I work on next?
+        expect: Recommends the Acme Q1 Expansion Deal as top priority
+      - say: create a task to call Acme about the discount
+        expect: Confirms a task was created on the Acme opportunity, mentions VP approval or discount
+```
+
+`expect` is plain English — Claude grades the agent's reply against it. No substring matching. Per-test `name` should match the action being probed; it's also how the runner reports pass/fail.
+
+### Running one test
 
 ```bash
-# Demo story (multi-turn)
-cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env --output /tmp/demo-results.json
+ORG=my-org-butler_DEV
+AGENT=MyOrgButler
+SESSION=""
 
-# Multi-turn regression
-cd agent-eval && npx promptfoo@latest eval -c regression.yaml --env-file .env --output /tmp/regression-results.json
+# Turn 1
+body=$(jq -n --arg msg "$utterance" '{inputs:[{userMessage:$msg}]}')
+resp=$(sf api request rest -o "$ORG" \
+  "/services/data/v66.0/actions/custom/generateAiAgentResponse/$AGENT" \
+  -X POST -H "Content-Type:application/json" -b "-" <<<"$body")
 
-# Prompt template regression
+SESSION=$(jq -r '.[0].outputValues.sessionId' <<<"$resp")
+text=$(jq -r '.[0].outputValues.agentResponse | fromjson | .value // .' <<<"$resp")
+ok=$(jq -r '.[0].isSuccess' <<<"$resp")
+err=$(jq -r '.[0].errors // empty' <<<"$resp")
+
+# Turn 2 (and subsequent) — pass sessionId back
+body=$(jq -n --arg msg "$next" --arg sid "$SESSION" \
+  '{inputs:[{userMessage:$msg, sessionId:$sid}]}')
+resp=$(sf api request rest -o "$ORG" \
+  "/services/data/v66.0/actions/custom/generateAiAgentResponse/$AGENT" \
+  -X POST -H "Content-Type:application/json" -b "-" <<<"$body")
+```
+
+`agentResponse` is wrapped as `{"type":"Text","value":"..."}` — unwrap to `.value` for judging. If unwrap fails, fall back to the raw string (some action errors come through unwrapped).
+
+### Running the full suite
+
+Each test in `regression.test.yaml` is independent (its own session). Run them in parallel:
+
+```bash
+mkdir -p /tmp/ae && rm -f /tmp/ae/*.txt
+# Iterate spec.tests[]: for each test, drive its turns over REST,
+# write the in-memory transcript to /tmp/ae/<name>.txt as it goes.
+# Background each test with & and `wait` for all to finish.
+```
+
+Then walk each transcript and grade against the corresponding `expect` strings. Print:
+
+```
+CallRestApi              PASS  Task record returned with subject Call Burlington.
+QueryRecordsWithSoql     FAIL  Listed 5 opportunities but didn't single out Acme.
+SalesRepMondayMorning    PASS  All 7 turns met expectations.
+```
+
+Surface `errors` from the response verbatim — the JSON is descriptive.
+
+### Prerequisites
+
+Agent must be `Active`. Deploys of `genAiPlugin` / `genAiFunction` / `bot` metadata routinely flip the bot to `Inactive`. Always check before running:
+
+```bash
+sf data query -o my-org-butler_DEV -q "SELECT DeveloperName, Status FROM BotVersion WHERE BotDefinitionId IN (SELECT Id FROM BotDefinition WHERE DeveloperName = 'MyOrgButler')" --json
+```
+
+Re-activate with `sf agent activate -o my-org-butler_DEV -n MyOrgButler`.
+
+### Common failures
+
+- **`isSuccess: false` with `errors`**: agent invocation failed inside the planner. Surface the error string — it usually names the action that errored.
+- **Generic reply / topic not invoked**: bot is `Inactive` or the planner bundle is stale. Re-activate; refresh planner bundle topics.
+- **`NOT_FOUND` on the action URL**: Agentforce isn't enabled in the org, or `<AgentApiName>` doesn't match `BotDefinition.DeveloperName`.
+
+---
+
+## Prompt template tests
+
+Single-prompt evals via Promptfoo + the Einstein Generations API.
+
+```bash
 cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --output /tmp/prompt-results.json
 ```
 
@@ -125,10 +215,10 @@ cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file 
 ```bash
 python3 -c "
 import json
-data = json.load(open('/tmp/demo-results.json'))
+data = json.load(open('/tmp/prompt-results.json'))
 results = data.get('results', {}).get('results', [])
 for r in results:
-    desc = r.get('description', r.get('vars', {}).get('utterance', '?'))[:60]
+    desc = r.get('description', r.get('vars', {}).get('promptTemplateName', '?'))[:60]
     passed = r.get('success', False)
     if not passed:
         failures = [a.get('reason','?') for a in r.get('gradingResult',{}).get('componentResults',[]) if not a.get('pass')]
@@ -141,42 +231,6 @@ for r in results:
 ```
 
 ### Test format
-
-#### Agent tests (multi-turn)
-
-Turns sharing a `conversationId` are part of the same real conversation — the provider maintains session state automatically.
-
-```yaml
-providers:
-  - id: "file://../.claude/skills/agentforce/providers/sf-agent-api.mjs"
-    label: "MyOrgButler"
-
-evaluateOptions:
-  maxConcurrency: 1    # required — turns must run in order
-
-tests:
-  - description: "Set a display preference"
-    vars:
-      utterance: "From now on, always sort my opportunities by close date"
-      conversationId: preference
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Confirms it will remember the sorting preference"
-
-  - description: "Check if preference was applied"
-    vars:
-      utterance: "Show me my opportunities"
-      conversationId: preference
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Shows opportunities sorted by close date, soonest first"
-```
-
-#### Prompt template tests
 
 Each test specifies `promptTemplateName` and the template's input variables. For SObject inputs, declare the type via `sobjectInputs`.
 
@@ -204,11 +258,11 @@ tests:
 
 ## Key differences
 
-| Capability               | Testing Center          | Promptfoo                           |
-|--------------------------|-------------------------|-------------------------------------|
-| Multi-turn conversations | Fake (injected history) | Real (replayed API calls)           |
-| Per-turn assertions      | Final turn only         | Every turn                          |
-| Prompt template testing  | Not supported           | Via Generations API provider        |
-| Response quality judge   | SF built-in, opaque     | Your choice (gpt-4o, Claude, etc.)  |
-| Topic/action assertions  | Yes                     | No (runtime internal)               |
-| Test format              | XML, deploy to test     | YAML, run from CLI                  |
+| Capability                | Testing Center          | REST agent tests                | Prompt template tests          |
+|---------------------------|-------------------------|---------------------------------|--------------------------------|
+| Multi-turn conversations  | Fake (injected history) | Real (one in-org session)       | N/A — single prompt            |
+| Per-turn assertions       | Final turn only         | Every turn                      | N/A                            |
+| Topic / action assertions | Yes                     | No (planner trace not emitted)  | N/A                            |
+| Response quality judge    | SF built-in, opaque     | Claude (this conversation)      | Your choice (gpt-4o, etc.)     |
+| External dependencies     | None                    | None (uses CLI org auth)        | Node.js, Promptfoo, OpenAI key |
+| Test format               | XML, deploy to test     | One YAML, run from CLI          | YAML, run from CLI             |
