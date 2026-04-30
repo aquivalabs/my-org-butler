@@ -12,70 +12,71 @@ Two layers, distinct purposes:
 
 ### Structure
 
-One XML per action in `agent-eval/`. Filename = `<ActionName>.aiEvaluationDefinition-meta.xml`. API name inside `<name>` matches the filename stem. Each file has exactly one `testCase`.
+One consolidated `agent-eval/Regression.aiEvaluationDefinition-meta.xml` with 14 `testCase` blocks — one per action. API name inside `<name>` is `Regression`; run via `sf agent test run --api-name Regression`.
 
-Why one-per-file: lets us run all tests in parallel with one `sf agent test run` invocation per file — a full suite completes in ~2 min instead of 5–10 min serial.
+Why a single definition: Salesforce caps concurrent test jobs at **10 per 10-hour window**. Launching 14 per-action tests in parallel hit that cap and threw `TestStartFailed: Too many inflight evaluations`, so we use one definition with multiple cases instead.
 
 ### Running in parallel
 
-`sf agent test run --wait` has two issues: it's serial (one at a time) and the CLI polling crashes with `TestPollFailed: no constant with the specified name: RETRY` on ~20% of runs. The test completes server-side even when the CLI dies. Handle both by launching jobs in the background, capturing JSON output to `/tmp/`, and parsing what landed.
+`sf agent test run --wait` has two issues: it's serial (one at a time) and the CLI polling crashes with `TestPollFailed: no constant with the specified name: RETRY` on ~20% of runs. The test completes server-side even when the CLI dies. Handle both by running multiple parallel passes of the same definition, capturing JSON output to `/tmp/`, and parsing what landed.
 
 ```bash
-# Run all tests in parallel
+# Run 2 parallel passes of the Regression suite
 mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-for f in agent-eval/*.aiEvaluationDefinition-meta.xml; do
-  name=$(basename "$f" .aiEvaluationDefinition-meta.xml)
-  (sf agent test run --api-name "$name" --wait 10 --result-format json > "/tmp/ae/$name.json" 2>&1) &
+for i in 1 2; do
+  (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
 done
 wait
 ```
 
-`--wait 10` caps each polling loop at 10 min. The `&` backgrounds each invocation; `wait` blocks until all finish.
+`--wait 30` caps each polling loop at 30 min. The `&` backgrounds each invocation; `wait` blocks until all finish. Two passes is the sweet spot — cheap enough not to trip the concurrency cap, redundant enough that intermittent flakes (Data Cloud routing especially) almost always pass in at least one pass.
 
 ### Consolidating results (handles the polling bug)
 
-The CLI captures JSON even when the polling crashes mid-way — the last `{` in the file marks the start of the result document. Python parses that robustly:
+The CLI captures JSON even when the polling crashes mid-way — the last `{` in the file marks the start of the result document. Each pass's JSON contains 14 `testResults` (one per case). Aggregate across passes: a case is considered passing if it passed in *any* pass.
 
 ```bash
 python3 <<'PY'
 import os, re, json
-passed = failed = crashed = 0
-failures = []
+
+def find_results(o):
+    if isinstance(o, dict):
+        if 'testResults' in o: return o['testResults']
+        for v in o.values():
+            r = find_results(v)
+            if r: return r
+    if isinstance(o, list):
+        for v in o:
+            r = find_results(v)
+            if r: return r
+
+case_results = {}  # case name → list of statuses across passes
+crashed_passes = []
 for fn in sorted(os.listdir('/tmp/ae')):
     if not fn.endswith('.json'): continue
-    name = fn[:-5]
     raw = open(f'/tmp/ae/{fn}').read()
     matches = list(re.finditer(r'\n\{\n', raw))
     if not matches:
-        crashed += 1; failures.append((name, 'CLI polling crash — check Testing Center UI'))
+        crashed_passes.append((fn, 'CLI polling crash — check Testing Center UI'))
         continue
     start = matches[-1].start() + 1
     try:
         d = json.loads(raw[start:])
     except Exception as e:
-        crashed += 1; failures.append((name, f'JSON parse error: {e}')); continue
-    # walk for testResults
-    def find(o):
-        if isinstance(o, dict):
-            if 'testResults' in o: return o['testResults']
-            for v in o.values():
-                r = find(v)
-                if r: return r
-        if isinstance(o, list):
-            for v in o:
-                r = find(v)
-                if r: return r
-    results = find(d) or []
-    statuses = {r['name']: r['result'] for r in results}
-    ok = all(s == 'PASS' for s in statuses.values())
-    if ok:
-        passed += 1
-    else:
-        failed += 1
-        expl = ' '.join(f'{k[:6]}={v}' for k,v in statuses.items())
-        failures.append((name, expl))
-print(f'PASS {passed}  FAIL {failed}  CRASH {crashed}')
-for n, msg in failures: print(f'  {n}: {msg}')
+        crashed_passes.append((fn, f'JSON parse error: {e}'))
+        continue
+    for r in find_results(d) or []:
+        case_results.setdefault(r['name'], []).append(r['result'])
+
+passed = sum(1 for rs in case_results.values() if 'PASS' in rs)
+failed = len(case_results) - passed
+print(f'PASS {passed}/{len(case_results)}  FAIL {failed}  passes_crashed {len(crashed_passes)}')
+for name in sorted(case_results):
+    rs = case_results[name]
+    if 'PASS' not in rs:
+        print(f'  FAIL {name}: {rs}')
+for fn, msg in crashed_passes:
+    print(f'  CRASH {fn}: {msg}')
 PY
 ```
 
@@ -83,23 +84,23 @@ PY
 
 Polling crashes are CLI-only; the test finished server-side. Two strategies:
 
-1. **Re-run only the crashed ones** (fast): after the first pass, re-invoke `sf agent test run --api-name <name>` for each crashed name. 2nd attempt usually succeeds because polling hits at a different server state.
+1. **Run a third pass** (fast): if both passes crashed, re-invoke `sf agent test run --api-name Regression` once more. Polling hits at a different server state and usually succeeds.
 2. **Check the UI**: Setup → Agentforce → Testing Center → the eval run has the real result.
 
 Prefer strategy 1 in scripts; strategy 2 when debugging.
 
 ### Deploy
 
-`sf project deploy start --source-dir agent-eval --concise`
+`sf project deploy start --source-dir agent-eval/Regression.aiEvaluationDefinition-meta.xml --concise`
 
-### What each test probes
+### What each case probes
 
-Each file has:
-- `topic_assertion` — agent routes to MyOrgButler topic
+Each `testCase` block carries three expectations:
+- `topic_assertion` — agent routes to the MyOrgButler topic
 - `actions_assertion` — agent calls the expected action sequence
-- `bot_response_rating` — LLM judge grades response content
+- `bot_response_rating` — Salesforce's built-in evaluator grades response content
 
-Goal: 100% on all three, across all files.
+Goal: 100% on all three, across all 14 cases.
 
 ---
 

@@ -45,7 +45,7 @@ Runner details + spec format in `.claude/skills/agentforce/commands/eval.md` →
 
 ## LLM Judge
 
-Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses its built-in `gpt-4o-mini`-class judge; multi-turn REST tests use Claude (this conversation).
+Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses Salesforce's built-in evaluator (judge model is opaque). Multi-turn REST tests use Claude (this conversation).
 
 # Current State (2026-04-30)
 

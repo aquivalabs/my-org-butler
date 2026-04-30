@@ -24,4 +24,4 @@ Each XML file may contain multiple `testCase` blocks (e.g. one combined `Regress
 
 Append a new entry to `agent-eval/demo-story.yaml`. Use the testCase's API name as `name`. Each turn gets a short `turn` label summarizing what that turn probes. The entry-level `description` summarizes the scenario.
 
-Run with the standard agentforce-eval flow: drive each entry over the in-org `generateAiAgentResponse` Invocable Action REST endpoint, judge each turn against its `expect` in memory.
+Run with the standard `/agentforce eval` flow: drive each entry over the in-org `generateAiAgentResponse` Invocable Action REST endpoint, judge each turn against its `expect` in memory.
