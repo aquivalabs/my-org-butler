@@ -10,11 +10,11 @@ sf project deploy start \
 
 # Testing Strategy
 
-Everything lives in `agent-eval/`. Three test layers, zero overlap:
+Everything lives in `agent-eval/`. Two test layers:
 
 ## Testing Center (single-turn regression)
 
-One `agent-eval/Regression.aiEvaluationDefinition-meta.xml` with 14 `testCase` blocks — one per action. Runs on-platform via `sf agent test run --api-name Regression`.
+One `agent-eval/Regression.aiEvaluationDefinition-meta.xml` with 14 `testCase` blocks — one per action. Runs on-platform via `sf agent test run --api-name Regression`. This is the only layer that asserts on topic and action routing (planner trace).
 
 Salesforce caps concurrent test jobs at **10 per 10-hour window** ([Trailhead](https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/trust-your-agents)). Launching 14 per-action tests in parallel hit that cap and threw `TestStartFailed: Too many inflight evaluations`, so we use a single definition with multiple cases instead.
 
@@ -30,32 +30,25 @@ wait
 
 Parsing + retry logic is in `.claude/skills/agentforce/commands/eval.md`.
 
-## Promptfoo Demo Story (multi-turn)
+## Multi-turn agent tests (REST)
 
-`agent-eval/demo-story.yaml` — the conference demo automated. Multi-turn conversation chaining actions into a sales-rep workflow.
+Two YAMLs in `agent-eval/`:
 
-```
-cd agent-eval && npx promptfoo@latest eval -c demo-story.yaml --env-file .env
-```
+- `demo-story.yaml` — the conference demo, automated. One coherent multi-turn conversation (`SalesRepMondayMorning`) chaining actions into a sales-rep workflow.
+- `prompt-regression.yaml` — smoke tests that exercise specific prompt templates (`ConsolidateMemory`, `AnswerFromFile`) through the agent.
 
-## Promptfoo Prompt Tests (template isolation)
+Per-action regression already lives in the Testing Center XML; this layer covers what single-turn can't capture (multi-turn flows, prompt-template behaviors that need a real session).
 
-`agent-eval/prompt-regression.yaml` — smoke test for the prompt template provider via Generations REST API.
+Driven over the in-org Invocable Action endpoint (`/services/data/vXX.X/actions/custom/generateAiAgentResponse/MyOrgButler`) via `sf api request rest`, judged by Claude in-memory against each `expect`. No Apex template, no transcript-record persistence, no Connected App.
 
-```
-cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env
-```
+Runner details + spec format in `.claude/skills/agentforce/commands/eval.md` → "Multi-turn agent tests (REST)".
 
 ## LLM Judge
 
-Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Judge model: `gpt-4o-mini`.
+Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses Salesforce's built-in evaluator (judge model is opaque). Multi-turn REST tests use Claude (this conversation).
 
-## .env
+# Current State (2026-04-30)
 
-Two values: `OPENAI_API_KEY` (LLM judge) and `CONTENT_DOCUMENT_ID` (sample file).
-
-# Current State (2026-04-21)
-
-Testing Center suite is a single `Regression` definition with 14 cases. Parallel run of 2 passes completes in a few minutes without tripping the 10-job concurrency cap.
+Testing Center suite: single `Regression` definition with 14 cases; 2 parallel passes complete in a few minutes without tripping the 10-job concurrency cap.
 
 **Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — test-suite shape / flakiness tracker. Data Cloud routing (SearchDataLibrary, QueryDataCloud) remains the one intermittent case. Done criteria: multiple consecutive clean runs.

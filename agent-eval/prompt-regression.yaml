@@ -1,55 +1,49 @@
-description: "Prompt Template Smoke Test"
+agent: MyOrgButler
 
-# Tests prompt templates in isolation via the Generations REST API.
-# Most prompt coverage comes from agent tests (agent-regression.yaml).
-# This file exists as a smoke test for the prompt provider itself.
-
-providers:
-  - id: "file://../.claude/skills/agentforce/providers/sf-generations-api.mjs"
-    label: "Einstein Generations API"
-
-prompts:
-  - "{{promptTemplateName}}"
-
-defaultTest:
-  options:
-    provider: "openai:gpt-4o-mini"
+# Prompt-template smoke tests. Exercises specific prompt templates through
+# the agent's actions:
+#   - ConsolidateMemory  — invoked by StoreCustomInstruction when adding a preference
+#                          that conflicts with or duplicates an existing one
+#   - AnswerFromFile     — invoked by AnswerWithCurrentFile when answering a question
+#                          grounded in a PDF attached to a record
+#
+# Driven over the same REST endpoint as demo-story.yaml; judged in-memory by
+# Claude. See .claude/skills/agentforce/commands/eval.md.
 
 tests:
+  - name: ConsolidateMemoryConflict
+    description: "Consolidate memory: newer preference wins on conflict"
+    turns:
+      - turn: Store first preference
+        say: remember that I prefer opportunities sorted by Amount descending
+        expect: Confirms storing the preference about sorting opportunities by Amount descending
 
-  - description: "Consolidate memory: newer preference wins on conflict"
-    vars:
-      promptTemplateName: ConsolidateMemory
-      consolidatedMemory: "User prefers opportunities sorted by Amount descending"
-      newMemory: "User now wants opportunities sorted by CloseDate ascending"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "The consolidated result sorts opportunities by CloseDate, not Amount — newer preference wins"
+      - turn: Store conflicting preference
+        say: now I want opportunities sorted by CloseDate ascending
+        expect: Confirms storing the new sort preference
 
-  - description: "Deduplication of identical memories"
-    vars:
-      promptTemplateName: ConsolidateMemory
-      consolidatedMemory: "User wants Amount and CloseDate when viewing opportunities"
-      newMemory: "Show Amount and CloseDate for opportunities"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Contains only one entry about Amount and CloseDate for opportunities, not two duplicates"
+      - turn: Recall stored preferences
+        say: show me my stored preferences
+        expect: The consolidated result sorts opportunities by CloseDate, not Amount — newer preference wins
 
-  # ── AnswerFromFile ────────────────────────────────────────────────
+  - name: ConsolidateMemoryDeduplication
+    description: Deduplication of identical memories
+    turns:
+      - turn: Store preference
+        say: remember that I want Amount and CloseDate when viewing opportunities
+        expect: Confirms storing the preference about showing Amount and CloseDate
 
-  - description: "Extract total contract value from NDA"
-    vars:
-      promptTemplateName: AnswerFromFile
-      userQuestion: "What is the total contract value and how is it split across phases?"
-      file: "{{env.CONTENT_DOCUMENT_ID}}"
-      sobjectInputs:
-        file: "SOBJECT://ContentDocument"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Mentions $500,000 total and references the three phases: $75,000 for Discovery, $250,000 for Implementation, $175,000 for Rollout"
+      - turn: Store same preference rephrased
+        say: Show Amount and CloseDate for opportunities
+        expect: Confirms storing the preference (or recognizes it already exists)
+
+      - turn: Recall stored preferences
+        say: show me my stored preferences
+        expect: Contains only one entry about Amount and CloseDate for opportunities, not two duplicates
+
+  - name: AnswerFromFileContractValue
+    description: Extract total contract value from the proposal PDF
+    turns:
+      - turn: Extract contract value and phase split
+        say: the Acme Q1 Expansion Deal has a PDF file attached, what is the total contract value and how is it split across phases?
+        expect: 'Mentions $500,000 total and references the three phases: $75,000 for Discovery, $250,000 for Implementation, $175,000 for Rollout'
