@@ -10,7 +10,7 @@ sf project deploy start \
 
 # Testing Strategy
 
-Everything lives in `agent-eval/`. Three test layers, zero overlap:
+Everything lives in `agent-eval/`. Two test layers:
 
 ## Testing Center (single-turn regression)
 
@@ -30,32 +30,25 @@ wait
 
 Parsing + retry logic is in `.claude/skills/agentforce/commands/eval.md`.
 
-## Multi-turn agent regression (REST)
+## Multi-turn agent tests (REST)
 
-`agent-eval/regression.test.yaml` — single YAML, all multi-turn scenarios. Driven over the in-org Invocable Action endpoint (`/services/data/vXX.X/actions/custom/generateAiAgentResponse/MyOrgButler`) via `sf api request rest`, judged by Claude in-memory against each `expect`. No Apex template, no transcript-record persistence, no Connected App. Includes the conference demo (`SalesRepMondayMorning`) as a multi-turn entry.
+Two YAMLs in `agent-eval/`:
+
+- `demo-story.yaml` — the conference demo, automated. One coherent multi-turn conversation (`SalesRepMondayMorning`) chaining actions into a sales-rep workflow.
+- `prompt-regression.yaml` — smoke tests that exercise specific prompt templates (`ConsolidateMemory`, `AnswerFromFile`) through the agent.
+
+Per-action regression already lives in the Testing Center XML; this layer covers what single-turn can't capture (multi-turn flows, prompt-template behaviors that need a real session).
+
+Driven over the in-org Invocable Action endpoint (`/services/data/vXX.X/actions/custom/generateAiAgentResponse/MyOrgButler`) via `sf api request rest`, judged by Claude in-memory against each `expect`. No Apex template, no transcript-record persistence, no Connected App.
 
 Runner details + spec format in `.claude/skills/agentforce/commands/eval.md` → "Multi-turn agent tests (REST)".
 
-## Promptfoo Prompt Tests (template isolation)
-
-`agent-eval/prompt-regression.yaml` — smoke test for the prompt template provider via Generations REST API.
-
-```
-cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env
-```
-
 ## LLM Judge
 
-Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center + Promptfoo use `gpt-4o-mini`. Multi-turn REST tests use Claude (this conversation).
+Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses its built-in `gpt-4o-mini`-class judge; multi-turn REST tests use Claude (this conversation).
 
-## .env
+# Current State (2026-04-30)
 
-Two values: `OPENAI_API_KEY` (LLM judge for Testing Center / Promptfoo) and `CONTENT_DOCUMENT_ID` (sample file).
-
-# Current State (2026-04-29)
-
-Testing Center suite is a single `Regression` definition with 14 cases. Parallel run of 2 passes completes in a few minutes without tripping the 10-job concurrency cap.
-
-Multi-turn agent tests migrated from anonymous Apex (with sObject-persisted transcript) to direct REST (`sf api request rest` against the `generateAiAgentResponse` invocable action). All 14 single-turn tests + the 7-turn `SalesRepMondayMorning` demo now live in one `agent-eval/regression.test.yaml`. Apex template and per-test YAML files are gone.
+Testing Center suite: single `Regression` definition with 14 cases; 2 parallel passes complete in a few minutes without tripping the 10-job concurrency cap.
 
 **Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — test-suite shape / flakiness tracker. Data Cloud routing (SearchDataLibrary, QueryDataCloud) remains the one intermittent case. Done criteria: multiple consecutive clean runs.

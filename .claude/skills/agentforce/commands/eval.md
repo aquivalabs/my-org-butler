@@ -1,11 +1,10 @@
 # /agentforce eval — Regression Testing
 
-Run regression tests against agents and prompt templates.
+Run regression tests against the agent.
 
-Three test systems, distinct purposes:
-- **Testing Center** — per-action single-turn regression (on-platform, `sf agent test run`)
-- **Apex-based agent tests** — multi-turn conversations against a deployed agent, judged by Claude
-- **Prompt template tests** — single-prompt evals via Promptfoo + the Generations API (`npx promptfoo@latest eval`)
+Two layers, distinct purposes:
+- **Testing Center** — per-action single-turn regression with topic + action assertions (on-platform, `sf agent test run`)
+- **REST agent tests** — multi-turn conversations against the deployed agent over the in-org Invocable Action REST endpoint, judged by Claude
 
 ---
 
@@ -106,7 +105,11 @@ Goal: 100% on all three, across all files.
 
 ## Multi-turn agent tests (REST)
 
-All scenarios live in **one** YAML: `agent-eval/regression.test.yaml`. Each entry has plain-English `expect` criteria. Claude drives the agent over the in-org Invocable Action REST endpoint, keeps the transcript in memory, and judges each turn against `expect`.
+Multi-turn agent specs live in `agent-eval/`:
+- `demo-story.yaml` — the conference demo workflow.
+- `prompt-regression.yaml` — smoke tests that exercise specific prompt templates (`ConsolidateMemory`, `AnswerFromFile`) through the agent.
+
+Each entry has plain-English `expect` criteria. Claude drives the agent over the in-org Invocable Action REST endpoint, keeps the transcript in memory, and judges each turn against `expect`.
 
 Why this endpoint: the `generateAiAgentResponse` invocable action is exposed at `/services/data/vXX.X/actions/custom/generateAiAgentResponse/<AgentApiName>`. `sf api request rest` hits it with the CLI's existing org auth — no Connected App, no JWT, no api.salesforce.com. Returns `sessionId` + `agentResponse` directly as JSON. Multi-turn works by passing the `sessionId` back into the next call.
 
@@ -114,26 +117,24 @@ What it can't observe: planner trace (which topic routed, which actions invoked)
 
 ### Spec format
 
+Each test has a `name`, a top-level `description` summarizing the scenario, and a `turns:` list. All turns in a test share one agent session — context carries via the returned `sessionId`. Use this layer for scenarios that single-turn Testing Center cases can't capture; per-action regression stays in `Regression.aiEvaluationDefinition-meta.xml`.
+
 ```yaml
 agent: MyOrgButler
 
 tests:
-  # Single-turn shortcut
-  - name: CallRestApi
-    say: 'use the REST API to create a new Task with Subject "Call Burlington"'
-    expect: Confirms a Task record was created with subject containing Call Burlington
-
-  # Multi-turn — all turns share one agent session
   - name: SalesRepMondayMorning
-    description: Sales rep Monday-morning workflow
+    description: "MyOrgButler Demo — A Sales Rep's Monday Morning"
     turns:
-      - say: which opportunity should I work on next?
+      - turn: 'Prioritize: what needs my attention?'
+        say: which opportunity should I work on next?
         expect: Recommends the Acme Q1 Expansion Deal as top priority
-      - say: create a task to call Acme about the discount
+      - turn: 'Act: create the follow-up'
+        say: create a task to call Acme about the discount
         expect: Confirms a task was created on the Acme opportunity, mentions VP approval or discount
 ```
 
-`expect` is plain English — Claude grades the agent's reply against it. No substring matching. Per-test `name` should match the action being probed; it's also how the runner reports pass/fail.
+`expect` is plain English — Claude grades the agent's reply against it. No substring matching. Per-turn `turn` is a short label that surfaces in the run output and helps disambiguate failures.
 
 ### Running one test
 
@@ -165,7 +166,7 @@ resp=$(sf api request rest -o "$ORG" \
 
 ### Running the full suite
 
-Each test in `regression.test.yaml` is independent (its own session). Run them in parallel:
+Each test (across both `demo-story.yaml` and `prompt-regression.yaml`) is independent (its own session). Run them in parallel:
 
 ```bash
 mkdir -p /tmp/ae && rm -f /tmp/ae/*.txt
@@ -202,67 +203,13 @@ Re-activate with `sf agent activate -o my-org-butler_DEV -n MyOrgButler`.
 
 ---
 
-## Prompt template tests
-
-Single-prompt evals via Promptfoo + the Einstein Generations API.
-
-```bash
-cd agent-eval && npx promptfoo@latest eval -c prompt-regression.yaml --env-file .env --output /tmp/prompt-results.json
-```
-
-### Reading results
-
-```bash
-python3 -c "
-import json
-data = json.load(open('/tmp/prompt-results.json'))
-results = data.get('results', {}).get('results', [])
-for r in results:
-    desc = r.get('description', r.get('vars', {}).get('promptTemplateName', '?'))[:60]
-    passed = r.get('success', False)
-    if not passed:
-        failures = [a.get('reason','?') for a in r.get('gradingResult',{}).get('componentResults',[]) if not a.get('pass')]
-        print(f'FAIL: {desc}')
-        for f in failures:
-            print(f'      {f[:120]}')
-    else:
-        print(f'PASS: {desc}')
-"
-```
-
-### Test format
-
-Each test specifies `promptTemplateName` and the template's input variables. For SObject inputs, declare the type via `sobjectInputs`.
-
-```yaml
-providers:
-  - id: "file://../.claude/skills/agentforce/providers/sf-generations-api.mjs"
-    label: "Einstein Generations API"
-
-tests:
-  - description: "Summarize attached document"
-    vars:
-      promptTemplateName: AnswerFromFile
-      userQuestion: "Give me a TL;DR of this document"
-      file: "${CONTENT_DOCUMENT_ID}"
-      sobjectInputs:
-        file: "SOBJECT://ContentDocument"
-    assert:
-      - type: javascript
-        value: "output.success === true"
-      - type: llm-rubric
-        value: "Provides a concise summary of the document content"
-```
-
----
-
 ## Key differences
 
-| Capability                | Testing Center          | REST agent tests                | Prompt template tests          |
-|---------------------------|-------------------------|---------------------------------|--------------------------------|
-| Multi-turn conversations  | Fake (injected history) | Real (one in-org session)       | N/A — single prompt            |
-| Per-turn assertions       | Final turn only         | Every turn                      | N/A                            |
-| Topic / action assertions | Yes                     | No (planner trace not emitted)  | N/A                            |
-| Response quality judge    | SF built-in, opaque     | Claude (this conversation)      | Your choice (gpt-4o, etc.)     |
-| External dependencies     | None                    | None (uses CLI org auth)        | Node.js, Promptfoo, OpenAI key |
-| Test format               | XML, deploy to test     | One YAML, run from CLI          | YAML, run from CLI             |
+| Capability                | Testing Center          | REST agent tests                |
+|---------------------------|-------------------------|---------------------------------|
+| Multi-turn conversations  | Fake (injected history) | Real (one in-org session)       |
+| Per-turn assertions       | Final turn only         | Every turn                      |
+| Topic / action assertions | Yes                     | No (planner trace not emitted)  |
+| Response quality judge    | SF built-in, opaque     | Claude (this conversation)      |
+| External dependencies     | None                    | None (uses CLI org auth)        |
+| Test format               | XML, deploy to test     | One YAML, run from CLI          |
