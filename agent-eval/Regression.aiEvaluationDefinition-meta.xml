@@ -61,14 +61,14 @@
     </testCase>
     <testCase>
         <number>10</number>
-        <inputs><utterance>what's the name of the document indexed in our knowledge library?</utterance></inputs>
+        <inputs><utterance>run a data cloud query to find the source filename of our indexed PDF document</utterance></inputs>
         <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue></expectation>
-        <expectation><name>bot_response_rating</name><expectedValue>Returns a filename Policy PDF</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Returns 'policy.pdf' as the source filename</expectedValue></expectation>
     </testCase>
     <testCase>
         <number>11</number>
-        <inputs><utterance>which deal should I focus on this week?</utterance></inputs>
-        <expectation><name>actions_assertion</name><expectedValue>['QueryRecordsWithSoql']</expectedValue></expectation>
+        <inputs><utterance>which deal should I focus on? which is most urgent?</utterance></inputs>
+        <expectation><name>actions_assertion</name><expectedValue>['LoadCustomInstructions', 'QueryRecordsWithSoql']</expectedValue></expectation>
         <expectation><name>bot_response_rating</name><expectedValue>Recommends the Acme Q1 Expansion Deal as the opportunity to focus on</expectedValue></expectation>
     </testCase>
     <testCase>

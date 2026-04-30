@@ -58,7 +58,7 @@ Opportunity acmeExpansion = new Opportunity(
     AccountId = acme.Id,
     Amount = 500000,
     StageName = 'Negotiation',
-    CloseDate = Date.today().addDays(3),
+    CloseDate = Date.today().addDays(30),
     Description = 'Critical deal for Q1 targets, requires executive follow-up. Customer ready to sign.'
 );
 insert acmeExpansion;
@@ -69,7 +69,7 @@ Opportunity burlingtonDeal = new Opportunity(
     AccountId = burlington.Id,
     Amount = 235000,
     StageName = 'Id. Decision Makers',
-    CloseDate = Date.today().addDays(60),
+    CloseDate = Date.today().addDays(120),
     Description = 'Generator installation for new weaving plant expansion.'
 );
 insert burlingtonDeal;
@@ -85,7 +85,7 @@ Opportunity starkLlm = new Opportunity(
     AccountId = stark.Id,
     Amount = 320000,
     StageName = 'Proposal',
-    CloseDate = Date.today().addDays(45),
+    CloseDate = Date.today().addDays(90),
     Description = 'Large language model operations platform for automating internal workflows. Includes GPT-based document processing, neural network inference pipelines, and machine learning model deployment.'
 );
 insert starkLlm;
@@ -95,7 +95,7 @@ Opportunity acmeAi = new Opportunity(
     AccountId = acme.Id,
     Amount = 200000,
     StageName = 'Negotiation',
-    CloseDate = Date.today().addDays(10),
+    CloseDate = Date.today().addDays(90),
     Description = 'Annual renewal of the Acme artificial intelligence and machine learning platform. Covers predictive analytics, natural language processing, and computer vision modules.'
 );
 insert acmeAi;
