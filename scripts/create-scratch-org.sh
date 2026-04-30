@@ -90,6 +90,9 @@ echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
 echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
 
+echo "Running Apex Tests"
+sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
+
 echo ""
 echo "============================================"
 echo " MANUAL SETUP REQUIRED"
@@ -99,9 +102,6 @@ echo "============================================"
 echo ""
 sf org open
 read -p "Press Enter when done (or to skip)..."
-
-echo "Running Apex Tests"
-sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 
 echo "Waiting for Data Library chunks..."
 until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
