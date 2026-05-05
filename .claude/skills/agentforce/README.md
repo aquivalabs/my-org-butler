@@ -16,7 +16,7 @@ Test and deploy Agentforce agents.
 
 ## Real agent conversations
 
-Multi-turn with real session state. The agent actually responds at each turn — no scripted history. Driven by `sf api request rest` against `/services/data/vXX.X/actions/custom/generateAiAgentResponse/<agent>`, with `sessionId` round-tripped between turns. Judged in-memory by Claude.
+Multi-turn with real session state. The agent actually responds at each turn — no scripted history. `run.mjs` handles the REST calls, `sessionId` chaining, and response unwrapping; Claude judges each turn's reply against its plain-English `expect`.
 
 ```yaml
 agent: MyOrgButler
