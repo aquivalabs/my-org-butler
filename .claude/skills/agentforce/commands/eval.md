@@ -110,15 +110,17 @@ Multi-turn agent specs live in `agent-eval/`:
 - `demo-story.yaml` — the conference demo workflow.
 - `prompt-regression.yaml` — smoke tests that exercise specific prompt templates (`ConsolidateMemory`, `AnswerFromFile`) through the agent.
 
-Each entry has plain-English `expect` criteria. Claude drives the agent over the in-org Invocable Action REST endpoint, keeps the transcript in memory, and judges each turn against `expect`.
+Split of responsibilities:
+- **Mechanical work** — REST calls, session chaining, `agentResponse.value` unwrap, parallelism, transcript capture — handled by `.claude/skills/agentforce/run.mjs`.
+- **Judgment** — grading each turn's reply against its plain-English `expect` — handled by Claude in this conversation.
 
-Why this endpoint: the `generateAiAgentResponse` invocable action is exposed at `/services/data/vXX.X/actions/custom/generateAiAgentResponse/<AgentApiName>`. `sf api request rest` hits it with the CLI's existing org auth — no Connected App, no JWT, no api.salesforce.com. Returns `sessionId` + `agentResponse` directly as JSON. Multi-turn works by passing the `sessionId` back into the next call.
+Why this endpoint: the `generateAiAgentResponse` invocable action is exposed at `/services/data/vXX.X/actions/custom/generateAiAgentResponse/<AgentApiName>`. `sf api request rest` hits it with the CLI's existing org auth — no Connected App, no JWT, no api.salesforce.com. Multi-turn works by passing the returned `sessionId` back into the next call.
 
-What it can't observe: planner trace (which topic routed, which actions invoked). That data lives in Data Cloud DLM tables; the `ConversationDefinitionEventLog` only captures dialog-level events with sensitive fields redacted. Topic/action assertions stay in Testing Center.
+What this layer can't observe: planner trace (which topic routed, which actions invoked). That data lives in Data Cloud DLM tables; the `ConversationDefinitionEventLog` only captures dialog-level events with sensitive fields redacted. Topic/action assertions stay in Testing Center.
 
 ### Spec format
 
-Each test has a `name`, a top-level `description` summarizing the scenario, and a `turns:` list. All turns in a test share one agent session — context carries via the returned `sessionId`. Use this layer for scenarios that single-turn Testing Center cases can't capture; per-action regression stays in `Regression.aiEvaluationDefinition-meta.xml`.
+Each test has a `name`, a top-level `description`, and a `turns:` list. All turns in a test share one agent session — context carries via the returned `sessionId`. Use this layer for scenarios that single-turn Testing Center cases can't capture; per-action regression stays in `Regression.aiEvaluationDefinition-meta.xml`.
 
 ```yaml
 agent: MyOrgButler
@@ -135,56 +137,62 @@ tests:
         expect: Confirms a task was created on the Acme opportunity, mentions VP approval or discount
 ```
 
-`expect` is plain English — Claude grades the agent's reply against it. No substring matching. Per-turn `turn` is a short label that surfaces in the run output and helps disambiguate failures.
+A test can also be single-turn (`say`/`expect` at the test level instead of `turns:`). `expect` is plain English — graded by Claude, not substring-matched. The runner's mini YAML parser only handles this subset (quoted or plain scalars, the `tests`/`turns` shape); don't introduce anchors, multi-line scalars, or merge keys.
 
-### Running one test
-
-```bash
-ORG=my-org-butler_DEV
-AGENT=MyOrgButler
-SESSION=""
-
-# Turn 1
-body=$(jq -n --arg msg "$utterance" '{inputs:[{userMessage:$msg}]}')
-resp=$(sf api request rest -o "$ORG" \
-  "/services/data/v66.0/actions/custom/generateAiAgentResponse/$AGENT" \
-  -X POST -H "Content-Type:application/json" -b "-" <<<"$body")
-
-SESSION=$(jq -r '.[0].outputValues.sessionId' <<<"$resp")
-text=$(jq -r '.[0].outputValues.agentResponse | fromjson | .value // .' <<<"$resp")
-ok=$(jq -r '.[0].isSuccess' <<<"$resp")
-err=$(jq -r '.[0].errors // empty' <<<"$resp")
-
-# Turn 2 (and subsequent) — pass sessionId back
-body=$(jq -n --arg msg "$next" --arg sid "$SESSION" \
-  '{inputs:[{userMessage:$msg, sessionId:$sid}]}')
-resp=$(sf api request rest -o "$ORG" \
-  "/services/data/v66.0/actions/custom/generateAiAgentResponse/$AGENT" \
-  -X POST -H "Content-Type:application/json" -b "-" <<<"$body")
-```
-
-`agentResponse` is wrapped as `{"type":"Text","value":"..."}` — unwrap to `.value` for judging. If unwrap fails, fall back to the raw string (some action errors come through unwrapped).
-
-### Running the full suite
-
-Each test (across both `demo-story.yaml` and `prompt-regression.yaml`) is independent (its own session). Run them in parallel:
+### Running
 
 ```bash
-mkdir -p /tmp/ae && rm -f /tmp/ae/*.txt
-# Iterate spec.tests[]: for each test, drive its turns over REST,
-# write the in-memory transcript to /tmp/ae/<name>.txt as it goes.
-# Background each test with & and `wait` for all to finish.
+node .claude/skills/agentforce/run.mjs agent-eval/demo-story.yaml --org my-org-butler_DEV
+node .claude/skills/agentforce/run.mjs agent-eval/prompt-regression.yaml --org my-org-butler_DEV
 ```
 
-Then walk each transcript and grade against the corresponding `expect` strings. Print:
+Both can run in parallel (each test has its own session, no cross-spec coupling):
+
+```bash
+mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
+node .claude/skills/agentforce/run.mjs agent-eval/demo-story.yaml --org my-org-butler_DEV &
+node .claude/skills/agentforce/run.mjs agent-eval/prompt-regression.yaml --org my-org-butler_DEV &
+wait
+```
+
+Flags: `--out <dir>` (default `/tmp/ae`), `--concurrency <N>` (default 4 — parallelism *within* a single spec), `--api-version <vXX.X>` (default `v66.0`).
+
+### Output
+
+One JSON transcript per test at `/tmp/ae/<test-name>.json`:
+
+```json
+{
+  "name": "SalesRepMondayMorning",
+  "description": "...",
+  "agent": "MyOrgButler",
+  "sessionId": "af54...",
+  "turns": [
+    {
+      "turn": "Prioritize: what needs my attention?",
+      "say": "which opportunity should I work on next?",
+      "expect": "Recommends the Acme Q1 Expansion Deal as top priority",
+      "isSuccess": true,
+      "errors": null,
+      "reply": "...the agent's unwrapped reply...",
+      "rawAgentResponse": "{\"type\":\"Text\",\"value\":\"...\"}",
+      "elapsedMs": 8234
+    }
+  ]
+}
+```
+
+Runner exit code: non-zero if any test had a REST-level failure (`isSuccess=false` or `sf` crashed). Note that a REST-level pass doesn't mean the reply meets the `expect` — that's the judging step.
+
+### Judging
+
+Read each `/tmp/ae/<name>.json`, walk `turns`, and grade `reply` against `expect` per turn. Surface `errors` verbatim. Print the table:
 
 ```
-CallRestApi              PASS  Task record returned with subject Call Burlington.
-QueryRecordsWithSoql     FAIL  Listed 5 opportunities but didn't single out Acme.
-SalesRepMondayMorning    PASS  All 7 turns met expectations.
+SalesRepMondayMorning           PASS  All 7 turns met expectations.
+ConsolidateMemoryConflict       FAIL  Turn 3 returned the older Amount-sort preference, not CloseDate.
+AnswerFromFileContractValue     PASS  Mentions $500K total and the three phase amounts.
 ```
-
-Surface `errors` from the response verbatim — the JSON is descriptive.
 
 ### Prerequisites
 
