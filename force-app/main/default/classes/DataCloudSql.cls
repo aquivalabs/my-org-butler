@@ -1,3 +1,4 @@
+// Note: ApexSuggestUsingNamedCred is a false positive — this class calls the org's own Data Cloud endpoint using the running user's session token, not an external named credential.
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
 public with sharing class DataCloudSql {
 
@@ -9,7 +10,6 @@ public with sharing class DataCloudSql {
 
     public static String query(String sql) {
 
-        System.debug('sql >>' + sql);
         if (Test.isRunningTest() && mockedResponse != null) {
             return mockedResponse;
         }
