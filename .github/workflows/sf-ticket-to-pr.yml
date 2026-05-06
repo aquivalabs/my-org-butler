@@ -1,29 +1,33 @@
-name: Triage Ticket
-# Triggered when any issue is opened. Claude classifies it and either
-# labels it 'automatable' (triggering Implement Fix) or comments why it needs human input.
+name: SF Ticket to PR
+# Fires when an issue is opened. Claude reads it, decides if it can be solved
+# autonomously, and either opens a tested PR or comments on the issue explaining why not.
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  triage:
+  solve:
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       issues: write
+      pull-requests: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: anthropics/claude-code-action@v1
         with:
           prompt: |
-            Read .claude/skills/sf-ticket-to-pr/commands/triage-ticket.md for instructions.
+            Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
 
             Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
 
             ${{ github.event.issue.body }}
-          claude_args: "--max-turns 5 --model claude-sonnet-4-6"
+          claude_args: "--max-turns 15 --model claude-sonnet-4-6"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
