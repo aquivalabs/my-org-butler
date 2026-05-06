@@ -9,8 +9,16 @@ A GitHub issue arrives. You ship a PR that fixes it, or you comment on the issue
 explaining why you can't.
 
 You are done **only** when `gh pr create` returns a URL, OR when
-`gh issue comment` has posted a clear stop-reason. Anything in between is
-incomplete work.
+`gh issue comment` has posted a clear stop-reason. Anything else is incomplete.
+
+## Preconditions (already done by the workflow before you start)
+
+- Branch `ai/issue-<number>` is checked out — you're already on it.
+- A scratch org is fully provisioned with all source deployed and Apex tests passing.
+- DevHub auth and SF CLI are ready.
+
+You only need to: read the affected file(s), write the fix, deploy + test it,
+commit, push, and open the PR.
 
 ## Step 1 — Decide
 
@@ -26,32 +34,17 @@ Stop format:
 
     gh issue comment <number> --body "<one paragraph: what is missing or what kind of change is needed>"
 
-## Step 2 — Branch and code
+## Step 2 — Code
 
 Touch only `force-app/main/default/classes/` and `force-app/main/default/lwc/`.
 Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
-
-    git checkout -b ai/issue-<number>
 
 Read each file you will change in full before editing. Then write the fix and
 update or add the test class.
 
 ## Step 3 — Verify
 
-### 3a — Provision the scratch org (run ONCE per session)
-
-    HEADLESS=true ./scripts/create-scratch-org.sh
-
-The script creates the org, deploys everything, assigns permsets, activates the
-agent, seeds data, and runs all Apex tests. Read the tail of its output:
-tests must pass.
-
-If the script fails, fix the code and go to 3b. **Do not re-run the full
-script** — provisioning takes minutes and you only need to redeploy your file.
-
-### 3b — Iterate
-
-After 3a the source files are namespaced again. To redeploy a single changed file:
+Redeploy the changed file (the script already deployed everything else):
 
     sed -i 's/aquiva_os__//g' force-app/main/default/classes/<File>.cls && \
       sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
@@ -71,7 +64,7 @@ Run the analyzer on the file you changed:
 own only the lines you touched. Findings on lines you did not change are
 pre-existing — ignore them. Do not investigate or fix them.
 
-Repeat 3b until tests pass and the analyzer reports no new findings on lines
+Repeat until tests pass and the analyzer reports no new findings on lines
 you touched.
 
 ## Step 4 — Ship (mandatory)
@@ -89,6 +82,6 @@ you touched.
 
 ## Anti-patterns
 
-- Re-running `create-scratch-org.sh` after iteration — wasteful, several minutes each time.
 - Investigating PMD findings on lines you did not touch.
+- Calling `create-scratch-org.sh` — the workflow already provisioned the org.
 - Stopping after a green test run without `git push` and `gh pr create`.
