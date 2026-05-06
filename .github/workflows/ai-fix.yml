@@ -3,21 +3,10 @@ name: AI Fix
 on:
   issues:
     types: [labeled]
-  workflow_dispatch:
-    inputs:
-      issue_number:
-        description: Issue number
-        required: true
-      issue_title:
-        description: Issue title
-        required: true
-      issue_body:
-        description: Issue body
-        required: false
 
 jobs:
   triage:
-    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'ai-fix'
+    if: github.event.label.name == 'ai-fix'
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -33,9 +22,9 @@ jobs:
             Write your final decision as exactly one word (AUTOMATABLE, NEEDS_INFO, or NEEDS_HUMAN)
             to the file /tmp/triage-decision.txt — nothing else in that file.
 
-            Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
+            Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
 
-            ${{ github.event.issue.body || inputs.issue_body }}
+            ${{ github.event.issue.body }}
           claude_args: "--max-turns 3 --model claude-sonnet-4-6"
           timeout_minutes: 5
         env:
@@ -67,9 +56,9 @@ jobs:
           prompt: |
             Read .claude/skills/ai-maintenance/commands/implement.md for instructions.
 
-            Fix issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
+            Fix issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
 
-            ${{ github.event.issue.body || inputs.issue_body }}
+            ${{ github.event.issue.body }}
           claude_args: "--max-turns 10 --model claude-sonnet-4-6"
           timeout_minutes: 20
         env:
