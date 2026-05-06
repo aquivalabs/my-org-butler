@@ -49,55 +49,38 @@ Steps:
 2. Read the affected file(s) in full before changing anything
 3. Write the fix and update or create the test class
 
-## Step 3 — Verify in scratch org (iterate until clean)
+## Step 3 — Verify in scratch org
 
-This step is a loop. Keep iterating until Apex tests pass AND the code analyzer is clean.
+### 3a — Create and provision the scratch org
 
-### 3a — Create scratch org
-
-```bash
-sf org create scratch \
-  --alias ci-fix-<number> \
-  --set-default \
-  --definition-file ./config/project-scratch-def.json \
-  --duration-days 1 \
-  --no-namespace
-```
-
-### 3b — Strip namespace from source (Linux sed — no quotes after -i)
+Use the same script humans use, in headless mode:
 
 ```bash
-sed -i 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/' sfdx-project.json
-find force-app -type f \( -name "*.cls" -o -name "*.xml" \) \
-  -exec sed -i 's/aquiva_os__//g; s/aquiva_os\.//g' {} +
+HEADLESS=true ./scripts/create-scratch-org.sh
 ```
 
-### 3c — Deploy only the files you changed
+This creates the scratch org, deploys `force-app` + `unpackaged` + `agent-eval` (with namespace stripping), assigns permsets, activates the agent, creates sample data, and runs all Apex tests. It skips the manual setup, Data Library wait, and Regression suite — those need a human and aren't useful here.
 
-Never deploy `--source-dir force-app`. List each file explicitly:
+If the script fails, read the error, fix the code, and re-run only what's needed (don't rebuild the org from scratch — see 3b).
+
+### 3b — Iterate (deploy → test → analyze → fix)
+
+After the script completes, the source is back to its namespaced form. To redeploy a single changed file:
 
 ```bash
-sf project deploy start \
-  --source-dir force-app/main/default/classes/Foo.cls \
-  --source-dir force-app/main/default/classes/Foo_Test.cls \
-  --concise
+# Strip namespace, deploy, restore
+sed -i 's/aquiva_os__//g; s/aquiva_os\.//g' force-app/main/default/classes/<ChangedFile>.cls
+sf project deploy start --source-dir force-app/main/default/classes/<ChangedFile>.cls --concise
+git checkout -- force-app/main/default/classes/<ChangedFile>.cls
 ```
 
-If the deploy fails due to a compilation error, fix the code and redeploy.
-
-### 3d — Run Apex tests
+Then run tests:
 
 ```bash
-sf apex run test \
-  --test-level RunLocalTests \
-  --wait 30 \
-  --code-coverage \
-  --result-format human
+sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
 ```
 
-If tests fail: read the failure output, fix the code, redeploy (3c), rerun tests (3d).
-
-### 3e — Run code analyzer
+Then run the code analyzer on the changed file:
 
 ```bash
 sf code-analyzer run \
@@ -106,18 +89,16 @@ sf code-analyzer run \
   --target force-app/main/default/classes/<ChangedFile>.cls
 ```
 
-Review `/tmp/code-analyzer.csv`. For each violation:
-- Fix the code if it is a real issue
-- If it is a false positive, suppress with a `// Note:` comment explaining why
-- Redeploy (3c), rerun tests (3d), rerun analyzer (3e)
+For each violation in `/tmp/code-analyzer.csv`:
+- Real issue → fix the code
+- False positive → suppress with `@SuppressWarnings(...)` and a `// Note:` comment explaining why
 
-Repeat until `code-analyzer.csv` is empty or contains only known acceptable suppressions.
+Repeat until tests pass AND the analyzer is clean.
 
-### 3f — Restore source and delete scratch org
+### 3c — Tear down
 
 ```bash
-git checkout -- sfdx-project.json force-app/
-sf org delete scratch --no-prompt --target-org ci-fix-<number>
+sf org delete scratch --no-prompt --target-org my-org-butler_DEV
 ```
 
 ## Step 4 — Open the PR

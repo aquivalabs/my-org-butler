@@ -21,6 +21,10 @@ jobs:
   fix-issue:
     name: "Fix #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}"
     runs-on: ubuntu-latest
+    env:
+      # Tells create-scratch-org.sh to skip the "set DevHub by alias" + "delete old scratch org" branch.
+      # Auth is already done in the workflow step below; the value just needs to be non-empty.
+      DEV_HUB_URL: set
     permissions:
       contents: write
       issues: write

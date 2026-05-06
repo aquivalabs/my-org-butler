@@ -31,6 +31,10 @@
       "Bash(rm:*)",
       "Bash(curl:*)",
       "Bash(node:*)",
+      "Bash(./scripts/create-scratch-org.sh:*)",
+      "Bash(HEADLESS=true ./scripts/create-scratch-org.sh:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
       "WebFetch(domain:agentforce.guide)",
       "WebFetch(domain:developer.salesforce.com)"
     ],
