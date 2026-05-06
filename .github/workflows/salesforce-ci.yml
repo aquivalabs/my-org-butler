@@ -1,0 +1,68 @@
+name: Salesforce CI
+
+on:
+  pull_request:
+    paths:
+      - 'force-app/**'
+      - 'unpackaged/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Authenticate Dev Hub
+        run: |
+          echo "${{ secrets.SFDX_AUTH_URL }}" | sf org login sfdx-url --sfdx-url-stdin -a devhub --set-default-dev-hub
+
+      - name: Create scratch org
+        run: |
+          sf org create scratch \
+            --definition-file config/project-scratch-def.json \
+            --alias ci-org \
+            --no-namespace \
+            --duration-days 1 \
+            --set-default \
+            --wait 20
+
+      - name: Set org language and assign permissions
+        run: |
+          sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US" --target-org ci-org
+          sf org assign permset --name EinsteinGPTPromptTemplateManager --name AgentPlatformBuilder --target-org ci-org
+
+      - name: Deploy no-namespace shims
+        run: sf project deploy start --source-dir no-namespace --target-org ci-org --concise
+
+      - name: Strip namespace from source
+        # Workspace is ephemeral — no need to restore afterwards
+        run: |
+          sed -i 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/g' sfdx-project.json
+          find force-app unpackaged -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) \
+            -exec sed -i 's/aquiva_os__//g; s/aquiva_os\.//g' {} +
+
+      - name: Deploy force-app
+        run: sf project deploy start --source-dir force-app --target-org ci-org --concise --ignore-conflicts
+
+      - name: Deploy unpackaged
+        run: sf project deploy start --source-dir unpackaged --target-org ci-org --concise --ignore-conflicts
+
+      - name: Run Apex tests
+        run: |
+          sf apex run test \
+            --target-org ci-org \
+            --test-level RunLocalTests \
+            --code-coverage \
+            --result-format human \
+            --wait 30
+
+      - name: Delete scratch org
+        if: always()
+        run: sf org delete scratch --target-org ci-org --no-prompt
