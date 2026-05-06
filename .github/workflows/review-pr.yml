@@ -1,0 +1,31 @@
+name: Review PR
+# Triggered when a human opens a PR touching Salesforce code.
+# Claude reads the diff and posts a review comment — does not approve or merge.
+
+on:
+  pull_request:
+    types: [opened]
+    paths:
+      - 'force-app/**'
+
+jobs:
+  review:
+    if: "!startsWith(github.head_ref, 'ai/issue-')"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Read .claude/skills/sf-ticket-to-pr/commands/review-pr.md for instructions.
+
+            Review PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+          claude_args: "--max-turns 5 --model claude-sonnet-4-6"
+          timeout_minutes: 10
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

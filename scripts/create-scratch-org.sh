@@ -88,7 +88,11 @@ sf data create file --file "scripts/proposal.pdf" --title "Acme Q1 Expansion Pro
 
 echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
+if grep -q "^CONTENT_DOCUMENT_ID=" agent-eval/.env 2>/dev/null; then
+  sed -i '' "s/^CONTENT_DOCUMENT_ID=.*/CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}/" agent-eval/.env
+else
+  echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
+fi
 
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
