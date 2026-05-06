@@ -64,3 +64,17 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify deliverable
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: "ai/issue-${{ github.event.issue.number || inputs.issue_number }}"
+        run: |
+          PR=$(gh pr list --repo ${{ github.repository }} --head "$BRANCH" --json number --jq '.[0].number' || echo "")
+          if [ -n "$PR" ]; then
+            echo "::notice::PR #$PR created on $BRANCH"
+            exit 0
+          fi
+          echo "::error::Claude finished without opening a PR on $BRANCH"
+          exit 1
