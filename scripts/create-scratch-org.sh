@@ -17,6 +17,10 @@ sed_inplace() {
 # HEADLESS=true skips steps that require human interaction or a populated Data Library.
 HEADLESS=${HEADLESS:-false}
 
+# retrieval-staging is referenced in sfdx-project.json but git-ignored, so it's
+# missing on a fresh checkout (e.g. CI). Create it so sf commands don't error.
+mkdir -p retrieval-staging
+
 if [ -n "$(git status --porcelain)" ]; then
   echo "ERROR: Working tree is dirty. Commit or stash your changes before running this script."
   exit 1
