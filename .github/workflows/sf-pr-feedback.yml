@@ -1,0 +1,70 @@
+name: SF PR Feedback
+run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_request.number }}"
+# Fires when a reviewer @-mentions claude on an AI-generated PR. Claude reads the
+# feedback, applies the change, deploys + tests if needed, and pushes a commit
+# to the same branch. Provisions a fresh scratch org per iteration — until we
+# ship persistent-org-per-PR (see Issue #67 TODOs).
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  respond:
+    # Only on PRs (issue_comment fires for both PRs and issues), only when
+    # the comment mentions @claude, and not from a bot to avoid loops.
+    if: |
+      (github.event.issue.pull_request != null || github.event_name == 'pull_request_review_comment') &&
+      contains(github.event.comment.body, '@claude') &&
+      github.event.comment.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    env:
+      DEV_HUB_URL: set
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Get PR branch
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+        run: |
+          PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
+          PR_BRANCH=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName --jq '.headRefName')
+          echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_PAT }}
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate DevHub
+        run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
+
+      - name: Provision scratch org and run baseline tests
+        run: HEADLESS=true ./scripts/create-scratch-org.sh
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
+
+            You are responding to feedback on PR #${{ steps.pr.outputs.number }} (branch ${{ steps.pr.outputs.branch }}).
+            The PR is already open — do not open a second one. Just push to the branch.
+
+            Reviewer comment:
+            ${{ github.event.comment.body }}
+          claude_args: "--max-turns 30 --model claude-sonnet-4-6"
+          show_full_output: "true"
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.WORKFLOW_PAT }}

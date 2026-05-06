@@ -1,24 +1,27 @@
 ---
 name: sf-ticket-to-pr
-description: Turns a GitHub issue into a tested pull request — or comments on the issue explaining why it cannot be done autonomously
+description: Turn human words (a GitHub issue or a reviewer comment) into a tested, committed, and PR'd code change
 ---
 
 # SF Ticket to PR
 
-A GitHub issue arrives. You ship a PR that fixes it, or you comment on the issue
-explaining why you can't.
+Human words come in (a freshly opened issue, or a reviewer's comment on an
+existing PR). You turn them into committed code on a branch — opening a PR
+if none exists yet, otherwise pushing to the existing one.
 
-You are done **only** when `gh pr create` returns a URL, OR when
-`gh issue comment` has posted a clear stop-reason. Anything else is incomplete.
+You are done when **either**:
+- A new commit lands on a branch with an open PR (and `gh pr create` ran if
+  the PR didn't exist before), **or**
+- A clear stop-reason has been posted as a comment explaining why you can't.
 
-## Preconditions (already done by the workflow before you start)
+## Preconditions (already done by the workflow)
 
-- Branch `ai/issue-<number>` is checked out — you're already on it.
-- A scratch org is fully provisioned with all source deployed and Apex tests passing.
+- The correct branch is already checked out:
+  - For new issues: a fresh `ai/issue-<N>` branch off `main`
+  - For PR feedback: the PR's existing branch
+- A scratch org is fully provisioned, source deployed, baseline Apex tests passing.
 - DevHub auth and SF CLI are ready.
-
-You only need to: read the affected file(s), write the fix, deploy + test it,
-commit, push, and open the PR.
+- `WORKFLOW_PAT` is wired so `git push` and `gh pr create` succeed.
 
 ## Step 1 — Decide
 
@@ -26,21 +29,26 @@ Stop and comment if any of these are true:
 
 - Schema changes needed (fields, objects, relationships)
 - Flows, Permission Sets, Custom Metadata, or anything in `unpackaged/`
-- Repro steps too vague to act on
+- Repro steps / feedback too vague to act on
 - Cross-component architectural decision required
 - Data Cloud, External Services, Named Credentials, or `config/`/`sfdx-project.json` changes
+- The feedback contradicts the original issue or the existing change
 
-Stop format:
+Stop format — comment on the right place:
 
-    gh issue comment <number> --body "<one paragraph: what is missing or what kind of change is needed>"
+    # For a new issue:
+    gh issue comment <issue-number> --body "<one paragraph>"
+
+    # For PR feedback:
+    gh pr comment <pr-number> --body "<one paragraph>"
 
 ## Step 2 — Code
 
 Touch only `force-app/main/default/classes/` and `force-app/main/default/lwc/`.
 Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
 
-Read each file you will change in full before editing. Then write the fix and
-update or add the test class.
+Read each file you will change in full before editing. Then write the change
+and update or add the test class.
 
 ## Step 3 — Verify
 
@@ -67,21 +75,30 @@ pre-existing — ignore them. Do not investigate or fix them.
 Repeat until tests pass and the analyzer reports no new findings on lines
 you touched.
 
-## Step 4 — Ship (mandatory)
+## Step 4 — Ship
+
+Commit and push:
 
     git add force-app/main/default/classes/<changed files>
-    git commit -m "fix: <short description> (closes #<number>)"
-    git push origin ai/issue-<number>
-    gh pr create \
-      --title "fix: <short description>" \
-      --body "Closes #<number>" \
-      --head ai/issue-<number> \
-      --base main
+    git commit -m "<one short sentence describing the change>"
+    git push
 
-`gh pr create` returning a URL means you are done.
+If a PR for the current branch does **not** yet exist, open one:
+
+    BRANCH=$(git branch --show-current)
+    if [ -z "$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')" ]; then
+      gh pr create \
+        --title "fix: <short description>" \
+        --body "Closes #<issue-number>" \
+        --head "$BRANCH" \
+        --base main
+    fi
+
+If the PR already exists, the push above updates it — no new PR.
 
 ## Anti-patterns
 
+- Opening a second PR when one already exists for the branch.
 - Investigating PMD findings on lines you did not touch.
 - Calling `create-scratch-org.sh` — the workflow already provisioned the org.
-- Stopping after a green test run without `git push` and `gh pr create`.
+- Stopping after a green test run without `git push`.
