@@ -14,6 +14,8 @@
       "Bash(sf package install:*)",
       "Bash(sf config set:*)",
       "Bash(sf api request rest:*)",
+      "Bash(sf code-analyzer run:*)",
+      "Bash(sf apex run test:*)",
       "Bash(gh issue edit:*)",
       "Bash(gh issue comment:*)",
       "Bash(gh pr create:*)",
