@@ -1,4 +1,5 @@
 name: SF Ticket to PR
+run-name: "Ticket #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}"
 # Fires when an issue is opened. Claude reads it, decides if it can be solved
 # autonomously, and either opens a tested PR or comments on the issue explaining why not.
 
@@ -18,8 +19,8 @@ on:
         required: false
 
 jobs:
-  fix-issue:
-    name: "Fix #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}"
+  ticket-to-pr:
+    name: ticket-to-pr
     runs-on: ubuntu-latest
     env:
       # Tells create-scratch-org.sh to skip the "set DevHub by alias" + "delete old scratch org" branch.
