@@ -42,6 +42,15 @@ jobs:
       - name: Authenticate DevHub
         run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
 
+      - name: Create branch for the fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "ai/issue-${{ github.event.issue.number || inputs.issue_number }}"
+
+      - name: Provision scratch org and run baseline tests
+        run: HEADLESS=true ./scripts/create-scratch-org.sh
+
       - uses: anthropics/claude-code-action@v1
         with:
           prompt: |
