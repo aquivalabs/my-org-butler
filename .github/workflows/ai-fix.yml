@@ -1,0 +1,78 @@
+name: AI Fix
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number
+        required: true
+      issue_title:
+        description: Issue title
+        required: true
+      issue_body:
+        description: Issue body
+        required: false
+
+jobs:
+  triage:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'ai-fix'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    outputs:
+      decision: ${{ steps.read-decision.outputs.decision }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Read .claude/skills/ai-maintenance/commands/triage.md for instructions.
+            Write your final decision as exactly one word (AUTOMATABLE, NEEDS_INFO, or NEEDS_HUMAN)
+            to the file /tmp/triage-decision.txt — nothing else in that file.
+
+            Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
+
+            ${{ github.event.issue.body || inputs.issue_body }}
+          claude_args: "--max-turns 3 --model claude-sonnet-4-6"
+          timeout_minutes: 5
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: read-decision
+        run: |
+          DECISION=$(cat /tmp/triage-decision.txt | tr -d '[:space:]')
+          echo "decision=$DECISION" >> $GITHUB_OUTPUT
+          echo "Triage decision: $DECISION"
+
+  implement:
+    needs: triage
+    if: needs.triage.outputs.decision == 'AUTOMATABLE'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Read .claude/skills/ai-maintenance/commands/implement.md for instructions.
+
+            Fix issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
+
+            ${{ github.event.issue.body || inputs.issue_body }}
+          claude_args: "--max-turns 10 --model claude-sonnet-4-6"
+          timeout_minutes: 20
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,10 @@
-# Deploying
+# My Org Butler — Project Rules
+
+## AI Agent (CI)
+
+When running as the `ai-fix` GitHub Actions workflow, follow `.claude/skills/ai-maintenance/commands/implement.md` for the full implementation checklist. The rules below still apply.
+
+## Deploying
 
 Never run `sf project deploy start --source-dir force-app`. The scratch org is namespaceless but some metadata files contain namespace references, so a full deploy always fails. Always deploy only the specific files you changed:
 
@@ -8,7 +14,7 @@ sf project deploy start \
   --source-dir force-app/main/default/classes/Bar.cls
 ```
 
-# Testing Strategy
+## Testing Strategy
 
 Everything lives in `agent-eval/`. Two test layers:
 
@@ -47,7 +53,7 @@ Runner details + spec format in `.claude/skills/agentforce/commands/eval.md` →
 
 Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses Salesforce's built-in evaluator (judge model is opaque). Multi-turn REST tests use Claude (this conversation).
 
-# Current State (2026-04-30)
+## Current State (2026-04-30)
 
 Testing Center suite: single `Regression` definition with 14 cases; 2 parallel passes complete in a few minutes without tripping the 10-job concurrency cap.
 
