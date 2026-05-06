@@ -5,9 +5,21 @@ name: SF Ticket to PR
 on:
   issues:
     types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number to process
+        required: true
+      issue_title:
+        description: Issue title
+        required: true
+      issue_body:
+        description: Issue body
+        required: false
 
 jobs:
-  solve:
+  fix-issue:
+    name: "Fix #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}"
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,10 +42,11 @@ jobs:
           prompt: |
             Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
 
-            Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+            Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
 
-            ${{ github.event.issue.body }}
+            ${{ github.event.issue.body || inputs.issue_body }}
           claude_args: "--max-turns 30 --model claude-sonnet-4-6"
+          show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
