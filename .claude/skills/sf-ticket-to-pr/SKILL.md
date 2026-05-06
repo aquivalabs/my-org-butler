@@ -5,114 +5,90 @@ description: Turns a GitHub issue into a tested pull request — or comments on 
 
 # SF Ticket to PR
 
-You receive a GitHub issue. You either open a PR that fixes it, or you comment on the issue explaining precisely why you cannot.
+A GitHub issue arrives. You ship a PR that fixes it, or you comment on the issue
+explaining why you can't.
+
+You are done **only** when `gh pr create` returns a URL, OR when
+`gh issue comment` has posted a clear stop-reason. Anything in between is
+incomplete work.
 
 ## Step 1 — Decide
 
-Can this issue be solved by changing Apex or LWC source code only?
+Stop and comment if any of these are true:
 
-**Stop and comment if any of these are true:**
+- Schema changes needed (fields, objects, relationships)
+- Flows, Permission Sets, Custom Metadata, or anything in `unpackaged/`
+- Repro steps too vague to act on
+- Cross-component architectural decision required
+- Data Cloud, External Services, Named Credentials, or `config/`/`sfdx-project.json` changes
 
-General blockers:
-- Requires schema changes (fields, objects, relationships)
-- Requires Flows, Permission Sets, or Custom Metadata changes
-- Reproduction steps are missing or too vague to act on
-- Requires architectural decisions across many components
+Stop format:
 
-This project (My Org Butler) blockers:
-- Requires changes to Agentforce metadata: `genAiFunctions`, `genAiPromptTemplates`, `genAiPlugins`, `genAiPlannerBundles`, or bot definitions in `unpackaged/`
-- Requires Data Cloud configuration changes
-- Requires External Services or Named Credentials changes
-- Requires changes to `config/project-scratch-def.json` or `sfdx-project.json`
+    gh issue comment <number> --body "<one paragraph: what is missing or what kind of change is needed>"
 
-If stopping, post a comment that says exactly what is missing or what type of change is needed:
-```
-gh issue comment <number> --body "..."
-```
+## Step 2 — Branch and code
 
-## Step 2 — Branch and fix
+Touch only `force-app/main/default/classes/` and `force-app/main/default/lwc/`.
+Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
 
-**What you may touch:** `force-app/main/default/classes/`, `force-app/main/default/lwc/`
+    git checkout -b ai/issue-<number>
 
-**What you must NOT touch:** anything in `unpackaged/`, `agent-eval/`, `config/`, `scripts/`, `.github/`, `CLAUDE.md`, `sfdx-project.json`
+Read each file you will change in full before editing. Then write the fix and
+update or add the test class.
 
-Apex rules:
-- SOQL must use bind variables — no string concatenation in queries
-- DML outside loops
-- Read adjacent classes before writing — follow existing patterns
-- No `@TestSetup` — each test sets up its own data via a `setup()` helper
-- No `seeAllData=true`, minimum 85% coverage
-- Test method names: no `test` prefix
+## Step 3 — Verify
 
-Steps:
-1. `git checkout -b ai/issue-<number>`
-2. Read the affected file(s) in full before changing anything
-3. Write the fix and update or create the test class
+### 3a — Provision the scratch org (run ONCE per session)
 
-## Step 3 — Verify in scratch org
+    HEADLESS=true ./scripts/create-scratch-org.sh
 
-### 3a — Create and provision the scratch org
+The script creates the org, deploys everything, assigns permsets, activates the
+agent, seeds data, and runs all Apex tests. Read the tail of its output:
+tests must pass.
 
-Use the same script humans use, in headless mode:
+If the script fails, fix the code and go to 3b. **Do not re-run the full
+script** — provisioning takes minutes and you only need to redeploy your file.
 
-```bash
-HEADLESS=true ./scripts/create-scratch-org.sh
-```
+### 3b — Iterate
 
-This creates the scratch org, deploys `force-app` + `unpackaged` + `agent-eval` (with namespace stripping), assigns permsets, activates the agent, creates sample data, and runs all Apex tests. It skips the manual setup, Data Library wait, and Regression suite — those need a human and aren't useful here.
+After 3a the source files are namespaced again. To redeploy a single changed file:
 
-If the script fails, read the error, fix the code, and re-run only what's needed (don't rebuild the org from scratch — see 3b).
+    sed -i 's/aquiva_os__//g' force-app/main/default/classes/<File>.cls && \
+      sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
+      git checkout -- force-app/main/default/classes/<File>.cls
 
-### 3b — Iterate (deploy → test → analyze → fix)
+Run tests:
 
-After the script completes, the source is back to its namespaced form. To redeploy a single changed file:
+    sf apex run test --test-level RunLocalTests --wait 30 --result-format human
 
-```bash
-# Strip namespace, deploy, restore
-sed -i 's/aquiva_os__//g; s/aquiva_os\.//g' force-app/main/default/classes/<ChangedFile>.cls
-sf project deploy start --source-dir force-app/main/default/classes/<ChangedFile>.cls --concise
-git checkout -- force-app/main/default/classes/<ChangedFile>.cls
-```
+Run the analyzer on the file you changed:
 
-Then run tests:
+    sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" \
+      --output-file /tmp/analyzer.csv \
+      --target force-app/main/default/classes/<File>.cls
 
-```bash
-sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
-```
+**Scope discipline:** the analyzer reports findings on the whole file, but you
+own only the lines you touched. Findings on lines you did not change are
+pre-existing — ignore them. Do not investigate or fix them.
 
-Then run the code analyzer on the changed file:
+Repeat 3b until tests pass and the analyzer reports no new findings on lines
+you touched.
 
-```bash
-sf code-analyzer run \
-  --rule-selector "PMD:OpinionatedSalesforce" \
-  --output-file /tmp/code-analyzer.csv \
-  --target force-app/main/default/classes/<ChangedFile>.cls
-```
+## Step 4 — Ship (mandatory)
 
-For each violation in `/tmp/code-analyzer.csv`:
-- Real issue → fix the code
-- False positive → suppress with `@SuppressWarnings(...)` and a `// Note:` comment explaining why
+    git add force-app/main/default/classes/<changed files>
+    git commit -m "fix: <short description> (closes #<number>)"
+    git push origin ai/issue-<number>
+    gh pr create \
+      --title "fix: <short description>" \
+      --body "Closes #<number>" \
+      --head ai/issue-<number> \
+      --base main
 
-Repeat until tests pass AND the analyzer is clean.
+`gh pr create` returning a URL means you are done.
 
-### 3c — Tear down
+## Anti-patterns
 
-```bash
-sf org delete scratch --no-prompt --target-org my-org-butler_DEV
-```
-
-## Step 4 — Open the PR
-
-```bash
-git add force-app/main/default/classes/<changed files>
-git commit -m "fix: <short description> (closes #<number>)"
-git push origin ai/issue-<number>
-```
-
-```bash
-gh pr create \
-  --title "fix: <short description>" \
-  --body "Closes #<number>" \
-  --head ai/issue-<number> \
-  --base main
-```
+- Re-running `create-scratch-org.sh` after iteration — wasteful, several minutes each time.
+- Investigating PMD findings on lines you did not touch.
+- Stopping after a green test run without `git push` and `gh pr create`.
