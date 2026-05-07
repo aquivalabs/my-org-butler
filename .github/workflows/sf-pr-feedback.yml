@@ -1,9 +1,9 @@
 name: SF PR Feedback
 run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_request.number }}"
-# Fires on every (non-bot) comment on a PR whose branch starts with `ai/issue-`.
+# Fires on every (non-bot) comment on a PR carrying the `ai-generated` label.
 # No @claude mention required — on AI-generated PRs Claude is the default
-# reviewer-replier. Branch filter happens inside the job after we look up the
-# PR's head ref. Provisions a fresh scratch org per iteration — until we ship
+# reviewer-replier. The label is set by the issue workflow when it opens the
+# PR. Provisions a fresh scratch org per iteration — until we ship
 # persistent-org-per-PR (see Issue #67 TODOs).
 
 on:
@@ -27,17 +27,19 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Resolve PR branch and skip non-AI PRs
+      - name: Resolve PR and skip non-AI PRs
         id: pr
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
         run: |
           PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
-          PR_BRANCH=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName --jq '.headRefName')
+          PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels)
+          PR_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
+          HAS_AI_LABEL=$(echo "$PR_DATA" | jq -r '.labels[].name' | grep -c '^ai-generated$' || true)
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
-          if [[ "$PR_BRANCH" != ai/issue-* ]]; then
-            echo "::notice::Comment is on non-AI PR ($PR_BRANCH) — nothing to do."
+          if [ "$HAS_AI_LABEL" -eq 0 ]; then
+            echo "::notice::PR #$PR_NUMBER has no 'ai-generated' label — nothing to do."
             echo "skip=true" >> $GITHUB_OUTPUT
           fi
 

@@ -17,7 +17,7 @@ You are done when **either**:
 ## Preconditions (already done by the workflow)
 
 - The correct branch is already checked out:
-  - For new issues: a fresh `ai/issue-<N>` branch off `main`
+  - For new issues: a fresh `fix/issue-<N>` branch off `main`
   - For PR feedback: the PR's existing branch
 - A scratch org is fully provisioned, source deployed, baseline Apex tests passing.
 - DevHub auth and SF CLI are ready.
@@ -91,7 +91,8 @@ If a PR for the current branch does **not** yet exist, open one:
         --title "fix: <short description>" \
         --body "Closes #<issue-number>" \
         --head "$BRANCH" \
-        --base main
+        --base main \
+        --label ai-generated
     fi
 
 If the PR already exists, the push above updates it — no new PR.
