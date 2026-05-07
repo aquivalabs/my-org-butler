@@ -27,10 +27,16 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.CLAUDE_BOT_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_BOT_PRIVATE_KEY }}
+
       - name: Resolve PR and skip non-AI PRs
         id: pr
         env:
-          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
           PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels)
@@ -48,7 +54,7 @@ jobs:
         with:
           ref: ${{ steps.pr.outputs.branch }}
           fetch-depth: 0
-          token: ${{ secrets.WORKFLOW_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Install Salesforce CLI
         if: steps.pr.outputs.skip != 'true'
@@ -81,12 +87,12 @@ jobs:
           show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.WORKFLOW_PAT }}
+          github_token: ${{ steps.app-token.outputs.token }}
 
       - name: Report AI cost
         if: always() && steps.pr.outputs.skip != 'true'
         env:
-          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           COMMENT_ID: ${{ github.event.comment.id }}
           WORKFLOW_NAME: pr-feedback

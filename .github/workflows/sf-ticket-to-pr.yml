@@ -32,12 +32,19 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      # Mint an installation token for the Claude Bot GitHub App. PRs/commits/comments
+      # made with this token are attributed to claude-bot[bot] — so the human reviewer
+      # remains eligible to approve, and AI vs. human authorship stays distinguishable.
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.CLAUDE_BOT_APP_ID }}
+          private-key: ${{ secrets.CLAUDE_BOT_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Use PAT with `workflow` scope so Claude's later `git push` is allowed
-          # to ship branches that contain workflow files. GITHUB_TOKEN cannot do this.
-          token: ${{ secrets.WORKFLOW_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
@@ -47,8 +54,8 @@ jobs:
 
       - name: Create branch for the fix
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "claude-bot[bot]"
+          git config user.email "${{ secrets.CLAUDE_BOT_APP_ID }}+claude-bot[bot]@users.noreply.github.com"
           git checkout -b "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
 
       - name: Provision scratch org and run baseline tests
@@ -69,12 +76,12 @@ jobs:
           show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.WORKFLOW_PAT }}
+          github_token: ${{ steps.app-token.outputs.token }}
 
       - name: Verify deliverable and report AI cost
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           BRANCH: "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
           ISSUE_NUMBER: "${{ github.event.issue.number || inputs.issue_number }}"
           WORKFLOW_NAME: ticket-to-pr
