@@ -3,8 +3,8 @@ run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_re
 # Fires on every (non-bot) comment on a PR carrying the `ai-generated` label.
 # No @claude mention required — on AI-generated PRs Claude is the default
 # reviewer-replier. The label is set by the issue workflow when it opens the
-# PR. Provisions a fresh scratch org per iteration — until we ship
-# persistent-org-per-PR (see Issue #67 TODOs).
+# PR. Reuses the per-PR scratch org via cached SFDX auth URL — provisioning
+# only re-runs if the cache is missing or the org has expired.
 
 on:
   issue_comment:
@@ -19,6 +19,10 @@ jobs:
       (github.event.issue.pull_request != null || github.event_name == 'pull_request_review_comment') &&
       github.event.comment.user.type != 'Bot'
     runs-on: ubuntu-latest
+    # Serialize feedback runs on the same PR so two comments don't race against the same scratch org.
+    concurrency:
+      group: scratch-org-feedback-pr-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: false
     env:
       DEV_HUB_URL: set
     permissions:
@@ -39,14 +43,23 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
-          PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels)
+          PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels,body)
           PR_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
+          PR_BODY=$(echo "$PR_DATA" | jq -r '.body')
           HAS_AI_LABEL=$(echo "$PR_DATA" | jq -r '.labels[].name' | grep -c '^ai-generated$' || true)
+          # Resolve the originating issue number from "Closes #N" — used both for the cost rollup
+          # and as the persistent scratch org alias (pr-<N>) shared with sf-ticket-to-pr.yml.
+          ISSUE_NUMBER=$(echo "$PR_BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
           if [ "$HAS_AI_LABEL" -eq 0 ]; then
             echo "::notice::PR #$PR_NUMBER has no 'ai-generated' label — nothing to do."
             echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+          if [ -z "$ISSUE_NUMBER" ] && [ "$HAS_AI_LABEL" -ne 0 ]; then
+            echo "::warning::PR #$PR_NUMBER has no 'Closes #N' reference — falling back to PR number for scratch org alias"
+            echo "issue_number=$PR_NUMBER" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v4
@@ -64,13 +77,28 @@ jobs:
         if: steps.pr.outputs.skip != 'true'
         run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
 
-      - name: Provision scratch org and run baseline tests
+      # Restore the per-PR scratch org's auth URL. Cache hit → create-scratch-org.sh re-logs in
+      # and skips provisioning. Cache miss (first feedback after cache eviction, or org expired) →
+      # the script falls through to a full provisioning run.
+      - name: Restore scratch org auth from cache
         if: steps.pr.outputs.skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: /tmp/sfdx-auth-pr-${{ steps.pr.outputs.issue_number }}.url
+          key: scratch-auth-pr-${{ steps.pr.outputs.issue_number }}
+
+      - name: Restore or provision scratch org
+        if: steps.pr.outputs.skip != 'true'
+        env:
+          ISSUE_NUMBER: ${{ steps.pr.outputs.issue_number }}
+          SCRATCH_ORG_ALIAS: pr-${{ steps.pr.outputs.issue_number }}
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
       - uses: anthropics/claude-code-action@v1
         id: claude
         if: steps.pr.outputs.skip != 'true'
+        env:
+          SCRATCH_ORG_ALIAS: pr-${{ steps.pr.outputs.issue_number }}
         with:
           prompt: |
             Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
@@ -91,13 +119,9 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
+          ISSUE_NUMBER: ${{ steps.pr.outputs.issue_number }}
           COMMENT_ID: ${{ github.event.comment.id }}
           WORKFLOW_NAME: pr-feedback
           MODEL: claude-sonnet-4-6
           EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
-        run: |
-          # Resolve issue number from "Closes #N" in PR body for sticky rollup.
-          BODY=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json body --jq .body)
-          ISSUE_NUMBER=$(echo "$BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
-          export ISSUE_NUMBER
-          ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
+        run: ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"

@@ -1,0 +1,49 @@
+name: SF PR Cleanup
+run-name: "Cleanup PR #${{ github.event.pull_request.number }}"
+# Fires when a PR closes (merged or not). Deletes the per-PR scratch org from
+# the DevHub and drops the cached SFDX auth URL so the alias is reusable.
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: write
+    steps:
+      - name: Resolve issue number from PR body
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          BODY=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json body --jq .body)
+          ISSUE_NUMBER=$(echo "$BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
+          if [ -z "$ISSUE_NUMBER" ]; then
+            ISSUE_NUMBER="$PR_NUMBER"
+          fi
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate DevHub
+        run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
+
+      - name: Delete scratch org
+        env:
+          ALIAS: pr-${{ steps.pr.outputs.issue_number }}
+        run: |
+          # Best-effort: org may already be expired or never created (e.g. PR closed before
+          # the ticket-to-pr workflow finished provisioning). Don't fail the cleanup on that.
+          sf org delete scratch --no-prompt --target-org "$ALIAS" || echo "::notice::No scratch org $ALIAS to delete"
+
+      - name: Drop cached auth URL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEY: scratch-auth-pr-${{ steps.pr.outputs.issue_number }}
+        run: gh cache delete "$KEY" --repo ${{ github.repository }} || echo "::notice::No cache $KEY to delete"

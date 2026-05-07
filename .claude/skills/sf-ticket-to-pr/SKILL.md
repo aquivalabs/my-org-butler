@@ -19,7 +19,9 @@ You are done when **either**:
 - The correct branch is already checked out:
   - For new issues: a fresh `fix/issue-<N>` branch off `main`
   - For PR feedback: the PR's existing branch
-- A scratch org is fully provisioned, source deployed, baseline Apex tests passing.
+- A scratch org is ready and set as default:
+  - On the **first** run for an issue: freshly provisioned, source deployed, baseline Apex tests passing.
+  - On every **subsequent** run on the same PR: the same scratch org from before, restored from cached auth — **do not** re-provision or re-deploy everything; only deploy files you actually changed.
 - DevHub auth and SF CLI are ready.
 - `WORKFLOW_PAT` is wired so `git push` and `gh pr create` succeed.
 
@@ -83,23 +85,51 @@ Commit and push:
     git commit -m "<one short sentence describing the change>"
     git push
 
-If a PR for the current branch does **not** yet exist, open one:
+### Always include the scratch org URL
+
+Every PR description and every reply to a human reviewer **must** include a clickable
+auto-login URL to the persistent scratch org so reviewers can manually test the change:
+
+    SCRATCH_URL=$(sf org open --url-only --target-org "$SCRATCH_ORG_ALIAS" --json | jq -r .result.url)
+
+(`SCRATCH_ORG_ALIAS` is set by the workflow to `pr-<issue-number>`.)
+
+### Opening a new PR
+
+If a PR for the current branch does **not** yet exist, open one. The body must be
+specific enough that a reviewer can act without re-reading the issue — but no wall
+of text. Aim for ~5–10 lines: what changed, how to verify, the scratch org URL,
+the issue link.
 
     BRANCH=$(git branch --show-current)
     if [ -z "$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')" ]; then
       gh pr create \
         --title "fix: <short description>" \
-        --body "Closes #<issue-number>" \
+        --body "$(cat <<EOF
+    Closes #<issue-number>
+
+    ## What changed
+    <2–4 bullets — what classes/methods were modified and why>
+
+    ## How to verify
+    - Open the scratch org: $SCRATCH_URL
+    - <one or two concrete steps a human can run in the org>
+    - Apex tests: \`sf apex run test --test-level RunLocalTests\`
+    EOF
+    )" \
         --head "$BRANCH" \
         --base main \
         --label ai-generated
     fi
 
-If the PR already exists, the push above updates it — no new PR.
+If the PR already exists, the push above updates it — no new PR. When you reply
+to feedback with `gh pr comment`, include `$SCRATCH_URL` in the comment body too.
 
 ## Anti-patterns
 
 - Opening a second PR when one already exists for the branch.
 - Investigating PMD findings on lines you did not touch.
-- Calling `create-scratch-org.sh` — the workflow already provisioned the org.
+- Calling `create-scratch-org.sh` — the workflow already restored or provisioned the org.
+- Re-deploying everything via `--source-dir force-app` on a feedback run — only deploy the files you changed.
+- Posting a PR description or reviewer reply without the scratch org auto-login URL.
 - Stopping after a green test run without `git push`.

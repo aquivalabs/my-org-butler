@@ -22,10 +22,16 @@ jobs:
   ticket-to-pr:
     name: ticket-to-pr
     runs-on: ubuntu-latest
+    # Serialize all runs that touch this PR's scratch org (this workflow plus pr-feedback).
+    concurrency:
+      group: scratch-org-pr-${{ github.event.issue.number || inputs.issue_number }}
+      cancel-in-progress: false
     env:
       # Tells create-scratch-org.sh to skip the "set DevHub by alias" + "delete old scratch org" branch.
       # Auth is already done in the workflow step below; the value just needs to be non-empty.
       DEV_HUB_URL: set
+      ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+      SCRATCH_ORG_ALIAS: pr-${{ github.event.issue.number || inputs.issue_number }}
     permissions:
       contents: write
       issues: write
@@ -62,7 +68,16 @@ jobs:
           git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
           git checkout -b "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
 
-      - name: Provision scratch org and run baseline tests
+      # Persistent scratch org per PR: the auth URL is cached so subsequent runs (this workflow
+      # rerunning, plus every pr-feedback run on the same PR) skip the multi-minute provisioning
+      # path inside create-scratch-org.sh.
+      - name: Restore scratch org auth from cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/sfdx-auth-${{ env.SCRATCH_ORG_ALIAS }}.url
+          key: scratch-auth-${{ env.SCRATCH_ORG_ALIAS }}
+
+      - name: Provision or restore scratch org
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
       - uses: anthropics/claude-code-action@v1
@@ -84,8 +99,7 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          BRANCH: "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
-          ISSUE_NUMBER: "${{ github.event.issue.number || inputs.issue_number }}"
+          BRANCH: "fix/issue-${{ env.ISSUE_NUMBER }}"
           WORKFLOW_NAME: ticket-to-pr
           MODEL: claude-sonnet-4-6
           EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}

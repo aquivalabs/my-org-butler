@@ -5,6 +5,21 @@ execute() {
   $@ || exit
 }
 
+# Restore from cache if we have an auth URL for this alias. The DevHub keeps the
+# scratch org alive for 30 days; only the runner-local SFDX auth file is missing
+# across CI runs, so re-logging in is enough to skip provisioning.
+AUTH_CACHE_FILE="/tmp/sfdx-auth-${SCRATCH_ORG_ALIAS}.url"
+if [ -s "$AUTH_CACHE_FILE" ]; then
+  echo "Found cached auth for $SCRATCH_ORG_ALIAS — attempting restore"
+  if sf org login sfdx-url --alias "$SCRATCH_ORG_ALIAS" --set-default --sfdx-url-stdin < "$AUTH_CACHE_FILE" \
+     && sf org display --target-org "$SCRATCH_ORG_ALIAS" >/dev/null 2>&1; then
+    echo "Restored $SCRATCH_ORG_ALIAS — skipping provisioning"
+    exit 0
+  fi
+  echo "Cached auth invalid (org expired or revoked) — falling through to fresh provisioning"
+  rm -f "$AUTH_CACHE_FILE"
+fi
+
 # Portable in-place sed: BSD (macOS) needs an empty backup arg, GNU (Linux) doesn't.
 sed_inplace() {
   if [ "$(uname)" = "Linux" ]; then
@@ -112,6 +127,9 @@ fi
 
 echo "Running Apex Tests"
 sf apex run test --test-level RunLocalTests --wait 30 --code-coverage --result-format human
+
+echo "Caching auth URL for reuse across CI runs"
+sf org display --target-org "$SCRATCH_ORG_ALIAS" --verbose --json | jq -r .result.sfdxAuthUrl > "$AUTH_CACHE_FILE"
 
 if [ "$HEADLESS" != "true" ]; then
   echo ""
