@@ -1,4 +1,5 @@
 name: SF PR Feedback
+
 run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_request.number }}"
 # Fires on every (non-bot) comment on a PR carrying the `ai-generated` label.
 # No @claude mention required — on AI-generated PRs Claude is the default
