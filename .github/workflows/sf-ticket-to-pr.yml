@@ -1,11 +1,14 @@
 name: SF Ticket to PR
 run-name: "Ticket #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}"
-# Fires when an issue is opened. Claude reads it, decides if it can be solved
-# autonomously, and either opens a tested PR or comments on the issue explaining why not.
+# Fires when a maintainer adds the `delegate-to-ai` label to an issue. Without
+# the label the pipeline does nothing — this gate is what stops random issues
+# (open-source DoS, accidental drive-bys) from burning Anthropic credits.
+# Only users with Triage role or higher can set labels in GitHub, so the gate
+# is enforced by repo permissions, not by the workflow itself.
 
 on:
   issues:
-    types: [opened]
+    types: [labeled]
   workflow_dispatch:
     inputs:
       issue_number:
@@ -21,6 +24,7 @@ on:
 jobs:
   ticket-to-pr:
     name: ticket-to-pr
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'delegate-to-ai'
     runs-on: ubuntu-latest
     # Serialize all runs that touch this PR's scratch org (this workflow plus pr-feedback).
     concurrency:
