@@ -1,3 +1,4 @@
+// PMD False Positives: ApexSuggestUsingNamedCred — class authenticates with a session token via SessionId; Named Credentials are not applicable here.
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
 public with sharing class DataCloudSql {
 
@@ -9,7 +10,6 @@ public with sharing class DataCloudSql {
 
     public static String query(String sql) {
 
-        System.debug('sql >>' + sql);
         if (Test.isRunningTest() && mockedResponse != null) {
             return mockedResponse;
         }
