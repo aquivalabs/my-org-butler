@@ -68,11 +68,8 @@ jobs:
         if: steps.pr.outputs.skip != 'true'
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
-      - name: Snapshot Claude session JSONLs (pre-run)
-        if: steps.pr.outputs.skip != 'true'
-        run: ./scripts/snapshot-jsonl.sh /tmp/jsonl-before.txt
-
       - uses: anthropics/claude-code-action@v1
+        id: claude
         if: steps.pr.outputs.skip != 'true'
         with:
           prompt: |
@@ -97,7 +94,7 @@ jobs:
           COMMENT_ID: ${{ github.event.comment.id }}
           WORKFLOW_NAME: pr-feedback
           MODEL: claude-sonnet-4-6
-          JSONL_BEFORE: /tmp/jsonl-before.txt
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
         run: |
           # Resolve issue number from "Closes #N" in PR body for sticky rollup.
           BODY=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json body --jq .body)

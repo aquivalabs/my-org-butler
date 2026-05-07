@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Report AI cost for one Claude Code run.
 #
-# - Diffs JSONL transcripts under ~/.claude/projects/ vs a pre-run snapshot to
-#   find this run's session, runs ccusage on it, and emits a one-line footer
-#   plus an issue-level rollup in a sticky comment.
+# Reads the action's execution_file output (a JSON array of SDK messages),
+# pulls cost + per-token-type usage from the result message, and emits a
+# one-line footer plus an issue-level rollup in a sticky comment.
 #
 # Required env:
 #   GH_TOKEN, GITHUB_REPOSITORY
 #   WORKFLOW_NAME    "ticket-to-pr" | "pr-feedback"
 #   MODEL            e.g. claude-sonnet-4-6
-#   JSONL_BEFORE     path to pre-run snapshot file (created via snapshot-jsonl.sh)
+#   EXECUTION_FILE   path emitted by anthropics/claude-code-action (steps.<id>.outputs.execution_file)
 # Optional env (at least one of PR/COMMENT must be set; ISSUE drives rollup):
 #   PR_NUMBER        append footer to this PR's body
 #   COMMENT_ID       append footer to this issue/PR comment
@@ -18,38 +18,28 @@
 set -euo pipefail
 
 : "${GH_TOKEN:?}"; : "${GITHUB_REPOSITORY:?}"
-: "${WORKFLOW_NAME:?}"; : "${MODEL:?}"; : "${JSONL_BEFORE:?}"
+: "${WORKFLOW_NAME:?}"; : "${MODEL:?}"; : "${EXECUTION_FILE:?}"
 
 STICKY_MARKER="<!-- ai-spend-tracker -->"
 RUN_MARKER_PREFIX="<!-- run "
 
-# 1. Find this run's session JSONL by diffing snapshots.
-shopt -s nullglob
-mapfile -t after_files < <(ls -1 "$HOME"/.claude/projects/*/*.jsonl 2>/dev/null | sort)
-printf '%s\n' "${after_files[@]}" > /tmp/jsonl-after.txt
-NEW_FILE=$(comm -13 "$JSONL_BEFORE" /tmp/jsonl-after.txt | tail -n 1)
-
-if [ -z "$NEW_FILE" ]; then
-  echo "::warning::No new Claude Code session JSONL found — skipping cost report."
+if [ ! -s "$EXECUTION_FILE" ]; then
+  echo "::warning::EXECUTION_FILE missing or empty — skipping cost report."
   exit 0
 fi
 
-SESSION_ID=$(basename "$NEW_FILE" .jsonl)
-echo "Session: $SESSION_ID"
-
-# 2. Run ccusage and parse cost + tokens.
-USAGE_JSON=$(npx -y ccusage@latest session --id "$SESSION_ID" --json 2>/dev/null || echo '{}')
-
-read -r COST INPUT OUTPUT CACHE_R CACHE_W TOTAL <<< "$(echo "$USAGE_JSON" | jq -r '
-  (.sessions[0] // .) as $s |
+# Pull the result message (last one with type=result) and extract cost + usage.
+read -r COST INPUT OUTPUT CACHE_R CACHE_W <<< "$(jq -r '
+  [.[] | select(.type == "result")] | last as $r |
   [
-    ($s.totalCost // 0),
-    ($s.inputTokens // 0),
-    ($s.outputTokens // 0),
-    ($s.cacheReadTokens // 0),
-    ($s.cacheCreationTokens // 0),
-    ($s.totalTokens // 0)
-  ] | @tsv' | tr '\t' ' ')"
+    ($r.total_cost_usd // 0),
+    ($r.usage.input_tokens // 0),
+    ($r.usage.output_tokens // 0),
+    ($r.usage.cache_read_input_tokens // 0),
+    ($r.usage.cache_creation_input_tokens // 0)
+  ] | @tsv' "$EXECUTION_FILE" | tr '\t' ' ')"
+
+TOTAL=$(( INPUT + OUTPUT + CACHE_R + CACHE_W ))
 
 # Short model name (drop "claude-" prefix for display).
 SHORT_MODEL=${MODEL#claude-}

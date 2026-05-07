@@ -65,10 +65,8 @@ jobs:
       - name: Provision scratch org and run baseline tests
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
-      - name: Snapshot Claude session JSONLs (pre-run)
-        run: ./scripts/snapshot-jsonl.sh /tmp/jsonl-before.txt
-
       - uses: anthropics/claude-code-action@v1
+        id: claude
         with:
           prompt: |
             Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
@@ -90,7 +88,7 @@ jobs:
           ISSUE_NUMBER: "${{ github.event.issue.number || inputs.issue_number }}"
           WORKFLOW_NAME: ticket-to-pr
           MODEL: claude-sonnet-4-6
-          JSONL_BEFORE: /tmp/jsonl-before.txt
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
         run: |
           PR=$(gh pr list --repo ${{ github.repository }} --head "$BRANCH" --json number --jq '.[0].number' || echo "")
           if [ -n "$PR" ]; then
