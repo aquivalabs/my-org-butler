@@ -54,6 +54,9 @@ jobs:
       - name: Provision scratch org and run baseline tests
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
+      - name: Snapshot Claude session JSONLs (pre-run)
+        run: ./scripts/snapshot-jsonl.sh /tmp/jsonl-before.txt
+
       - uses: anthropics/claude-code-action@v1
         with:
           prompt: |
@@ -68,16 +71,23 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.WORKFLOW_PAT }}
 
-      - name: Verify deliverable
+      - name: Verify deliverable and report AI cost
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
           BRANCH: "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
+          ISSUE_NUMBER: "${{ github.event.issue.number || inputs.issue_number }}"
+          WORKFLOW_NAME: ticket-to-pr
+          MODEL: claude-sonnet-4-6
+          JSONL_BEFORE: /tmp/jsonl-before.txt
         run: |
           PR=$(gh pr list --repo ${{ github.repository }} --head "$BRANCH" --json number --jq '.[0].number' || echo "")
           if [ -n "$PR" ]; then
             echo "::notice::PR #$PR created on $BRANCH"
+            PR_NUMBER="$PR" ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
             exit 0
           fi
+          # No PR: still report cost on the issue rollup (no per-comment footer).
+          ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
           echo "::error::Claude finished without opening a PR on $BRANCH"
           exit 1

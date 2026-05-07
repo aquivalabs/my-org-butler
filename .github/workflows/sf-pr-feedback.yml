@@ -62,6 +62,10 @@ jobs:
         if: steps.pr.outputs.skip != 'true'
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
+      - name: Snapshot Claude session JSONLs (pre-run)
+        if: steps.pr.outputs.skip != 'true'
+        run: ./scripts/snapshot-jsonl.sh /tmp/jsonl-before.txt
+
       - uses: anthropics/claude-code-action@v1
         if: steps.pr.outputs.skip != 'true'
         with:
@@ -78,3 +82,19 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.WORKFLOW_PAT }}
+
+      - name: Report AI cost
+        if: always() && steps.pr.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          WORKFLOW_NAME: pr-feedback
+          MODEL: claude-sonnet-4-6
+          JSONL_BEFORE: /tmp/jsonl-before.txt
+        run: |
+          # Resolve issue number from "Closes #N" in PR body for sticky rollup.
+          BODY=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json body --jq .body)
+          ISSUE_NUMBER=$(echo "$BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
+          export ISSUE_NUMBER
+          ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
