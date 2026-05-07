@@ -1,4 +1,4 @@
-// Note: ApexSuggestUsingNamedCred is a false positive — this class calls the org's own Data Cloud endpoint using the running user's session token, not an external named credential.
+// PMD False Positives: calls own Data Cloud endpoint using session token, no external named credential needed
 @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
 public with sharing class DataCloudSql {
 
