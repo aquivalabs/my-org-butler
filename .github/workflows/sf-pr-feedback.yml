@@ -9,15 +9,22 @@ run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_re
 on:
   issue_comment:
     types: [created]
+  pull_request_review:
+    types: [submitted]
   pull_request_review_comment:
     types: [created]
 
 jobs:
   respond:
-    # Only on PRs (issue_comment fires for both PRs and issues) and not from a bot.
+    # Three event types feed in: PR conversation comments, PR review submissions
+    # (the body of a "Request changes" / "Approve" / "Comment" review), and inline
+    # code-line comments. issue_comment fires for both issues and PRs — the first
+    # branch filters to PRs only. Bot-authored events are filtered per-branch
+    # because the user lives under different paths (comment.user vs review.user).
     if: |
-      (github.event.issue.pull_request != null || github.event_name == 'pull_request_review_comment') &&
-      github.event.comment.user.type != 'Bot'
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request != null && github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review_comment' && github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review' && github.event.review.user.type != 'Bot' && github.event.review.body != '')
     runs-on: ubuntu-latest
     # Serialize feedback runs on the same PR so two comments don't race against the same scratch org.
     concurrency:
@@ -107,7 +114,7 @@ jobs:
             The PR is already open — do not open a second one. Just push to the branch.
 
             Reviewer comment:
-            ${{ github.event.comment.body }}
+            ${{ github.event.comment.body || github.event.review.body }}
           claude_args: "--max-turns 30 --model claude-sonnet-4-6"
           show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
