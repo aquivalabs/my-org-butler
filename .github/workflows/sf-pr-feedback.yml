@@ -1,9 +1,10 @@
 name: SF PR Feedback
 run-name: "Feedback on PR #${{ github.event.issue.number || github.event.pull_request.number }}"
-# Fires when a reviewer @-mentions claude on an AI-generated PR. Claude reads the
-# feedback, applies the change, deploys + tests if needed, and pushes a commit
-# to the same branch. Provisions a fresh scratch org per iteration — until we
-# ship persistent-org-per-PR (see Issue #67 TODOs).
+# Fires on every (non-bot) comment on a PR whose branch starts with `ai/issue-`.
+# No @claude mention required — on AI-generated PRs Claude is the default
+# reviewer-replier. Branch filter happens inside the job after we look up the
+# PR's head ref. Provisions a fresh scratch org per iteration — until we ship
+# persistent-org-per-PR (see Issue #67 TODOs).
 
 on:
   issue_comment:
@@ -13,11 +14,9 @@ on:
 
 jobs:
   respond:
-    # Only on PRs (issue_comment fires for both PRs and issues), only when
-    # the comment mentions @claude, and not from a bot to avoid loops.
+    # Only on PRs (issue_comment fires for both PRs and issues) and not from a bot.
     if: |
       (github.event.issue.pull_request != null || github.event_name == 'pull_request_review_comment') &&
-      contains(github.event.comment.body, '@claude') &&
       github.event.comment.user.type != 'Bot'
     runs-on: ubuntu-latest
     env:
@@ -28,32 +27,41 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Get PR branch
+      - name: Resolve PR branch and skip non-AI PRs
         id: pr
         env:
           GH_TOKEN: ${{ secrets.WORKFLOW_PAT }}
         run: |
           PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
           PR_BRANCH=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName --jq '.headRefName')
-          echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
+          if [[ "$PR_BRANCH" != ai/issue-* ]]; then
+            echo "::notice::Comment is on non-AI PR ($PR_BRANCH) — nothing to do."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
 
       - uses: actions/checkout@v4
+        if: steps.pr.outputs.skip != 'true'
         with:
           ref: ${{ steps.pr.outputs.branch }}
           fetch-depth: 0
           token: ${{ secrets.WORKFLOW_PAT }}
 
       - name: Install Salesforce CLI
+        if: steps.pr.outputs.skip != 'true'
         run: npm install --global @salesforce/cli
 
       - name: Authenticate DevHub
+        if: steps.pr.outputs.skip != 'true'
         run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
 
       - name: Provision scratch org and run baseline tests
+        if: steps.pr.outputs.skip != 'true'
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
       - uses: anthropics/claude-code-action@v1
+        if: steps.pr.outputs.skip != 'true'
         with:
           prompt: |
             Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
