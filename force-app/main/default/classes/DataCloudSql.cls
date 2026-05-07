@@ -10,7 +10,6 @@ public with sharing class DataCloudSql {
 
     public static String query(String sql) {
 
-        System.debug(LoggingLevel.DEBUG, 'sql >>' + sql);
         if (Test.isRunningTest() && mockedResponse != null) {
             return mockedResponse;
         }
