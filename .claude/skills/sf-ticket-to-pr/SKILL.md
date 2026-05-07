@@ -23,7 +23,7 @@ You are done when **either**:
   - On the **first** run for an issue: freshly provisioned, source deployed, baseline Apex tests passing.
   - On every **subsequent** run on the same PR: the same scratch org from before, restored from cached auth — **do not** re-provision or re-deploy everything; only deploy files you actually changed.
 - DevHub auth and SF CLI are ready.
-- `WORKFLOW_PAT` is wired so `git push` and `gh pr create` succeed.
+- A Claude Bot GitHub App installation token is wired so `git push` and `gh pr create` are attributed to `claude-bot[bot]`.
 
 ## Step 1 — Decide
 
