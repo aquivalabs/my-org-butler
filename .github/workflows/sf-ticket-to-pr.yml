@@ -53,9 +53,13 @@ jobs:
         run: sf org login sfdx-url --set-default-dev-hub --sfdx-url-stdin <<< "${{ secrets.SFDX_AUTH_URL }}"
 
       - name: Create branch for the fix
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
         run: |
-          git config user.name "claude-bot[bot]"
-          git config user.email "${{ secrets.CLAUDE_BOT_APP_ID }}+claude-bot[bot]@users.noreply.github.com"
+          USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
           git checkout -b "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
 
       - name: Provision scratch org and run baseline tests
