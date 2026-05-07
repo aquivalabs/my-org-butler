@@ -52,7 +52,18 @@ jobs:
           git checkout -b "fix/issue-${{ github.event.issue.number || inputs.issue_number }}"
 
       - name: Provision scratch org and run baseline tests
-        run: HEADLESS=true ./scripts/create-scratch-org.sh
+        run: HEADLESS=true ./scripts/create-scratch-org.sh 7
+
+      - name: Publish scratch org credentials
+        run: |
+          source ./scripts/config.sh
+          sf org password generate --target-org "$SCRATCH_ORG_ALIAS"
+          {
+            echo "## Scratch Org Credentials"
+            echo '```'
+            sf org display --target-org "$SCRATCH_ORG_ALIAS"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - uses: anthropics/claude-code-action@v1
         with:

@@ -17,6 +17,8 @@ sed_inplace() {
 # HEADLESS=true skips steps that require human interaction or a populated Data Library.
 HEADLESS=${HEADLESS:-false}
 
+DURATION_DAYS=${1:-30}
+
 # retrieval-staging is referenced in sfdx-project.json but git-ignored, so it's
 # missing on a fresh checkout (e.g. CI). Create it so sf commands don't error.
 mkdir -p retrieval-staging
@@ -44,7 +46,7 @@ if [ "$NAMESPACE" = "false" ]; then
 fi
 
 echo "Creating scratch org"
-execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30 $NO_NAMESPACE_FLAG
+execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days $DURATION_DAYS $NO_NAMESPACE_FLAG
 
 echo "Make sure Org user is english"
 sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
