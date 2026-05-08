@@ -116,5 +116,21 @@ jobs:
           fi
           # No PR: still report cost on the issue rollup (no per-comment footer).
           ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
+          # Reject / Split are legitimate stops, not failures — the agent already commented.
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo ${{ github.repository }} --json labels --jq '[.labels[].name] | join(" ")')
+          if echo "$LABELS" | grep -qE "ai-rejected|ai-needs-split"; then
+            echo "::notice::Agent stopped intentionally (label: $LABELS) — not a failure."
+            exit 0
+          fi
           echo "::error::Claude finished without opening a PR on $BRANCH"
           exit 1
+
+      - name: Notify issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo ${{ github.repository }} --body "The pipeline failed before I could finish your request. See the [run logs]($RUN_URL).
+
+          Common causes are scratch-org provisioning errors or transient Salesforce platform issues that are unrelated to this issue. A maintainer can re-trigger by removing and re-adding the \`delegate-to-ai\` label."
