@@ -1,4 +1,4 @@
-// PMD False Positives: Agentforce requires Global
+// Note: Agentforce requires Global
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class SearchWeb {
 
@@ -9,7 +9,7 @@ global with sharing class SearchWeb {
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
 
-        Map<String, Object> body = new Map<String, Object>{ 
+        Map<String, Object> body = new Map<String, Object>{
             'query' => queries[0].content,
             'api_key' => '{!$Credential.TavilyApi.ApiKey}',
             'include_answer' => true
@@ -17,6 +17,11 @@ global with sharing class SearchWeb {
         request.setBody( JSON.serialize(body) );
 
         HttpResponse response = new Http().send(request);
+
+        if (response.getStatusCode() >= 400) {
+            throw new TavilyException('HTTP ' + response.getStatusCode());
+        }
+
         Answer answer = (Answer) JSON.deserialize(response.getBody(), Answer.class);
         return new List<Answer>{ answer };
 
@@ -33,4 +38,6 @@ global with sharing class SearchWeb {
         @InvocableVariable(label='Answer' description='The Natural Language Answer for the Query generated after doing a Web Search.')
         global String answer;
     }
+
+    public class TavilyException extends Exception {}
 }
