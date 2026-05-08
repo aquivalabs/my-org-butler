@@ -97,6 +97,8 @@ is what protects against scope creep, not a folder allowlist.
 
 Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
 
+For deploys that touch Agentforce metadata (`genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, `bots/`), follow `.claude/skills/agentforce-deploy/SKILL.md`. Salesforce CLI has known gaps for these — schema-only edits ship nothing, plugin edits don't propagate, active-bot deploys fail. The skill encodes the workarounds. **Do not** retry the same `sf project deploy start` command in a loop hoping it lands — read the skill and apply the right fixup.
+
 Read each file you will change in full before editing. Then write the change
 and update or add the test class.
 
