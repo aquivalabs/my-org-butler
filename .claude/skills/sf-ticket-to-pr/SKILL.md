@@ -90,7 +90,11 @@ The label names are the same.
 
 ## Step 2 — Code
 
-Touch only `force-app/main/default/classes/` and `force-app/main/default/lwc/`.
+Touch whatever the change actually requires — classes, LWC, agent metadata
+(`genAiFunctions/`, `genAiPlugins/`, `genAiPromptTemplates/`), permission sets,
+Testing Center XML, anything else under `force-app/`. The triage in Step 1
+is what protects against scope creep, not a folder allowlist.
+
 Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
 
 Read each file you will change in full before editing. Then write the change
