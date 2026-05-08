@@ -148,3 +148,14 @@ jobs:
           MODEL: claude-sonnet-4-6
           EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
         run: ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
+
+      - name: Notify PR on failure
+        if: failure() && steps.pr.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh pr comment "$PR_NUMBER" --repo ${{ github.repository }} --body "I couldn't finish responding to your feedback — the run hit an error. See the [run logs]($RUN_URL).
+
+          Common causes are scratch-org issues, transient Salesforce platform errors, or the agent running out of turn budget. Re-trigger by posting another comment or review on this PR."
