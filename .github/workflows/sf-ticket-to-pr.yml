@@ -93,7 +93,7 @@ jobs:
             Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
 
             ${{ github.event.issue.body || inputs.issue_body }}
-          claude_args: "--max-turns 30 --model claude-sonnet-4-6"
+          claude_args: "--max-turns 60 --model claude-sonnet-4-6"
           show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
