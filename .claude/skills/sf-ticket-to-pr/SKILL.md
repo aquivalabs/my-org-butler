@@ -173,6 +173,13 @@ the issue link.
 If the PR already exists, the push above updates it — no new PR. When you reply
 to feedback with `gh pr comment`, include `$SCRATCH_URL` in the comment body too.
 
+### Stop here
+
+Once the push has succeeded **and** the summary comment has been posted, **stop**.
+Do not run further `gh pr view`, `git status`, `git log`, or other verification
+commands to "double-check" — the work is done, and additional turns burn the budget
+without changing the outcome.
+
 ## Anti-patterns
 
 - Skipping Step 1 — touching code before posting the triage comment and applying a label.
@@ -184,3 +191,4 @@ to feedback with `gh pr comment`, include `$SCRATCH_URL` in the comment body too
 - Re-deploying everything via `--source-dir force-app` on a feedback run — only deploy the files you changed.
 - Posting a PR description or reviewer reply without the scratch org auto-login URL.
 - Stopping after a green test run without `git push`.
+- Continuing to run verification commands after the push and summary comment — that's the post-completion loop, exit instead.
