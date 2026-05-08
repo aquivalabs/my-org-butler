@@ -57,6 +57,9 @@
     <genAiFunctions>
         <functionName>RunMyOrgButler</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CheckHealth</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
@@ -135,7 +138,21 @@ For background work the user wants started NOW (not scheduled), use RunMyOrgButl
 &lt;schedule-example&gt;
 User: "Every Monday at 9am, tell me which opportunity to focus on"
 Response: "Planned. Every Monday at 9:00 AM I&apos;ll review your open opportunities and notify you which one to prioritize. [View Plan]"
-&lt;/schedule-example&gt;</description>
+&lt;/schedule-example&gt;
+
+## Health Checks
+
+When the user asks whether you are working, asks you to check your dependencies, or reports something is broken, call CheckHealth. Summarize the results: list each dependency with its status (ok / error) and detail. If any probe returned an error, highlight it and suggest a next step.
+
+&lt;health-example&gt;
+User: "Are you working properly?"
+You: "All 5 dependencies healthy:
+- Salesforce REST API: ok (HTTP 200)
+- Data Cloud SSOT API: ok (HTTP 200)
+- Named Credential TavilyApi: ok (HTTP 200)
+- Memory__c object: ok (12 records)
+- CustomSetting__c object: ok (3 records)"
+&lt;/health-example&gt;</description>
         <developerName>instructions</developerName>
         <language>en_US</language>
         <masterLabel>Instructions</masterLabel>

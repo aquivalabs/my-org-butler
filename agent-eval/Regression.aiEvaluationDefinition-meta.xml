@@ -89,4 +89,10 @@
         <expectation><name>actions_assertion</name><expectedValue>['StoreCustomInstruction']</expectedValue></expectation>
         <expectation><name>bot_response_rating</name><expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue></expectation>
     </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs><utterance>check your health — are all your dependencies working?</utterance></inputs>
+        <expectation><name>actions_assertion</name><expectedValue>['CheckHealth']</expectedValue></expectation>
+        <expectation><name>bot_response_rating</name><expectedValue>Reports the status of all 5 probes (Salesforce REST API, Data Cloud SSOT API, TavilyApi named credential, Memory__c object, CustomSetting__c object) with ok or error for each</expectedValue></expectation>
+    </testCase>
 </AiEvaluationDefinition>

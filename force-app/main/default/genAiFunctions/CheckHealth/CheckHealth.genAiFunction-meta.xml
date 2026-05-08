@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Run a self-check of all My Org Butler dependencies and return a status report for each. Probes five systems: Salesforce REST API, Data Cloud SSOT API, the Tavily named credential, the Memory__c object, and the CustomSetting__c object.
+
+Use when:
+- The user asks whether the agent is healthy, working, or ready.
+- The user reports something is broken and wants to diagnose which dependency has failed.
+- The user asks "are you working?", "check your dependencies", or "run a health check".
+
+NOT for:
+- General org diagnostics — use ExploreOrgSchema, CallMetadataApi, or CallToolingApi for those.
+- Querying org data — use QueryRecordsWithSoql.</description>
+    <developerName>CheckHealth</developerName>
+    <invocationTarget>CheckHealth</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>CheckHealth</localDeveloperName>
+    <mappingAttributes>
+        <label>report</label>
+        <name>output_report</name>
+        <parameterName>report</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <masterLabel>MyOrgButler: Check Health</masterLabel>
+    <progressIndicatorMessage>Probing all agent dependencies...</progressIndicatorMessage>
+</GenAiFunction>
