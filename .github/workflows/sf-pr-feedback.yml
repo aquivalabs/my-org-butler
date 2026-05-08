@@ -54,6 +54,8 @@ jobs:
           PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels,body)
           PR_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
           PR_BODY=$(echo "$PR_DATA" | jq -r '.body')
+          # Recent commits on the PR branch — handed to Claude so it doesn't have to fetch them.
+          PR_COMMITS=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json commits --jq '.commits[-5:] | reverse | .[] | "- \(.oid[:7]) \(.messageHeadline)"')
           HAS_AI_LABEL=$(echo "$PR_DATA" | jq -r '.labels[].name' | grep -c '^ai-generated$' || true)
           # Resolve the originating issue number from "Closes #N" — used both for the cost rollup
           # and as the persistent scratch org alias (pr-<N>) shared with sf-ticket-to-pr.yml.
@@ -61,6 +63,9 @@ jobs:
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
           echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          # Multi-line outputs use the heredoc form so embedded newlines survive.
+          { echo "body<<EOF_BODY"; echo "$PR_BODY"; echo "EOF_BODY"; } >> $GITHUB_OUTPUT
+          { echo "commits<<EOF_COMMITS"; echo "$PR_COMMITS"; echo "EOF_COMMITS"; } >> $GITHUB_OUTPUT
           if [ "$HAS_AI_LABEL" -eq 0 ]; then
             echo "::notice::PR #$PR_NUMBER has no 'ai-generated' label — nothing to do."
             echo "skip=true" >> $GITHUB_OUTPUT
@@ -113,6 +118,12 @@ jobs:
 
             You are responding to feedback on PR #${{ steps.pr.outputs.number }} (branch ${{ steps.pr.outputs.branch }}).
             The PR is already open — do not open a second one. Just push to the branch.
+
+            PR description:
+            ${{ steps.pr.outputs.body }}
+
+            Recent commits on this branch (newest first):
+            ${{ steps.pr.outputs.commits }}
 
             Reviewer comment:
             ${{ github.event.comment.body || github.event.review.body }}
