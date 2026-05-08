@@ -24,6 +24,16 @@ A GitHub Actions pipeline that turns issues into tested pull requests, and turns
 
 ## How it works
 
+The pipeline is one state machine that spans three workflows. A maintainer opens an issue and adds the `delegate-to-ai` label. The label gate is the only entry point — without it nothing fires, which is what stops random drive-by issues from burning Anthropic credits. Only repo members with Triage role or higher can apply labels, so the gate is enforced by GitHub permissions rather than by the workflow itself.
+
+**Triage.** [sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml) starts with a triage job that runs only Claude — no Salesforce CLI is even installed. The agent reads the ticket against [SKILL.md](SKILL.md) Step 1, picks one of three exits (Acknowledge, Reject, Split), posts a comment explaining the choice, and applies the matching label (`ai-acknowledged`, `ai-rejected`, `ai-needs-split`). On Reject or Split the workflow ends here, having spent only the cost of one Claude call. The next step depends on a human re-scoping the work.
+
+**Code.** Only on `ai-acknowledged` does the second job run. It checks out, creates `fix/issue-<N>`, restores the cached scratch-org auth URL if one exists, runs `create-scratch-org.sh` (which either re-logs into the existing org or provisions a fresh one), and hands Claude the original triage plan plus the issue body. Claude continues from Step 2 of the skill — implement, deploy only the changed files, run Apex tests, run PMD on touched lines, commit, open the PR with the scratch-org login URL in the body, and stop. A verify step then confirms a PR exists on the branch and reports the run's cost on both the PR footer and the issue rollup; if no PR materialised, the job fails and a comment with the run-log link is posted to the issue.
+
+**Feedback.** Once the PR carries the `ai-generated` label (set automatically when the PR is opened), [sf-pr-feedback.yml](../../../.github/workflows/sf-pr-feedback.yml) takes over. Any non-bot comment, review, or inline comment fires it — no `@claude` mention required. The workflow restores the same scratch org from the cache, hands Claude the PR body, recent commits, and the reviewer's comment, and asks it to push a follow-up commit on the same branch. The cost footer is appended to the triggering comment, and the issue rollup is updated.
+
+**Cleanup.** When the PR closes (merged or not), [sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) deletes the scratch org from the DevHub and drops the cached auth URL. Best-effort — if either is already gone, the job logs a notice and exits cleanly.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -39,10 +49,10 @@ sequenceDiagram
     CC->>GH: comment with plan + label (ai-acknowledged | ai-rejected | ai-needs-split)
 
     Note over WF: code job runs only if ai-acknowledged
-    WF->>WF: mint App token, checkout, branch fix/issue-N
-    WF->>Org: create-scratch-org.sh (deploy + baseline tests)
+    WF->>WF: checkout, branch fix/issue-N
+    WF->>Org: create-scratch-org.sh (deploy + baseline tests, or restore from cache)
     WF->>WF: cache SFDX auth URL as scratch-auth-pr-N
-    WF->>CC: code prompt = SKILL.md from Step 2
+    WF->>CC: code prompt = SKILL.md from Step 2 + triage plan
     CC->>Org: deploy changed files, run Apex tests, run PMD
     CC->>GH: gh pr create --label ai-generated (body includes scratch org URL)
     WF->>GH: append cost footer to PR
