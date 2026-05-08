@@ -25,9 +25,39 @@ You are done when **either**:
 - DevHub auth and SF CLI are ready.
 - A Claude Bot GitHub App installation token is wired so `git push` and `gh pr create` are attributed to `claude-bot[bot]`.
 
-## Step 1 — Decide
+## Step 1 — Triage
 
-Stop and comment if any of these are true:
+Before touching any code, post a triage comment **and** apply one of three labels.
+Pick exactly one exit: **Acknowledge**, **Reject**, or **Split**. Then either continue
+(Acknowledge only) or stop.
+
+### Scope self-check
+
+Answer these to yourself before picking Acknowledge:
+
+- How many Apex classes will I touch? (1 = fine, 2-3 = borderline, 4+ = split)
+- How many test classes new or changed?
+- Does the work cross subsystems? (e.g. a new action **and** a new prompt template
+  **and** a memory write = yes)
+
+If two or more answers land in "borderline / yes", take the **Split** exit.
+
+### Exit A — Acknowledge
+
+The issue is clear, in-scope, and finishable in one run.
+
+    gh issue comment <N> --body "I can do this in one run. Plan:
+    - <bullet 1 — name a concrete class>
+    - <bullet 2>
+    - <bullet 3>
+    Starting now."
+    gh issue edit <N> --add-label ai-acknowledged
+
+Then continue to Step 2.
+
+### Exit B — Reject
+
+Any of these is true:
 
 - Schema changes needed (fields, objects, relationships)
 - Flows, Permission Sets, Custom Metadata, or anything in `unpackaged/`
@@ -36,13 +66,27 @@ Stop and comment if any of these are true:
 - Data Cloud, External Services, Named Credentials, or `config/`/`sfdx-project.json` changes
 - The feedback contradicts the original issue or the existing change
 
-Stop format — comment on the right place:
+    gh issue comment <N> --body "I can't do this. Reason: <one of the conditions above, named explicitly>. Missing: <what a human needs to do or decide>."
+    gh issue edit <N> --add-label ai-rejected
 
-    # For a new issue:
-    gh issue comment <issue-number> --body "<one paragraph>"
+Stop. Do not proceed to Step 2.
 
-    # For PR feedback:
-    gh pr comment <pr-number> --body "<one paragraph>"
+### Exit C — Split
+
+The story is implementable but too big for one run (self-check failed).
+
+    gh issue comment <N> --body "This is bigger than one run. Proposed split:
+    - <sub-issue 1, scoped to ~1 class + tests>
+    - <sub-issue 2>
+    Stopping; please open the sub-issues and re-delegate."
+    gh issue edit <N> --add-label ai-needs-split
+
+Stop. Do not proceed to Step 2.
+
+### For PR feedback
+
+Same three exits, substitute `gh pr comment <PR>` and `gh pr edit <PR> --add-label`.
+The label names are the same.
 
 ## Step 2 — Code
 
@@ -127,6 +171,9 @@ to feedback with `gh pr comment`, include `$SCRATCH_URL` in the comment body too
 
 ## Anti-patterns
 
+- Skipping Step 1 — touching code before posting the triage comment and applying a label.
+- Acknowledging without naming concrete classes in the plan ("I'll add the action" is not a plan).
+- Treating the scope self-check as advisory — if two answers say borderline/yes, split.
 - Opening a second PR when one already exists for the branch.
 - Investigating PMD findings on lines you did not touch.
 - Calling `create-scratch-org.sh` — the workflow already restored or provisioned the org.
