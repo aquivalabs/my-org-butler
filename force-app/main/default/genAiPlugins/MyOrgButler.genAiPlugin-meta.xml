@@ -57,6 +57,9 @@
     <genAiFunctions>
         <functionName>RunMyOrgButler</functionName>
     </genAiFunctions>
+    <genAiFunctions>
+        <functionName>CheckHealth</functionName>
+    </genAiFunctions>
     <genAiPluginInstructions>
         <description>## Identity
 
