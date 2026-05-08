@@ -149,26 +149,37 @@ specific enough that a reviewer can act without re-reading the issue — but no 
 of text. Aim for ~5–10 lines: what changed, how to verify, the scratch org URL,
 the issue link.
 
+**Always write the body to a file and pass `--body-file`.** Don't try to inline it
+via `--body "$(cat <<EOF...EOF)"` — backticks and `$()` inside the markdown body
+collide with shell expansion and the call fails in ways that take several turns
+to recover from. Use this exact pattern:
+
     BRANCH=$(git branch --show-current)
     if [ -z "$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')" ]; then
-      gh pr create \
-        --title "fix: <short description>" \
-        --body "$(cat <<EOF
+      cat > /tmp/pr-body.md <<'EOF'
     Closes #<issue-number>
 
     ## What changed
     <2–4 bullets — what classes/methods were modified and why>
 
     ## How to verify
-    - Open the scratch org: $SCRATCH_URL
+    - Open the scratch org: <SCRATCH_URL>
     - <one or two concrete steps a human can run in the org>
-    - Apex tests: \`sf apex run test --test-level RunLocalTests\`
+    - Apex tests: `sf apex run test --test-level RunLocalTests`
     EOF
-    )" \
+      # Substitute the scratch org URL after the heredoc so the URL itself is not subject to shell expansion.
+      sed -i "s|<SCRATCH_URL>|$SCRATCH_URL|" /tmp/pr-body.md
+      gh pr create \
+        --title "fix: <short description>" \
+        --body-file /tmp/pr-body.md \
         --head "$BRANCH" \
         --base main \
         --label ai-generated
     fi
+
+The single-quoted `<<'EOF'` heredoc disables shell expansion inside the body, so
+backticks for code spans and `$variables` in narrative both stay literal. The one
+substitution we do need (`$SCRATCH_URL`) is done by `sed` after the file is on disk.
 
 If the PR already exists, the push above updates it — no new PR. When you reply
 to feedback with `gh pr comment`, include `$SCRATCH_URL` in the comment body too.
