@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Probe each agent dependency and return a status report. Use when the user asks "check your health", "are you OK?", "run a self-check", or similar. Checks Salesforce REST API, Tooling API, TavilyApi (web search), Data Cloud, Memory storage, and Custom Settings. Every probe runs independently — one failure does not stop the others. Returns a formatted report with [OK] or [ERROR] for each dependency.</description>
+    <developerName>CheckHealth</developerName>
+    <invocationTarget>CheckHealth</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>CheckHealth</localDeveloperName>
+    <masterLabel>MyOrgButler: Check Health</masterLabel>
+    <progressIndicatorMessage>Running health checks</progressIndicatorMessage>
+</GenAiFunction>
