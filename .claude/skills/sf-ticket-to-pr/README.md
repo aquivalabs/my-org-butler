@@ -4,24 +4,23 @@ A GitHub Actions pipeline that turns issues into tested pull requests, and turns
 
 ## TL;DR
 
-1. Open an issue.
-2. A PR appears in a few minutes — branch made, code deployed to a fresh scratch org, Apex tests green, PMD clean on touched lines. The PR description includes a clickable login URL to that scratch org so you can manually click around the change.
-3. Comment on the PR in plain English.
-4. A new commit lands — re-using the same scratch org from step 2 (no re-provisioning), so feedback iterations are fast.
+1. Open an issue, then add the `delegate-to-ai` label.
+2. A cheap **triage** job runs first — Claude reads the ticket and posts one of three replies: *acknowledge with plan*, *reject with reason*, *split into smaller stories*. No scratch org spun up at this point.
+3. On acknowledge only, a second job runs: branch, scratch org, code, Apex tests, PMD on touched lines, PR opened. The PR description includes a clickable login URL to the org so you can click around the change.
+4. Comment or review on the PR in plain English. A new commit lands on the same branch, reusing the same scratch org from step 3.
 5. Approve and merge — closing the PR deletes the scratch org automatically.
 
 ## Highlights
 
 | | |
 | --- | --- |
-| 🛑 **Knows when to stop** | Schema changes, Flows, Permission Sets, vague repros → Claude posts a comment instead of forcing a bad fix. Stop conditions live in [SKILL.md](SKILL.md). |
+| 🛑 **Triage before infra** | The first job runs only Claude — no scratch org, no SF CLI. Reject and Split outcomes cost a couple of cents each, not a multi-minute provisioning. The expensive code job is gated on the `ai-acknowledged` label the triage produced. |
 | 🤖 **Bot identity** | Commits and PRs are attributed to `claude-bot[bot]` via a GitHub App, not a personal token. The human reviewer stays eligible to approve, and AI vs. human authorship is visible at a glance. |
-| 🏗️ **Setup outside the loop** | Branching, scratch-org provisioning, deploy and baseline tests run as plain shell steps before Claude is invoked. The expensive turn-taking loop only sees a ready environment. |
 | ♻️ **One script, dev + CI** | The runner runs the same [create-scratch-org.sh](../../../scripts/create-scratch-org.sh) a developer runs on their laptop — it just toggles `HEADLESS=true` to skip the steps that need a human (Data Library upload, manual permset assignments). One source of truth for "what is a working org". |
-| 🏷️ **Persistent scratch org per PR** | The first run for an issue provisions a scratch org aliased `pr-<N>` and caches its SFDX auth URL via GitHub Actions cache. Every subsequent run on the same PR (more reviewer comments, workflow re-runs) restores the same org and skips the multi-minute provisioning path. When the PR closes, [sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) deletes the org from the DevHub and drops the cache. |
-| 🔗 **Click-through test URL** | Every PR description and every reply to a reviewer must contain a clickable auto-login URL to the persistent scratch org (see Step 4 in [SKILL.md](SKILL.md)). Reviewers click and exercise the change in the actual org without setting anything up locally. |
-| 💰 **Cost per run** | Each run appends a `🤖 sonnet-4-6 · $0.12 · 18k tokens` footer to the PR or comment. The originating issue carries a sticky rollup across all iterations. |
-| 🔀 **Two flows, one prompt** | Issue→PR and PR-comment→commit both invoke [SKILL.md](SKILL.md). |
+| 🏷️ **Persistent scratch org per PR** | The first acknowledge-run for an issue provisions a scratch org aliased `pr-<N>` and caches its SFDX auth URL via GitHub Actions cache. Every subsequent run (re-runs, reviewer feedback) restores the same org and skips the multi-minute provisioning path. When the PR closes, [sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) deletes the org from the DevHub and drops the cache. |
+| 🔗 **Click-through test URL** | Every PR description and every reply to a reviewer contains a clickable auto-login URL to the persistent scratch org. Reviewers click and exercise the change in the actual org without setting anything up locally. |
+| 💰 **Cost per run** | Each run appends a `🤖 sonnet-4-6 · $0.12 · 18k tokens` footer to the PR or comment. The originating issue carries a sticky rollup across all iterations. Triage runs add a line; rejected stories never reach the costly code path. |
+| 🔀 **Two flows, one prompt** | Issue→PR and PR-feedback→commit both invoke [SKILL.md](SKILL.md). |
 
 ## How it works
 
@@ -34,22 +33,26 @@ sequenceDiagram
     participant CC as Claude Code
     participant Org as Scratch Org
 
-    Dev->>GH: open issue
-    GH-->>WF: trigger sf-ticket-to-pr.yml
+    Dev->>GH: open issue, add `delegate-to-ai` label
+    GH-->>WF: trigger sf-ticket-to-pr.yml — triage job
+    WF->>CC: triage prompt = SKILL.md Step 1 only
+    CC->>GH: comment with plan + label (ai-acknowledged | ai-rejected | ai-needs-split)
+
+    Note over WF: code job runs only if ai-acknowledged
     WF->>WF: mint App token, checkout, branch fix/issue-N
     WF->>Org: create-scratch-org.sh (deploy + baseline tests)
     WF->>WF: cache SFDX auth URL as scratch-auth-pr-N
-    WF->>CC: prompt = SKILL.md + issue body
-    CC->>Org: deploy changed file, run Apex tests, run PMD
+    WF->>CC: code prompt = SKILL.md from Step 2
+    CC->>Org: deploy changed files, run Apex tests, run PMD
     CC->>GH: gh pr create --label ai-generated (body includes scratch org URL)
     WF->>GH: append cost footer to PR
 
-    Dev->>GH: review comment on the PR
+    Dev->>GH: review comment / review submission on the PR
     GH-->>WF: trigger sf-pr-feedback.yml
     WF->>WF: restore scratch-auth-pr-N from cache
     WF->>Org: sf org login sfdx-url (skip provisioning)
-    WF->>CC: prompt = SKILL.md + comment body
-    CC->>Org: deploy changed file + tests against same org
+    WF->>CC: prompt = SKILL.md + PR body + recent commits + reviewer comment
+    CC->>Org: deploy changed files + tests against same org
     CC->>GH: git push (reply includes scratch org URL)
     WF->>GH: append cost footer to comment
 
@@ -59,16 +62,17 @@ sequenceDiagram
     WF->>WF: drop scratch-auth-pr-N cache
 ```
 
-The runner does the deterministic work (CLI install, auth, branching, scratch-org provisioning). Claude is only asked to write code.
+The runner does the deterministic work (CLI install, auth, branching, scratch-org provisioning). Claude is only asked to triage and to write code.
 
 ## File map
 
 | File | Role |
 | --- | --- |
-| [.github/workflows/sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml) | Issue → PR. Fires on `issues: opened`. Provisions the per-PR scratch org and caches its auth URL. |
-| [.github/workflows/sf-pr-feedback.yml](../../../.github/workflows/sf-pr-feedback.yml) | PR comment → commit. Fires on `issue_comment` / `pull_request_review_comment` if the PR has the `ai-generated` label. Restores the cached scratch org instead of re-provisioning. |
+| [.github/workflows/sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml) | Issue → PR. Fires when the `delegate-to-ai` label is added to an issue. Two jobs: a cheap **triage** that runs Claude with no infra, and a **code** job (gated on `ai-acknowledged`) that provisions the per-PR scratch org and caches its auth URL. |
+| [.github/workflows/sf-pr-feedback.yml](../../../.github/workflows/sf-pr-feedback.yml) | PR comment / review → commit. Fires on `issue_comment`, `pull_request_review`, or `pull_request_review_comment` if the PR has the `ai-generated` label. Restores the cached scratch org instead of re-provisioning. |
 | [.github/workflows/sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) | PR close → tear-down. Fires on `pull_request: closed`. Deletes the scratch org from the DevHub and removes the cached auth URL. |
-| [SKILL.md](SKILL.md) | The prompt. Decide → Code → Verify → Ship. Stop conditions and anti-patterns at the bottom. |
+| [.github/workflows/sf-noise-cleanup.yml](../../../.github/workflows/sf-noise-cleanup.yml) | Daily prune of skipped run records (bot-triggered events that the job-level `if:` filtered out). |
+| [SKILL.md](SKILL.md) | The prompt. Triage → Code → Verify → Ship. Anti-patterns at the bottom. |
 | [.claude/settings.json](../../settings.json) | Tool allow-list for Claude (bash commands, `Read`/`Edit`/`Write`). |
 | [scripts/create-scratch-org.sh](../../../scripts/create-scratch-org.sh) | The same script developers run locally; `HEADLESS=true` skips the human-only steps. |
 | [scripts/report-ai-cost.sh](../../../scripts/report-ai-cost.sh) | Reads cost + tokens from the action's `execution_file` output, appends a footer to the PR/comment, updates the sticky rollup on the issue. |
@@ -116,19 +120,21 @@ In **Settings → Secrets and variables → Actions**:
 | `SFDX_AUTH_URL` | `sf org display --verbose --target-org <devhub> --json \| jq -r '.result.sfdxAuthUrl'` |
 | `ANTHROPIC_API_KEY` | Anthropic API key. Or set `CLAUDE_CODE_OAUTH_TOKEN` instead to bill an Anthropic Max subscription. |
 
-### 4. Create the label
+### 4. Create the labels
 
 ```bash
-gh label create ai-generated \
-  --description "PR opened by the SF ticket-to-PR pipeline" \
-  --color FBCA04
+gh label create delegate-to-ai      --description "Hand this issue to the AI pipeline"            --color 0E8A16
+gh label create ai-generated        --description "PR opened by the SF ticket-to-PR pipeline"     --color FBCA04
+gh label create ai-acknowledged     --description "AI accepted the ticket and is implementing it" --color BFD4F2
+gh label create ai-rejected         --description "AI declined — see triage comment for reason"   --color D93F0B
+gh label create ai-needs-split      --description "AI thinks this should be split into smaller stories" --color FBCA04
 ```
 
-The PR-feedback workflow filters on this label; the issue workflow applies it via [SKILL.md](SKILL.md).
+`delegate-to-ai` triggers the pipeline. The other four are applied by the agent itself: triage outcomes (`ai-acknowledged` / `ai-rejected` / `ai-needs-split`) and the PR marker (`ai-generated`, used by the feedback workflow's filter).
 
 ### 5. Smoke test
 
-Open a small, well-scoped issue. The workflow fires, a PR appears, the cost footer shows up on the PR body. Comment on the PR asking for a tweak — a new commit lands on the same branch.
+Open a small, well-scoped issue and add the `delegate-to-ai` label. The triage job fires, the agent comments with a plan and adds `ai-acknowledged`, the code job spins up the scratch org and opens a PR with a cost footer. Submit a review on the PR asking for a tweak — a new commit lands on the same branch.
 
 ## Under the hood
 
@@ -159,17 +165,17 @@ How the persistence works:
 
 Why cache the auth URL instead of, say, a per-PR repo secret: the cache is repo-scoped, branch-namespaced (so fork PRs can't read it), and managed by a single off-the-shelf action. No `gh secret set/delete` dance, no plaintext leakage in workflow logs.
 
-### Stop conditions
+### Triage outcomes
 
-Defined in [SKILL.md](SKILL.md). Claude posts a comment and exits when the issue or feedback requires:
+Step 1 of [SKILL.md](SKILL.md) is a three-way exit. The agent picks exactly one and applies the matching label:
 
-- Schema changes (objects, fields, relationships)
-- Flows, Permission Sets, Custom Metadata, or anything under `unpackaged/`
-- Data Cloud, External Services, Named Credentials, `config/`, or `sfdx-project.json`
-- A vague repro or feedback that contradicts the original issue
-- A cross-component architectural decision
+- **`ai-acknowledged`** — issue is clear, in-scope, finishable in one run. The plan goes in the comment, the code job picks it up.
+- **`ai-rejected`** — vague repro, schema change, Flow / Permission Set work, or any other class of change the agent shouldn't take on its own. The comment names the missing piece a human needs to provide.
+- **`ai-needs-split`** — implementable but too big for one run (multiple Apex classes, cross-subsystem). The comment proposes sub-issues; humans open them and re-delegate.
+
+The full self-check (how many classes touched? how many tests? cross-subsystem?) lives in [SKILL.md](SKILL.md).
 
 ## Open follow-ups
 
-- Verify-step parity in the PR-feedback workflow.
-- Broader ticket shapes end-to-end (small features, not only bug fixes).
+- Verify-step parity in the PR-feedback workflow (notify-on-failure step is still ticket-only).
+- Triage-job cost rollup — currently only the code-phase cost is reported.
