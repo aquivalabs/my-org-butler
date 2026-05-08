@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Let Claude decide whether to take this ticket
+      - name: Triage ticket
         uses: anthropics/claude-code-action@v1
         id: claude
         with:
@@ -153,7 +153,7 @@ jobs:
       - name: Provision or restore scratch org
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
-      - name: Let Claude implement the agreed plan
+      - name: Implement the agreed plan
         uses: anthropics/claude-code-action@v1
         id: claude
         with:

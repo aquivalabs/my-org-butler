@@ -110,7 +110,7 @@ jobs:
           SCRATCH_ORG_ALIAS: pr-${{ steps.pr.outputs.issue_number }}
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
-      - name: Let Claude respond to the reviewer feedback
+      - name: Respond to reviewer feedback
         uses: anthropics/claude-code-action@v1
         id: claude
         if: steps.pr.outputs.skip != 'true'
