@@ -40,6 +40,7 @@ jobs:
       ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
     outputs:
       proceed: ${{ steps.outcome.outputs.proceed }}
+      plan: ${{ steps.outcome.outputs.plan }}
     steps:
       - uses: actions/create-github-app-token@v1
         id: app-token
@@ -82,6 +83,10 @@ jobs:
           if echo "$LABELS" | grep -qE "ai-acknowledged"; then
             echo "::notice::Triage outcome: acknowledged — code job will run."
             echo "proceed=true" >> $GITHUB_OUTPUT
+            # Capture the agent's plan (its last bot-authored comment on the issue) so the
+            # code job can include it in its prompt — saves the agent from re-fetching it.
+            PLAN=$(gh api "/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments" --jq 'map(select(.user.type == "Bot")) | last.body')
+            { echo "plan<<EOF_PLAN"; echo "$PLAN"; echo "EOF_PLAN"; } >> $GITHUB_OUTPUT
           else
             echo "::notice::Triage outcome: $LABELS (rejected / needs-split / unset) — code job will be skipped."
             echo "proceed=false" >> $GITHUB_OUTPUT
@@ -164,10 +169,13 @@ jobs:
             Read .claude/skills/sf-ticket-to-pr/SKILL.md for instructions.
 
             Step 1 — Triage — has already been completed for this issue. The
-            `ai-acknowledged` label is set and your earlier triage comment with
-            the plan is on the issue. Skip Step 1 entirely and start at Step 2
-            — Code. Use the existing acknowledge comment as your plan; if the
-            plan is missing or unclear, re-read the issue and proceed.
+            `ai-acknowledged` label is set. Skip Step 1 entirely and start at
+            Step 2 — Code. Your earlier triage comment is reproduced below;
+            implement exactly that plan, no scope drift.
+
+            --- Your triage plan ---
+            ${{ needs.triage.outputs.plan }}
+            --- End plan ---
 
             Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
 
