@@ -1,0 +1,18 @@
+agent: MyOrgButler
+
+# CheckHealth smoke test. Verifies the agent routes a self-check request to
+# the CheckHealth action and surfaces a meaningful dependency status report.
+#
+# Driven over the Invocable Action REST endpoint; judged by Claude against
+# each `expect`. See .claude/skills/agentforce/commands/eval.md.
+#
+# Testing Center (Regression.aiEvaluationDefinition-meta.xml, case 15) handles
+# topic/action routing assertions. This spec checks the reply content.
+
+tests:
+  - name: CheckHealthAllProbes
+    description: Agent runs a dependency self-check and reports status
+    turns:
+      - turn: Ask for health check
+        say: run a self-check on your dependencies
+        expect: Confirms a self-check or diagnostic completed and reports dependency status (all OK, or names specific failures)
