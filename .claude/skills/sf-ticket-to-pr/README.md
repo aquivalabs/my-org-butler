@@ -15,7 +15,7 @@ A GitHub Actions pipeline that turns issues into tested pull requests, and turns
 | | |
 | --- | --- |
 | 🛑 **Triage before infra** | The first job runs only Claude — no scratch org, no SF CLI. Reject and Split outcomes cost a couple of cents each, not a multi-minute provisioning. The expensive code job is gated on the `ai-acknowledged` label the triage produced. |
-| 🤖 **Bot identity** | Commits and PRs are attributed to `claude-bot[bot]` via a GitHub App, not a personal token. The human reviewer stays eligible to approve, and AI vs. human authorship is visible at a glance. |
+| 🤖 **Bot identity, no setup** | Commits and PRs are attributed to the built-in `github-actions[bot]` via the default `GITHUB_TOKEN`. No GitHub App, no secrets to rotate. The human reviewer stays eligible to approve, AI authorship is visible at a glance, and bot-authored events do not retrigger our workflows (no skipped-run noise). |
 | ♻️ **One script, dev + CI** | The runner runs the same [create-scratch-org.sh](../../../scripts/create-scratch-org.sh) a developer runs on their laptop — it just toggles `HEADLESS=true` to skip the steps that need a human (Data Library upload, manual permset assignments). One source of truth for "what is a working org". |
 | 🏷️ **Persistent scratch org per PR** | The first acknowledge-run for an issue provisions a scratch org aliased `pr-<N>` and caches its SFDX auth URL via GitHub Actions cache. Every subsequent run (re-runs, reviewer feedback) restores the same org and skips the multi-minute provisioning path. When the PR closes, [sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) deletes the org from the DevHub and drops the cache. |
 | 🔗 **Click-through test URL** | Every PR description and every reply to a reviewer contains a clickable auto-login URL to the persistent scratch org. Reviewers click and exercise the change in the actual org without setting anything up locally. |
@@ -71,7 +71,6 @@ The runner does the deterministic work (CLI install, auth, branching, scratch-or
 | [.github/workflows/sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml) | Issue → PR. Fires when the `delegate-to-ai` label is added to an issue. Two jobs: a cheap **triage** that runs Claude with no infra, and a **code** job (gated on `ai-acknowledged`) that provisions the per-PR scratch org and caches its auth URL. |
 | [.github/workflows/sf-pr-feedback.yml](../../../.github/workflows/sf-pr-feedback.yml) | PR comment / review → commit. Fires on `issue_comment`, `pull_request_review`, or `pull_request_review_comment` if the PR has the `ai-generated` label. Restores the cached scratch org instead of re-provisioning. |
 | [.github/workflows/sf-pr-cleanup.yml](../../../.github/workflows/sf-pr-cleanup.yml) | PR close → tear-down. Fires on `pull_request: closed`. Deletes the scratch org from the DevHub and removes the cached auth URL. |
-| [.github/workflows/sf-noise-cleanup.yml](../../../.github/workflows/sf-noise-cleanup.yml) | Daily prune of skipped run records (bot-triggered events that the job-level `if:` filtered out). |
 | [SKILL.md](SKILL.md) | The prompt. Triage → Code → Verify → Ship. Anti-patterns at the bottom. |
 | [.claude/settings.json](../../settings.json) | Tool allow-list for Claude (bash commands, `Read`/`Edit`/`Write`). |
 | [scripts/create-scratch-org.sh](../../../scripts/create-scratch-org.sh) | The same script developers run locally; `HEADLESS=true` skips the human-only steps. |
@@ -97,30 +96,18 @@ Non-Salesforce repo? Keep everything except [scripts/create-scratch-org.sh](../.
 
 Provisioning contract: `HEADLESS=true ./scripts/create-scratch-org.sh` must exit 0 when the environment is ready. No prompts, no `sf org open`, no human-gated waits.
 
-### 2. Create the Claude Bot GitHub App (org-wide, once)
-
-The default `GITHUB_TOKEN` cannot push branches that contain workflow files — GitHub blocks it regardless of the `permissions:` block. A GitHub App with the `workflows` permission is the canonical fix and also keeps authorship attributed to a bot user.
-
-In **Settings → Developer settings → GitHub Apps → New GitHub App**:
-
-- Disable webhooks.
-- Repository permissions — **Contents**, **Issues**, **Pull requests**, **Workflows**: read & write. **Metadata**: read.
-- Restrict installation to your own account.
-- Generate a private key (PEM); note the numeric App ID.
-- **Install** the App on the target repo.
-
-### 3. Set repo secrets
+### 2. Set repo secrets
 
 In **Settings → Secrets and variables → Actions**:
 
 | Secret | Value |
 | --- | --- |
-| `CLAUDE_BOT_APP_ID` | Numeric App ID from step 2. |
-| `CLAUDE_BOT_PRIVATE_KEY` | Full PEM, including `BEGIN`/`END` lines. |
 | `SFDX_AUTH_URL` | `sf org display --verbose --target-org <devhub> --json \| jq -r '.result.sfdxAuthUrl'` |
 | `ANTHROPIC_API_KEY` | Anthropic API key. Or set `CLAUDE_CODE_OAUTH_TOKEN` instead to bill an Anthropic Max subscription. |
 
-### 4. Create the labels
+The workflows authenticate with the built-in `GITHUB_TOKEN` for everything else — no GitHub App or PAT to set up. Trade-off: the agent cannot push branches that touch `.github/workflows/` files. That's intentional — CI changes belong in a separate human PR.
+
+### 3. Create the labels
 
 ```bash
 gh label create delegate-to-ai      --description "Hand this issue to the AI pipeline"            --color 0E8A16
@@ -132,7 +119,7 @@ gh label create ai-needs-split      --description "AI thinks this should be spli
 
 `delegate-to-ai` triggers the pipeline. The other four are applied by the agent itself: triage outcomes (`ai-acknowledged` / `ai-rejected` / `ai-needs-split`) and the PR marker (`ai-generated`, used by the feedback workflow's filter).
 
-### 5. Smoke test
+### 4. Smoke test
 
 Open a small, well-scoped issue and add the `delegate-to-ai` label. The triage job fires, the agent comments with a plan and adds `ai-acknowledged`, the code job spins up the scratch org and opens a PR with a cost footer. Submit a review on the PR asking for a tweak — a new commit lands on the same branch.
 
@@ -149,7 +136,7 @@ No `ccusage`, no `npm`, no JSONL diffing — the action already has the numbers.
 
 ### Bot authorship
 
-The git author email is derived at runtime from the App's installation slug as `${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com` — the only form GitHub accepts on the `noreply` domain for `[bot]` users. See the **Create branch for the fix** step in [.github/workflows/sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml).
+Commits and PRs are authored by `github-actions[bot]` using its `noreply` email `41898282+github-actions[bot]@users.noreply.github.com` — the form GitHub accepts on the `noreply` domain for built-in `[bot]` users. The git config is set in the **Create branch for the fix** step in [.github/workflows/sf-ticket-to-pr.yml](../../../.github/workflows/sf-ticket-to-pr.yml). Because events fired by the default `GITHUB_TOKEN` do not retrigger workflows, no skipped-run noise accumulates from the bot's own labels and comments.
 
 ### Persistent scratch org per PR
 

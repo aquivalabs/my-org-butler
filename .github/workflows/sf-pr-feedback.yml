@@ -37,18 +37,11 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-      id-token: write
     steps:
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.CLAUDE_BOT_APP_ID }}
-          private-key: ${{ secrets.CLAUDE_BOT_PRIVATE_KEY }}
-
       - name: Resolve PR and skip non-AI PRs
         id: pr
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
           PR_DATA=$(gh pr view "$PR_NUMBER" --repo ${{ github.repository }} --json headRefName,labels,body)
@@ -80,7 +73,12 @@ jobs:
         with:
           ref: ${{ steps.pr.outputs.branch }}
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git as github-actions bot
+        if: steps.pr.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Install Salesforce CLI
         if: steps.pr.outputs.skip != 'true'
@@ -131,12 +129,12 @@ jobs:
           show_full_output: "true"
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ steps.app-token.outputs.token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Report AI cost
         if: always() && steps.pr.outputs.skip != 'true'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           ISSUE_NUMBER: ${{ steps.pr.outputs.issue_number }}
           COMMENT_ID: ${{ github.event.comment.id }}
