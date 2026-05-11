@@ -35,10 +35,7 @@ global with sharing class CallRestApi {
     }
 
     global class Output {
-        @InvocableVariable(
-            label='Response Body' 
-            description='Raw HTTP Response to be interpreted for Errors or Success' 
-            required=true)
+        @InvocableVariable(label='Response Body' description='Raw HTTP Response to be interpreted for Errors or Success' required=true)
         global String responseBody;
         
         public Output(String body) {
