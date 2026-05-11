@@ -63,13 +63,14 @@ Opportunity acmeExpansion = new Opportunity(
 );
 insert acmeExpansion;
 
-// Note: For the task creation test (Testing Center #4)
+// Note: For the task creation test (Testing Center #4). Closed Won so it doesn't
+// compete with Acme Q1 Expansion in "which open opp should I work on next?" queries.
 Opportunity burlingtonDeal = new Opportunity(
     Name = 'Burlington Textiles Weaving Plant Generator',
     AccountId = burlington.Id,
     Amount = 235000,
-    StageName = 'Id. Decision Makers',
-    CloseDate = Date.today().addDays(120),
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-60),
     Description = 'Generator installation for new weaving plant expansion.'
 );
 insert burlingtonDeal;
@@ -84,8 +85,8 @@ Opportunity starkLlm = new Opportunity(
     Name = 'Stark LLM Ops Automation',
     AccountId = stark.Id,
     Amount = 320000,
-    StageName = 'Proposal',
-    CloseDate = Date.today().addDays(90),
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-45),
     Description = 'Large language model operations platform for automating internal workflows. Includes GPT-based document processing, neural network inference pipelines, and machine learning model deployment.'
 );
 insert starkLlm;
@@ -94,8 +95,8 @@ Opportunity acmeAi = new Opportunity(
     Name = 'Acme AI Platform Renewal',
     AccountId = acme.Id,
     Amount = 200000,
-    StageName = 'Negotiation',
-    CloseDate = Date.today().addDays(90),
+    StageName = 'Closed Won',
+    CloseDate = Date.today().addDays(-90),
     Description = 'Annual renewal of the Acme artificial intelligence and machine learning platform. Covers predictive analytics, natural language processing, and computer vision modules.'
 );
 insert acmeAi;
