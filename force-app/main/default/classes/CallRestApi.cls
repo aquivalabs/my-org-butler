@@ -24,22 +24,13 @@ global with sharing class CallRestApi {
     // INNER
 
     global class Input {
-        @InvocableVariable(
-            label='Endpoint URL' 
-            description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added' 
-            required=true)
+        @InvocableVariable(label='Endpoint URL' description='The URL fragment of the REST endpoint starting with /. The Orgs base URL will be added' required=true)
         global String urlIncludingParams;
         
-        @InvocableVariable(
-            label='HTTP Method' 
-            description='The HTTP method to use' 
-            required=true)
+        @InvocableVariable(label='HTTP Method' description='The HTTP method to use' required=true)
         global String httpMethod;
         
-        @InvocableVariable(
-            label='Request Body' 
-            description='Payload data to be sent in the request body. Can be null if there is no body.' 
-            required=false)
+        @InvocableVariable(label='Request Body' description='Payload data to be sent in the request body. Can be null if there is no body.' required=false)
         global String requestBody;
     }
 
