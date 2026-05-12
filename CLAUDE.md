@@ -4,6 +4,22 @@
 
 When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The rules below still apply.
 
+## Coding Philosophy
+
+1. **Readability over cleverness** — Code is read far more than written. Optimize for the reader.
+2. **Simplicity over sophistication** — No deep package hierarchies, no enterprise patterns. Flat folders, simple names, minimal abstraction.
+3. **Explicit over implicit** — When you deviate from defaults, say why. No magic.
+4. **Tests as documentation** — Class + method name reads as a sentence describing behavior.
+5. **Leverage existing solutions** — Don't reinvent. Use the libraries already in the project.
+
+Salesforce/Apex specifics live in [.claude/rules/salesforce/coding-standards.md](.claude/rules/salesforce/coding-standards.md). After creating or modifying `.cls`, `.trigger`, or `*-meta.xml` files, run `/sf-code-analyzer` on the changed files before declaring done.
+
+## Working Style
+
+- **Don't guess on expensive operations.** When unsure about a config value, feature name, or setting — verify against a known-working reference (other branch, docs) before running something that takes minutes to fail (scratch-org creation, large deploys).
+- **Fail loud, never silently.** "Completed", "tests pass", "feature works" are wrong if anything was skipped or any edge case wasn't verified. Surface uncertainty by default — partial success is not success.
+- **Surface conflicts, don't average them.** If two existing patterns in the codebase contradict, pick one (more recent / more tested), say why, and flag the other. Don't write code that satisfies both — blended code is the worst code.
+
 ## Deploying
 
 Never run `sf project deploy start --source-dir force-app`. The scratch org is namespaceless but some metadata files contain namespace references, so a full deploy always fails. Always deploy only the specific files you changed:

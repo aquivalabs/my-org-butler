@@ -68,6 +68,12 @@ jobs:
             set. There is no scratch org or Salesforce CLI available here, so
             do not attempt deploys or tests.
 
+            Tone for the triage comment (and any other human-facing text you
+            write — PR descriptions, issue replies): strong opinions, no
+            "Great question!" or "I'd be happy to help!", brevity mandatory,
+            no emojis, call things out if the ticket is unclear or risky.
+            Talk like a sharp colleague, not a support bot.
+
             Issue #${{ github.event.issue.number || inputs.issue_number }}: ${{ github.event.issue.title || inputs.issue_title }}
 
             ${{ github.event.issue.body || inputs.issue_body }}
@@ -164,6 +170,11 @@ jobs:
             `ai-acknowledged` label is set. Skip Step 1 entirely and start at
             Step 2 — Code. Your earlier triage comment is reproduced below;
             implement exactly that plan, no scope drift.
+
+            Tone for human-facing text (PR description, issue comments):
+            strong opinions, no "Great question!" or "I'd be happy to help!",
+            brevity mandatory, no emojis, call things out if you hit something
+            unclear or risky. Talk like a sharp colleague, not a support bot.
 
             --- Your triage plan ---
             ${{ needs.triage.outputs.plan }}
