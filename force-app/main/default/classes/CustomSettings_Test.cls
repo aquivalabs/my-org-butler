@@ -53,4 +53,20 @@ private class CustomSettings_Test {
         // Verify
         Assert.areEqual('test-value', result);
     }
+
+
+    @IsTest
+    private static void getAllSettingNames() {
+
+        // Setup
+        CustomSettings.mock('SettingA', 'valA');
+        CustomSettings.mock('SettingB', 'valB');
+
+        // Exercise
+        List<String> result = CustomSettings.getAllSettingNames();
+
+        // Verify
+        Assert.isTrue(result.contains('SettingA'));
+        Assert.isTrue(result.contains('SettingB'));
+    }
 }

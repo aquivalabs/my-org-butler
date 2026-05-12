@@ -16,7 +16,13 @@ public with sharing class CustomSettings {
         CustomSetting__c setting = CustomSetting__c.getValues(settingName);
         return setting != null ? setting.Value__c : null;
     }
-    
+
+    public static List<String> getAllSettingNames() {
+        List<String> result = new List<String>(CustomSetting__c.getAll().keySet());
+
+        return result;
+    }
+
     @TestVisible
     private static void mock(String settingName, String value) {
         CustomSetting__c setting = new CustomSetting__c(
