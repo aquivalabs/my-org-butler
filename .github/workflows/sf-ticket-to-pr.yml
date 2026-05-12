@@ -159,6 +159,12 @@ jobs:
       - name: Provision or restore scratch org
         run: HEADLESS=true ./scripts/create-scratch-org.sh
 
+      # create-scratch-org.sh just regenerated security-review/*.csv against the
+      # unchanged source tree — that's our baseline for this run. Anything new in
+      # the post-agent scan is the agent's fault.
+      - name: Snapshot analyzer baseline
+        run: cp -r security-review /tmp/analyzer-baseline
+
       - name: Implement the agreed plan
         uses: anthropics/claude-code-action@v1
         id: claude
@@ -188,6 +194,33 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Re-scan and diff vs baseline
+        id: analyzer_diff
+        run: ./scripts/analyzer-check.sh /tmp/analyzer-baseline
+
+      - name: Fix-up — agent addresses new findings
+        if: steps.analyzer_diff.outputs.has_delta == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          prompt: |
+            Your previous changes introduced new Salesforce Code Analyzer findings that are NOT in the baseline. Fix them all, redeploy, and push another commit to the PR branch. Do not touch `security-review/` — that's the human-curated baseline. If a finding cannot legitimately be fixed, stop and comment on the issue.
+
+            New findings (rule|file|message):
+            $(cat /tmp/analyzer-delta.txt)
+          claude_args: "--max-turns 40 --model claude-sonnet-4-6"
+          show_full_output: "true"
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Final analyzer check
+        if: steps.analyzer_diff.outputs.has_delta == 'true'
+        run: ./scripts/analyzer-check.sh /tmp/analyzer-baseline --fail-on-delta
+
+      - name: Restore baseline CSVs (agent must never commit them)
+        if: always()
+        run: cp /tmp/analyzer-baseline/*.csv security-review/
 
       - name: Verify deliverable and report AI cost
         if: always()

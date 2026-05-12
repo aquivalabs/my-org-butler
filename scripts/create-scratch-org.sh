@@ -160,5 +160,5 @@ APEX
 fi
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
-#sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file code-analyzer-security.csv --target force-app/main/default
-#sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" --output-file code-analyzer-cleancode.csv --target force-app/main/default
+sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow" "sfge" --output-file security-review/code-analyzer-security.csv --target force-app --target unpackaged
+sf code-analyzer run --config-file .claude/skills/sf-code-analyzer/code-analyzer.yaml --rule-selector "PMD:OpinionatedSalesforce" --output-file security-review/code-analyzer-cleancode.csv --target force-app --target unpackaged
