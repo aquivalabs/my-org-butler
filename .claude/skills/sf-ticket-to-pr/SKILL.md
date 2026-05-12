@@ -114,11 +114,11 @@ Run tests:
 
     sf apex run test --test-level RunLocalTests --wait 30 --result-format human
 
-Run the analyzer on the file you changed:
-
-    sf code-analyzer run --config-file code-analyzer.yaml --rule-selector "PMD:OpinionatedSalesforce" \
-      --output-file /tmp/analyzer.csv \
-      --target force-app/main/default/classes/<File>.cls
+Run the `/sf-code-analyzer` skill on the files you changed. Run BOTH the
+security and the clean-code scan — same selectors as in `scripts/create-scratch-org.sh`
+(`Recommended:Security`, `AppExchange`, `flow`, `sfge` and
+`PMD:OpinionatedSalesforce` via the root `code-analyzer.yaml`). Fix every new
+finding the agent caused, on the lines you touched.
 
 **Scope discipline:** the analyzer reports findings on the whole file, but you
 own only the lines you touched. Findings on lines you did not change are
