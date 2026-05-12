@@ -11,7 +11,7 @@ paths:
 
 ## Verification
 
-Many of these principles are enforced by a [custom PMD ruleset](../skills/sf-code-analyzer/pmd-ruleset.xml) via `/sf-code-analyzer`. **After creating or modifying any `.cls`, `.trigger`, or `*-meta.xml` file, run `/sf-code-analyzer` on the changed files before considering the task done.**
+Many of these principles are enforced by a [custom PMD ruleset](../../pmd-ruleset.xml) via `/sf-code-analyzer`. **After creating or modifying any `.cls`, `.trigger`, or `*-meta.xml` file, run `/sf-code-analyzer` on the changed files before considering the task done.**
 
 ## Core Principles
 
@@ -19,7 +19,7 @@ Many of these principles are enforced by a [custom PMD ruleset](../skills/sf-cod
 
 Methods have exactly one `return` statement at the end. Use the `result` variable pattern.
 
-(Checked by custom PMD rule: [`OnlyOneReturnPerMethod`](../skills/sf-code-analyzer/pmd-ruleset.xml) and [`DeclareWhatYouReturnFirstAndCallItResult`](../skills/sf-code-analyzer/pmd-ruleset.xml))
+(Checked by custom PMD rule: [`OnlyOneReturnPerMethod`](../../pmd-ruleset.xml) and [`DeclareWhatYouReturnFirstAndCallItResult`](../../pmd-ruleset.xml))
 
 ```java
 private List<Account> findAccounts(String name) {
@@ -41,7 +41,7 @@ Never use: `Service`, `Handler`, `Manager`, `Helper`, `Util`, `Wrapper`
 
 These names hide intent. Use domain names that reveal what the class represents.
 
-(Checked by custom PMD rule: [`ClassNamesBecomeSelfFulfillingProphecies`](../skills/sf-code-analyzer/pmd-ruleset.xml))
+(Checked by custom PMD rule: [`ClassNamesBecomeSelfFulfillingProphecies`](../../pmd-ruleset.xml))
 
 ### Comments: When Forbidden, When Required
 
@@ -52,7 +52,7 @@ However, there are exactly two exceptions where `// Note:` comments ARE required
 1. **Strange code that must be that way** — Code that violates normal conventions but is necessary. Explain why it's an exception.
 2. **PMD suppressions** — Every `@SuppressWarnings` must have a `// Note:` comment explaining why the rule is being skipped.
 
-(Checked by custom PMD rules: [`CommentsOftenExcuseForBadCodeAndTests`](../skills/sf-code-analyzer/pmd-ruleset.xml) and [`CheckIfProperFalsePositive`](../skills/sf-code-analyzer/pmd-ruleset.xml))
+(Checked by custom PMD rules: [`CommentsOftenExcuseForBadCodeAndTests`](../../pmd-ruleset.xml) and [`CheckIfProperFalsePositive`](../../pmd-ruleset.xml))
 
 Examples:
 
@@ -71,7 +71,7 @@ private static List<Account> fetchAccounts() { ... }
 
 Never prefix a test method with `test`. It adds no information — the `@IsTest` annotation and `_Test` class suffix already say it's a test.
 
-(Checked by custom PMD rule: [`TestsShouldNotStartWithTest`](../skills/sf-code-analyzer/pmd-ruleset.xml))
+(Checked by custom PMD rule: [`TestsShouldNotStartWithTest`](../../pmd-ruleset.xml))
 
 ### Test Method Names: Match the Scope of What's Being Verified
 

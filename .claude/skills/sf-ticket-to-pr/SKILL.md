@@ -116,7 +116,7 @@ Run tests:
 
 Run the analyzer on the file you changed:
 
-    sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" \
+    sf code-analyzer run --config-file code-analyzer.yaml --rule-selector "PMD:OpinionatedSalesforce" \
       --output-file /tmp/analyzer.csv \
       --target force-app/main/default/classes/<File>.cls
 

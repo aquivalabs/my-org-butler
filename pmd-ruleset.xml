@@ -140,7 +140,7 @@
                 lower-case(@Image) != 'result' 
                 and
                 ancestor::Method[
-                    @Synthetic = false() 
+                    not(@Synthetic = true()) 
                     and 
                     lower-case(@ReturnType)!='void'
                 ] 
@@ -250,7 +250,7 @@
 
             //Method[
                 starts-with(@Image, 'get')
-                and @Synthetic = false()
+                and not(@Synthetic = true())
                 and not(ancestor::UserClass/descendant::ModifierNode/Annotation[@Image='IsTest'])
             ]
 

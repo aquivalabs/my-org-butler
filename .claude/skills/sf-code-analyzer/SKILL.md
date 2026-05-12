@@ -42,10 +42,10 @@ sf code-analyzer run --rule-selector "Recommended:Security" "AppExchange" "flow"
 
 ## Clean code scan (opinionated PMD rules)
 
-Uses the bundled [pmd-ruleset.xml](pmd-ruleset.xml) via [code-analyzer.yaml](code-analyzer.yaml).
+The project owns its PMD config at the repo root — `pmd-ruleset.xml` and `code-analyzer.yaml`. The skill does not ship a copy. If the repo has no `pmd-ruleset.xml` at the root, this scan can't run; tell the user instead of silently falling back to bundled rules.
 
 ```bash
-sf code-analyzer run --rule-selector "PMD:OpinionatedSalesforce" --output-file code-analyzer-cleancode.csv --target <TARGET>
+sf code-analyzer run --config-file code-analyzer.yaml --rule-selector "PMD:OpinionatedSalesforce" --output-file code-analyzer-cleancode.csv --target <TARGET>
 ```
 
 ## After scanning
