@@ -3,7 +3,7 @@ name: sf-ticket-to-pr
 description: Respond to @butler mentions on GitHub issues and PRs — read the thread, decide, act
 ---
 
-# Butler — Ticket to PR
+# SF Ticket to PR
 
 You were summoned by an `@butler` mention on a GitHub issue or PR. Read the
 full thread first, then act. Every run is independent — there are no

@@ -1,4 +1,4 @@
-# Butler — Ticket to PR
+# SF Ticket to PR
 
 A GitHub Actions pipeline that turns `@butler` mentions on issues and PRs into tested pull requests. A maintainer writes `@butler` in a comment; Claude reads the thread, decides what to do, and either ships a PR or posts back with a question, a split proposal, or a refusal.
 
@@ -113,10 +113,10 @@ The workflow authenticates with the built-in `GITHUB_TOKEN` for everything else 
 ### 3. Create the label
 
 ```bash
-gh label create ai-involved --description "PR opened by butler" --color FBCA04
+gh label create ai-involved --description "Butler (AI) was involved in this issue or PR" --color FBCA04
 ```
 
-That's the only label the pipeline uses. The agent applies it when opening a PR so humans can filter the PR list at a glance. No state labels — every triage fire reads the full thread fresh.
+That's the only label the pipeline uses. The triage job stamps it on every issue or PR it touches, regardless of outcome (take / clarify / split / refuse), so humans can filter the list at a glance. No state labels — every triage fire reads the full thread fresh.
 
 ### 4. Smoke test
 
