@@ -123,9 +123,11 @@ Redeploy the changed file (the script already deployed everything else):
       sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
       git checkout -- force-app/main/default/classes/<File>.cls
 
-Run tests:
+Run tests **in the foreground** with a Bash timeout long enough to cover the full Apex run (the CLI `--wait 30` is 30 minutes — the Bash timeout must match):
 
     sf apex run test --test-level RunLocalTests --wait 30 --result-format human
+
+Do **not** background this call and poll `TaskOutput` — the 5-minute `TaskOutput` cap is shorter than a real test run, the agent will read "still running" and stall the PR. Use Bash `timeout: 1800000` (30 min) and let the CLI print results directly when finished.
 
 Run the `/sf-code-analyzer` skill on the files you changed. Run BOTH the
 security and the clean-code scan — same selectors as in `scripts/create-scratch-org.sh`
