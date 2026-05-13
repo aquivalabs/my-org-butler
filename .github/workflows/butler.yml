@@ -166,6 +166,21 @@ jobs:
             echo "proceed=false" >> $GITHUB_OUTPUT
           fi
 
+      # Mark the issue/PR with `ai-generated` so humans see at a glance that
+      # Butler touched this thread. Purely visual — never gates anything.
+      - name: Stamp ai-generated label
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ steps.context.outputs.number }}
+          KIND: ${{ steps.context.outputs.kind }}
+        run: |
+          if [ "$KIND" = "pr" ]; then
+            gh pr edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-generated || true
+          else
+            gh issue edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-generated || true
+          fi
+
       - name: Notify on triage failure
         if: failure()
         env:
