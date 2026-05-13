@@ -1,99 +1,104 @@
 ---
 name: sf-ticket-to-pr
-description: Turn human words (a GitHub issue or a reviewer comment) into a tested, committed, and PR'd code change
+description: Respond to @butler mentions on GitHub issues and PRs — read the thread, decide, act
 ---
 
-# SF Ticket to PR
+# Butler — Ticket to PR
 
-Human words come in (a freshly opened issue, or a reviewer's comment on an
-existing PR). You turn them into committed code on a branch — opening a PR
-if none exists yet, otherwise pushing to the existing one.
+You were summoned by an `@butler` mention on a GitHub issue or PR. Read the
+full thread first, then act. Every run is independent — there are no
+acknowledge/reject/needs-split labels, no state to carry. The only label still
+in use is `ai-generated`, which you apply to PRs you open so humans can see at
+a glance what came from you.
 
 You are done when **either**:
 - A new commit lands on a branch with an open PR (and `gh pr create` ran if
   the PR didn't exist before), **or**
-- A clear stop-reason has been posted as a comment explaining why you can't.
+- A clear stop-reason has been posted as a comment explaining why you didn't.
 
 ## Preconditions (already done by the workflow)
 
 - The correct branch is already checked out:
-  - For new issues: a fresh `fix/issue-<N>` branch off `main`
-  - For PR feedback: the PR's existing branch
+  - For new issues: a fresh `fix/issue-<N>` branch off `main`.
+  - For PR follow-ups: the PR's existing head branch.
 - A scratch org is ready and set as default:
   - On the **first** run for an issue: freshly provisioned, source deployed, baseline Apex tests passing.
-  - On every **subsequent** run on the same PR: the same scratch org from before, restored from cached auth — **do not** re-provision or re-deploy everything; only deploy files you actually changed.
+  - On every **subsequent** run on the same PR: the same scratch org restored from cached auth — **do not** re-provision or re-deploy everything; only redeploy files you changed.
 - DevHub auth and SF CLI are ready.
-- A Claude Bot GitHub App installation token is wired so `git push` and `gh pr create` are attributed to `claude-bot[bot]`.
+- Commits and PRs are attributed to `github-actions[bot]`.
 
-## Step 1 — Triage
+## Step 1 — Read the thread, then decide
 
-Before touching any code, post a triage comment **and** apply one of three labels.
-Pick exactly one exit: **Acknowledge**, **Reject**, or **Split**. Then either continue
-(Acknowledge only) or stop.
+Before touching code, read the conversation:
 
-### Scope self-check
+    gh issue view <N> --repo <owner/repo> --comments     # for issues
+    gh pr view  <N> --repo <owner/repo> --comments       # for PRs
 
-Answer these to yourself before picking Acknowledge:
+You will already have been given the kind (`issue` or `pr`) and number `<N>`
+in the prompt. Read everything — the body and every comment, in order. The
+latest human signal is authoritative; if a maintainer's most recent comment
+contradicts an earlier one of yours, follow the maintainer.
 
-- How many Apex classes will I touch? (1 = fine, 2-3 = borderline, 4+ = split)
-- How many test classes new or changed?
-- Does the work cross subsystems? (e.g. a new action **and** a new prompt template
-  **and** a memory write = yes)
+Then pick one of four moves and post a comment that says which.
 
-If two or more answers land in "borderline / yes", take the **Split** exit.
+### Take it
 
-### Exit A — Acknowledge
+The request is clear and small enough to land in one PR. Comment with a
+short, concrete plan — name the classes you will touch, the metadata you
+will add, the tests you will write. End the comment with this exact trailing
+line (HTML comment, invisible in GitHub UI) so the execute job fires:
 
-The issue is clear, in-scope, and finishable in one run.
-
-    gh issue comment <N> --body "I can do this in one run. Plan:
-    - <bullet 1 — name a concrete class>
-    - <bullet 2>
-    - <bullet 3>
-    Starting now."
-    gh issue edit <N> --add-label ai-acknowledged
+    <!-- butler:proceed -->
 
 Then continue to Step 2.
 
-### Exit B — Reject
+**Sizing.** Use judgment, not a checklist. A request that fits one PR usually
+touches 1–3 Apex classes plus their tests, optionally one LWC, optionally a
+handful of metadata files (custom fields, queues, perm sets, a Flow). It does
+**not** cross several subsystems at once (a new action **and** a new prompt
+template **and** a memory write) and does **not** require architectural
+decisions that aren't already settled in the codebase. If you're not sure,
+propose a split.
 
-Any of these is true:
+**Schema is in scope.** Custom fields, custom objects, queues, Flows,
+Permission Sets, Custom Metadata, record types — author them alongside the
+Apex when the request needs them. Do **not** refuse for "missing
+prerequisites" if the prerequisite is something the issue is asking you to
+create. The whole point of the pipeline is to go from words to a working PR;
+demanding that a human pre-create the field defeats it.
 
-- Schema changes needed (fields, objects, relationships)
-- Flows, Permission Sets, Custom Metadata, or anything in `unpackaged/`
-- Repro steps / feedback too vague to act on
-- Cross-component architectural decision required
-- Data Cloud, External Services, Named Credentials, or `config/`/`sfdx-project.json` changes
-- The feedback contradicts the original issue or the existing change
+### Ask for clarification
 
-    gh issue comment <N> --body "I can't do this. Reason: <one of the conditions above, named explicitly>. Missing: <what a human needs to do or decide>."
-    gh issue edit <N> --add-label ai-rejected
+The request is unclear, ambiguous, or contradicts something already in the
+codebase or thread. Post a comment naming exactly what you need to decide
+before you can act — one or two crisp questions, not a list of ten. **Do not**
+include the proceed marker. Stop.
 
-Stop. Do not proceed to Step 2.
+### Propose a split
 
-### Exit C — Split
+The work is implementable but bigger than one PR. Comment with a proposed
+split — each sub-story sized to ~1 class + tests + the metadata it needs.
+Name what should land first and why. **Do not** include the proceed marker.
+Stop. A human will open the sub-issues and mention you on them.
 
-The story is implementable but too big for one run (self-check failed).
+### Refuse
 
-    gh issue comment <N> --body "This is bigger than one run. Proposed split:
-    - <sub-issue 1, scoped to ~1 class + tests>
-    - <sub-issue 2>
-    Stopping; please open the sub-issues and re-delegate."
-    gh issue edit <N> --add-label ai-needs-split
+A small number of changes genuinely shouldn't go through the pipeline:
 
-Stop. Do not proceed to Step 2.
+- Data Cloud, External Services, or Named Credentials changes — namespaced scratch orgs hit known platform bugs here (see memory).
+- `config/`, `sfdx-project.json`, or `.github/workflows/` changes — these belong in a separate human PR for safety.
+- Feedback that contradicts the original issue without explanation — ask for clarification instead of guessing.
 
-### For PR feedback
-
-Same three exits, substitute `gh pr comment <PR>` and `gh pr edit <PR> --add-label`.
-The label names are the same.
+Comment with the reason in one sentence. **Do not** include the proceed
+marker. Stop.
 
 ## Step 2 — Code
 
 Touch whatever the change actually requires — classes, LWC, agent metadata
 (`genAiFunctions/`, `genAiPlugins/`, `genAiPromptTemplates/`), permission sets,
-Testing Center XML, anything else under `force-app/`. The triage in Step 1
-is what protects against scope creep, not a folder allowlist.
+queues, custom fields, Flows, Testing Center XML, anything else under
+`force-app/` or `unpackaged/`. The triage in Step 1 is what protects against
+scope creep, not a folder allowlist.
 
 Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
 
@@ -195,13 +200,14 @@ without changing the outcome.
 
 ## Anti-patterns
 
-- Skipping Step 1 — touching code before posting the triage comment and applying a label.
-- Acknowledging without naming concrete classes in the plan ("I'll add the action" is not a plan).
-- Treating the scope self-check as advisory — if two answers say borderline/yes, split.
+- Skipping Step 1 — touching code before reading the thread and posting a comment that names what you're about to do.
+- Acknowledging a request without naming concrete classes / metadata in the plan ("I'll add the action" is not a plan).
+- Including the `<!-- butler:proceed -->` marker on a comment that is asking for clarification, proposing a split, or refusing.
+- Refusing because a custom field, queue, or Flow doesn't exist yet, when the issue is asking you to create it.
 - Opening a second PR when one already exists for the branch.
 - Investigating PMD findings on lines you did not touch.
 - Calling `create-scratch-org.sh` — the workflow already restored or provisioned the org.
-- Re-deploying everything via `--source-dir force-app` on a feedback run — only deploy the files you changed.
+- Re-deploying everything via `--source-dir force-app` on a follow-up run — only deploy the files you changed.
 - Posting a PR description or reviewer reply without the scratch org auto-login URL.
 - Stopping after a green test run without `git push`.
 - Continuing to run verification commands after the push and summary comment — that's the post-completion loop, exit instead.

@@ -2,7 +2,7 @@
 
 ## AI Agent (CI)
 
-When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The rules below still apply.
+When running as the `Butler` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The rules below still apply.
 
 ## Coding Philosophy
 

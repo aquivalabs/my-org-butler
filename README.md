@@ -69,11 +69,11 @@ Without completing the Data Library setup, the action deploys fine but returns n
 
 ### Issue → PR via Claude
 
-This repo runs an experimental pipeline: a maintainer flags an issue, Claude reads it, implements the change against a fresh per-PR scratch org, runs the Apex tests, and opens a PR. PR review comments feed back into the same loop until the change ships or is rejected.
+This repo runs an experimental pipeline: a maintainer mentions `@butler` in an issue or PR, Claude reads the thread, implements the change against a per-PR scratch org, runs the Apex tests, and opens a PR. PR comments mentioning `@butler` feed back into the same loop until the change ships.
 
-**The `delegate-to-ai` label is the only trigger.** Opening an issue alone does *nothing*. The pipeline runs only after a maintainer attaches this label. The blocking is the most important part of the design:
+**The `@butler` mention is the only trigger.** Opening an issue alone does *nothing*. The pipeline runs only after a maintainer writes `@butler` in the body or a comment, on either an issue or a PR. The gate is enforced two ways:
 
-- **Open-source DoS protection.** Without the gate, anyone could open thousands of issues and burn through Anthropic credits. GitHub's permission model only lets users with Triage role or higher set labels — random visitors cannot pull the trigger themselves, not even on their own issue.
-- **Closed-source budget control.** Even on a private repo, the gate keeps a human in the loop on *which* tickets are worth spending tokens on. No drive-by ticket auto-fires a run.
+- **Open-source DoS protection.** The workflow checks `author_association` on every event and only fires for `OWNER`, `MEMBER`, or `COLLABORATOR`. A random visitor typing `@butler` in their own issue gets silently ignored — no Anthropic credits burn.
+- **Closed-source budget control.** Even on a private repo, the mention keeps a human in the loop on *which* tickets are worth spending tokens on. No drive-by ticket auto-fires a run.
 
-Adding the label is the explicit "go". Removing it later has no effect — the workflow doesn't react to that event, so an in-flight run continues. Cancel the GitHub Actions run if you need to abort.
+Every fire is independent: the agent re-reads the full thread, decides what to do (take it, ask for clarification, propose a split, or refuse), and acts. There are no state labels — to retry after a refusal, just mention `@butler` again with the override. PRs that the agent opens carry an `ai-generated` label so humans can filter them at a glance.
