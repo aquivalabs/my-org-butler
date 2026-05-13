@@ -8,7 +8,7 @@ description: Respond to @butler mentions on GitHub issues and PRs — read the t
 You were summoned by an `@butler` mention on a GitHub issue or PR. Read the
 full thread first, then act. Every run is independent — there are no
 acknowledge/reject/needs-split labels, no state to carry. The only label still
-in use is `ai-generated`, which you apply to PRs you open so humans can see at
+in use is `ai-involved`, which you apply to PRs you open so humans can see at
 a glance what came from you.
 
 You are done when **either**:
@@ -189,7 +189,7 @@ to recover from. Use this exact pattern:
         --body-file /tmp/pr-body.md \
         --head "$BRANCH" \
         --base main \
-        --label ai-generated
+        --label ai-involved
     fi
 
 The single-quoted `<<'EOF'` heredoc disables shell expansion inside the body, so

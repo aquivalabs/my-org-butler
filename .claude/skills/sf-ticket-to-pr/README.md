@@ -53,7 +53,7 @@ sequenceDiagram
     WF->>WF: cache SFDX auth URL as scratch-auth-pr-N
     WF->>CC: execute prompt = SKILL.md from Step 2 + triage plan
     CC->>Org: deploy changed files, run Apex tests, run PMD
-    CC->>GH: gh pr create --label ai-generated (body includes scratch org URL) or git push to PR branch
+    CC->>GH: gh pr create --label ai-involved (body includes scratch org URL) or git push to PR branch
     WF->>GH: append cost footer to PR or comment
 
     Dev->>GH: comment `@butler tweak X` on the PR
@@ -113,7 +113,7 @@ The workflow authenticates with the built-in `GITHUB_TOKEN` for everything else 
 ### 3. Create the label
 
 ```bash
-gh label create ai-generated --description "PR opened by butler" --color FBCA04
+gh label create ai-involved --description "PR opened by butler" --color FBCA04
 ```
 
 That's the only label the pipeline uses. The agent applies it when opening a PR so humans can filter the PR list at a glance. No state labels — every triage fire reads the full thread fresh.

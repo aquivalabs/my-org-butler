@@ -14,7 +14,7 @@ run-name: "Ticket #${{ github.event.issue.number || github.event.pull_request.nu
 # "delegate-to-ai label" gate without leaving an open-source DoS surface.
 # Bot-authored events are also dropped so the agent can't summon itself.
 #
-# The only label still in use is `ai-generated`, applied by the agent when it
+# The only label still in use is `ai-involved`, applied by the agent when it
 # opens a PR. It's purely informational — humans can filter the PR list by it.
 
 on:
@@ -166,9 +166,9 @@ jobs:
             echo "proceed=false" >> $GITHUB_OUTPUT
           fi
 
-      # Mark the issue/PR with `ai-generated` so humans see at a glance that
+      # Mark the issue/PR with `ai-involved` so humans see at a glance that
       # Butler touched this thread. Purely visual — never gates anything.
-      - name: Stamp ai-generated label
+      - name: Stamp ai-involved label
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -176,9 +176,9 @@ jobs:
           KIND: ${{ steps.context.outputs.kind }}
         run: |
           if [ "$KIND" = "pr" ]; then
-            gh pr edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-generated || true
+            gh pr edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-involved || true
           else
-            gh issue edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-generated || true
+            gh issue edit "$NUMBER" --repo ${{ github.repository }} --add-label ai-involved || true
           fi
 
       - name: Notify on triage failure
