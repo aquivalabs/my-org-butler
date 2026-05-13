@@ -61,7 +61,7 @@
     </testCase>
     <testCase>
         <number>10</number>
-        <inputs><utterance>run a data cloud query to find the source filename of our indexed PDF document</utterance></inputs>
+        <inputs><utterance>run a data cloud query to find the source filename of our PDF document(ADL_MyOrgButlerLibr__dlm)</utterance></inputs>
         <expectation><name>actions_assertion</name><expectedValue>['ExploreDataCloud', 'QueryDataCloud']</expectedValue></expectation>
         <expectation><name>bot_response_rating</name><expectedValue>Returns 'policy.pdf' as the source filename</expectedValue></expectation>
     </testCase>
