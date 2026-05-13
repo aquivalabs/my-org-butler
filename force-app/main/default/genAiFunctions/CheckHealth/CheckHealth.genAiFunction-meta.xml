@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Probe all MyOrgButler dependencies and return a one-line-per-dependency health report.
+
+Use when:
+- The user asks &quot;check your health&quot;, &quot;are you OK?&quot;, &quot;run a self-check&quot;, or similar.
+- A recent action failed and the user wants to know whether an underlying connection is broken.
+- The user asks which integrations or services are currently working.
+
+NOT for:
+- Querying org records or metadata — use QueryRecordsWithSoql, ExploreOrgSchema, CallMetadataApi, or CallToolingApi.
+- Searching the web — use SearchWeb.
+- Querying Data Cloud data — use QueryDataCloud or SearchDataLibrary.</description>
+    <developerName>CheckHealth</developerName>
+    <invocationTarget>CheckHealth</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>CheckHealth</localDeveloperName>
+    <mappingAttributes>
+        <label>report</label>
+        <name>output_report</name>
+        <parameterName>report</parameterName>
+        <parameterType>output</parameterType>
+    </mappingAttributes>
+    <masterLabel>MyOrgButler: Check Health</masterLabel>
+    <progressIndicatorMessage>Running health probes now.</progressIndicatorMessage>
+</GenAiFunction>
