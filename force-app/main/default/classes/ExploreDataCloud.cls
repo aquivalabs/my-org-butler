@@ -41,26 +41,62 @@ global with sharing class ExploreDataCloud {
 
         Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
         List<Object> metadata = (List<Object>) parsed.get('metadata');
+        Boolean includeDataLakeObjects = entityType == 'DataLakeObject';
 
-        List<Map<String, String>> result = new List<Map<String, String>>();
+        List<Map<String, Object>> result = new List<Map<String, Object>>();
 
         for(Object item : metadata) {
             Map<String, Object> entity = (Map<String, Object>) item;
+            String name = (String) entity.get('name');
 
-            Map<String, String> entry = new Map<String, String>{
-                'name' => (String) entity.get('name'),
-                'displayName' => (String) entity.get('displayName'),
-                'category' => (String) entity.get('category')
-            };
-            String description = (String) entity.get('description');
-            if(String.isNotBlank(description)) {
-                entry.put('description', description);
+            // Note: Data Lake Objects (__dll) are the ingestion layer and not
+            //   queryable in agent flows — skip them unless explicitly requested
+            //   to keep the summary focused on Data Model Objects.
+            if(!includeDataLakeObjects && name != null && name.endsWith('__dll')) {
+                continue;
             }
 
-            result.add(entry);
+            result.add(buildSummaryEntry(entity));
         }
 
         return JSON.serialize(result, true);
+    }
+
+
+    private static Map<String, Object> buildSummaryEntry(Map<String, Object> entity) {
+        Map<String, Object> result = new Map<String, Object>{
+            'name' => (String) entity.get('name'),
+            'displayName' => (String) entity.get('displayName'),
+            'category' => (String) entity.get('category')
+        };
+
+        String description = (String) entity.get('description');
+        if(String.isNotBlank(description)) {
+            result.put('description', description);
+        }
+
+        enrichWithFields(result, (String) entity.get('name'));
+
+        return result;
+    }
+
+
+    // Note: the SSOT summary endpoint omits field metadata, so each entity
+    //   needs a per-entity details call to surface fields. Skip when the
+    //   per-transaction callout budget is exhausted — partial enrichment beats
+    //   losing the whole summary to a CalloutException on a large org.
+    private static void enrichWithFields(Map<String, Object> entry, String entityName) {
+        if(String.isNotBlank(entityName) && Limits.getCallouts() < Limits.getLimitCallouts() - 1) {
+            try {
+                List<Object> fields = (List<Object>) fetchEntity(entityName).get('fields');
+                if(fields != null) {
+                    entry.put('fields', fields);
+                }
+            }
+            catch(Exception ex) {
+                System.debug(LoggingLevel.DEBUG, 'ExploreDataCloud enrichment skipped for ' + entityName + ': ' + ex.getMessage());
+            }
+        }
     }
 
 

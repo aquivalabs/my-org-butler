@@ -8,7 +8,7 @@ private class ExploreDataCloud_Test {
         // Setup
         setup('{"metadata":[' +
             '{"name":"UnifiedIndividual__dlm","displayName":"Unified Individual","category":"Profile"},' +
-            '{"name":"SalesOrder__dll","displayName":"Sales Order","category":"Engagement"}' +
+            '{"name":"Account__dlm","displayName":"Account","category":"Profile"}' +
             ']}');
 
         ExploreDataCloud.Input input = new ExploreDataCloud.Input();
@@ -22,6 +22,82 @@ private class ExploreDataCloud_Test {
         // Verify
         List<Object> entities = (List<Object>) JSON.deserializeUntyped(result[0].response);
         Assert.areEqual(2, entities.size());
+    }
+
+
+    @IsTest
+    private static void summaryIncludesFields() {
+
+        // Setup
+        setup('{"metadata":[{' +
+            '"name":"UnifiedIndividual__dlm",' +
+            '"displayName":"Unified Individual",' +
+            '"category":"Profile",' +
+            '"fields":[{"name":"FirstName__c","type":"VARCHAR"},{"name":"AccountId__c","type":"VARCHAR"}]' +
+            '}]}');
+
+        ExploreDataCloud.Input input = new ExploreDataCloud.Input();
+        input.scope = 'summary';
+
+
+        // Exercise
+        List<ExploreDataCloud.Output> result = ExploreDataCloud.execute(new List<ExploreDataCloud.Input>{ input });
+
+
+        // Verify
+        List<Object> entities = (List<Object>) JSON.deserializeUntyped(result[0].response);
+        Map<String, Object> entity = (Map<String, Object>) entities[0];
+        Assert.isTrue(entity.containsKey('fields'));
+        List<Object> fields = (List<Object>) entity.get('fields');
+        Assert.areEqual(2, fields.size());
+    }
+
+
+    @IsTest
+    private static void summaryFiltersDataLakeObjectsByDefault() {
+
+        // Setup
+        setup('{"metadata":[' +
+            '{"name":"UnifiedIndividual__dlm","displayName":"Unified Individual","category":"Profile"},' +
+            '{"name":"SalesOrder__dll","displayName":"Sales Order","category":"Engagement"}' +
+            ']}');
+
+        ExploreDataCloud.Input input = new ExploreDataCloud.Input();
+        input.scope = 'summary';
+
+
+        // Exercise
+        List<ExploreDataCloud.Output> result = ExploreDataCloud.execute(new List<ExploreDataCloud.Input>{ input });
+
+
+        // Verify
+        List<Object> entities = (List<Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.areEqual(1, entities.size());
+        Assert.areEqual('UnifiedIndividual__dlm', ((Map<String, Object>) entities[0]).get('name'));
+    }
+
+
+    @IsTest
+    private static void summaryIncludesDataLakeObjectsWhenExplicit() {
+
+        // Setup
+        setup('{"metadata":[' +
+            '{"name":"SalesOrder__dll","displayName":"Sales Order","category":"Engagement"}' +
+            ']}');
+
+        ExploreDataCloud.Input input = new ExploreDataCloud.Input();
+        input.scope = 'summary';
+        input.entityType = 'DataLakeObject';
+
+
+        // Exercise
+        List<ExploreDataCloud.Output> result = ExploreDataCloud.execute(new List<ExploreDataCloud.Input>{ input });
+
+
+        // Verify
+        List<Object> entities = (List<Object>) JSON.deserializeUntyped(result[0].response);
+        Assert.areEqual(1, entities.size());
+        Assert.areEqual('SalesOrder__dll', ((Map<String, Object>) entities[0]).get('name'));
     }
 
 

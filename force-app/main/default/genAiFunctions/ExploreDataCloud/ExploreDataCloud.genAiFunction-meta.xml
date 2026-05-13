@@ -3,7 +3,7 @@
     <description>Explore Data Cloud entities, their fields, and relationships. MUST be called BEFORE any QueryDataCloud or SearchDataLibrary call whenever entity or field names are not already confirmed — never guess Data Cloud names.
 
 Scopes:
-- &quot;summary&quot;: list available entities. Always start here when the entity name is uncertain.
+- &quot;summary&quot;: list available entities, each enriched with its fields. Sufficient for most query planning — only fall back to &quot;details&quot; when you need primary keys or relationships.
 - &quot;details&quot;: fields, primary keys, relationships for one entity. Requires entityName.
 - &quot;relationships&quot;: JOIN planning — how the entity connects to others. Requires entityName.
 
