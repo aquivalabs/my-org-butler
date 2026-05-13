@@ -69,6 +69,7 @@ jobs:
       kind: ${{ steps.context.outputs.kind }}
       number: ${{ steps.context.outputs.number }}
       pr_branch: ${{ steps.context.outputs.pr_branch }}
+      scratch_key: ${{ steps.context.outputs.scratch_key }}
       plan: ${{ steps.outcome.outputs.plan }}
     steps:
       - uses: actions/checkout@v4
@@ -93,13 +94,25 @@ jobs:
             KIND=issue
           fi
           PR_BRANCH=""
+          # Scratch-org alias must be stable across issue runs and PR follow-ups so
+          # the same per-PR org is reused. For PR events, resolve the linked issue
+          # number from `Closes #N` / `Fixes #N` / `Resolves #N` in the PR body and
+          # use that as the key. Falls back to the event number if no link exists.
+          SCRATCH_KEY="$NUMBER"
           if [ "$KIND" = "pr" ]; then
-            PR_BRANCH=$(gh pr view "$NUMBER" --repo ${{ github.repository }} --json headRefName --jq .headRefName)
+            PR_DATA=$(gh pr view "$NUMBER" --repo ${{ github.repository }} --json headRefName,body)
+            PR_BRANCH=$(echo "$PR_DATA" | jq -r '.headRefName')
+            PR_BODY=$(echo "$PR_DATA" | jq -r '.body')
+            LINKED=$(echo "$PR_BODY" | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
+            if [ -n "$LINKED" ]; then
+              SCRATCH_KEY="$LINKED"
+            fi
           fi
           echo "kind=$KIND" >> $GITHUB_OUTPUT
           echo "number=$NUMBER" >> $GITHUB_OUTPUT
           echo "pr_branch=$PR_BRANCH" >> $GITHUB_OUTPUT
-          echo "::notice::context kind=$KIND number=$NUMBER branch=$PR_BRANCH"
+          echo "scratch_key=$SCRATCH_KEY" >> $GITHUB_OUTPUT
+          echo "::notice::context kind=$KIND number=$NUMBER scratch_key=$SCRATCH_KEY branch=$PR_BRANCH"
 
       - name: Decide
         uses: anthropics/claude-code-action@v1
@@ -200,19 +213,20 @@ jobs:
     needs: triage
     if: needs.triage.outputs.proceed == 'true'
     runs-on: ubuntu-latest
-    # Serialize runs against the same PR/issue scratch org so two mentions
-    # don't race. The scratch alias is pr-<issue-number>; for a fresh issue
-    # the issue number IS the future PR number's basis.
+    # Serialize runs that target the same scratch org so two mentions don't
+    # race. scratch_key is the issue number (resolved from `Closes #N` on PR
+    # events) — the alias `pr-<issue-number>` stays stable across the issue
+    # run and every PR follow-up.
     concurrency:
-      group: scratch-org-${{ needs.triage.outputs.number }}
+      group: scratch-org-${{ needs.triage.outputs.scratch_key }}
       cancel-in-progress: false
     env:
       DEV_HUB_URL: set
       KIND: ${{ needs.triage.outputs.kind }}
       NUMBER: ${{ needs.triage.outputs.number }}
       PR_BRANCH: ${{ needs.triage.outputs.pr_branch }}
-      SCRATCH_ORG_ALIAS: pr-${{ needs.triage.outputs.number }}
-      ISSUE_NUMBER: ${{ needs.triage.outputs.number }}
+      SCRATCH_ORG_ALIAS: pr-${{ needs.triage.outputs.scratch_key }}
+      ISSUE_NUMBER: ${{ needs.triage.outputs.scratch_key }}
     permissions:
       contents: write
       issues: write
