@@ -23,7 +23,7 @@ public with sharing class LeadScoring {
         Id queueId = enterpriseQueueId();
         for(Lead lead : leads) {
             Integer points = industryPoints(lead) + sizePoints(lead) + engagementPoints(lead);
-            lead.Lead_Score__c = points;
+            lead.LeadScore__c = points;
             if(queueId != null && points >= 70) {
                 lead.OwnerId = queueId;
             }
@@ -74,11 +74,11 @@ public with sharing class LeadScoring {
 
     private Integer engagementPoints(Lead lead) {
         Integer result = 0;
-        if(lead.Email_Engagement__c == 'High') {
+        if(lead.EmailEngagement__c == 'High') {
             result = 30;
-        } else if(lead.Email_Engagement__c == 'Medium') {
+        } else if(lead.EmailEngagement__c == 'Medium') {
             result = 20;
-        } else if(lead.Email_Engagement__c == 'Low') {
+        } else if(lead.EmailEngagement__c == 'Low') {
             result = 10;
         }
         return result;

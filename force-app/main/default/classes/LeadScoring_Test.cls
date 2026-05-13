@@ -12,7 +12,7 @@ private class LeadScoring_Test {
         insert lead('Technology', 1000, 'High');
 
         // Verify
-        Assert.areEqual(100, [SELECT Lead_Score__c FROM Lead LIMIT 1].Lead_Score__c);
+        Assert.areEqual(100, [SELECT LeadScore__c FROM Lead LIMIT 1].LeadScore__c);
     }
 
 
@@ -26,7 +26,7 @@ private class LeadScoring_Test {
         insert lead(null, null, null);
 
         // Verify
-        Assert.areEqual(0, [SELECT Lead_Score__c FROM Lead LIMIT 1].Lead_Score__c);
+        Assert.areEqual(0, [SELECT LeadScore__c FROM Lead LIMIT 1].LeadScore__c);
     }
 
 
@@ -40,8 +40,8 @@ private class LeadScoring_Test {
         insert lead('Technology', 99, 'Medium');
 
         // Verify
-        Lead result = [SELECT Lead_Score__c, OwnerId FROM Lead LIMIT 1];
-        Assert.areEqual(69, result.Lead_Score__c);
+        Lead result = [SELECT LeadScore__c, OwnerId FROM Lead LIMIT 1];
+        Assert.areEqual(69, result.LeadScore__c);
         Assert.areNotEqual(queue.Id, result.OwnerId);
     }
 
@@ -56,8 +56,8 @@ private class LeadScoring_Test {
         insert lead('Technology', null, 'High');
 
         // Verify
-        Lead result = [SELECT Lead_Score__c, OwnerId FROM Lead LIMIT 1];
-        Assert.areEqual(70, result.Lead_Score__c);
+        Lead result = [SELECT LeadScore__c, OwnerId FROM Lead LIMIT 1];
+        Assert.areEqual(70, result.LeadScore__c);
         Assert.areEqual(queue.Id, result.OwnerId);
     }
 
@@ -73,12 +73,12 @@ private class LeadScoring_Test {
         // Exercise
         testLead.Industry = 'Technology';
         testLead.NumberOfEmployees = 1000;
-        testLead.Email_Engagement__c = 'High';
+        testLead.EmailEngagement__c = 'High';
         update testLead;
 
         // Verify
-        Lead result = [SELECT Lead_Score__c, OwnerId FROM Lead WHERE Id = :testLead.Id];
-        Assert.areEqual(100, result.Lead_Score__c);
+        Lead result = [SELECT LeadScore__c, OwnerId FROM Lead WHERE Id = :testLead.Id];
+        Assert.areEqual(100, result.LeadScore__c);
         Assert.areEqual(queue.Id, result.OwnerId);
     }
 
@@ -97,10 +97,10 @@ private class LeadScoring_Test {
         insert leads;
 
         // Verify
-        List<Lead> results = [SELECT Lead_Score__c FROM Lead];
+        List<Lead> results = [SELECT LeadScore__c FROM Lead];
         Assert.areEqual(200, results.size());
         for(Lead result : results) {
-            Assert.areEqual(100, result.Lead_Score__c);
+            Assert.areEqual(100, result.LeadScore__c);
         }
     }
 
@@ -113,22 +113,16 @@ private class LeadScoring_Test {
         result.Company = 'Acme';
         result.Industry = industry;
         result.NumberOfEmployees = employees;
-        result.Email_Engagement__c = engagement;
+        result.EmailEngagement__c = engagement;
         return result;
     }
 
     private static Group enterpriseQueue() {
-        Group result = new Group(Name = 'Enterprise', Type = 'Queue');
+        Group result = null;
         for(Group q : [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'Enterprise' LIMIT 1]) {
             result = q;
         }
-        if(result.Id == null) {
-            // Note: runAs isolates setup-object DML so it doesn't mix with Lead DML
-            System.runAs(new User(Id = UserInfo.getUserId())) {
-                insert result;
-                insert new QueueSObject(QueueId = result.Id, SObjectType = 'Lead');
-            }
-        }
+        Assert.isNotNull(result, 'Enterprise queue must be deployed before running tests');
         return result;
     }
 }
