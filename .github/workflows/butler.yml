@@ -114,18 +114,29 @@ jobs:
             `gh issue view ${{ steps.context.outputs.number }} --repo ${{ github.repository }} --comments`
             for issues, or `gh pr view ${{ steps.context.outputs.number }} --repo ${{ github.repository }} --comments`
             for PRs), then pick one of: take it, ask for clarification, propose
-            a split, or refuse. Post the appropriate comment. STOP after
-            commenting — there is no Salesforce CLI or scratch org available
-            here; the execute job runs next and depends on whether you set the
-            "PROCEED" marker described below.
+            a split, or refuse.
 
-            If — and only if — you are taking the work in this run, end your
-            comment with a single trailing line containing exactly:
+            **You MUST post your decision as a real GitHub comment by running
+            the shell command below.** Emitting the comment text in your
+            response does NOT post it; nothing is visible to humans or to the
+            execute job unless you actually call `gh`:
+
+                cat > /tmp/butler-reply.md <<'EOF'
+                <your comment body here>
+                EOF
+                gh ${{ steps.context.outputs.kind == 'pr' && 'pr' || 'issue' }} comment ${{ steps.context.outputs.number }} --repo ${{ github.repository }} --body-file /tmp/butler-reply.md
+
+            If — and only if — you are taking the work in this run, end the
+            file content with a single trailing line containing exactly:
 
                 <!-- butler:proceed -->
 
             That HTML-comment marker is how the execute job decides to fire.
             Do not include it for clarifications, splits, or refusals.
+
+            STOP after posting the comment — there is no Salesforce CLI or
+            scratch org available here; the execute job runs next and depends
+            on whether you set the proceed marker.
 
             Tone: strong opinions, no "Great question!" or "I'd be happy to
             help!", brevity mandatory, no emojis, call things out if the

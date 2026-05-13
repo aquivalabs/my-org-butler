@@ -39,7 +39,15 @@ in the prompt. Read everything — the body and every comment, in order. The
 latest human signal is authoritative; if a maintainer's most recent comment
 contradicts an earlier one of yours, follow the maintainer.
 
-Then pick one of four moves and post a comment that says which.
+Then pick one of four moves and post a comment that says which. **Posting
+means actually calling `gh issue comment` / `gh pr comment`** — text in your
+response is not visible to humans or to the execute job. Always write the
+comment body to a file and pass `--body-file`:
+
+    cat > /tmp/butler-reply.md <<'EOF'
+    <your comment body, including the proceed marker on the last line if taking it>
+    EOF
+    gh issue comment <N> --repo <owner/repo> --body-file /tmp/butler-reply.md   # or `gh pr comment`
 
 ### Take it
 
