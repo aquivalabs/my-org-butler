@@ -1,6 +1,6 @@
 name: Butler
 
-run-name: "@butler on #${{ github.event.issue.number || github.event.pull_request.number }}"
+run-name: "@butler on #${{ github.event.issue.number || github.event.pull_request.number }}: ${{ github.event.issue.title || github.event.pull_request.title }}"
 
 # Mention-driven AI workflow. Fires when an Aquiva collaborator (or higher)
 # writes "@butler" in an issue body, issue comment, PR review, or PR review
