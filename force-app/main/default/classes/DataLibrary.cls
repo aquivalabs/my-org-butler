@@ -183,7 +183,7 @@ public virtual with sharing class DataLibrary {
 
     public class Result {
         public String documents = '';
-        public AiCopilot.GenAiCitationInput citations;
+        public AiCopilot.GenAiCitationOutput citations;
     }
 
 

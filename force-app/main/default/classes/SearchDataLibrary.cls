@@ -58,6 +58,6 @@ global with sharing class SearchDataLibrary {
         global String answer;
 
         @InvocableVariable(label='Citations' description='Source references for the generated answer.')
-        global AiCopilot.GenAiCitationInput citations;
+        global AiCopilot.GenAiCitationOutput citations;
     }
 }

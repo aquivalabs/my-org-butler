@@ -12,7 +12,7 @@
     "citations" : {
       "title" : "Citations",
       "description" : "Source references for the generated answer.",
-      "lightning:type" : "@apexClassType/AiCopilot__GenAiCitationInput",
+      "lightning:type" : "@apexClassType/AiCopilot__GenAiCitationOutput",
       "lightning:isPII" : false,
       "copilotAction:isDisplayable" : false,
       "copilotAction:isUsedByPlanner" : false,
