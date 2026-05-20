@@ -144,6 +144,15 @@ jobs:
             That HTML-comment marker is how the execute job decides to fire.
             Do not include it for clarifications, splits, or refusals.
 
+            **Retry shortcut.** If you are proceeding AND your plan is the
+            same as the most recent prior triage comment of yours on this
+            thread (i.e. the human just re-pinged @butler to retry without
+            changing the ask), skip the summary — write the comment body as
+            just the single line `<!-- butler:proceed -->`. The mention
+            already said what's wanted; don't echo it back as "Retrying with
+            the same plan." Only write a real summary when the plan is new
+            or has materially changed.
+
             STOP after posting the comment — there is no Salesforce CLI or
             scratch org available here; the execute job runs next and depends
             on whether you set the proceed marker.
