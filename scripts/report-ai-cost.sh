@@ -2,17 +2,15 @@
 # Report AI cost for one Claude Code run.
 #
 # Reads the action's execution_file output (a JSON array of SDK messages),
-# pulls cost + per-token-type usage from the result message, and emits a
-# one-line footer plus an issue-level rollup in a sticky comment.
+# pulls cost + per-token-type usage from the result message, and updates an
+# issue-level sticky rollup comment. Cost lives only in the rollup — no
+# footers are appended to human comments or PR bodies.
 #
 # Required env:
 #   GH_TOKEN, GITHUB_REPOSITORY
 #   WORKFLOW_NAME    "ticket-to-pr" | "pr-feedback"
 #   MODEL            e.g. claude-sonnet-4-6
 #   EXECUTION_FILE   path emitted by anthropics/claude-code-action (steps.<id>.outputs.execution_file)
-# Optional env (at least one of PR/COMMENT must be set; ISSUE drives rollup):
-#   PR_NUMBER        append footer to this PR's body
-#   COMMENT_ID       append footer to this issue/PR comment
 #   ISSUE_NUMBER     update sticky rollup on this issue
 
 set -euo pipefail
@@ -41,9 +39,6 @@ read -r COST INPUT OUTPUT CACHE_R CACHE_W <<< "$(jq -r '
 
 TOTAL=$(( INPUT + OUTPUT + CACHE_R + CACHE_W ))
 
-# Short model name (drop "claude-" prefix for display).
-SHORT_MODEL=${MODEL#claude-}
-
 human_tokens() {
   local n=$1
   if (( n >= 1000000 )); then printf "%.1fM" "$(echo "$n/1000000" | bc -l)"
@@ -52,46 +47,8 @@ human_tokens() {
 }
 
 COST_FMT=$(printf "%.2f" "$COST")
-TOTAL_H=$(human_tokens "$TOTAL")
-INPUT_H=$(human_tokens "$INPUT")
-OUTPUT_H=$(human_tokens "$OUTPUT")
-CACHE_H=$(human_tokens "$CACHE_R")
 
-FOOTER=$(cat <<EOF
-
----
-<!-- ai-run wf=$WORKFLOW_NAME model=$MODEL cost=$COST_FMT tokens=$TOTAL -->
-🤖 \`$SHORT_MODEL\` · \$$COST_FMT · $TOTAL_H tokens ($INPUT_H in / $OUTPUT_H out / $CACHE_H cache) · $WORKFLOW_NAME
-EOF
-)
-
-# 3. Append footer to PR body or comment.
-append_to_pr_body() {
-  local n=$1
-  local body
-  body=$(gh pr view "$n" --repo "$GITHUB_REPOSITORY" --json body --jq .body)
-  printf '%s%s' "$body" "$FOOTER" | gh pr edit "$n" --repo "$GITHUB_REPOSITORY" --body-file -
-}
-
-append_to_comment() {
-  local id=$1
-  local body
-  body=$(gh api "repos/$GITHUB_REPOSITORY/issues/comments/$id" --jq .body)
-  local new
-  new=$(printf '%s%s' "$body" "$FOOTER")
-  gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$new" >/dev/null
-}
-
-if [ -n "${PR_NUMBER:-}" ]; then
-  append_to_pr_body "$PR_NUMBER"
-  echo "Appended cost footer to PR #$PR_NUMBER"
-fi
-if [ -n "${COMMENT_ID:-}" ]; then
-  append_to_comment "$COMMENT_ID"
-  echo "Appended cost footer to comment $COMMENT_ID"
-fi
-
-# 4. Update sticky rollup on the issue.
+# Update sticky rollup on the issue.
 if [ -z "${ISSUE_NUMBER:-}" ]; then
   exit 0
 fi
