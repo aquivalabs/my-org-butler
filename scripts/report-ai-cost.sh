@@ -12,11 +12,15 @@
 #   MODEL            e.g. claude-sonnet-4-6
 #   EXECUTION_FILE   path emitted by anthropics/claude-code-action (steps.<id>.outputs.execution_file)
 #   ISSUE_NUMBER     update sticky rollup on this issue
+#   CYCLE_ID         groups triage + execute of one @butler mention into one row
+#                    (use $GITHUB_RUN_ID — same value across both jobs in a run)
+#   TRIGGER          the event that started the cycle (e.g. issue_comment)
 
 set -euo pipefail
 
 : "${GH_TOKEN:?}"; : "${GITHUB_REPOSITORY:?}"
 : "${WORKFLOW_NAME:?}"; : "${MODEL:?}"; : "${EXECUTION_FILE:?}"
+: "${CYCLE_ID:?}"; : "${TRIGGER:?}"
 
 STICKY_MARKER="<!-- ai-spend-tracker -->"
 RUN_MARKER_PREFIX="<!-- run "
@@ -64,28 +68,45 @@ if [ -n "$STICKY_ID" ]; then
   RUN_LINES=$(echo "$EXISTING" | grep "^$RUN_MARKER_PREFIX" || true)
 fi
 
-# Append the new run record.
-NEW_RUN_LINE="<!-- run wf=$WORKFLOW_NAME model=$MODEL cost=$COST_FMT tokens=$TOTAL -->"
+# Append the new run record. cycle= groups triage + execute of one @butler
+# mention so they collapse into a single table row; trigger= names the event
+# the human used. Old records without cycle= are skipped when rebuilding.
+NEW_RUN_LINE="<!-- run cycle=$CYCLE_ID trigger=$TRIGGER cost=$COST_FMT tokens=$TOTAL -->"
 RUN_LINES=$(printf '%s\n%s' "$RUN_LINES" "$NEW_RUN_LINE" | sed '/^$/d')
 
-# Build table rows + totals from accumulated run records.
-TOTAL_COST=0
-TOTAL_TOKENS=0
-RUN_COUNT=0
-TABLE_ROWS=""
+# Aggregate by cycle: sum cost + tokens across all stage records sharing a
+# cycle id, preserving first-seen order so the table reads chronologically.
+declare -a CYCLE_ORDER=()
+declare -A CYCLE_TRIGGER=() CYCLE_COST=() CYCLE_TOKENS=()
 while IFS= read -r line; do
   [ -z "$line" ] && continue
-  wf=$(   echo "$line" | sed -n 's/.*wf=\([^ ]*\).*/\1/p')
-  m=$(    echo "$line" | sed -n 's/.*model=\([^ ]*\).*/\1/p')
-  c=$(    echo "$line" | sed -n 's/.*cost=\([^ ]*\).*/\1/p')
-  t=$(    echo "$line" | sed -n 's/.*tokens=\([^ ]*\).*/\1/p')
-  RUN_COUNT=$((RUN_COUNT + 1))
-  TOTAL_COST=$(echo "$TOTAL_COST + $c" | bc -l)
-  TOTAL_TOKENS=$((TOTAL_TOKENS + t))
-  short_m=${m#claude-}
-  t_h=$(human_tokens "$t")
-  TABLE_ROWS+="| $RUN_COUNT | $wf | $short_m | \$$c | $t_h |"$'\n'
+  cyc=$(echo "$line" | sed -n 's/.*cycle=\([^ ]*\).*/\1/p')
+  [ -z "$cyc" ] && continue
+  trg=$(echo "$line" | sed -n 's/.*trigger=\([^ ]*\).*/\1/p')
+  c=$(  echo "$line" | sed -n 's/.*cost=\([^ ]*\).*/\1/p')
+  t=$(  echo "$line" | sed -n 's/.*tokens=\([^ ]*\).*/\1/p')
+  if [ -z "${CYCLE_TRIGGER[$cyc]+set}" ]; then
+    CYCLE_ORDER+=("$cyc")
+    CYCLE_TRIGGER[$cyc]="$trg"
+    CYCLE_COST[$cyc]="0"
+    CYCLE_TOKENS[$cyc]=0
+  fi
+  CYCLE_COST[$cyc]=$(echo "${CYCLE_COST[$cyc]} + $c" | bc -l)
+  CYCLE_TOKENS[$cyc]=$(( ${CYCLE_TOKENS[$cyc]} + t ))
 done <<< "$RUN_LINES"
+
+TOTAL_COST=0
+TOTAL_TOKENS=0
+TABLE_ROWS=""
+ROW_NUM=0
+for cyc in "${CYCLE_ORDER[@]}"; do
+  ROW_NUM=$((ROW_NUM + 1))
+  cc=$(printf "%.2f" "${CYCLE_COST[$cyc]}")
+  tt=${CYCLE_TOKENS[$cyc]}
+  TOTAL_COST=$(echo "$TOTAL_COST + $cc" | bc -l)
+  TOTAL_TOKENS=$((TOTAL_TOKENS + tt))
+  TABLE_ROWS+="| $ROW_NUM | ${CYCLE_TRIGGER[$cyc]} | \$$cc | $(human_tokens "$tt") |"$'\n'
+done
 
 TOTAL_COST_FMT=$(printf "%.2f" "$TOTAL_COST")
 TOTAL_TOKENS_H=$(human_tokens "$TOTAL_TOKENS")
@@ -94,10 +115,10 @@ STICKY_BODY=$(cat <<EOF
 $STICKY_MARKER
 ## 🤖 AI spend on this issue
 
-**Total: \$$TOTAL_COST_FMT · $TOTAL_TOKENS_H tokens · $RUN_COUNT run(s)**
+**Total: \$$TOTAL_COST_FMT · $TOTAL_TOKENS_H tokens · $ROW_NUM cycle(s)**
 
-| # | Workflow | Model | Cost | Tokens |
-|---|---|---|---|---|
+| # | Trigger | Cost | Tokens |
+|---|---|---|---|
 $TABLE_ROWS
 $RUN_LINES
 EOF
