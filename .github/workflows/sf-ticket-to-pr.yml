@@ -176,6 +176,16 @@ jobs:
             echo "proceed=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Report AI cost
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.context.outputs.scratch_key }}
+          WORKFLOW_NAME: sf-ticket-to-pr
+          MODEL: claude-sonnet-4-6
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+        run: ./scripts/report-ai-cost.sh || echo "::warning::cost report failed"
+
       # Mark the issue/PR with `ai-involved` so humans see at a glance that
       # Butler touched this thread. Purely visual — never gates anything.
       - name: Stamp ai-involved label
