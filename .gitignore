@@ -62,3 +62,7 @@ blog/
 
 # Security review scans (regenerated per scratch org)
 security-review/scans/
+
+# Playwright screenshot evidence — lives on PR branches only,
+# never reaches main (force-added on branch via `git add -f`)
+.verification/
