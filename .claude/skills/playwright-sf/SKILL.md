@@ -1,67 +1,78 @@
 ---
 name: playwright-sf
-description: Drive a Salesforce Lightning org headlessly with Playwright MCP — reproduce bugs, verify UI changes, capture screenshot evidence. Invoked by sf-ticket-to-pr when a change is user-visible, or standalone.
+description: Drive a Salesforce Lightning org headlessly via the Playwright MCP server — reproduce bugs, verify UI changes, capture screenshot evidence. Invoked by sf-ticket-to-pr when a change is user-visible, or standalone.
 ---
 
 # Playwright in a Salesforce Org
 
-Used to look into the org as a user would: reproduce a reported bug, verify a UI change after deploy, capture screenshots for a PR. Selectors against Lightning's Shadow DOM are brittle — drive the page through the accessibility tree instead.
+Use the Playwright MCP server (declared in `.mcp.json`) to look into the org as a user would: reproduce a reported bug, verify a UI change after deploy, capture screenshots for a PR. Selectors against Lightning's Shadow DOM are brittle — drive the page through the accessibility tree instead.
+
+## Tools you have
+
+The MCP server exposes (names as the agent sees them):
+
+- `browser_navigate(url)` — open a URL
+- `browser_snapshot()` — return the accessibility tree of the current page, with `ref` handles for every element
+- `browser_click({ element, ref })` — click by `ref` from the snapshot
+- `browser_type({ element, ref, text })` / `browser_fill_form` — type into a field by `ref`
+- `browser_wait_for({ text | textGone | time })` — wait for content to appear/disappear or a fixed delay
+- `browser_take_screenshot({ filename, fullPage })` — save a PNG
+- `browser_press_key(key)` — keyboard input
+- `browser_close()` — close the browser
 
 ## Log in via the frontdoor URL
 
-Don't script the login form. Ask the CLI for a one-time auto-login URL and open that:
+Don't script the login form. Ask the CLI for a one-time auto-login URL and navigate to that:
 
     SCRATCH_URL=$(sf org open --url-only --target-org "$SCRATCH_ORG_ALIAS" --json | jq -r .result.url)
 
-Open `SCRATCH_URL` with `playwright-cli open`. You land already logged in. The URL is single-use; if you need a second session, request another.
+Then `browser_navigate(SCRATCH_URL)`. You land already logged in. The URL is single-use; if you need a second session, request another.
 
 ## Find things via the accessibility tree, not CSS
 
-`playwright-cli snapshot` dumps the a11y tree of the current page with `ref=` handles. Read the snapshot, identify the element you want by its accessible name + role (e.g. "button Save", "textbox Subject"), then act on it by ref:
+`browser_snapshot` dumps the a11y tree with `ref` handles. Read the snapshot, identify the element by its accessible name + role ("button Save", "textbox Subject"), then act on it by ref:
 
-    playwright-cli click --ref <ref-from-snapshot>
-    playwright-cli fill  --ref <ref-from-snapshot> --text "value"
+    browser_click({ element: "Save button", ref: "<ref-from-snapshot>" })
+    browser_type({ element: "Subject field", ref: "<ref-from-snapshot>", text: "value" })
 
-Lightning composes shadow roots into the same a11y tree, so this works across LWC, Aura, and Visualforce without per-component selectors.
+Lightning composes shadow roots into the a11y tree, so this works across LWC, Aura, and Visualforce without per-component selectors.
 
 ## Wait before you assert
 
-Lightning pages spinner. Before every assertion: take a snapshot, scan for a stable anchor element you expect to be present (the record name, a section header, the Save button), and only then assert. If the anchor isn't there after two snapshots a few seconds apart, report `UI-INCONCLUSIVE` rather than `UI-FAIL` — flaky load ≠ broken feature.
+Lightning pages spinner. Before every assertion: `browser_wait_for({ text: "<known anchor>" })` for a stable anchor element you expect (the record name, a section header, the Save button). Then `browser_snapshot()`. If the anchor never shows up after two reasonable waits, report `UI-INCONCLUSIVE` rather than `UI-FAIL` — flaky load ≠ broken feature.
 
 ## Capture evidence and put it on the PR
 
-Every assertion writes a screenshot. Write to a path **inside the branch**
-so the screenshots ride along with the commit and GitHub renders them inline
-in the PR body by relative URL:
+Every assertion writes a screenshot. Write to a path **inside the branch** so the screenshots ride along with the commit and GitHub renders them inline in the PR body by relative URL:
 
     mkdir -p ".verification/pr-$ISSUE_NUMBER"
-    playwright-cli screenshot --filename ".verification/pr-$ISSUE_NUMBER/<scenarioId>.png" --full-page
-    git add ".verification/pr-$ISSUE_NUMBER/<scenarioId>.png"
+    # then:
+    browser_take_screenshot({ filename: ".verification/pr-$ISSUE_NUMBER/<scenarioId>.png", fullPage: true })
+    git add -f ".verification/pr-$ISSUE_NUMBER/<scenarioId>.png"
 
-In the PR markdown (or the reply comment), embed each screenshot with a
-caption that says what it proves:
+`-f` because `.verification/` is gitignored on `main`; we force-add it on the PR branch and it disappears when the branch is deleted on merge.
 
-    ## How it looks
-    ![Home page with Daily Quote LWC rendering](./.verification/pr-12/home-after.png)
+Embed each screenshot in the PR markdown with a caption that says what it proves:
 
-For bug repros, post the **before** and **after** as a pair so the reviewer
-sees the broken state and the fixed state side by side.
+    ## Verified
+    ![Home page with accountGreeter LWC rendering](./.verification/pr-12/account-after.png)
 
-Always pair the screenshots with the scratch-org auto-login URL (see
-`sf-ticket-to-pr` Step 4) — "here's the screenshot" + "here's the org" is
-what makes the work self-evidencing. Don't post one without the other.
+For bug repros, post the **before** and **after** as a pair.
+
+Always pair screenshots with the scratch-org auto-login URL (see `sf-ticket-to-pr` Step 4) — "here's the screenshot" + "here's the org" is the self-evidencing pattern.
 
 ## When the caller is `sf-ticket-to-pr`
 
-Two shapes show up:
+Two shapes:
 
-**Bug reproduction.** The ticket describes broken behaviour. Before writing any fix, open the org, walk to the broken state, snapshot + screenshot. Attach the repro evidence to the PR. After the fix deploys, re-run the same scenario and confirm it now passes. The "before" and "after" screenshots are the strongest signal a reviewer can get.
+**Bug reproduction.** The ticket describes broken behaviour. Before writing any fix, navigate to the broken state, snapshot + screenshot. Attach the repro evidence. After the fix deploys, re-run the same scenario and confirm it now passes.
 
-**Feature verification.** The ticket describes desired behaviour. After the change is deployed, derive scenarios from the acceptance criteria, run them, screenshot the passing state. Cap at five scenarios per PR — pick the headline ones, note the rest.
+**Feature verification.** After the change is deployed, walk through the acceptance criteria, screenshot the passing state. Cap at five screenshots per PR.
 
 ## Anti-patterns
 
 - Logging in by filling the username/password form. Use the frontdoor URL.
-- Asserting on CSS selectors that walk into Shadow DOM. Use a11y `ref=` handles.
-- Marking a flaky load as `UI-FAIL`. Use `UI-INCONCLUSIVE` so Butler doesn't block a good PR on a Lightning hiccup.
-- Running more than ~5 scenarios per PR. The CI budget isn't infinite; pick the ones that matter.
+- Picking elements by CSS selectors. Use a11y `ref` handles from `browser_snapshot`.
+- Marking a flaky load as `UI-FAIL`. Use `UI-INCONCLUSIVE`.
+- More than ~5 screenshots per PR. CI budget isn't infinite; pick the ones that prove the change.
+- Verifying without ever opening the page in the org. If the change is user-visible and you didn't `browser_navigate` to it, the verify step didn't happen.

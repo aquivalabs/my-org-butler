@@ -63,16 +63,27 @@ short, concrete plan — name the classes you will touch, the metadata you
 will add, the tests you will write. End the comment with this exact trailing
 line (HTML comment, invisible in GitHub UI) so the execute job fires:
 
-**Test plan (pick what fits, not all of them).** Apex / triggers touched →
-Apex tests. Agentforce metadata touched (`genAi*`, `bots/`) → a Testing
-Center case in `aiEvaluationDefinitions/`. User-visible change (Flow,
-Lightning page, LWC, screen flow, agent UI surface) → a Playwright scenario
-via the `playwright-sf` skill. **If the ticket is a bug**, first reproduce
-it in the org using `playwright-sf` and attach the repro screenshot to your
-plan comment — that's the strongest evidence the bug is real and tells you
-what "fixed" looks like. Apex-only refactors don't need UI tests. Trust your
-judgment: pick the cheapest test that proves the requirement, not the most
-thorough.
+**Verification plan (pick what fits, not all of them).** Apex / triggers
+touched → Apex tests. Agentforce metadata touched (`genAi*`, `bots/`) → a
+Testing Center case in `aiEvaluationDefinitions/`. User-visible change
+(Flow, Lightning page, LWC, screen flow, agent UI surface) → a Playwright
+scenario via the `playwright-sf` skill. **If the ticket is a bug**, first
+reproduce it in the org with `playwright-sf` and attach the repro
+screenshot to your plan comment. Apex-only refactors don't need UI checks.
+Pick the cheapest verification that proves the requirement.
+
+**The plan is what YOU, the agent, will verify — not a checklist for the
+human.** The PR must never contain "How to verify" instructions telling the
+reviewer to log in, activate pages, create records, click around. You do
+all of that yourself in Step 3 and attach the evidence (screenshots, SOQL
+output, test results). The reviewer's only verification is glancing at the
+evidence and optionally clicking the scratch-org URL.
+
+**If your change creates a custom Lightning record page (FlexiPage), you
+also activate it** — as Org Default for the relevant `sObjectType`, or
+assigned to the appropriate app/profile. A non-activated page is invisible
+to users, so shipping one is the same as shipping nothing. Verification
+without activation is impossible because the new page is never rendered.
 
 
     <!-- butler:proceed -->
@@ -215,10 +226,13 @@ to recover from. Use this exact pattern:
     ## What changed
     <2–4 bullets — what classes/methods were modified and why>
 
-    ## How to verify
-    - Open the scratch org: <SCRATCH_URL>
-    - <one or two concrete steps a human can run in the org>
-    - Apex tests: `sf apex run test --test-level RunLocalTests`
+    ## Verified
+    <what you, the agent, verified — Apex test counts, Playwright screenshots
+    embedded inline by relative path, SOQL excerpts. Do NOT write instructions
+    for a human to follow; the only human verification is clicking the scratch
+    URL below if curious.>
+
+    Scratch org: <SCRATCH_URL>
     EOF
       # Substitute the scratch org URL after the heredoc so the URL itself is not subject to shell expansion.
       sed -i "s|<SCRATCH_URL>|$SCRATCH_URL|" /tmp/pr-body.md
