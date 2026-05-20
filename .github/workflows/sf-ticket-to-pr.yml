@@ -27,9 +27,6 @@ on:
   pull_request_review_comment:
     types: [created]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
 jobs:
   # Cheap first pass: read the thread, decide whether to proceed. Posts
   # whatever comment the agent thinks is appropriate (plan, clarifying
@@ -72,7 +69,7 @@ jobs:
       scratch_key: ${{ steps.context.outputs.scratch_key }}
       plan: ${{ steps.outcome.outputs.plan }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Normalize the event into a few simple variables: is this an issue or a
       # PR? what's the number? if it's a PR, what's the head branch? The agent
@@ -234,7 +231,7 @@ jobs:
     steps:
       # Issue path: branch off main. PR path: check out the PR's head branch.
       # Both use full history so the agent can read prior commits if needed.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ needs.triage.outputs.kind == 'pr' && needs.triage.outputs.pr_branch || '' }}
@@ -264,7 +261,7 @@ jobs:
       # Cached per-PR scratch org auth. Cache hit → create-scratch-org.sh
       # re-logs in and skips provisioning. Cache miss → full provision.
       - name: Restore scratch org auth from cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/sfdx-auth-${{ env.SCRATCH_ORG_ALIAS }}.url
           key: scratch-auth-${{ env.SCRATCH_ORG_ALIAS }}

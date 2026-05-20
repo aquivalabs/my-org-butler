@@ -7,10 +7,8 @@ on:
   pull_request:
     types: [closed]
 
-# Opt JavaScript actions into Node.js 24 ahead of the June 2026 default switch,
-# so actions/checkout@v4 etc. don't emit the Node-20-deprecation warning.
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+# actions/checkout@v6 and actions/cache@v5 target Node 24 natively, so no
+# env-var override is needed.
 
 jobs:
   cleanup:
