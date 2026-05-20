@@ -52,10 +52,20 @@ Every assertion writes a screenshot. Write to a path **inside the branch** so th
 
 `-f` because `.verification/` is gitignored on `main`; we force-add it on the PR branch and it disappears when the branch is deleted on merge.
 
-Embed each screenshot in the PR markdown with a caption that says what it proves:
+Embed each screenshot with an **absolute raw GitHub URL** — GitHub Markdown
+in PR bodies and comments does **not** render relative image paths. Use:
+
+    https://raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>
+
+Concretely:
 
     ## Verified
-    ![Home page with accountGreeter LWC rendering](./.verification/pr-12/account-after.png)
+    ![Home page with accountGreeter LWC rendering](https://raw.githubusercontent.com/aquivalabs/my-org-butler/fix/issue-103/.verification/pr-103/account-after.png)
+
+Substitute `<owner>/<repo>` from `$GITHUB_REPOSITORY`, `<branch>` from
+`git branch --show-current`. Relative paths look right in `git diff` but
+render as broken-image placeholders in the actual PR body — never use them
+for embedded screenshots.
 
 For bug repros, post the **before** and **after** as a pair.
 
