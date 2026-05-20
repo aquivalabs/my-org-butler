@@ -81,11 +81,11 @@ line (HTML comment, invisible in GitHub UI) so the execute job fires:
 **Verification plan (pick what fits, not all of them).** Apex / triggers
 touched → Apex tests. Agentforce metadata touched (`genAi*`, `bots/`) → a
 Testing Center case in `aiEvaluationDefinitions/`. User-visible change
-(Flow, Lightning page, LWC, screen flow, agent UI surface) → a Playwright
-scenario via the `playwright-sf` skill. **If the ticket is a bug**, first
-reproduce it in the org with `playwright-sf` and attach the repro
-screenshot to your plan comment. Apex-only refactors don't need UI checks.
-Pick the cheapest verification that proves the requirement.
+(Flow, Lightning page, LWC, screen flow) → a Playwright scenario via the
+`playwright-sf` skill with screenshots. **Interactive conversational UI** (any surface where a user types and the system responds) → a Playwright **video** via the Node.js recipe in `playwright-sf` — not just screenshots, because the full turn (user input → system processes → response appears) is what needs to be shown. **If the ticket is
+a bug**, first reproduce it in the org with `playwright-sf` and attach the
+repro screenshot to your plan comment. Apex-only refactors don't need UI
+checks. Pick the cheapest verification that proves the requirement.
 
 **The plan is what YOU, the agent, will verify — not a checklist for the
 human.** The PR must never contain "How to verify" instructions telling the
