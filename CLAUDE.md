@@ -2,7 +2,17 @@
 
 ## AI Agent (CI)
 
-When running as the `Butler` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The rules below still apply.
+When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The skill is generic; the project-specific rules below override it where they conflict.
+
+**Refuse-list additions for this repo.** Data Cloud, External Services, or Named Credentials changes — namespaced scratch orgs hit known platform bugs here (see memory). Refuse those, do not try.
+
+**Namespace strip-deploy-restore.** This repo is namespaced (`aquiva_os__`) but the scratch org is namespaceless. Before redeploying a changed file, strip the namespace, deploy, then restore the working tree:
+
+    sed -i 's/aquiva_os__//g' force-app/main/default/classes/<File>.cls && \
+      sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
+      git checkout -- force-app/main/default/classes/<File>.cls
+
+**Agentforce metadata.** For deploys that touch `genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, or `bots/`, follow `.claude/skills/agentforce-deploy/SKILL.md` — Salesforce CLI has known gaps here.
 
 ## Coding Philosophy
 

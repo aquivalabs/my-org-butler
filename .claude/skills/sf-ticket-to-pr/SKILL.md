@@ -27,6 +27,13 @@ You are done when **either**:
 - DevHub auth and SF CLI are ready.
 - Commits and PRs are attributed to `github-actions[bot]`.
 
+## Project-specific addenda
+
+This skill is meant to be portable across any sfdx repo. Project-specific
+rules — refuse-list additions, namespace handling, repo-specific deploy
+commands — live in the consuming repo's `CLAUDE.md`. Read that file alongside
+this one and treat its rules as overrides where they conflict.
+
 ## Step 1 — Read the thread, then decide
 
 Before touching code, read the conversation:
@@ -55,6 +62,18 @@ The request is clear and small enough to land in one PR. Comment with a
 short, concrete plan — name the classes you will touch, the metadata you
 will add, the tests you will write. End the comment with this exact trailing
 line (HTML comment, invisible in GitHub UI) so the execute job fires:
+
+**Test plan (pick what fits, not all of them).** Apex / triggers touched →
+Apex tests. Agentforce metadata touched (`genAi*`, `bots/`) → a Testing
+Center case in `aiEvaluationDefinitions/`. User-visible change (Flow,
+Lightning page, LWC, screen flow, agent UI surface) → a Playwright scenario
+via the `playwright-sf` skill. **If the ticket is a bug**, first reproduce
+it in the org using `playwright-sf` and attach the repro screenshot to your
+plan comment — that's the strongest evidence the bug is real and tells you
+what "fixed" looks like. Apex-only refactors don't need UI tests. Trust your
+judgment: pick the cheapest test that proves the requirement, not the most
+thorough.
+
 
     <!-- butler:proceed -->
 
@@ -93,9 +112,9 @@ Stop. A human will open the sub-issues and mention you on them.
 
 A small number of changes genuinely shouldn't go through the pipeline:
 
-- Data Cloud, External Services, or Named Credentials changes — namespaced scratch orgs hit known platform bugs here (see memory).
 - `config/`, `sfdx-project.json`, or `.github/workflows/` changes — these belong in a separate human PR for safety.
 - Feedback that contradicts the original issue without explanation — ask for clarification instead of guessing.
+- Anything listed in the consuming repo's `CLAUDE.md` refuse-list addendum.
 
 Comment with the reason in one sentence. **Do not** include the proceed
 marker. Stop.
@@ -108,9 +127,10 @@ queues, custom fields, Flows, Testing Center XML, anything else under
 `force-app/` or `unpackaged/`. The triage in Step 1 is what protects against
 scope creep, not a folder allowlist.
 
-Apex / coding rules live in `CLAUDE.md` and `rules/salesforce/coding-standards.md` — follow them.
-
-For deploys that touch Agentforce metadata (`genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, `bots/`), follow `.claude/skills/agentforce-deploy/SKILL.md`. Salesforce CLI has known gaps for these — schema-only edits ship nothing, plugin edits don't propagate, active-bot deploys fail. The skill encodes the workarounds. **Do not** retry the same `sf project deploy start` command in a loop hoping it lands — read the skill and apply the right fixup.
+Apex / coding rules live in the consuming repo's `CLAUDE.md` and any
+`rules/` files it references — follow them. Repo-specific deploy gotchas
+(namespace stripping, Agentforce-specific fixups, etc.) also belong in
+`CLAUDE.md` — read it alongside this skill.
 
 Read each file you will change in full before editing. Then write the change
 and update or add the test class.
@@ -119,9 +139,10 @@ and update or add the test class.
 
 Redeploy the changed file (the script already deployed everything else):
 
-    sed -i 's/aquiva_os__//g' force-app/main/default/classes/<File>.cls && \
-      sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
-      git checkout -- force-app/main/default/classes/<File>.cls
+    sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise
+
+If the consuming repo's `CLAUDE.md` describes a namespace strip-deploy-restore
+dance or other pre-deploy massaging, follow that instead.
 
 Run tests **in the foreground** with a Bash timeout long enough to cover the full Apex run (the CLI `--wait 30` is 30 minutes — the Bash timeout must match):
 
@@ -129,11 +150,10 @@ Run tests **in the foreground** with a Bash timeout long enough to cover the ful
 
 Do **not** background this call and poll `TaskOutput` — the 5-minute `TaskOutput` cap is shorter than a real test run, the agent will read "still running" and stall the PR. Use Bash `timeout: 1800000` (30 min) and let the CLI print results directly when finished.
 
-Run the `/sf-code-analyzer` skill on the files you changed. Run BOTH the
-security and the clean-code scan — same selectors as in `scripts/create-scratch-org.sh`
-(`Recommended:Security`, `AppExchange`, `flow`, `sfge` and
-`PMD:OpinionatedSalesforce` via the root `code-analyzer.yaml`). Fix every new
-finding the agent caused, on the lines you touched.
+Run the `/sf-code-analyzer` skill on the files you changed. Use the
+selectors the consuming repo's setup configures (typically via
+`code-analyzer.yaml` at the repo root). Fix every new finding the agent
+caused, on the lines you touched.
 
 **Scope discipline:** the analyzer reports findings on the whole file, but you
 own only the lines you touched. Findings on lines you did not change are
@@ -141,6 +161,13 @@ pre-existing — ignore them. Do not investigate or fix them.
 
 Repeat until tests pass and the analyzer reports no new findings on lines
 you touched.
+
+If your plan included a Playwright scenario (bug repro or UI verification),
+invoke the `playwright-sf` skill to run it now against the scratch org.
+Attach the resulting screenshots to the PR body in Step 4. A `UI-FAIL`
+result means the change is wrong — iterate. A `UI-INCONCLUSIVE` result
+means the assertion couldn't load reliably — note it in the PR but don't
+block on it.
 
 ## Step 4 — Ship
 
@@ -150,14 +177,23 @@ Commit and push:
     git commit -m "<one short sentence describing the change>"
     git push
 
-### Always include the scratch org URL
+### Always include the scratch org URL — non-negotiable
 
-Every PR description and every reply to a human reviewer **must** include a clickable
-auto-login URL to the persistent scratch org so reviewers can manually test the change:
+Every "I implemented this" surface — the PR body, every reply to a reviewer,
+the post-execution summary comment — **must** include a clickable auto-login
+URL to the per-PR scratch org. Reviewers should be able to click through and
+poke at the change themselves without re-deploying anything. The scratch org
+is throwaway, so the URL is safe to post in a public repo.
 
     SCRATCH_URL=$(sf org open --url-only --target-org "$SCRATCH_ORG_ALIAS" --json | jq -r .result.url)
 
 (`SCRATCH_ORG_ALIAS` is set by the workflow to `pr-<issue-number>`.)
+
+If you also produced Playwright screenshots, embed them inline in the same
+markdown body — `playwright-sf` writes them under a path you can commit to
+the branch so GitHub renders them by relative URL. The pair "here's a
+screenshot of it working / here's the org if you want to see for yourself"
+is what makes the PR self-evidencing.
 
 ### Opening a new PR
 
