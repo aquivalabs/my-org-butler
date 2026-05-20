@@ -46,6 +46,21 @@ in the prompt. Read everything — the body and every comment, in order. The
 latest human signal is authoritative; if a maintainer's most recent comment
 contradicts an earlier one of yours, follow the maintainer.
 
+**Verify any prior bot promises before believing them.** Earlier bot
+comments may say "Done — PR #X" or "I'll attach to PR #Y" or "branch
+fix/issue-N has the change". Those statements were true at the time but
+may not be true now (PR closed, branch deleted, work reverted). Before
+adopting any plan that depends on prior bot output, **check current
+state**:
+
+    gh pr view <N> --repo <owner/repo> --json state,headRefName 2>&1
+    git ls-remote --heads origin <branch-name>
+
+If the referenced PR is closed or its branch is gone, the work is **not
+done**. Treat the latest maintainer mention as a fresh ask: re-implement
+from scratch on a new branch off `main`, open a new PR. Do not waste a
+turn trying to update a deleted PR.
+
 Then pick one of four moves and post a comment that says which. **Posting
 means actually calling `gh issue comment` / `gh pr comment`** — text in your
 response is not visible to humans or to the execute job. Always write the
