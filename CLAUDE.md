@@ -22,7 +22,7 @@ When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/s
 4. **Tests as documentation** — Class + method name reads as a sentence describing behavior.
 5. **Leverage existing solutions** — Don't reinvent. Use the libraries already in the project.
 
-Salesforce/Apex specifics live in [rules/salesforce/coding-standards.md](rules/salesforce/coding-standards.md). After creating or modifying `.cls`, `.trigger`, or `*-meta.xml` files, run `/sf-code-analyzer` on the changed files and fix any new findings before declaring done. Pre-existing findings on lines you did not touch are out of scope.
+Salesforce/Apex specifics live in [.claude/rules/salesforce/coding-standards.md](.claude/rules/salesforce/coding-standards.md). After creating or modifying `.cls`, `.trigger`, or `*-meta.xml` files, run `/sf-code-analyzer` on the changed files and fix any new findings before declaring done. Pre-existing findings on lines you did not touch are out of scope.
 
 ## Working Style
 

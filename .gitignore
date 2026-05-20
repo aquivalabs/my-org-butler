@@ -66,3 +66,6 @@ security-review/scans/
 # Playwright screenshot evidence — lives on PR branches only,
 # never reaches main (force-added on branch via `git add -f`)
 .verification/
+
+# Playwright MCP server output (console logs, session data)
+.playwright-mcp/
