@@ -2,7 +2,8 @@ agent: MyOrgButler
 
 # Multi-turn demo story. Driven over the Invocable Action REST endpoint
 # (/services/data/vXX.X/actions/custom/generateAiAgentResponse/<agent>); judged
-# by Claude against each `expect`. See .claude/skills/agentforce/commands/eval.md.
+# by Claude against each `expect`. See the `eval` command of the
+# `salesforce-ai-tools:agentforce` plugin skill.
 #
 # One coherent multi-turn conversation: a rep reviews their top deal, checks
 # the proposal, asks about discount policy, researches the market, creates a

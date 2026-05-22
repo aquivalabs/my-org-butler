@@ -8,7 +8,8 @@ agent: MyOrgButler
 #                          grounded in a PDF attached to a record
 #
 # Driven over the same REST endpoint as demo-story.yaml; judged in-memory by
-# Claude. See .claude/skills/agentforce/commands/eval.md.
+# Claude. See the `eval` command of the `salesforce-ai-tools:agentforce`
+# plugin skill.
 
 tests:
   - name: ConsolidateMemoryConflict

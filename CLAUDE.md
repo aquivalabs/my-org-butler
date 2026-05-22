@@ -2,7 +2,7 @@
 
 ## AI Agent (CI)
 
-When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/skills/sf-ticket-to-pr/SKILL.md` for the full runbook. The skill is generic; the project-specific rules below override it where they conflict.
+When running as the `SF Ticket to PR` GitHub Actions workflow, follow the `salesforce-ai-tools:sf-ticket-to-pr` plugin skill for the full runbook. The skill is generic; the project-specific rules below override it where they conflict.
 
 **Refuse-list additions for this repo.** Data Cloud, External Services, or Named Credentials changes — namespaced scratch orgs hit known platform bugs here (see memory). Refuse those, do not try.
 
@@ -12,7 +12,7 @@ When running as the `SF Ticket to PR` GitHub Actions workflow, follow `.claude/s
       sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
       git checkout -- force-app/main/default/classes/<File>.cls
 
-**Agentforce metadata.** For deploys that touch `genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, or `bots/`, follow `.claude/skills/agentforce-deploy/SKILL.md` — Salesforce CLI has known gaps here.
+**Agentforce metadata.** For deploys that touch `genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, or `bots/`, follow the `salesforce-ai-tools:agentforce-deploy` plugin skill — Salesforce CLI has known gaps here.
 
 ## Coding Philosophy
 
@@ -60,7 +60,7 @@ done
 wait
 ```
 
-Parsing + retry logic is in `.claude/skills/agentforce/commands/eval.md`.
+Parsing + retry logic is in the `eval` command of the `salesforce-ai-tools:agentforce` plugin skill.
 
 ## Multi-turn agent tests (REST)
 
@@ -73,7 +73,7 @@ Per-action regression already lives in the Testing Center XML; this layer covers
 
 Driven over the in-org Invocable Action endpoint (`/services/data/vXX.X/actions/custom/generateAiAgentResponse/MyOrgButler`) via `sf api request rest`, judged by Claude in-memory against each `expect`. No Apex template, no transcript-record persistence, no Connected App.
 
-Runner details + spec format in `.claude/skills/agentforce/commands/eval.md` → "Multi-turn agent tests (REST)".
+Runner details + spec format are in the `eval` command of the `salesforce-ai-tools:agentforce` plugin skill, under "Multi-turn agent tests (REST)".
 
 ## LLM Judge
 
