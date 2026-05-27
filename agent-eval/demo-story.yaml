@@ -18,7 +18,7 @@ tests:
     turns:
       - turn: 'Memory: what do you know about me?'
         say: what do you know about me?
-        expect: Knows the user by name (Robert Sösemann) and email address (rsoesemann@aquivalabs.com)
+        expect: Loads custom memory — surfaces the user's email (rsoesemann@aquivalabs.com) and stored preferences such as including Amount and CloseDate when listing opportunities
 
       - turn: 'Prioritize: what needs my attention?'
         say: which opportunity should I work on next?
