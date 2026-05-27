@@ -16,6 +16,10 @@ tests:
   - name: SalesRepMondayMorning
     description: "MyOrgButler Demo — A Sales Rep's Monday Morning"
     turns:
+      - turn: 'Memory: what do you know about me?'
+        say: what do you know about me?
+        expect: Knows the user by name (Robert Sösemann) and email address (rsoesemann@aquivalabs.com)
+
       - turn: 'Prioritize: what needs my attention?'
         say: which opportunity should I work on next?
         expect: Recommends the Acme Q1 Expansion Deal as the top priority opportunity to work on
