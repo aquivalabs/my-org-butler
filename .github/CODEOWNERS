@@ -1,4 +1,4 @@
 # CODEOWNERS — SOC 2 change-management control
-# Every pull request to the default branch (main) requires approval from a listed owner.
-# Owners derived from repo authorship/contribution history (2026-06).
+# Every PR to the default branch requires approval from a listed owner.
 * @rsoesemann @nbalba-aquiva
+.github/CODEOWNERS @rsoesemann @nbalba-aquiva
