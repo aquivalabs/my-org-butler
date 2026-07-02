@@ -1,4 +1,6 @@
 # CODEOWNERS — SOC 2 change-management control
 # Every PR to the default branch requires approval from a listed owner.
-* @rsoesemann @nbalba-aquiva
-.github/CODEOWNERS @rsoesemann @nbalba-aquiva
+# Note: @nbalba-aquiva (CTO) is deliberately not listed — his oversight comes
+# from the org-owner role; a CODEOWNERS entry only auto-requests reviews he does not do.
+* @rsoesemann
+.github/CODEOWNERS @rsoesemann
