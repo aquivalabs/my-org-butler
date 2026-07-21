@@ -107,6 +107,11 @@ fi
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
 
+# Note: The classic agent (genAiPlannerBundle) is deployed but intentionally NOT published or
+# activated. Only the Agent Script version becomes the runnable MyOrgButler agent.
+echo "Publishing My Org Butler from Agent Script bundle"
+execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
 echo "Activate My Org Butler"
 execute sf agent activate --api-name MyOrgButler
 
