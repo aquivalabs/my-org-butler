@@ -1,86 +1,114 @@
-# My Org Butler — Project Rules
+# My Org Butler — Agent Script Migration
 
-## AI Agent (CI)
+This repo is mid-migration from classic Agentforce metadata to **Agent Script**.
+Branch: `migration-to-agent-script-v2`. This file describes the current state and plan —
+nothing else. Coding standards live in `.claude/rules/`.
 
-When running as the `SF Ticket to PR` GitHub Actions workflow, follow the `salesforce-ai-tools:sf-ticket-to-pr` plugin skill for the full runbook. The skill is generic; the project-specific rules below override it where they conflict.
+## Architecture (current)
 
-**Refuse-list additions for this repo.** Data Cloud, External Services, or Named Credentials changes — namespaced scratch orgs hit known platform bugs here (see memory). Refuse those, do not try.
+- **The agent** is `force-app/main/default/aiAuthoringBundles/MyOrgButler/MyOrgButler.agent`
+  (AiAuthoringBundle). One subagent (`butler`), 18 actions: 15 Apex (`apex://<Class>`),
+  1 prompt template (`generatePromptResponse://AnswerFromFile`), 2 standard actions
+  (`EmployeeCopilot__IdentifyRecordByName`, `EmployeeCopilot__GetRecordDetails`).
+  This is the naive 1:1 port of the classic agent — deliberately including its
+  prompt-engineering guardrails ("MUST be FIRST", "NOT for: ...").
+- **Classic agent metadata** (`genAiPlannerBundles/`, `genAiPlugins/`, `genAiFunctions/`,
+  `botTemplates/`) is `.forceignore`'d: still versioned for reference, never deployed or
+  packaged. Delete it once the migration is verified complete.
+- Deploy → publish → activate: deploying the bundle only stores source in the org.
+  `sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve` compiles it
+  into Bot/BotVersion/GenAiPlannerBundle; activation makes it runnable.
+  `scripts/create-scratch-org.sh` does all of this.
 
-**Namespace strip-deploy-restore.** This repo is namespaced (`aquiva_os__`) but the scratch org is namespaceless. Before redeploying a changed file, strip the namespace, deploy, then restore the working tree:
+## Remaining phases
 
-    sed -i 's/aquiva_os__//g' force-app/main/default/classes/<File>.cls && \
-      sf project deploy start --source-dir force-app/main/default/classes/<File>.cls --concise; \
-      git checkout -- force-app/main/default/classes/<File>.cls
+1. **Deterministic refactor** (next): replace prompt hacks with language constructs —
 
-**Agentforce metadata.** For deploys that touch `genAiFunctions/`, `genAiPromptTemplates/`, `genAiPlugins/`, `genAiPlannerBundles/`, or `bots/`, follow the `salesforce-ai-tools:agentforce-deploy` plugin skill — Salesforce CLI has known gaps here.
+   | Classic hack | Agent Script construct |
+   |---|---|
+   | "LoadCustomInstructions MUST be FIRST action" | `run @actions.LoadCustomInstructions` + `set @variables.custom_instructions` before reasoning |
+   | Planner attributeMappings | `set @variables.… = @outputs.…` on load AND store |
+   | "ALWAYS ExploreOrgSchema/ExploreDataCloud FIRST" | `available when @variables.…_explored == True` gates |
+   | "NOT for: …" negative routing in descriptions | subagent split (`data`, `data_cloud`, `org_dev`, `files_web`, `memory`, `automation`) + router |
+   | Headless "NEVER create another plan" rules | dedicated `automation` subagent, visible only after transition |
 
-## Coding Philosophy
+   Known agent bugs this must fix (from test runs): claims "Noted" without calling
+   StoreCustomInstruction; answers memory questions without calling LoadCustomInstructions;
+   doesn't surface memory content.
+   Syntax authority: `trailheadapps/agent-script-recipes` → `.airules/AGENT_SCRIPT.md`.
+2. **Packaging** via [forcedotcom/lwc-agentscript-viewer](https://github.com/forcedotcom/lwc-agentscript-viewer):
+   AiAuthoringBundle is NOT 2GP-packageable. Ship the `.agent` as text in a static
+   resource + vendored viewer LWC + setup page; subscriber admin copies into Agent Studio.
+   Namespace caveat: packaged copy needs `apex://aquiva_os__…` targets (sync script
+   injects prefix; unverified against a real install).
+3. **README** showcase: "one agent, two implementations".
 
-1. **Readability over cleverness** — Code is read far more than written. Optimize for the reader.
-2. **Simplicity over sophistication** — No deep package hierarchies, no enterprise patterns. Flat folders, simple names, minimal abstraction.
-3. **Explicit over implicit** — When you deviate from defaults, say why. No magic.
-4. **Tests as documentation** — Class + method name reads as a sentence describing behavior.
-5. **Leverage existing solutions** — Don't reinvent. Use the libraries already in the project.
+## Testing
 
-Salesforce/Apex specifics live in [.claude/rules/salesforce/coding-standards.md](.claude/rules/salesforce/coding-standards.md). After creating or modifying `.cls`, `.trigger`, or `*-meta.xml` files, run `/sf-code-analyzer` on the changed files and fix any new findings before declaring done. Pre-existing findings on lines you did not touch are out of scope.
+Everything lives in `agent-eval/`. All on the **Agentforce Studio (NGT) test runner**
+(Beta — the legacy AiEvaluationDefinition flow is officially "legacy" and was deleted here):
 
-## Working Style
+- `aiTestingDefinitions/MyOrgButlerRegression.aiTestingDefinition-meta.xml` — 14
+  per-action cases. Run: `sf agent test run --api-name MyOrgButlerRegression --wait 30`.
+- `aiTestingDefinitions/MyOrgButlerPromptTemplates.aiTestingDefinition-meta.xml` —
+  prompt-template smoke tests (ConsolidateMemory via conversationHistory, AnswerFromFile).
+- `demo-story.yaml` — the multi-turn conference-demo conversation, driven over the REST
+  endpoint below, judged by Claude in-memory. Covers what single-turn can't.
 
-- **Don't guess on expensive operations.** When unsure about a config value, feature name, or setting — verify against a known-working reference (other branch, docs) before running something that takes minutes to fail (scratch-org creation, large deploys).
-- **Fail loud, never silently.** "Completed", "tests pass", "feature works" are wrong if anything was skipped or any edge case wasn't verified. Surface uncertainty by default — partial success is not success.
-- **Surface conflicts, don't average them.** If two existing patterns in the codebase contradict, pick one (more recent / more tested), say why, and flag the other. Don't write code that satisfies both — blended code is the worst code.
+NGT format facts: testCases have `inputs:` (utterance + optional contextVariables /
+conversationHistory — **every** history turn needs a `topic`, even user turns) and
+`scorers:` (topic_sequence_match, action_sequence_match, agent_handoff_match,
+bot_response_rating, response_match, coherence, conciseness, factuality, completeness,
+task_resolution, output_latency_milliseconds). Label/description max 80 chars.
+The CLI returns actual/expected pairs but **no pass/fail verdicts** — grade yourself or
+in the Studio UI. YAML specs are transient: `sf agent generate test-spec
+--from-definition <xml>` ⇄ `sf agent test create --spec <yaml> --test-runner
+agentforce-studio`. Repo keeps only the XML.
+
+Smoke-test channel (works for classic and script agents):
+
+    POST /services/data/v66.0/actions/custom/generateAiAgentResponse/MyOrgButler
+    {"inputs":[{"userMessage":"...", "sessionId":"<from previous response>"}]}
+
+## Platform gotchas (expensive to learn — don't re-learn)
+
+1. **Zero-input actions break the runtime.** Compiles + publishes fine, then every session
+   throws `InvalidPlannerConfigException`. Fix: dummy optional input (`ignored: string`).
+2. **`sf agent publish` finds bundles only in the DEFAULT package directory** (validate
+   searches all) — hence `force-app` is `"default": true`.
+3. **`sf agent preview --api-name` can't start Employee-agent sessions**
+   ([forcedotcom/cli#3608](https://github.com/forcedotcom/cli/issues/3608)); use
+   `--authoring-bundle` or the REST endpoint above.
+4. **`versionTag` in bundle-meta.xml is dead metadata** — publish never reads it; Builder
+   version labels are the Builder's own counter. We removed it.
+5. **Published bot versions are undeletable via API** (locked by AiAuthoringBundleDefVer);
+   the Studio UI can delete them. Don't delete versions while a test run is in flight.
+6. Version activation without the interactive picker:
+   `POST /connect/bot-versions/<Id>/activation` body `{"status":"Active"}`.
+7. **`sf agent adl file add` uploads but never triggers indexing** — kick
+   `POST /einstein/data-libraries/<libId>/indexing` with
+   `{"uploadedFiles":[{"filePath":"$agentforce_data_library$/<libId>/<file>","fileSize":<bytes>}]}`
+   or files sit unindexed forever. `create-scratch-org.sh` does this automatically.
+8. **Data Cloud entity names are org-specific** (`ADL_<random>_…_chunk__dlm`) — never
+   hardcode them in tests or code; the agent discovers them via ExploreDataCloud.
+9. AiTestingDefinition records with run history can't be deleted via API — Studio UI only.
 
 ## Deploying
 
-Never run `sf project deploy start --source-dir force-app`. The scratch org is namespaceless but some metadata files contain namespace references, so a full deploy always fails. Always deploy only the specific files you changed:
+Never `sf project deploy start --source-dir force-app` against a namespaced target without
+the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` strips
+`aquiva_os__` before deploying and restores afterwards. For single files:
 
-```
-sf project deploy start \
-  --source-dir force-app/main/default/classes/Foo.cls \
-  --source-dir force-app/main/default/classes/Bar.cls
-```
+    sed -i 's/aquiva_os__//g' <file> && \
+      sf project deploy start --source-dir <file> --concise; \
+      git checkout -- <file>
 
-## Testing Strategy
+## Open items
 
-Everything lives in `agent-eval/`. Two test layers:
-
-## Testing Center (single-turn regression)
-
-One `agent-eval/Regression.aiEvaluationDefinition-meta.xml` with 14 `testCase` blocks — one per action. Runs on-platform via `sf agent test run --api-name Regression`. This is the only layer that asserts on topic and action routing (planner trace).
-
-Salesforce caps concurrent test jobs at **10 per 10-hour window** ([Trailhead](https://trailhead.salesforce.com/content/learn/modules/agentforce-agent-testing/trust-your-agents)). Launching 14 per-action tests in parallel hit that cap and threw `TestStartFailed: Too many inflight evaluations`, so we use a single definition with multiple cases instead.
-
-Run 2 passes in parallel:
-
-```bash
-mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-for i in 1 2; do
-  (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
-done
-wait
-```
-
-Parsing + retry logic is in the `eval` command of the `salesforce-ai-tools:agentforce` plugin skill.
-
-## Multi-turn agent tests (REST)
-
-Two YAMLs in `agent-eval/`:
-
-- `demo-story.yaml` — the conference demo, automated. One coherent multi-turn conversation (`SalesRepMondayMorning`) chaining actions into a sales-rep workflow.
-- `prompt-regression.yaml` — smoke tests that exercise specific prompt templates (`ConsolidateMemory`, `AnswerFromFile`) through the agent.
-
-Per-action regression already lives in the Testing Center XML; this layer covers what single-turn can't capture (multi-turn flows, prompt-template behaviors that need a real session).
-
-Driven over the in-org Invocable Action endpoint (`/services/data/vXX.X/actions/custom/generateAiAgentResponse/MyOrgButler`) via `sf api request rest`, judged by Claude in-memory against each `expect`. No Apex template, no transcript-record persistence, no Connected App.
-
-Runner details + spec format are in the `eval` command of the `salesforce-ai-tools:agentforce` plugin skill, under "Multi-turn agent tests (REST)".
-
-## LLM Judge
-
-Rubrics assert on **specific data** (filenames, dollar amounts, counts) — not vague "confirms it worked." Testing Center uses Salesforce's built-in evaluator (judge model is opaque). Multi-turn REST tests use Claude (this conversation).
-
-## Current State (2026-04-30)
-
-Testing Center suite: single `Regression` definition with 14 cases; 2 parallel passes complete in a few minutes without tripping the 10-job concurrency cap.
-
-**Main open issue: [#56](https://github.com/aquivalabs/my-org-butler/issues/56)** — test-suite shape / flakiness tracker. Data Cloud routing (SearchDataLibrary, QueryDataCloud) remains the one intermittent case. Done criteria: multiple consecutive clean runs.
+- [ ] Delete stuck org-side test suites `RegressionStudio` + `OrgButlerRegression`
+      (Studio UI; API blocked) → then deploy + run `MyOrgButlerRegression`
+- [ ] Demo-story fully green once Data Library chunks are indexed
+- [ ] Phase 1 (deterministic refactor) → Phase 2 (packaging) → Phase 3 (README)
+- [ ] Bug reports against forcedotcom/cli: zero-input action config passes
+      validate+publish but breaks runtime; `adl file add` never triggers indexing
+- [ ] Delete classic metadata once migration is verified
