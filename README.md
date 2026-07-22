@@ -31,7 +31,7 @@ That's it! The Butler will be available in your Agentforce sidebar.
 
 ### What can the Butler do?
 
-The whole agent is one [Agent Script](force-app/main/default/aiAuthoringBundles/MyOrgButler/MyOrgButler.agent) file with **18 actions** (15 Apex, 1 prompt template, 2 standard actions). The classic implementation (topics, genAiFunctions, botTemplate metadata) lives behind the git tag [`pre-agent-script-migration`](../../tree/pre-agent-script-migration). The actions handle the Salesforce-specific work:
+The whole agent is one [Agent Script](unpackaged/main/default/aiAuthoringBundles/MyOrgButler/MyOrgButler.agent) file with **18 actions** (15 Apex, 1 prompt template, 2 standard actions). The classic implementation (topics, genAiFunctions, botTemplate metadata) lives behind the git tag [`pre-agent-script-migration`](../../tree/pre-agent-script-migration). The actions handle the Salesforce-specific work:
 
 - Query data, metadata, and settings using [natural language SOQL](force-app/main/default/classes/QueryRecordsWithSoql.cls)
 - Create and update records via the [REST API](force-app/main/default/classes/CallRestApi.cls)
