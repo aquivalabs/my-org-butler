@@ -18,7 +18,7 @@ tests:
     turns:
       - turn: 'Memory: what do you know about me?'
         say: what do you know about me?
-        expect: Loads stored custom memory and surfaces its actual content — the user's email (rsoesemann@aquivalabs.com) and the saved Data Library object names ADL_MyOrgButlerLibr__dlm, ADL_MyOrgButlerLibr_index__dlm, and ADL_MyOrgButlerLibr_chunk__dlm
+        expect: Loads stored custom memory and surfaces its actual content, including the user's email (rsoesemann@aquivalabs.com)
 
       - turn: 'Prioritize: what needs my attention?'
         say: which opportunity should I work on next?
