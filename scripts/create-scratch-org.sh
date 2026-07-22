@@ -81,6 +81,10 @@ if [ "$NAMESPACE" = "false" ]; then
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
+  # Note: publish before unpackaged — AgentAccess permset references the Bot this creates
+  echo "Publishing My Org Butler from Agent Script bundle"
+  execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
@@ -94,15 +98,16 @@ else
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
+  # Note: publish before unpackaged — AgentAccess permset references the Bot this creates
+  echo "Publishing My Org Butler from Agent Script bundle"
+  execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 fi
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
-
-echo "Publishing My Org Butler from Agent Script bundle"
-execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
 
 echo "Activate My Org Butler"
 execute bash `dirname $0`/activate-agent.sh MyOrgButler
