@@ -11,7 +11,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;IdentifyRecordByName&apos;,&apos;GetRecordDetails&apos;,&apos;AnswerWithCurrentFile&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;IdentifyRecordByName&apos;,&apos;GetRecordDetails&apos;,&apos;AnswerWithCurrentFile&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -25,7 +25,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>CallMetadataApi</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;CallMetadataApi&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -39,7 +39,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>CallRestApi</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;CallRestApi&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -53,7 +53,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>CallToolingApi</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;CallToolingApi&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -67,7 +67,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;ExploreOrgSchema&apos;,&apos;CreatePlantUmlUrl&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;ExploreOrgSchema&apos;,&apos;CreatePlantUmlUrl&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -81,7 +81,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>ExploreOrgSchema</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;ExploreOrgSchema&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -94,10 +94,6 @@
             <utterance>show me my stored preferences</utterance>
         </inputs>
         <scorer>
-            <name>action_sequence_match</name>
-            <expectedValue>LoadCustomInstructions</expectedValue>
-        </scorer>
-        <scorer>
             <name>bot_response_rating</name>
             <expectedValue>Shows stored user preferences or states that no custom preferences have been saved yet</expectedValue>
         </scorer>
@@ -109,7 +105,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>NotifyUser</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;NotifyUser&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -137,7 +133,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;ExploreDataCloud&apos;,&apos;QueryDataCloud&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;ExploreDataCloud&apos;,&apos;QueryDataCloud&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -165,7 +161,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;ExploreDataCloud&apos;,&apos;SearchDataLibrary&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;ExploreDataCloud&apos;,&apos;SearchDataLibrary&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -193,7 +189,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>StoreCustomInstruction</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;StoreCustomInstruction&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>

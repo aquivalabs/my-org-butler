@@ -95,9 +95,32 @@ system:
 
 start_agent agent_router:
    description: "Route every request to the butler"
+
+   actions:
+      LoadCustomInstructions:
+         description: "Load user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions from previous conversations."
+         label: "MyOrgButler: Load Custom Instructions"
+         include_in_progress_indicator: True
+         inputs:
+            # Note: actions without declared inputs compile into a config the bot runtime
+            # cannot load (InvalidPlannerConfigException) — the Apex Input class has this
+            # optional dummy field for exactly that reason.
+            ignored: string
+               description: "no input"
+         outputs:
+            customInstructions: string
+               description: "Formatted string containing user context information including user details, timezone, organization info, current date/time, and user-specific communication preferences"
+               is_displayable: True
+               is_used_by_planner: True
+         target: "apex://LoadCustomInstructions"
+
    reasoning:
-      instructions:|
-         Route the user's request to the butler.
+      instructions:->
+         if @variables.custom_instructions == "":
+            run @actions.LoadCustomInstructions
+               with ignored=""
+               set @variables.custom_instructions = @outputs.customInstructions
+         | Route the user's request to the butler.
       actions:
          begin_butler: @utils.transition to @subagent.butler
             description: "Handle any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, or scheduling plans for later."
@@ -107,7 +130,7 @@ subagent butler:
 
    actions:
       LoadCustomInstructions:
-         description: "Load user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions from previous conversations. MUST be called as the FIRST action of every new conversation, before any other action. CRITICAL: the returned custom instructions are binding for the rest of the conversation. NOT for: storing a new preference — use StoreCustomInstruction. Not for reading arbitrary records — use QueryRecordsWithSoql."
+         description: "Reload user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions. Only needed to refresh after StoreCustomInstruction or when the user asks for the latest stored preferences. NOT for: storing a new preference — use StoreCustomInstruction. Not for reading arbitrary records — use QueryRecordsWithSoql."
          label: "MyOrgButler: Load Custom Instructions"
          include_in_progress_indicator: True
          inputs:
@@ -446,7 +469,9 @@ subagent butler:
 
    reasoning:
       instructions:->
-         | First action of every conversation: call {!@actions.LoadCustomInstructions}. The returned custom instructions are binding for the rest of the conversation.
+         | User context and binding preferences (apply them to every response and action):
+           {!@variables.custom_instructions}
+         | When the user asks about their stored preferences or memories, answer with the literal stored content from the user context above — do not paraphrase it away or claim nothing is stored without checking it.
          | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Then confirm briefly and apply the preference immediately.
          | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
 

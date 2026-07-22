@@ -14,7 +14,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>StoreCustomInstruction</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;StoreCustomInstruction&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
@@ -27,10 +27,6 @@
             <utterance>show me my stored preferences</utterance>
         </inputs>
         <scorer>
-            <name>action_sequence_match</name>
-            <expectedValue>LoadCustomInstructions</expectedValue>
-        </scorer>
-        <scorer>
             <name>bot_response_rating</name>
             <expectedValue>Surfaces the actual content of stored preferences or memories, not just a generic statement</expectedValue>
         </scorer>
@@ -42,7 +38,7 @@
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;IdentifyRecordByName&apos;,&apos;GetRecordDetails&apos;,&apos;AnswerWithCurrentFile&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;IdentifyRecordByName&apos;,&apos;GetRecordDetails&apos;,&apos;AnswerWithCurrentFile&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
