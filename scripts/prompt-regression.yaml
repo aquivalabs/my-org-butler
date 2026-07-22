@@ -1,0 +1,50 @@
+agent: MyOrgButler
+
+# Prompt-template smoke tests. Exercises specific prompt templates through
+# the agent's actions:
+#   - ConsolidateMemory  — invoked by StoreCustomInstruction when adding a preference
+#                          that conflicts with or duplicates an existing one
+#   - AnswerFromFile     — invoked by AnswerWithCurrentFile when answering a question
+#                          grounded in a PDF attached to a record
+#
+# Driven over the same REST endpoint as demo-story.yaml; judged in-memory by
+# Claude. See the `eval` command of the `salesforce-ai-tools:agentforce`
+# plugin skill.
+
+tests:
+  - name: ConsolidateMemoryConflict
+    description: "Consolidate memory: newer preference wins on conflict"
+    turns:
+      - turn: Store first preference
+        say: remember that I prefer opportunities sorted by Amount descending
+        expect: Confirms storing the preference about sorting opportunities by Amount descending
+
+      - turn: Store conflicting preference
+        say: now I want opportunities sorted by CloseDate ascending
+        expect: Confirms storing the new sort preference
+
+      - turn: Recall stored preferences
+        say: show me my stored preferences
+        expect: The consolidated result sorts opportunities by CloseDate, not Amount — newer preference wins
+
+  - name: ConsolidateMemoryDeduplication
+    description: Deduplication of identical memories
+    turns:
+      - turn: Store preference
+        say: remember that I want Amount and CloseDate when viewing opportunities
+        expect: Confirms storing the preference about showing Amount and CloseDate
+
+      - turn: Store same preference rephrased
+        say: Show Amount and CloseDate for opportunities
+        expect: Confirms storing the preference (or recognizes it already exists)
+
+      - turn: Recall stored preferences
+        say: show me my stored preferences
+        expect: Contains only one entry about Amount and CloseDate for opportunities, not two duplicates
+
+  - name: AnswerFromFileContractValue
+    description: Extract total contract value from the proposal PDF
+    turns:
+      - turn: Extract contract value and phase split
+        say: the Acme Q1 Expansion Deal has a PDF file attached, what is the total contract value and how is it split across phases?
+        expect: 'Mentions $500,000 total and references the three phases: $75,000 for Discovery, $250,000 for Implementation, $175,000 for Rollout'
