@@ -42,7 +42,10 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 echo "Updating tools"
-npm install --global @salesforce/cli
+# Note: 'npm install -g' reinstalls all 700 packages even when current — only run it when needed
+if ! command -v sf >/dev/null || ! npm outdated --global @salesforce/cli >/dev/null; then
+  npm install --global @salesforce/cli
+fi
 sf plugins update
 
 if [ -z "$DEV_HUB_URL" ]; then
