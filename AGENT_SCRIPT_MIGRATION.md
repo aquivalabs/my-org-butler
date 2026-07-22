@@ -115,8 +115,7 @@ story, run commands for both worlds.
 
 ## Open items
 
-- [ ] Delete agent in scratch org + republish once → single clean version (Robert OK'd)
+- [x] Version cleanup: UI deletion of bot versions works where the API refuses; fresh publish is active
 - [ ] Re-upload policy.pdf in Data Library UI (chunk table is empty → turn 4 / DC evals)
-- [ ] Commit current diff (fixed .agent, CSP trusted sites, eval de-hardcoding, this doc)
 - [ ] Bug report forcedotcom/cli: zero-input action = runtime-invalid config passes validate+publish
 - [ ] Phase 2 refactor, then re-run both eval layers

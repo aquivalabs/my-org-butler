@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <AiAuthoringBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <bundleType>AGENT</bundleType>
-    <versionTag>2026.07.22</versionTag>
+  <bundleType>AGENT</bundleType>
 </AiAuthoringBundle>
