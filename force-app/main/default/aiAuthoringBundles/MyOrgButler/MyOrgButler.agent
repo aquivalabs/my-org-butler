@@ -121,9 +121,9 @@ start_agent agent_router:
                with ignored=""
                set @variables.custom_instructions = @outputs.customInstructions
          | Route the user's request to the butler.
-      actions:
-         begin_butler: @utils.transition to @subagent.butler
-            description: "Handle any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, or scheduling plans for later."
+
+   after_reasoning:
+      transition to @subagent.butler
 
 subagent butler:
    description: "Use for any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, or scheduling plans for later."
