@@ -110,6 +110,12 @@ subagent butler:
          description: "Load user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions from previous conversations. MUST be called as the FIRST action of every new conversation, before any other action. CRITICAL: the returned custom instructions are binding for the rest of the conversation. NOT for: storing a new preference — use StoreCustomInstruction. Not for reading arbitrary records — use QueryRecordsWithSoql."
          label: "MyOrgButler: Load Custom Instructions"
          include_in_progress_indicator: True
+         inputs:
+            # Note: actions without declared inputs compile into a config the bot runtime
+            # cannot load (InvalidPlannerConfigException) — the Apex Input class has this
+            # optional dummy field for exactly that reason.
+            ignored: string
+               description: "no input"
          outputs:
             customInstructions: string
                description: "Formatted string containing user context information including user details, timezone, organization info, current date/time, and user-specific communication preferences"
