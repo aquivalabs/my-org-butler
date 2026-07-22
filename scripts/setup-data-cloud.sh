@@ -5,10 +5,17 @@ set -e
 FILES=${@:-scripts/data/policy.pdf}
 ADL="/services/data/v66.0/einstein/data-libraries"
 
-echo "Waiting for Data Cloud provisioning..."
+# Note: The library must not be created before Data Cloud is fully provisioned —
+# gate on the indexing subsystem (search-index) too, not just the library endpoint.
+echo "Waiting for Data Cloud provisioning (library endpoint)..."
 until sf api request rest "$ADL" | jq -e '.libraries or .dataLibraries' >/dev/null 2>&1; do
   echo "  ...retrying in 60s"; sleep 60
 done
+echo "Waiting for Data Cloud provisioning (search-index subsystem)..."
+until sf api request rest "/services/data/v66.0/ssot/search-index" | jq -e '.semanticSearchDefinitionDetails' >/dev/null 2>&1; do
+  echo "  ...retrying in 60s"; sleep 60
+done
+echo "Data Cloud is provisioned."
 
 if [ -n "$TAVILY_API_KEY" ]; then
   echo "Setting Tavily API key"
