@@ -12,9 +12,10 @@ nothing else. Coding standards live in `.claude/rules/`.
   (`EmployeeCopilot__IdentifyRecordByName`, `EmployeeCopilot__GetRecordDetails`).
   This is the naive 1:1 port of the classic agent — deliberately including its
   prompt-engineering guardrails ("MUST be FIRST", "NOT for: ...").
-- **Classic agent metadata** (`genAiPlannerBundles/`, `genAiPlugins/`, `genAiFunctions/`,
-  `botTemplates/`) is `.forceignore`'d: still versioned for reference, never deployed or
-  packaged. Delete it once the migration is verified complete.
+- **Classic agent metadata** is deleted from the working tree (also the classic Bot/
+  GenAiPlannerBundle copies that lived in `unpackaged/` — they broke fresh-org deploys
+  once the plugins were gone). Git tag `pre-agent-script-migration` marks the last
+  commit with the full classic implementation.
 - Deploy → publish → activate: deploying the bundle only stores source in the org.
   `sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve` compiles it
   into Bot/BotVersion/GenAiPlannerBundle; activation makes it runnable.
@@ -123,4 +124,12 @@ the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` s
 - [ ] Phase 1 (deterministic refactor) → Phase 2 (packaging) → Phase 3 (README)
 - [ ] Bug reports against forcedotcom/cli: zero-input action config passes
       validate+publish but breaks runtime; `adl file add` never triggers indexing
-- [ ] Delete classic metadata once migration is verified
+- [ ] **Data Library chunking broken since 2026-07-22**: files upload and every
+      pipeline stage reports SUCCESS/READY/"Indexed", but chunk DMOs stay at 0 rows —
+      CLI, REST and manual Studio UI creation all affected. Salesforce switched the
+      index pipeline org-side that day (new indexes get GPT-4o
+      `pre_process_infographics_using_llm` + `e5_large_v2`; older ones had no
+      preprocessing + `multilingual-e5-large`). Suspect the LLM preprocessing step
+      fails silently for PDFs in scratch orgs. Untested workaround: upload `.txt`
+      (bypasses preprocessing). Diagnose with `sf agent adl status --include-artifacts`
+      and `/services/data/v66.0/ssot/search-index`.

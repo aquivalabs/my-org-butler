@@ -20,11 +20,3 @@ package.xml
 **/*.ts
 
 unsupported/
-
-# Classic (pre-Agent-Script) agent metadata — kept in the repo for reference until the
-# migration is complete, but no longer deployed or packaged. The Agent Script bundle in
-# aiAuthoringBundles/ is the only source of the MyOrgButler agent.
-force-app/main/default/genAiPlannerBundles
-force-app/main/default/genAiPlugins
-force-app/main/default/genAiFunctions
-force-app/main/default/botTemplates
