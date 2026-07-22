@@ -42,7 +42,10 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 echo "Updating tools"
-npm install --global @salesforce/cli
+# Note: 'npm install -g' reinstalls all 700 packages even when current — only run it when needed
+if ! command -v sf >/dev/null || ! npm outdated --global @salesforce/cli >/dev/null; then
+  npm install --global @salesforce/cli
+fi
 sf plugins update
 
 if [ -z "$DEV_HUB_URL" ]; then
@@ -73,22 +76,30 @@ if [ "$NAMESPACE" = "false" ]; then
 
   echo "Stripping namespace from source"
   sed_inplace 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/' sfdx-project.json
-  find force-app unpackaged agent-eval -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) -exec sed -i.bak 's/aquiva_os__//g; s/aquiva_os\.//g' {} + && find force-app unpackaged agent-eval -name "*.bak" -delete
+  find force-app unpackaged scripts -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.yaml" \) -exec sed -i.bak 's/aquiva_os__//g; s/aquiva_os\.//g' {} + && find force-app unpackaged scripts -name "*.bak" -delete
 
   # Note: Restore source even if deploy fails — namespace stripping rewrites files in place
-  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/' EXIT
+  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ scripts/' EXIT
 
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
+  # Note: bundle first, then publish + activate, then the rest of unpackaged —
+  # the AgentAccess permset and the AiTestingDefinitions need the published agent.
+  echo "Deploying Agent Script bundle"
+  execute sf project deploy start --source-dir unpackaged/main/default/aiAuthoringBundles --concise --ignore-conflicts
+
+  echo "Publishing My Org Butler from Agent Script bundle"
+  execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
+  echo "Activate My Org Butler"
+  execute bash `dirname $0`/activate-agent.sh MyOrgButler
+
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
-  echo "Deploying agent-eval"
-  execute sf project deploy start --source-dir agent-eval --concise
-
   echo "Restoring namespace in source"
-  git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/
+  git checkout -- sfdx-project.json force-app/ unpackaged/ scripts/
   trap - EXIT
 else
   echo "Installing dependencies"
@@ -97,18 +108,21 @@ else
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
+  echo "Deploying Agent Script bundle"
+  execute sf project deploy start --source-dir unpackaged/main/default/aiAuthoringBundles --concise --ignore-conflicts
+
+  echo "Publishing My Org Butler from Agent Script bundle"
+  execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
+  echo "Activate My Org Butler"
+  execute bash `dirname $0`/activate-agent.sh MyOrgButler
+
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
-
-  echo "Deploying agent-eval"
-  execute sf project deploy start --source-dir agent-eval --concise
 fi
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
-
-echo "Activate My Org Butler"
-execute sf agent activate --api-name MyOrgButler
 
 echo "Creating Sample Data"
 sf apex run --file scripts/create-sample-data.apex
@@ -119,10 +133,10 @@ sf data create file --file "scripts/data/proposal.pdf" --title "Acme Q1 Expansio
 
 echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-if grep -q "^CONTENT_DOCUMENT_ID=" agent-eval/.env 2>/dev/null; then
-  sed_inplace "s/^CONTENT_DOCUMENT_ID=.*/CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}/" agent-eval/.env
+if grep -q "^CONTENT_DOCUMENT_ID=" scripts/.env 2>/dev/null; then
+  sed_inplace "s/^CONTENT_DOCUMENT_ID=.*/CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}/" scripts/.env
 else
-  echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
+  echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> scripts/.env
 fi
 
 echo "Running Apex Tests"
@@ -133,30 +147,19 @@ sf org display --target-org "$SCRATCH_ORG_ALIAS" --verbose --json | jq -r .resul
 
 if [ "$HEADLESS" != "true" ]; then
   echo ""
-  echo "============================================"
-  echo " MANUAL SETUP REQUIRED"
-  echo "============================================"
-  cat `dirname $0`/manual-org-setup.md
-  echo "============================================"
-  echo ""
+  echo "=================== MANUAL SETUP ==================="
+  echo " 1. Setup > Audit > Einstein Generative AI: enable Agent Analytics + Session Tracing"
+  echo " 2. Skipped Tavily key? Set it on External Credential > TavilyApi"
+  echo "===================================================="
   sf org open
   read -p "Press Enter when done (or to skip)..."
 
-  echo "Waiting for Data Library chunks..."
-  until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
-ConnectApi.CdpQueryInput i = new ConnectApi.CdpQueryInput();
-i.sql = 'SELECT COUNT(*) FROM ADL_MyOrgButlerLibr_chunk__dlm';
-ConnectApi.CdpQueryOutputV2 r = ConnectApi.CdpQuery.queryANSISqlV2(i);
-if(r.data != null && !r.data.isEmpty() && String.valueOf(r.data[0].rowData[0]) != '0') System.debug('READY');
-APEX
-  do echo "  ...retrying in 30s"; sleep 30; done
+  echo "Setting up Data Cloud (library, files, index)"
+  execute bash `dirname $0`/setup-data-cloud.sh scripts/data/policy.pdf
 
-  echo "Running Regression suite (2 parallel runs)"
+  echo "Running AgentRegression suite (Agentforce Studio runner)"
   mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-  for i in 1 2; do
-    (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
-  done
-  wait
+  sf agent test run --api-name AgentRegression --wait 30 --result-format json > /tmp/ae/AgentRegression_run1.json 2>&1
 fi
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"

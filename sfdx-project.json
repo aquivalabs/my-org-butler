@@ -1,28 +1,16 @@
 {
   "packageDirectories": [
     {
-      "path": "retrieval-staging",
-      "default": true
-    },
-    {
-      "path": "no-namespace",
-      "default": false
-    },
-    {
       "path": "unpackaged",
-      "default": false
-    },
-    {
-      "path": "agent-eval",
-      "default": false
+      "default": true
     },
     {
       "path": "force-app",
       "default": false,
       "package": "my-org-butler",
-      "versionName": "April 2026",
-      "versionNumber": "2026.4.3.NEXT",
-      "versionDescription": "",
+      "versionName": "July 2026",
+      "versionNumber": "2026.7.0.NEXT",
+      "versionDescription": "Agent rewritten in Agent Script; ships as copyable static resource (/resource/AgentScript)",
       "packageMetadataAccess": {
         "permissionSets": [
           "EinsteinGPTPromptTemplateManager"
@@ -125,6 +113,7 @@
     "my-org-butler@2026.4.0-1": "04tVI000000YH6TYAW",
     "my-org-butler@2026.4.1-1": "04tVI000000YlcPYAS",
     "my-org-butler@2026.4.2-1": "04tVI000000Yle1YAC",
-    "my-org-butler@2026.4.3-1": "04tVI000000YoC5YAK"
+    "my-org-butler@2026.4.3-1": "04tVI000000YoC5YAK",
+    "my-org-butler@2026.7.0-1": "04tVI000000d3IzYAI"
   }
 }
