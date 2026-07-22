@@ -1,4 +1,4 @@
-## <img src="resources/logo.png" width="50"/> My Org Butler [`v2026.4.3`](https://github.com/aquivalabs/my-org-butler/releases/tag/v2026.4.3)
+## <img src="resources/logo.png" width="50"/> My Org Butler [`v2026.7.0`](https://github.com/aquivalabs/my-org-butler/releases/tag/v2026.7.0)
 
 My Org Butler is a showcase for building Agentforce solutions that help Salesforce users with their daily work. It started in early 2024 on the [OpenAI Assistants API with a custom LWC frontend](../../tree/openai-agentforce-hybrid), then moved to pure Agentforce when it became powerful enough. Using natural language, it answers questions about data, metadata, and configuration, and can perform tasks like creating records, making configuration changes, or notifying other people.
 
@@ -15,7 +15,7 @@ Find all of Aquiva's My Org Butler related video demos at this [YouTube playlist
 ### How to install
 
 1. **Install Prerequisite** - Install the [latest version](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000L3ZBYA0) of the [App Foundations](https://github.com/aquivalabs/app-foundations) package (prerequisite)
-2. **Install My Org Butler** - Grab the latest package version ID from [sfdx-project.json](sfdx-project.json) and install via [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=)
+2. **Install My Org Butler** - Grab the latest package version ID from [sfdx-project.json](sfdx-project.json) and install via [Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000d3IzYAI) or [Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tVI000000d3IzYAI)
 3. **Enable Agentforce** in your org (if not already enabled)
 4. **Create the Agent from Script** - The agent is written in [Agent Script](https://developer.salesforce.com/docs/ai/agentforce/guide/agent-script.html) and Salesforce can't package it yet. Open `<your-org-url>/resource/AgentScript` in the browser, copy the script, and paste it into a new agent in **Agent Studio** with API name `MyOrgButler`, then publish and activate it.
 5. **Turn on Optional Features** (choose which capabilities you want to enable):
