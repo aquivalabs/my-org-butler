@@ -6,12 +6,16 @@ nothing else. Coding standards live in `.claude/rules/`.
 
 ## Architecture (current)
 
-- **The agent** is `force-app/main/default/aiAuthoringBundles/MyOrgButler/MyOrgButler.agent`
+- **The agent** is `unpackaged/main/default/aiAuthoringBundles/MyOrgButler/MyOrgButler.agent`
   (AiAuthoringBundle). One subagent (`butler`), 18 actions: 15 Apex (`apex://<Class>`),
   1 prompt template (`generatePromptResponse://AnswerFromFile`), 2 standard actions
   (`EmployeeCopilot__IdentifyRecordByName`, `EmployeeCopilot__GetRecordDetails`).
-  This is the naive 1:1 port of the classic agent — deliberately including its
-  prompt-engineering guardrails ("MUST be FIRST", "NOT for: ...").
+  Router (`agent_router`) transitions unconditionally to the butler via `after_reasoning`;
+  the butler runs on Claude Sonnet 4.6 (`model_config`), the org default model is
+  AWS-hosted Anthropic (Setup → Einstein Audit, Analytics, and Monitoring Setup).
+  Butler reasoning carries anti-fabrication rules (never claim success without a
+  successful action call, explicit tool mentions MUST call the tool, schema answers
+  only from ExploreOrgSchema).
 - **Classic agent metadata** is deleted from the working tree (also the classic Bot/
   GenAiPlannerBundle copies that lived in `unpackaged/` — they broke fresh-org deploys
   once the plugins were gone). Git tag `pre-agent-script-migration` marks the last
@@ -37,23 +41,31 @@ nothing else. Coding standards live in `.claude/rules/`.
    StoreCustomInstruction; answers memory questions without calling LoadCustomInstructions;
    doesn't surface memory content.
    Syntax authority: `trailheadapps/agent-script-recipes` → `.airules/AGENT_SCRIPT.md`.
-2. **Packaging** via [forcedotcom/lwc-agentscript-viewer](https://github.com/forcedotcom/lwc-agentscript-viewer):
-   AiAuthoringBundle is NOT 2GP-packageable. Ship the `.agent` as text in a static
-   resource + vendored viewer LWC + setup page; subscriber admin copies into Agent Studio.
-   Namespace caveat: packaged copy needs `apex://aquiva_os__…` targets (sync script
-   injects prefix; unverified against a real install).
+2. **Packaging**: AiAuthoringBundle and AiTestingDefinition are NOT 2GP-packageable
+   (confirmed against the 2GP Agentforce packaging doc). Plan: ship the `.agent` (and
+   optionally the test XMLs) as plain-text static resources — admins open
+   `<org-url>/resource/AgentScript` in the browser, copy, paste into Agent
+   Studio. No LWC viewer (decided against vendoring forcedotcom/lwc-agentscript-viewer).
+   Namespace caveat: the packaged copy needs `apex://aquiva_os__…` targets (and
+   `aquiva_os__AnswerFromFile`); the inject transform does NOT exist yet — only the
+   strip in create-scratch-org.sh.
 3. **README** showcase: "one agent, two implementations".
 
 ## Testing
 
-Everything lives in `agent-eval/`. All on the **Agentforce Studio (NGT) test runner**
+Test definitions live in `unpackaged/main/default/aiTestingDefinitions/`, eval configs
+in `scripts/`. All on the **Agentforce Studio (NGT) test runner**
 (Beta — the legacy AiEvaluationDefinition flow is officially "legacy" and was deleted here):
 
-- `aiTestingDefinitions/AgentRegression.aiTestingDefinition-meta.xml` — 14
+- `AgentRegression.aiTestingDefinition-meta.xml` — 14
   per-action cases. Run: `sf agent test run --api-name AgentRegression --wait 30`.
-- `aiTestingDefinitions/PromptRegression.aiTestingDefinition-meta.xml` —
+  Every case (except the dedicated LoadCustomInstructions test) presets the
+  `custom_instructions` context variable so the router's deterministic load is skipped
+  and the case asserts ONLY its own action. `action_sequence_match` is strict — stray
+  planner action calls fail it.
+- `PromptRegression.aiTestingDefinition-meta.xml` —
   prompt-template smoke tests (ConsolidateMemory via conversationHistory, AnswerFromFile).
-- `demo-story.yaml` — the multi-turn conference-demo conversation, driven over the REST
+- `scripts/demo-story.yaml` — the multi-turn conference-demo conversation, driven over the REST
   endpoint below, judged by Claude in-memory. Covers what single-turn can't.
 
 NGT format facts: testCases have `inputs:` (utterance + optional contextVariables /
@@ -76,7 +88,7 @@ Smoke-test channel (works for classic and script agents):
 1. **Zero-input actions break the runtime.** Compiles + publishes fine, then every session
    throws `InvalidPlannerConfigException`. Fix: dummy optional input (`ignored: string`).
 2. **`sf agent publish` finds bundles only in the DEFAULT package directory** (validate
-   searches all) — hence `force-app` is `"default": true`.
+   searches all) — hence `unpackaged` (where the bundle lives) is `"default": true`.
 3. **`sf agent preview --api-name` can't start Employee-agent sessions**
    ([forcedotcom/cli#3608](https://github.com/forcedotcom/cli/issues/3608)); use
    `--authoring-bundle` or the REST endpoint above.
@@ -106,21 +118,15 @@ the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` s
 
 ## Open items
 
-- [ ] **Store bug**: the router LLM sometimes answers preference statements itself instead
-      of transitioning to the butler, so StoreCustomInstruction is never called (failing:
-      AgentRegression case 14, PromptRegression case 1). Fix: make routing deterministic —
-      end the router's `instructions:->` procedure with `transition to @subagent.butler`
-      and remove the `begin_butler` reasoning action. If the compiler rejects a transition
-      directive there, use an unconditional `after_reasoning: transition to @subagent.butler`.
-      Then publish, activate, rerun AgentRegression + PromptRegression + demo story.
-- [ ] Test cleanup: AgentRegression case "show me my stored preferences" and the same case
-      in PromptRegression carry an action scorer with an empty expectedValue — remove the
-      scorer or set it to `LoadCustomInstructions`.
-
+- [ ] **Platform topics can hijack utterances**: the NGT runtime classifies BEFORE the
+      script runs — "from now on, always …" landed in the hidden `Reverse_Engineering`
+      guardrail topic (refusal), document questions in `topic_selector` (which answers
+      itself). Mitigations so far: broader router/butler descriptions, "remember that …"
+      phrasing in tests. Real fix unknown.
 - [ ] Zombie org-side suites `RegressionStudio`, `OrgButlerRegression`,
       `MyOrgButlerPromptTemplates` — undeletable via API (run history), invisible in
       Studio UI; clean up when possible or ignore until org rebuild
-- [ ] Demo-story fully green once Data Library chunks are indexed
+- [ ] Demo-story fully green once Data Library chunks are indexed (blocked by chunking bug)
 - [ ] Phase 1 (deterministic refactor) → Phase 2 (packaging) → Phase 3 (README)
 - [ ] Bug reports against forcedotcom/cli: zero-input action config passes
       validate+publish but breaks runtime; `adl file add` never triggers indexing
