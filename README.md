@@ -67,14 +67,3 @@ Without completing the Data Library setup, the action deploys fine but returns n
 4. Make your changes
 5. Create a 2GP package in your dev hub (one-time setup)
 6. Create package versions: `./scripts/create-package-version.sh`
-
-### Issue → PR via Claude
-
-This repo runs an experimental pipeline: a maintainer mentions `@butler` in an issue or PR, Claude reads the thread, implements the change against a per-PR scratch org, runs the Apex tests, and opens a PR. PR comments mentioning `@butler` feed back into the same loop until the change ships.
-
-**The `@butler` mention is the only trigger.** Opening an issue alone does *nothing*. The pipeline runs only after a maintainer writes `@butler` in the body or a comment, on either an issue or a PR. The gate is enforced two ways:
-
-- **Open-source DoS protection.** The workflow checks `author_association` on every event and only fires for `OWNER`, `MEMBER`, or `COLLABORATOR`. A random visitor typing `@butler` in their own issue gets silently ignored — no Anthropic credits burn.
-- **Closed-source budget control.** Even on a private repo, the mention keeps a human in the loop on *which* tickets are worth spending tokens on. No drive-by ticket auto-fires a run.
-
-Every fire is independent: the agent re-reads the full thread, decides what to do (take it, ask for clarification, propose a split, or refuse), and acts. There are no state labels — to retry after a refusal, just mention `@butler` again with the override. PRs that the agent opens carry an `ai-involved` label so humans can filter them at a glance.
