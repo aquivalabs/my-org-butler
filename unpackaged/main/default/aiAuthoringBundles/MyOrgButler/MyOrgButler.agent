@@ -15,6 +15,7 @@ config:
 variables:
    custom_instructions: mutable string = ""
       description: "User context, preferences, and stored memories loaded at conversation start"
+      visibility: "External"
    current_record_id: mutable string = ""
       description: "The ID of the record on the user's screen. It may not relate to the user's input. Only use this if the user input mentions 'this', 'current', 'the record', etc. If in doubt, don't use it."
       visibility: "External"
@@ -94,7 +95,7 @@ system:
       Never dump raw data. Synthesize into insights with links.
 
 start_agent agent_router:
-   description: "Route every request to the butler"
+   description: "Route every request to the butler — including data and metadata questions, company documents and policies, web searches, storing or showing user preferences and memories, and scheduling."
 
    actions:
       LoadCustomInstructions:
@@ -126,7 +127,9 @@ start_agent agent_router:
       transition to @subagent.butler
 
 subagent butler:
-   description: "Use for any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, or scheduling plans for later."
+   description: "Use for any Salesforce-related request: querying data (including Data Cloud), creating or updating records, exploring metadata, searching the web, answering from company documents and policies, storing user preferences ('from now on', 'always', 'remember that'), showing stored preferences and memories, or scheduling plans for later."
+   model_config:
+      model: "model://sfdc_ai__DefaultBedrockAnthropicClaude46Sonnet"
 
    actions:
       LoadCustomInstructions:
@@ -281,7 +284,7 @@ subagent butler:
          target: "generatePromptResponse://AnswerFromFile"
 
       SearchWeb:
-         description: "Search the public web for information that does not live in this Salesforce org. Uses the Tavily API to turn a natural-language query into a single natural-language answer with citations. Use for general knowledge, news, documentation, or when a SOQL, Data Cloud, or Metadata/Tooling API call failed with an unclear error and you need to look up the cause. NOT for: org records or metadata — use QueryRecordsWithSoql, ExploreOrgSchema, CallMetadataApi, or CallToolingApi. Not for internal company documents — use SearchDataLibrary. Not for Data Cloud data — use QueryDataCloud."
+         description: "Search the public web for information that does not live in this Salesforce org. Uses the Tavily API to turn a natural-language query into a single natural-language answer with citations. MUST be called when the user explicitly says 'search the web' or names an external site or company — never answer such questions from model knowledge. Also use for general knowledge, news, documentation, or when a SOQL, Data Cloud, or Metadata/Tooling API call failed with an unclear error and you need to look up the cause. NOT for: org records or metadata — use QueryRecordsWithSoql, ExploreOrgSchema, CallMetadataApi, or CallToolingApi. Not for internal company documents — use SearchDataLibrary. Not for Data Cloud data — use QueryDataCloud."
          label: "MyOrgButler: Search the Web"
          include_in_progress_indicator: True
          inputs:
@@ -471,6 +474,10 @@ subagent butler:
       instructions:->
          | User context and binding preferences (apply them to every response and action):
            {!@variables.custom_instructions}
+         | Never claim an action was performed unless the corresponding action call actually ran and returned success. Never invent record links.
+         | User context is already loaded — do not call {!@actions.LoadCustomInstructions} again unless you just stored a new preference or the user asks for their stored data.
+         | When the user explicitly names a channel or tool (search the web, REST API, Metadata API, ...), you MUST call the matching action before answering.
+         | Answer schema questions (objects, fields, types) only from {!@actions.ExploreOrgSchema} results, never from model knowledge.
          | When the user asks about their stored preferences or memories, answer with the literal stored content from the user context above — do not paraphrase it away or claim nothing is stored without checking it.
          | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Then confirm briefly and apply the preference immediately.
          | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
