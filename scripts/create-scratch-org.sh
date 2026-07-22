@@ -76,23 +76,30 @@ if [ "$NAMESPACE" = "false" ]; then
 
   echo "Stripping namespace from source"
   sed_inplace 's/aquiva_os__//g; s/aquiva_os\.//g; s/"namespace": "aquiva_os"/"namespace": ""/' sfdx-project.json
-  find force-app unpackaged agent-eval -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.genAiPlannerBundle" -o -name "*.genAiPlugin-meta.xml" -o -name "*.yaml" \) -exec sed -i.bak 's/aquiva_os__//g; s/aquiva_os\.//g' {} + && find force-app unpackaged agent-eval -name "*.bak" -delete
+  find force-app unpackaged scripts -type f \( -name "*.cls" -o -name "*.xml" -o -name "*.yaml" \) -exec sed -i.bak 's/aquiva_os__//g; s/aquiva_os\.//g' {} + && find force-app unpackaged scripts -name "*.bak" -delete
 
   # Note: Restore source even if deploy fails — namespace stripping rewrites files in place
-  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/' EXIT
+  trap 'echo "Restoring namespace in source"; git checkout -- sfdx-project.json force-app/ unpackaged/ scripts/' EXIT
 
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
-  # Note: publish before unpackaged — AgentAccess permset references the Bot this creates
+  # Note: bundle first, then publish + activate, then the rest of unpackaged —
+  # the AgentAccess permset and the AiTestingDefinitions need the published agent.
+  echo "Deploying Agent Script bundle"
+  execute sf project deploy start --source-dir unpackaged/main/default/aiAuthoringBundles --concise --ignore-conflicts
+
   echo "Publishing My Org Butler from Agent Script bundle"
   execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
+  echo "Activate My Org Butler"
+  execute bash `dirname $0`/activate-agent.sh MyOrgButler
 
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
   echo "Restoring namespace in source"
-  git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/
+  git checkout -- sfdx-project.json force-app/ unpackaged/ scripts/
   trap - EXIT
 else
   echo "Installing dependencies"
@@ -101,9 +108,14 @@ else
   echo "Pushing changes to scratch org"
   execute sf project deploy start --source-dir force-app --concise --ignore-conflicts
 
-  # Note: publish before unpackaged — AgentAccess permset references the Bot this creates
+  echo "Deploying Agent Script bundle"
+  execute sf project deploy start --source-dir unpackaged/main/default/aiAuthoringBundles --concise --ignore-conflicts
+
   echo "Publishing My Org Butler from Agent Script bundle"
   execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
+
+  echo "Activate My Org Butler"
+  execute bash `dirname $0`/activate-agent.sh MyOrgButler
 
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
@@ -111,12 +123,6 @@ fi
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
-
-echo "Activate My Org Butler"
-execute bash `dirname $0`/activate-agent.sh MyOrgButler
-
-echo "Deploying agent tests"
-execute sf project deploy start --source-dir agent-eval --concise
 
 echo "Creating Sample Data"
 sf apex run --file scripts/create-sample-data.apex
@@ -127,10 +133,10 @@ sf data create file --file "scripts/data/proposal.pdf" --title "Acme Q1 Expansio
 
 echo "Populating test env files with record IDs"
 CONTENT_DOC_ID=$(sf data query --query "SELECT Id FROM ContentDocument WHERE Title='Acme Q1 Expansion Proposal' LIMIT 1" --json | grep -o '"Id": "[^"]*"' | head -1 | cut -d'"' -f4)
-if grep -q "^CONTENT_DOCUMENT_ID=" agent-eval/.env 2>/dev/null; then
-  sed_inplace "s/^CONTENT_DOCUMENT_ID=.*/CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}/" agent-eval/.env
+if grep -q "^CONTENT_DOCUMENT_ID=" scripts/.env 2>/dev/null; then
+  sed_inplace "s/^CONTENT_DOCUMENT_ID=.*/CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}/" scripts/.env
 else
-  echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> agent-eval/.env
+  echo "CONTENT_DOCUMENT_ID=${CONTENT_DOC_ID}" >> scripts/.env
 fi
 
 echo "Running Apex Tests"

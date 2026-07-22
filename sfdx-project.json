@@ -2,19 +2,15 @@
   "packageDirectories": [
     {
       "path": "unpackaged",
-      "default": false
-    },
-    {
-      "path": "agent-eval",
-      "default": false
+      "default": true
     },
     {
       "path": "force-app",
-      "default": true,
+      "default": false,
       "package": "my-org-butler",
-      "versionName": "April 2026",
-      "versionNumber": "2026.4.3.NEXT",
-      "versionDescription": "",
+      "versionName": "July 2026",
+      "versionNumber": "2026.7.0.NEXT",
+      "versionDescription": "Agent rewritten in Agent Script; ships as copyable static resource (/resource/AgentScript)",
       "packageMetadataAccess": {
         "permissionSets": [
           "EinsteinGPTPromptTemplateManager"
