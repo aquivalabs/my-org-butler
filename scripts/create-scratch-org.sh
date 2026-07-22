@@ -133,17 +133,15 @@ sf org display --target-org "$SCRATCH_ORG_ALIAS" --verbose --json | jq -r .resul
 
 if [ "$HEADLESS" != "true" ]; then
   echo ""
-  echo "============================================"
-  echo " MANUAL SETUP REQUIRED"
-  echo "============================================"
-  cat `dirname $0`/manual-org-setup.md
-  echo "============================================"
-  echo ""
+  echo "=================== MANUAL SETUP ==================="
+  echo " 1. Setup > Audit > Einstein Generative AI: enable Agent Analytics + Session Tracing"
+  echo " 2. Skipped Tavily key? Set it on External Credential > TavilyApi"
+  echo "===================================================="
   sf org open
   read -p "Press Enter when done (or to skip)..."
 
-  echo "Creating Data Library and indexing files"
-  execute bash `dirname $0`/setup-data-library.sh scripts/data/policy.pdf
+  echo "Setting up Data Cloud (library, files, index)"
+  execute bash `dirname $0`/setup-data-cloud.sh scripts/data/policy.pdf
 
   echo "Running MyOrgButlerRegression suite (Agentforce Studio runner)"
   mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
