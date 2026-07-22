@@ -24,11 +24,11 @@
     <testCase>
         <number>2</number>
         <inputs>
-            <utterance>show me my stored preferences</utterance>
+            <utterance>tell me what you know about me</utterance>
         </inputs>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Surfaces the actual content of stored preferences or memories, not just a generic statement</expectedValue>
+            <expectedValue>Surfaces stored user context such as name, email, timezone or saved preferences, not just a generic statement</expectedValue>
         </scorer>
     </testCase>
     <testCase>
@@ -42,7 +42,7 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions $500,000 total and references the three phases: $75,000 for Discovery, $250,000 for Implementation, $175,000 for Rollout</expectedValue>
+            <expectedValue>Mentions $500,000 total and references the three payments: $125,000 at contract signing, $125,000 at delivery milestone, $250,000 at go-live</expectedValue>
         </scorer>
     </testCase>
 </AiTestingDefinition>

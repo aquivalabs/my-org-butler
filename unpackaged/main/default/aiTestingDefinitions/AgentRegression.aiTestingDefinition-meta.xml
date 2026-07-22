@@ -63,15 +63,15 @@
     <testCase>
         <number>5</number>
         <inputs>
-            <utterance>create a PlantUML ER diagram showing how Account, Opportunity and Contact are related</utterance>
+            <utterance>create a PlantUML class diagram showing the typical Service Cloud objects, including their relationships</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
-            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;ExploreOrgSchema&apos;,&apos;CreatePlantUmlUrl&apos;]</expectedValue>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;CreatePlantUmlUrl&apos;]</expectedValue>
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Returns a clickable PlantUML URL containing a diagram that shows Account, Opportunity and Contact with their relationships</expectedValue>
+            <expectedValue>Returns a clickable PlantUML URL containing a class diagram of Service Cloud objects such as Case, Contact and Account with their relationships</expectedValue>
         </scorer>
     </testCase>
     <testCase>
@@ -91,11 +91,11 @@
     <testCase>
         <number>7</number>
         <inputs>
-            <utterance>show me my stored preferences</utterance>
+            <utterance>tell me what you know about me</utterance>
         </inputs>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Shows stored user preferences or states that no custom preferences have been saved yet</expectedValue>
+            <expectedValue>Surfaces stored user context such as name, email, timezone or saved preferences, not just a greeting</expectedValue>
         </scorer>
     </testCase>
     <testCase>
@@ -185,7 +185,7 @@
     <testCase>
         <number>14</number>
         <inputs>
-            <utterance>from now on, always show the StageName when listing opportunities</utterance>
+            <utterance>remember that when I ask you to list opportunities, you should always include the StageName</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
