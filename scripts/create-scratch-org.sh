@@ -143,9 +143,9 @@ if [ "$HEADLESS" != "true" ]; then
   echo "Setting up Data Cloud (library, files, index)"
   execute bash `dirname $0`/setup-data-cloud.sh scripts/data/policy.pdf
 
-  echo "Running MyOrgButlerRegression suite (Agentforce Studio runner)"
+  echo "Running AgentRegression suite (Agentforce Studio runner)"
   mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-  sf agent test run --api-name MyOrgButlerRegression --wait 30 --result-format json > /tmp/ae/MyOrgButlerRegression_run1.json 2>&1
+  sf agent test run --api-name AgentRegression --wait 30 --result-format json > /tmp/ae/AgentRegression_run1.json 2>&1
 fi
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"

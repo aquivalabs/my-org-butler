@@ -48,9 +48,9 @@ nothing else. Coding standards live in `.claude/rules/`.
 Everything lives in `agent-eval/`. All on the **Agentforce Studio (NGT) test runner**
 (Beta — the legacy AiEvaluationDefinition flow is officially "legacy" and was deleted here):
 
-- `aiTestingDefinitions/MyOrgButlerRegression.aiTestingDefinition-meta.xml` — 14
-  per-action cases. Run: `sf agent test run --api-name MyOrgButlerRegression --wait 30`.
-- `aiTestingDefinitions/MyOrgButlerPromptTemplates.aiTestingDefinition-meta.xml` —
+- `aiTestingDefinitions/AgentRegression.aiTestingDefinition-meta.xml` — 14
+  per-action cases. Run: `sf agent test run --api-name AgentRegression --wait 30`.
+- `aiTestingDefinitions/PromptRegression.aiTestingDefinition-meta.xml` —
   prompt-template smoke tests (ConsolidateMemory via conversationHistory, AnswerFromFile).
 - `demo-story.yaml` — the multi-turn conference-demo conversation, driven over the REST
   endpoint below, judged by Claude in-memory. Covers what single-turn can't.
@@ -105,8 +105,9 @@ the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` s
 
 ## Open items
 
-- [ ] Delete stuck org-side test suites `RegressionStudio` + `OrgButlerRegression`
-      (Studio UI; API blocked) → then deploy + run `MyOrgButlerRegression`
+- [ ] Zombie org-side suites `RegressionStudio`, `OrgButlerRegression`,
+      `MyOrgButlerPromptTemplates` — undeletable via API (run history), invisible in
+      Studio UI; clean up when possible or ignore until org rebuild
 - [ ] Demo-story fully green once Data Library chunks are indexed
 - [ ] Phase 1 (deterministic refactor) → Phase 2 (packaging) → Phase 3 (README)
 - [ ] Bug reports against forcedotcom/cli: zero-input action config passes
