@@ -84,9 +84,6 @@ if [ "$NAMESPACE" = "false" ]; then
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
 
-  echo "Deploying agent-eval"
-  execute sf project deploy start --source-dir agent-eval --concise
-
   echo "Restoring namespace in source"
   git checkout -- sfdx-project.json force-app/ unpackaged/ agent-eval/
   trap - EXIT
@@ -99,21 +96,19 @@ else
 
   echo "Pushing unpackaged changes to scratch org"
   execute sf project deploy start --source-dir unpackaged --concise --ignore-conflicts
-
-  echo "Deploying agent-eval"
-  execute sf project deploy start --source-dir agent-eval --concise
 fi
 
 echo "Assigning permissions"
 execute sf org assign permset --name MyOrgButlerUser --name AgentAccess
 
-# Note: The classic agent (genAiPlannerBundle) is deployed but intentionally NOT published or
-# activated. Only the Agent Script version becomes the runnable MyOrgButler agent.
 echo "Publishing My Org Butler from Agent Script bundle"
 execute sf agent publish authoring-bundle --api-name MyOrgButler --skip-retrieve
 
 echo "Activate My Org Butler"
-execute sf agent activate --api-name MyOrgButler
+execute bash `dirname $0`/activate-agent.sh MyOrgButler
+
+echo "Deploying agent tests"
+execute sf project deploy start --source-dir agent-eval --concise
 
 echo "Creating Sample Data"
 sf apex run --file scripts/create-sample-data.apex
@@ -147,21 +142,12 @@ if [ "$HEADLESS" != "true" ]; then
   sf org open
   read -p "Press Enter when done (or to skip)..."
 
-  echo "Waiting for Data Library chunks..."
-  until sf apex run -f /dev/stdin 2>&1 <<'APEX' | grep -q 'READY'
-ConnectApi.CdpQueryInput i = new ConnectApi.CdpQueryInput();
-i.sql = 'SELECT COUNT(*) FROM ADL_MyOrgButlerLibr_chunk__dlm';
-ConnectApi.CdpQueryOutputV2 r = ConnectApi.CdpQuery.queryANSISqlV2(i);
-if(r.data != null && !r.data.isEmpty() && String.valueOf(r.data[0].rowData[0]) != '0') System.debug('READY');
-APEX
-  do echo "  ...retrying in 30s"; sleep 30; done
+  echo "Creating Data Library and indexing files"
+  execute bash `dirname $0`/setup-data-library.sh scripts/data/policy.pdf
 
-  echo "Running Regression suite (2 parallel runs)"
+  echo "Running MyOrgButlerRegression suite (Agentforce Studio runner)"
   mkdir -p /tmp/ae && rm -f /tmp/ae/*.json
-  for i in 1 2; do
-    (sf agent test run --api-name Regression --wait 30 --result-format json > "/tmp/ae/Regression_run$i.json" 2>&1) &
-  done
-  wait
+  sf agent test run --api-name MyOrgButlerRegression --wait 30 --result-format json > /tmp/ae/MyOrgButlerRegression_run1.json 2>&1
 fi
 
 echo "Running SFX Scanner with Security, AppExchange and Coding Standards"
