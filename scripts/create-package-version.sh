@@ -11,6 +11,9 @@ execute sf config set target-dev-hub=$DEV_HUB_ALIAS
 echo "List existing package versions"
 sf package version list -p "$PACKAGE_NAME" --concise
 
+echo "Sync Agent Script and test definitions into static resources"
+execute bash `dirname $0`/sync-agent-static-resource.sh
+
 echo "Create new package version"
 PACKAGE_VERSION_OUTPUT=$(sf package version create -p "$PACKAGE_NAME" --installation-key-bypass --wait 120 --code-coverage -f config/package-scratch-def.json --json)
 if [ $? -ne 0 ]; then
