@@ -105,6 +105,17 @@ the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` s
 
 ## Open items
 
+- [ ] **Store bug**: the router LLM sometimes answers preference statements itself instead
+      of transitioning to the butler, so StoreCustomInstruction is never called (failing:
+      AgentRegression case 14, PromptRegression case 1). Fix: make routing deterministic —
+      end the router's `instructions:->` procedure with `transition to @subagent.butler`
+      and remove the `begin_butler` reasoning action. If the compiler rejects a transition
+      directive there, use an unconditional `after_reasoning: transition to @subagent.butler`.
+      Then publish, activate, rerun AgentRegression + PromptRegression + demo story.
+- [ ] Test cleanup: AgentRegression case "show me my stored preferences" and the same case
+      in PromptRegression carry an action scorer with an empty expectedValue — remove the
+      scorer or set it to `LoadCustomInstructions`.
+
 - [ ] Zombie org-side suites `RegressionStudio`, `OrgButlerRegression`,
       `MyOrgButlerPromptTemplates` — undeletable via API (run history), invisible in
       Studio UI; clean up when possible or ignore until org rebuild
