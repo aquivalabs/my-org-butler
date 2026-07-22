@@ -1,14 +1,6 @@
 {
   "packageDirectories": [
     {
-      "path": "retrieval-staging",
-      "default": true
-    },
-    {
-      "path": "no-namespace",
-      "default": false
-    },
-    {
       "path": "unpackaged",
       "default": false
     },
@@ -18,7 +10,7 @@
     },
     {
       "path": "force-app",
-      "default": false,
+      "default": true,
       "package": "my-org-butler",
       "versionName": "April 2026",
       "versionNumber": "2026.4.3.NEXT",
