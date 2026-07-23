@@ -185,7 +185,7 @@
     <testCase>
         <number>14</number>
         <inputs>
-            <utterance>remember that when I ask you to list opportunities, you should always include the StageName</utterance>
+            <utterance>remember that when I ask you to list accounts, you should always include the Industry field</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -193,7 +193,21 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue>
+            <expectedValue>Confirms it stored a preference to always include Industry when listing accounts</expectedValue>
+        </scorer>
+    </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs>
+            <utterance>list my open opportunities</utterance>
+        </inputs>
+        <scorer>
+            <name>action_sequence_match</name>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;QueryRecordsWithSoql&apos;]</expectedValue>
+        </scorer>
+        <scorer>
+            <name>bot_response_rating</name>
+            <expectedValue>Shows StageName for each opportunity and sorts by Amount descending, following the stored custom instructions</expectedValue>
         </scorer>
     </testCase>
 </AiTestingDefinition>

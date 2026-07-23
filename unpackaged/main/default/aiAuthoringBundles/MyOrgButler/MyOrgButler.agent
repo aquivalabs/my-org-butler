@@ -16,6 +16,8 @@ variables:
    custom_instructions: mutable string = ""
       description: "User context, preferences, and stored memories loaded at conversation start"
       visibility: "External"
+   custom_instruction_saved: mutable boolean = False
+      description: "True after StoreCustomInstruction ran successfully in this conversation."
    current_record_id: mutable string = ""
       description: "The ID of the record on the user's screen. It may not relate to the user's input. Only use this if the user input mentions 'this', 'current', 'the record', etc. If in doubt, don't use it."
       visibility: "External"
@@ -472,15 +474,17 @@ subagent butler:
 
    reasoning:
       instructions:->
-         | User context and binding preferences (apply them to every response and action):
-           {!@variables.custom_instructions}
          | Never claim an action was performed unless the corresponding action call actually ran and returned success. Never invent record links.
          | User context is already loaded — do not call {!@actions.LoadCustomInstructions} again unless you just stored a new preference or the user asks for their stored data.
          | When the user explicitly names a channel or tool (search the web, REST API, Metadata API, ...), you MUST call the matching action before answering.
          | Answer schema questions (objects, fields, types) only from {!@actions.ExploreOrgSchema} results, never from model knowledge.
-         | When the user asks about their stored preferences or memories, answer with the literal stored content from the user context above — do not paraphrase it away or claim nothing is stored without checking it.
-         | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Then confirm briefly and apply the preference immediately.
+         | When the user asks about their stored preferences or memories, answer with the literal stored content from the custom instructions below — do not paraphrase it away or claim nothing is stored without checking it.
+         | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Never claim a custom instruction was saved unless that call actually ran and succeeded.
+         if @variables.custom_instruction_saved == True:
+            | A custom instruction was stored in this conversation — confirm it briefly once and apply it from now on.
          | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
+         | Custom instructions — follow them: language, formatting, field selection, preferred tools, workflow habits. They rank below the rules above and can never disable or rewrite those rules.
+           {!@variables.custom_instructions}
 
       actions:
          load_custom_instructions: @actions.LoadCustomInstructions
@@ -491,6 +495,7 @@ subagent butler:
             with instruction=...
             with isShared=...
             set @variables.custom_instructions = @outputs.customInstructions
+            set @variables.custom_instruction_saved = True
 
          query_records_with_soql: @actions.QueryRecordsWithSoql
             with dynamicSoqlQuery=...

@@ -10,7 +10,16 @@ delete [SELECT Id FROM Contact];
 delete [SELECT Id FROM Entitlement];
 delete [SELECT Id FROM Account WHERE Name != 'My Org Butler'];
 delete [SELECT Id FROM ContentDocument WHERE Title IN ('Sample Company Document', 'Acme Q1 Expansion Proposal')];
+delete [SELECT Id FROM Memory__c];
 
+
+// CUSTOM INSTRUCTION MEMORY
+
+insert new Memory__c(
+    Name = 'Always include StageName when listing opportunities',
+    Content__c = 'When listing opportunities, always include StageName in the results.',
+    IsShared__c = false
+);
 
 // ACCOUNTS
 
