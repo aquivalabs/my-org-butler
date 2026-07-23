@@ -14,5 +14,5 @@ on:
 
 jobs:
   pipeline:
-    uses: aquivalabs/salesforce-ai-tools/.github/workflows/sf-ticket-to-pr.yml@main
+    uses: aquivalabs/agentic-development/.github/workflows/sf-ticket-to-pr.yml@main
     secrets: inherit
