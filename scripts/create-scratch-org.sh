@@ -64,8 +64,8 @@ fi
 echo "Creating scratch org"
 execute sf org create scratch --alias $SCRATCH_ORG_ALIAS --set-default --definition-file ./config/project-scratch-def.json --duration-days 30 $NO_NAMESPACE_FLAG
 
-echo "Make sure Org user is english"
-sf data update record --sobject User --where "Name='User User'" --values "Languagelocalekey=en_US"
+echo "Make sure Org user is english with German timezone and formats"
+sf data update record --sobject User --where "Name='User User'" --values "LanguageLocaleKey='en_US' TimeZoneSidKey='Europe/Berlin' LocaleSidKey='de_DE_EURO'"
 
 echo "Enabling Prompt Builder"
 execute sf org assign permset --name EinsteinGPTPromptTemplateManager --name AgentPlatformBuilder
