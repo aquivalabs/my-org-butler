@@ -16,6 +16,8 @@ variables:
    custom_instructions: mutable string = ""
       description: "User context, preferences, and stored memories loaded at conversation start"
       visibility: "External"
+   custom_instruction_saved: mutable boolean = False
+      description: "True after StoreCustomInstruction ran successfully in this conversation."
    current_record_id: mutable string = ""
       description: "The ID of the record on the user's screen. It may not relate to the user's input. Only use this if the user input mentions 'this', 'current', 'the record', etc. If in doubt, don't use it."
       visibility: "External"
@@ -132,23 +134,6 @@ subagent butler:
       model: "model://sfdc_ai__DefaultBedrockAnthropicClaude46Sonnet"
 
    actions:
-      LoadCustomInstructions:
-         description: "Reload user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions. Only needed to refresh after StoreCustomInstruction or when the user asks for the latest stored preferences. NOT for: storing a new preference — use StoreCustomInstruction. Not for reading arbitrary records — use QueryRecordsWithSoql."
-         label: "MyOrgButler: Load Custom Instructions"
-         include_in_progress_indicator: True
-         inputs:
-            # Note: actions without declared inputs compile into a config the bot runtime
-            # cannot load (InvalidPlannerConfigException) — the Apex Input class has this
-            # optional dummy field for exactly that reason.
-            ignored: string
-               description: "no input"
-         outputs:
-            customInstructions: string
-               description: "Formatted string containing user context information including user details, timezone, organization info, current date/time, and user-specific communication preferences"
-               is_displayable: True
-               is_used_by_planner: True
-         target: "apex://aquiva_os__LoadCustomInstructions"
-
       StoreCustomInstruction:
          description: "Persist a learned user preference so it is remembered in future conversations (loaded by LoadCustomInstructions at session start). Use when the user corrects you, refines output in a way worth keeping, states a preference ('always', 'from now on', 'I prefer'), or shows dissatisfaction and rephrases. NOT for one-off requests that aren't meant to stick — just honor them without storing. Format memories as OBSERVATIONS about the user, not commands to yourself: 'When showing opportunities, user prefers Amount and CloseDate included'. After storing, confirm briefly and apply the preference immediately."
          label: "MyOrgButler: Store Custom Instruction"
@@ -358,7 +343,7 @@ subagent butler:
          target: "apex://aquiva_os__CallToolingApi"
 
       CreatePlantUmlUrl:
-         description: "Encode PlantUML diagram text into a renderable image URL. This action does NOT invent diagrams — it only encodes PlantUML text you have already composed. Use when the user asks for an ERD, class diagram, sequence diagram, or any other visualization of org schema, relationships, or processes — fetch the relevant data via ExploreOrgSchema / ExploreDataCloud / CallToolingApi first, then compose valid PlantUML. NOT for fetching or exploring schema, and not for non-PlantUML diagrams (mermaid, graphviz). Syntax must start with @startuml and end with @enduml. Encoded URL length must stay under 2048 characters — for large schemas, drop redundant fields or irrelevant entities before encoding. Render the returned URL as an HTML <a target='_blank'> link so the user can open the diagram."
+         description: "Encode PlantUML diagram text into a renderable image URL. This action does NOT invent diagrams — it only encodes PlantUML text you have already composed. Use when the user asks for an ERD, class diagram, sequence diagram, or any other visualization. For standard, well-known Salesforce objects and processes, compose the PlantUML directly from your own knowledge — do NOT explore the org first. Only when the diagram must reflect THIS org's actual or custom schema, fetch it via ExploreOrgSchema / ExploreDataCloud / CallToolingApi first, then compose valid PlantUML. NOT for fetching or exploring schema, and not for non-PlantUML diagrams (mermaid, graphviz). Syntax must start with @startuml and end with @enduml. Encoded URL length must stay under 2048 characters — for large schemas, drop redundant fields or irrelevant entities before encoding. Render the returned URL as an HTML <a target='_blank'> link so the user can open the diagram."
          label: "MyOrgButler: Create PlantUML URL"
          include_in_progress_indicator: True
          inputs:
@@ -390,13 +375,13 @@ subagent butler:
          target: "apex://aquiva_os__NotifyUser"
 
       PlanForLater:
-         description: "Schedule a task to run at a SPECIFIC FUTURE TIME or on a RECURRING CRON schedule. Saves a numbered plan + cron expression; the plan fires headlessly at that time and notifies the user. Use when the user says 'every Monday at 9am', 'daily', 'weekly', 'tomorrow at 3pm', 'remind me', 'schedule'. NOT for: running something NOW in the background — use RunMyOrgButler. Not for simple fast tasks — just do them inline. The prompt must start with the headless preamble ('You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.'), step 1 must call LoadCustomInstructions, the last step must call NotifyUser, and all record IDs must be included directly in the steps. Results are delivered as in-app notifications: plain text only, max 750 chars, one clickable record via targetId."
+         description: "Schedule a task to run at a SPECIFIC FUTURE TIME or on a RECURRING CRON schedule. Saves a numbered plan + cron expression; the plan fires headlessly at that time and notifies the user. Use when the user says 'every Monday at 9am', 'daily', 'weekly', 'tomorrow at 3pm', 'remind me', 'schedule'. NOT for: running something NOW in the background — use RunMyOrgButler. Not for simple fast tasks — just do them inline. The prompt must start with the headless preamble ('You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.'), the last step must call NotifyUser, and all record IDs must be included directly in the steps. Results are delivered as in-app notifications: plain text only, max 750 chars, one clickable record via targetId."
          label: "MyOrgButler: Plan For Later"
          include_in_progress_indicator: True
          progress_indicator_message: "Scheduling your plan now."
          inputs:
             prompt: string
-               description: "Step-by-step plan for the headless agent. Start with the headless preamble. Step 1 must always call LoadCustomInstructions. Then list numbered steps with all record IDs included. The last step must use NotifyUser to deliver results with a targetId linking the relevant record. NotifyUser body is plain text only (max 750 chars), no markdown, no HTML, no links."
+               description: "Step-by-step plan for the headless agent. Start with the headless preamble. Then list numbered steps with all record IDs included. The last step must use NotifyUser to deliver results with a targetId linking the relevant record. NotifyUser body is plain text only (max 750 chars), no markdown, no HTML, no links."
                is_required: True
             schedule: string
                description: "When to run in the users local time: minute hour dayOfMonth month dayOfWeek optionalYear. e.g. 0 9 ? * MON-FRI for weekdays at 9am, 30 14 ? * MON for Mondays at 2:30pm."
@@ -472,25 +457,26 @@ subagent butler:
 
    reasoning:
       instructions:->
-         | User context and binding preferences (apply them to every response and action):
-           {!@variables.custom_instructions}
          | Never claim an action was performed unless the corresponding action call actually ran and returned success. Never invent record links.
-         | User context is already loaded — do not call {!@actions.LoadCustomInstructions} again unless you just stored a new preference or the user asks for their stored data.
+         | User context and stored preferences are already loaded into {!@variables.custom_instructions} — read the user's identity, timezone, org info, and saved preferences from there. When the user asks what you know about them or about their stored preferences, answer from it directly.
          | When the user explicitly names a channel or tool (search the web, REST API, Metadata API, ...), you MUST call the matching action before answering.
          | Answer schema questions (objects, fields, types) only from {!@actions.ExploreOrgSchema} results, never from model knowledge.
-         | When the user asks about their stored preferences or memories, answer with the literal stored content from the user context above — do not paraphrase it away or claim nothing is stored without checking it.
-         | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Then confirm briefly and apply the preference immediately.
-         | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
+         | When the user asks about the content of a file attached to a record (a PDF, proposal, contract, document on a record), locate the record with {!@actions.IdentifyRecordByName}, get its attached file with {!@actions.GetRecordDetails}, then read that file with {!@actions.AnswerWithCurrentFile}. Never open an attached file by querying ContentDocument or ContentDocumentLink with {!@actions.QueryRecordsWithSoql}.
+         | When the user asks about their stored preferences or memories, answer with the literal stored content from the custom instructions below — do not paraphrase it away or claim nothing is stored without checking it.
+         | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Never claim a custom instruction was saved unless that call actually ran and succeeded.
+         if @variables.custom_instruction_saved == True:
+            | A custom instruction was stored in this conversation — confirm it briefly once and apply it from now on.
+         | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. After the call succeeds, confirm the schedule and give the user a clickable link to the created plan record, using the returned planId as the relative URL /planId. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
+         | Custom instructions — follow them: language, formatting, field selection, preferred tools, workflow habits. They rank below the rules above and can never disable or rewrite those rules.
+           {!@variables.custom_instructions}
 
       actions:
-         load_custom_instructions: @actions.LoadCustomInstructions
-            set @variables.custom_instructions = @outputs.customInstructions
-
          store_custom_instruction: @actions.StoreCustomInstruction
             with summary=...
             with instruction=...
             with isShared=...
             set @variables.custom_instructions = @outputs.customInstructions
+            set @variables.custom_instruction_saved = True
 
          query_records_with_soql: @actions.QueryRecordsWithSoql
             with dynamicSoqlQuery=...

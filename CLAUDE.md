@@ -45,9 +45,11 @@ nothing else. Coding standards live in `.claude/rules/`.
    optionally the test XMLs) as plain-text static resources — admins open
    `<org-url>/resource/AgentScript` in the browser, copy, paste into Agent
    Studio. No LWC viewer (decided against vendoring forcedotcom/lwc-agentscript-viewer).
-   Namespace caveat: the packaged copy needs `apex://aquiva_os__…` targets (and
-   `aquiva_os__AnswerFromFile`); the inject transform does NOT exist yet — only the
-   strip in create-scratch-org.sh.
+   Namespace: the packaged copy needs `apex://aquiva_os__…` targets (and
+   `aquiva_os__AnswerFromFile`); `scripts/sync-agent-static-resource.sh` injects the
+   `aquiva_os__` prefix when it regenerates the static resources, and
+   `create-package-version.sh` runs it before building. (The scratch-org flow does the
+   opposite — strips the namespace in create-scratch-org.sh.)
 3. **README** showcase: "one agent, two implementations".
 
 ## Testing

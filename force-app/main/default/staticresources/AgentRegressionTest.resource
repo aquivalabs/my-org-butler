@@ -7,7 +7,7 @@
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>the Acme Q1 Expansion Deal has a PDF file attached, open it and tell me the total contract value</utterance>
+            <utterance>Check the proposal attached to the Acme Q1 Expansion Deal and tell me how many employees the user training covers</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -15,7 +15,7 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>States the total contract value is 500,000</expectedValue>
+            <expectedValue>States the user training covers up to 200 employees</expectedValue>
         </scorer>
     </testCase>
     <testCase>
@@ -63,7 +63,7 @@
     <testCase>
         <number>5</number>
         <inputs>
-            <utterance>create a PlantUML class diagram showing the typical Service Cloud objects, including their relationships</utterance>
+            <utterance>draw a class diagram of the standard Salesforce Service Cloud and CRM objects and how they relate to each other</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -91,11 +91,15 @@
     <testCase>
         <number>7</number>
         <inputs>
-            <utterance>tell me what you know about me</utterance>
+            <utterance>What email address do you have on file for me, and what else do you know about me?</utterance>
         </inputs>
         <scorer>
+            <name>action_sequence_match</name>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;]</expectedValue>
+        </scorer>
+        <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Surfaces stored user context such as name, email, timezone or saved preferences, not just a greeting</expectedValue>
+            <expectedValue>States the user email address is rsoesemann@aquivalabs.com and surfaces further loaded context such as the saved preference to include StageName when listing opportunities</expectedValue>
         </scorer>
     </testCase>
     <testCase>
@@ -185,7 +189,7 @@
     <testCase>
         <number>14</number>
         <inputs>
-            <utterance>remember that when I ask you to list opportunities, you should always include the StageName</utterance>
+            <utterance>remember that when I ask you to list accounts, you should always include the Industry field</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -193,7 +197,21 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Confirms it stored a preference to always include StageName when listing opportunities</expectedValue>
+            <expectedValue>Confirms it stored a preference to always include Industry when listing accounts</expectedValue>
+        </scorer>
+    </testCase>
+    <testCase>
+        <number>15</number>
+        <inputs>
+            <utterance>list my open opportunities</utterance>
+        </inputs>
+        <scorer>
+            <name>action_sequence_match</name>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;,&apos;QueryRecordsWithSoql&apos;]</expectedValue>
+        </scorer>
+        <scorer>
+            <name>bot_response_rating</name>
+            <expectedValue>Shows StageName for each opportunity and sorts by Amount descending, following the stored custom instructions</expectedValue>
         </scorer>
     </testCase>
 </AiTestingDefinition>
