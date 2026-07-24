@@ -37,9 +37,9 @@ nothing else. Coding standards live in `.claude/rules/`.
    | "NOT for: …" negative routing in descriptions | subagent split (`data`, `data_cloud`, `org_dev`, `files_web`, `memory`, `automation`) + router |
    | Headless "NEVER create another plan" rules | dedicated `automation` subagent, visible only after transition |
 
-   Known agent bugs this must fix (from test runs): claims "Noted" without calling
-   StoreCustomInstruction; answers memory questions without calling LoadCustomInstructions;
-   doesn't surface memory content.
+   Memory store/load are now stable: `StoreCustomInstruction` is gated on a flag only a
+   successful store sets (no more fake "Noted"), and the load is tested against a known
+   email + a seeded Memory__c (see Learnings).
 2. **Packaging**: AiAuthoringBundle and AiTestingDefinition are NOT 2GP-packageable
    (confirmed against the 2GP Agentforce packaging doc). Plan: ship the `.agent` (and
    optionally the test XMLs) as plain-text static resources — admins open
@@ -53,21 +53,20 @@ nothing else. Coding standards live in `.claude/rules/`.
 ## Testing
 
 Test definitions live in `unpackaged/main/default/aiTestingDefinitions/`, eval configs
-in `scripts/`. All on the **Agentforce Studio (NGT) test runner**
+in `scripts/`. All on the **Agentforce Studio test runner**
 (Beta — the legacy AiEvaluationDefinition flow is officially "legacy" and was deleted here):
 
-- `AgentRegression.aiTestingDefinition-meta.xml` — 14
+- `AgentRegression.aiTestingDefinition-meta.xml` — 15
   per-action cases. Run: `sf agent test run --api-name AgentRegression --wait 30`.
-  Every case (except the dedicated LoadCustomInstructions test) presets the
-  `custom_instructions` context variable so the router's deterministic load is skipped
-  and the case asserts ONLY its own action. `action_sequence_match` is strict — stray
-  planner action calls fail it.
+  Every expected action sequence starts with `LoadCustomInstructions`: the router runs
+  it deterministically at the start of every session and the Agentforce Studio runner does not skip it.
+  `action_sequence_match` is strict — stray planner action calls fail it.
 - `PromptRegression.aiTestingDefinition-meta.xml` —
   prompt-template smoke tests (ConsolidateMemory via conversationHistory, AnswerFromFile).
 - `scripts/demo-story.yaml` — the multi-turn conference-demo conversation, driven over the REST
   endpoint below, judged by Claude in-memory. Covers what single-turn can't.
 
-NGT format facts: testCases have `inputs:` (utterance + optional contextVariables /
+Agentforce Studio test format facts: testCases have `inputs:` (utterance + optional contextVariables /
 conversationHistory — **every** history turn needs a `topic`, even user turns) and
 `scorers:` (topic_sequence_match, action_sequence_match, agent_handoff_match,
 bot_response_rating, response_match, coherence, conciseness, factuality, completeness,
@@ -115,16 +114,46 @@ the namespace strip. The scratch org is namespaceless; `create-scratch-org.sh` s
       sf project deploy start --source-dir <file> --concise; \
       git checkout -- <file>
 
+## Learnings (test stabilization, 2026-07-24)
+
+- **Verify the ACTIVE published version before diagnosing behavior.** deploy → `sf agent
+  publish` → activate is three steps and drifts easily: a deploy can report *Succeeded*
+  while the active BotVersion is still an older one. Symptoms you chase may be from a
+  version that isn't your source. Confirm by retrieving `AiAuthoringBundle:MyOrgButler`
+  and diffing, or check the active version's content — before concluding anything. When
+  versions get tangled, the clean reset is: delete the whole agent in the Studio UI, then
+  redeploy fresh.
+- **Deploy order after deleting the agent:** bundle → publish (creates BotVersion) →
+  activate → THEN the `aiTestingDefinitions`. Deploying test defs first fails with
+  "BotVersion not found" (they require an existing version). `rollbackOnError` rolls back
+  the bundle too, so deploy the bundle on its own first.
+- **Builder Live Test and the Agentforce Studio test runner can show different action traces** (e.g. an
+  extra `LoadCustomInstructions` under test). Do NOT explain the difference until you have
+  confirmed both are the same active version — most "runner artifact" theories here were
+  actually a stale active version.
+- **Never probe with `sf agent test run` without `--wait`.** It starts a real run; the
+  runner allows one at a time, so a stray probe leaves a phantom in-progress run that
+  blocks the next `--wait` run ("a test run is already in progress").
+- **Redeploying an AiTestingDefinition that has run history can make it unrunnable**
+  ("Test definition not found" on run although `sf agent test list` still shows it). Fix:
+  delete it in the Studio UI, then redeploy.
+- **Not a syntax authority:** treat `agent-script-recipes` and any Builder sidebar-AI /
+  supporter explanation as unverified — they confidently fabricate constructs
+  (`@session` scope, "framework preflight", `context.user.id`). The VS Code Agent Script
+  language server (first-party) is the better signal; it flags real issues (e.g. `id`
+  type is deprecated → use `string`).
+- **Test design that stays honest:** keep the utterance natural (don't name the action);
+  assert against known values. PDF/file case → ask for a fact that lives ONLY in the PDF
+  (forces `AnswerWithCurrentFile`, not `GetRecordDetails` alone). PlantUML → ask for
+  standard Salesforce objects and let the action description permit drawing from model
+  knowledge (no `ExploreOrgSchema`). Memory-load → ask for the user email + the seeded
+  Memory__c and assert `[LoadCustomInstructions]`.
+- **Running user's Id for an Employee agent** comes from Apex `UserInfo.getUserId()` (already
+  in the `LoadCustomInstructions` output). `$Context.EndUserId` is a Messaging/Service-agent
+  variable (maps to MessagingSession) — not reliable here.
+
 ## Open items
 
-- [ ] **Platform topics can hijack utterances**: the NGT runtime classifies BEFORE the
-      script runs — "from now on, always …" landed in the hidden `Reverse_Engineering`
-      guardrail topic (refusal), document questions in `topic_selector` (which answers
-      itself). Mitigations so far: broader router/butler descriptions, "remember that …"
-      phrasing in tests. Real fix unknown.
-- [ ] Zombie org-side suites `RegressionStudio`, `OrgButlerRegression`,
-      `MyOrgButlerPromptTemplates` — undeletable via API (run history), invisible in
-      Studio UI; clean up when possible or ignore until org rebuild
 - [ ] Demo-story fully green once Data Library chunks are indexed (blocked by chunking bug)
 - [ ] Phase 1 (deterministic refactor) → Phase 2 (packaging) → Phase 3 (README)
 - [ ] Bug reports against forcedotcom/cli: zero-input action config passes
