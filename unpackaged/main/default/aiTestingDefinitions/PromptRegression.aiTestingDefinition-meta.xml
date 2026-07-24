@@ -34,7 +34,7 @@
     <testCase>
         <number>3</number>
         <inputs>
-            <utterance>the Acme Q1 Expansion Deal has a PDF file attached, what is the total contract value and how is it split across phases?</utterance>
+            <utterance>Check the proposal attached to the Acme Q1 Expansion Deal and tell me how many employees the user training covers</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -42,7 +42,7 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Mentions $500,000 total and references the three payments: $125,000 at contract signing, $125,000 at delivery milestone, $250,000 at go-live</expectedValue>
+            <expectedValue>States the user training covers up to 200 employees</expectedValue>
         </scorer>
     </testCase>
 </AiTestingDefinition>

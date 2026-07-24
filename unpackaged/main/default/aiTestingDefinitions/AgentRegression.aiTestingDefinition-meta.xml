@@ -7,7 +7,7 @@
     <testCase>
         <number>1</number>
         <inputs>
-            <utterance>the Acme Q1 Expansion Deal has a PDF file attached, open it and tell me the total contract value</utterance>
+            <utterance>Check the proposal attached to the Acme Q1 Expansion Deal and tell me how many employees the user training covers</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
@@ -15,7 +15,7 @@
         </scorer>
         <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>States the total contract value is 500,000</expectedValue>
+            <expectedValue>States the user training covers up to 200 employees</expectedValue>
         </scorer>
     </testCase>
     <testCase>

@@ -478,6 +478,7 @@ subagent butler:
          | User context is already loaded — do not call {!@actions.LoadCustomInstructions} again unless you just stored a new preference or the user asks for their stored data.
          | When the user explicitly names a channel or tool (search the web, REST API, Metadata API, ...), you MUST call the matching action before answering.
          | Answer schema questions (objects, fields, types) only from {!@actions.ExploreOrgSchema} results, never from model knowledge.
+         | When the user asks about the content of a file attached to a record (a PDF, proposal, contract, document on a record), locate the record with {!@actions.IdentifyRecordByName}, get its attached file with {!@actions.GetRecordDetails}, then read that file with {!@actions.AnswerWithCurrentFile}. Never open an attached file by querying ContentDocument or ContentDocumentLink with {!@actions.QueryRecordsWithSoql}.
          | When the user asks about their stored preferences or memories, answer with the literal stored content from the custom instructions below — do not paraphrase it away or claim nothing is stored without checking it.
          | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Never claim a custom instruction was saved unless that call actually ran and succeeded.
          if @variables.custom_instruction_saved == True:
