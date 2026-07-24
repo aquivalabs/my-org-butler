@@ -91,11 +91,15 @@
     <testCase>
         <number>7</number>
         <inputs>
-            <utterance>tell me what you know about me</utterance>
+            <utterance>What email address do you have on file for me, and what else do you know about me?</utterance>
         </inputs>
         <scorer>
+            <name>action_sequence_match</name>
+            <expectedValue>[&apos;LoadCustomInstructions&apos;]</expectedValue>
+        </scorer>
+        <scorer>
             <name>bot_response_rating</name>
-            <expectedValue>Surfaces stored user context such as name, email, timezone or saved preferences, not just a greeting</expectedValue>
+            <expectedValue>States the user email address is rsoesemann@aquivalabs.com and surfaces further loaded context such as the saved preference to include StageName when listing opportunities</expectedValue>
         </scorer>
     </testCase>
     <testCase>
