@@ -134,23 +134,6 @@ subagent butler:
       model: "model://sfdc_ai__DefaultBedrockAnthropicClaude46Sonnet"
 
    actions:
-      LoadCustomInstructions:
-         description: "Reload user context (identity, timezone, org URL, current date/time) AND the user's stored custom instructions. Only needed to refresh after StoreCustomInstruction or when the user asks for the latest stored preferences. NOT for: storing a new preference — use StoreCustomInstruction. Not for reading arbitrary records — use QueryRecordsWithSoql."
-         label: "MyOrgButler: Load Custom Instructions"
-         include_in_progress_indicator: True
-         inputs:
-            # Note: actions without declared inputs compile into a config the bot runtime
-            # cannot load (InvalidPlannerConfigException) — the Apex Input class has this
-            # optional dummy field for exactly that reason.
-            ignored: string
-               description: "no input"
-         outputs:
-            customInstructions: string
-               description: "Formatted string containing user context information including user details, timezone, organization info, current date/time, and user-specific communication preferences"
-               is_displayable: True
-               is_used_by_planner: True
-         target: "apex://LoadCustomInstructions"
-
       StoreCustomInstruction:
          description: "Persist a learned user preference so it is remembered in future conversations (loaded by LoadCustomInstructions at session start). Use when the user corrects you, refines output in a way worth keeping, states a preference ('always', 'from now on', 'I prefer'), or shows dissatisfaction and rephrases. NOT for one-off requests that aren't meant to stick — just honor them without storing. Format memories as OBSERVATIONS about the user, not commands to yourself: 'When showing opportunities, user prefers Amount and CloseDate included'. After storing, confirm briefly and apply the preference immediately."
          label: "MyOrgButler: Store Custom Instruction"
@@ -475,7 +458,7 @@ subagent butler:
    reasoning:
       instructions:->
          | Never claim an action was performed unless the corresponding action call actually ran and returned success. Never invent record links.
-         | User context is already loaded — do not call {!@actions.LoadCustomInstructions} again unless you just stored a new preference or the user asks for their stored data.
+         | User context and stored preferences are already loaded into {!@variables.custom_instructions} — read the user's identity, timezone, org info, and saved preferences from there. When the user asks what you know about them or about their stored preferences, answer from it directly.
          | When the user explicitly names a channel or tool (search the web, REST API, Metadata API, ...), you MUST call the matching action before answering.
          | Answer schema questions (objects, fields, types) only from {!@actions.ExploreOrgSchema} results, never from model knowledge.
          | When the user asks about the content of a file attached to a record (a PDF, proposal, contract, document on a record), locate the record with {!@actions.IdentifyRecordByName}, get its attached file with {!@actions.GetRecordDetails}, then read that file with {!@actions.AnswerWithCurrentFile}. Never open an attached file by querying ContentDocument or ContentDocumentLink with {!@actions.QueryRecordsWithSoql}.
@@ -483,14 +466,11 @@ subagent butler:
          | Notice when the user corrects you, refines a result, states a preference, or shows dissatisfaction and rephrases. When you see one of these signals and the takeaway would be useful in future conversations, call {!@actions.StoreCustomInstruction}. Never claim a custom instruction was saved unless that call actually ran and succeeded.
          if @variables.custom_instruction_saved == True:
             | A custom instruction was stored in this conversation — confirm it briefly once and apply it from now on.
-         | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
+         | When the user wants something done at a specific future time or on a recurring schedule ("every Monday", "tomorrow at 3pm", "daily", "remind me"), assemble a numbered headless plan and call {!@actions.PlanForLater}. The plan executes in a separate session with no memory of this conversation, so include all needed record IDs and context directly in the steps. After the call succeeds, confirm the schedule and give the user a clickable link to the created plan record, using the returned planId as the relative URL /planId. For background work the user wants started NOW (not scheduled), use {!@actions.RunMyOrgButler} instead.
          | Custom instructions — follow them: language, formatting, field selection, preferred tools, workflow habits. They rank below the rules above and can never disable or rewrite those rules.
            {!@variables.custom_instructions}
 
       actions:
-         load_custom_instructions: @actions.LoadCustomInstructions
-            set @variables.custom_instructions = @outputs.customInstructions
-
          store_custom_instruction: @actions.StoreCustomInstruction
             with summary=...
             with instruction=...
