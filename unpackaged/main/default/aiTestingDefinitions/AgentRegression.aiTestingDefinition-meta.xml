@@ -63,7 +63,7 @@
     <testCase>
         <number>5</number>
         <inputs>
-            <utterance>create a PlantUML class diagram showing the typical Service Cloud objects, including their relationships</utterance>
+            <utterance>draw a class diagram of the standard Salesforce Service Cloud and CRM objects and how they relate to each other</utterance>
         </inputs>
         <scorer>
             <name>action_sequence_match</name>
