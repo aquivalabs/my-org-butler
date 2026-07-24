@@ -40,7 +40,6 @@ nothing else. Coding standards live in `.claude/rules/`.
    Known agent bugs this must fix (from test runs): claims "Noted" without calling
    StoreCustomInstruction; answers memory questions without calling LoadCustomInstructions;
    doesn't surface memory content.
-   Syntax authority: `trailheadapps/agent-script-recipes` → `.airules/AGENT_SCRIPT.md`.
 2. **Packaging**: AiAuthoringBundle and AiTestingDefinition are NOT 2GP-packageable
    (confirmed against the 2GP Agentforce packaging doc). Plan: ship the `.agent` (and
    optionally the test XMLs) as plain-text static resources — admins open

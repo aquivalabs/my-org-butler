@@ -392,13 +392,13 @@ subagent butler:
          target: "apex://NotifyUser"
 
       PlanForLater:
-         description: "Schedule a task to run at a SPECIFIC FUTURE TIME or on a RECURRING CRON schedule. Saves a numbered plan + cron expression; the plan fires headlessly at that time and notifies the user. Use when the user says 'every Monday at 9am', 'daily', 'weekly', 'tomorrow at 3pm', 'remind me', 'schedule'. NOT for: running something NOW in the background — use RunMyOrgButler. Not for simple fast tasks — just do them inline. The prompt must start with the headless preamble ('You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.'), step 1 must call LoadCustomInstructions, the last step must call NotifyUser, and all record IDs must be included directly in the steps. Results are delivered as in-app notifications: plain text only, max 750 chars, one clickable record via targetId."
+         description: "Schedule a task to run at a SPECIFIC FUTURE TIME or on a RECURRING CRON schedule. Saves a numbered plan + cron expression; the plan fires headlessly at that time and notifies the user. Use when the user says 'every Monday at 9am', 'daily', 'weekly', 'tomorrow at 3pm', 'remind me', 'schedule'. NOT for: running something NOW in the background — use RunMyOrgButler. Not for simple fast tasks — just do them inline. The prompt must start with the headless preamble ('You are running headlessly. There is no conversation — do not ask questions, NEVER create another plan from here, and execute every step in this plan.'), the last step must call NotifyUser, and all record IDs must be included directly in the steps. Results are delivered as in-app notifications: plain text only, max 750 chars, one clickable record via targetId."
          label: "MyOrgButler: Plan For Later"
          include_in_progress_indicator: True
          progress_indicator_message: "Scheduling your plan now."
          inputs:
             prompt: string
-               description: "Step-by-step plan for the headless agent. Start with the headless preamble. Step 1 must always call LoadCustomInstructions. Then list numbered steps with all record IDs included. The last step must use NotifyUser to deliver results with a targetId linking the relevant record. NotifyUser body is plain text only (max 750 chars), no markdown, no HTML, no links."
+               description: "Step-by-step plan for the headless agent. Start with the headless preamble. Then list numbered steps with all record IDs included. The last step must use NotifyUser to deliver results with a targetId linking the relevant record. NotifyUser body is plain text only (max 750 chars), no markdown, no HTML, no links."
                is_required: True
             schedule: string
                description: "When to run in the users local time: minute hour dayOfMonth month dayOfWeek optionalYear. e.g. 0 9 ? * MON-FRI for weekdays at 9am, 30 14 ? * MON for Mondays at 2:30pm."
