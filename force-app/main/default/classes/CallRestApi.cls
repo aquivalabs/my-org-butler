@@ -18,7 +18,7 @@ global with sharing class CallRestApi {
         }
 
         HttpResponse response = new Http().send(request);
-        return new List<Output>{ new Output(response.getBody()) };
+        return new List<Output>{ new Output(response) };
     }
 
     // INNER
@@ -37,9 +37,17 @@ global with sharing class CallRestApi {
     global class Output {
         @InvocableVariable(label='Response Body' description='Raw HTTP Response to be interpreted for Errors or Success' required=true)
         global String responseBody;
-        
-        public Output(String body) {
-            responseBody = body;
+
+        @InvocableVariable(label='Success' description='True when the HTTP status code is 2xx. A successful write often has an empty body, so never conclude success from the body alone.' required=true)
+        global Boolean success;
+
+        @InvocableVariable(label='HTTP Status' description='The HTTP status code and reason phrase, for example "403 Forbidden"' required=true)
+        global String httpStatus;
+
+        public Output(HttpResponse response) {
+            responseBody = response.getBody();
+            success = response.getStatusCode() >= 200 && response.getStatusCode() < 300;
+            httpStatus = response.getStatusCode() + ' ' + response.getStatus();
         }
     }
 }
