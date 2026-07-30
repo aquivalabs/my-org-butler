@@ -4,17 +4,21 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier, PMD.ApexFlsViolation')
 global with sharing class QueryRecordsWithSoql {
 
-    @InvocableMethod(label='MyOrgButler: Run SOQL Queries' description='Run a single SOQL Query and return a list of records or errors')
+    @InvocableMethod(label='MyOrgButler: Run SOQL Queries' description='Run a single SOQL Query and return a list of records or errors. SELECT COUNT() returns a totalSize instead of records.')
     global static List<Output> execute(List<Input> input) {
         Output output = new Output();
+        String query = input[0].dynamicSoqlQuery;
 
         try {
-            List<Object> result = Database.query(input[0].dynamicSoqlQuery, AccessLevel.USER_MODE);
-
-            String jsonResult = JSON.serialize(result);
-            String cleanJson = jsonResult.replaceAll('(\\"url\\":\\")/services/data/v[0-9.]+/sobjects/[^/]+/', '$1/');
-
-            output.resultOrException = cleanJson;
+            if(isCount(query)) {
+                output.resultOrException = JSON.serialize(new Map<String, Object>{
+                    'totalSize' => Database.countQuery(query, AccessLevel.USER_MODE)
+                });
+            }
+            else {
+                String records = JSON.serialize(Database.query(query, AccessLevel.USER_MODE));
+                output.resultOrException = records.replaceAll('(\\"url\\":\\")/services/data/v[0-9.]+/sobjects/[^/]+/', '$1/');
+            }
         }
         catch(Exception ex) {
             Map<String, Object> exceptionInfo = new Map<String, Object>{
@@ -26,6 +30,14 @@ global with sharing class QueryRecordsWithSoql {
         }
 
         return new List<Output>{ output };
+    }
+
+
+    // PRIVATE
+
+    private static Boolean isCount(String query) {
+        // Note: anchored and requiring empty parentheses, so COUNT(Id) or a Count__c field is not mistaken for a row count.
+        return Pattern.matches('(?is)^select\\s+count\\s*\\(\\s*\\)\\s.*', query.trim());
     }
 
     // INNER

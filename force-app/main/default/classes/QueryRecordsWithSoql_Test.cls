@@ -26,6 +26,25 @@ private class QueryRecordsWithSoql_Test {
     }
 
     @IsTest
+    static void executeCountQuery() {
+
+        // Setup
+        insert new List<Account>{ new Account(Name='AcmeCorp'), new Account(Name='Initech') };
+
+        // Exercise
+        QueryRecordsWithSoql.Input input = new QueryRecordsWithSoql.Input();
+        input.dynamicSoqlQuery = 'SELECT COUNT() FROM Account';
+
+        List<QueryRecordsWithSoql.Output> result = QueryRecordsWithSoql.execute(
+            new List<QueryRecordsWithSoql.Input>{ input }
+        );
+
+        // Verify
+        Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(result[0].resultOrException);
+        Assert.areEqual(2, payload.get('totalSize'));
+    }
+
+    @IsTest
     static void handleQueryError() {
         // Setup & Exercise
         QueryRecordsWithSoql.Input input = new QueryRecordsWithSoql.Input();
