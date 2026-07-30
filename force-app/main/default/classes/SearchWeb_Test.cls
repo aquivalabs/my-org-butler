@@ -5,9 +5,13 @@ private class SearchWeb_Test {
     private static void happyPath() {
 
         // Setup
-        SearchWeb.Answer expected = answerWith('Donald Trump was elected in November 2024.');
         new HttpMock()
-                .post('/search').body(expected).statusCodeOk()
+                .post('/search').body(new Map<String, Object>{
+                    'answer' => 'Donald Trump was elected in November 2024.',
+                    'results' => new List<Object>{
+                        new Map<String, Object>{ 'url' => 'https://apnews.com/election' }
+                    }
+                }).statusCodeOk()
                 .mock();
 
         SearchWeb.Query query = new SearchWeb.Query();
@@ -21,14 +25,7 @@ private class SearchWeb_Test {
         // Verify
         Assert.areEqual(1, response.size());
         SearchWeb.Answer actual = response[0];
-        Assert.areEqual(expected.answer, actual.answer);
-    }
-
-    // HELPER
-
-    private static SearchWeb.Answer answerWith(String content) {
-        SearchWeb.Answer result = new SearchWeb.Answer();
-        result.answer = content;
-        return result;
+        Assert.areEqual('Donald Trump was elected in November 2024.', actual.answer);
+        Assert.areEqual(new List<String>{ 'https://apnews.com/election' }, actual.urls);
     }
 }
