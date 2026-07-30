@@ -30,6 +30,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ExploreDataCloud</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ExploreOrgSchema</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -38,7 +42,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>QueryDataCloud</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>QueryRecordsWithSoql</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>SearchDataLibrary</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
