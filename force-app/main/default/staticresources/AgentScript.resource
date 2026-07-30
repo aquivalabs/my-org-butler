@@ -280,6 +280,9 @@ subagent butler:
             answer: string
                description: "A Natural Language Answer for the Query generated after doing a Web Search."
                is_used_by_planner: True
+            urls: list[string]
+               description: "The web pages the answer is based on. These are the ONLY URLs that may be cited - copy them exactly and never construct, shorten or guess one. If empty, say no source was returned and cite nothing."
+               is_used_by_planner: True
          target: "apex://aquiva_os__SearchWeb"
 
       CallRestApi:
@@ -299,6 +302,12 @@ subagent butler:
             responseBody: string
                description: "Raw HTTP Response to be interpreted for Errors or Success"
                is_used_by_planner: True
+            success: boolean
+               description: "True when the HTTP status code is 2xx. A successful write usually has an EMPTY response body, exactly like a rejected one - so decide success from this flag, never from the body."
+               is_used_by_planner: True
+            httpStatus: string
+               description: "The HTTP status code and reason phrase, for example '403 Forbidden'. Quote it when reporting a failure."
+               is_used_by_planner: True
          target: "apex://aquiva_os__CallRestApi"
 
       CallMetadataApi:
@@ -311,6 +320,8 @@ subagent butler:
                is_required: True
             typeName: string
                description: "The official Salesforce Metadata Type Name"
+            folder: string
+               description: "Only for listMetadata. Report, Dashboard, EmailTemplate and Document live in folders and come back EMPTY without one - list ReportFolder, DashboardFolder, EmailFolder or DocumentFolder first to find one. Omit for every other type."
             attributesJson: string
                description: "A JSON with all relevant attributes needed to create this metadata type."
             fullName: string
