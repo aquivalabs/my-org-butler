@@ -70,3 +70,6 @@ security-review/scans/
 
 # Playwright MCP server output (console logs, session data)
 .playwright-mcp/
+
+# Local review scratchpad
+lab/
