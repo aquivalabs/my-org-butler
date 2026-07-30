@@ -26,6 +26,25 @@ private class CallMetadataApi_Test {
         Assert.isNull(unexpectedException);
     }
 
+    @IsTest
+    private static void listMetadataWithFolder() {
+
+        // Setup
+        CallMetadataApi.MetadataDescription metadata = new CallMetadataApi.MetadataDescription();
+        metadata.soapAction = 'listMetadata';
+        metadata.typeName = 'Report';
+        metadata.folder = 'unfiled$public';
+
+
+        // Exercise
+        String soapBody = CallMetadataApi.actionFor(metadata).setupRequest().getRequest().getBody();
+
+
+        // Verify
+        Assert.isTrue(soapBody.contains('unfiled$public'));
+    }
+
+
     // HELPER
 
     private static void mockResponse() {

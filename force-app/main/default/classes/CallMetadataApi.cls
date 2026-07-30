@@ -27,6 +27,7 @@ global with sharing class CallMetadataApi {
 
     // PRIVATE
 
+    @TestVisible
     private static Wsdl actionFor(MetadataDescription metadata) {
         Wsdl result = null;
     
@@ -37,7 +38,7 @@ global with sharing class CallMetadataApi {
             when 'listMetadata' {
                 result = new MdtWsdl(metadata.soapAction)
                                 .setAllOrNone(true)
-                                .addListMetadata(metadata.typeName);
+                                .addListMetadata(metadata.typeName, metadata.folder);
             }
             when 'readMetadata' {
                 result = new MdtWsdl(metadata.soapAction)
@@ -72,6 +73,9 @@ global with sharing class CallMetadataApi {
         @InvocableVariable(label='Metadata Type Name' description='The official Salesforce Metadata Type Name' required=false)
         global  String typeName;
         
+        @InvocableVariable(label='Folder API Name' description='Only for listMetadata. Report, Dashboard, EmailTemplate and Document return an EMPTY list without a folder. List ReportFolder, DashboardFolder, EmailFolder or DocumentFolder first to find one.' required=false)
+        global  String folder;
+
         @InvocableVariable(label='Attributes JSON' description='A JSON with all relevant attributes needed to create this metadata type.' required=false)
         global  String attributesJson;
         
